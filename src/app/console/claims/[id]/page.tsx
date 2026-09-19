@@ -84,51 +84,51 @@ export default function ConsoleClaimDetailPage() {
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Back navigation & Action strip */}
       <div className="flex items-center justify-between">
         <Link
           href="/console/claims"
-          className="inline-flex items-center gap-1.5 text-xs font-medium text-slate-600 hover:text-slate-900 transition-colors"
+          className="min-h-[44px] inline-flex items-center gap-2 text-sm font-bold text-slate-600 hover:text-slate-950 transition-colors"
         >
-          <ArrowLeftIcon size={14} />
+          <ArrowLeftIcon size={16} />
           <span>Back to Claims Ledger</span>
         </Link>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
           {exportNotice && (
-            <span className="text-[11px] text-emerald-700 font-medium">
+            <span className="text-xs text-emerald-700 font-semibold">
               Downloaded {claim.id}_IMPACTA_DOSSIER.json
             </span>
           )}
           <button
             type="button"
             onClick={handleExport}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-white hover:bg-slate-50 border border-slate-300 rounded text-slate-700 shadow-sm transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="min-h-[44px] inline-flex items-center gap-2 px-4 py-2 text-sm font-bold bg-white hover:bg-slate-50 border border-slate-200 rounded-xl text-slate-800 shadow-xs transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
-            <DownloadIcon size={14} />
+            <DownloadIcon size={16} />
             <span>Export Claim (JSON)</span>
           </button>
         </div>
       </div>
 
       {/* Claim Header Bar */}
-      <div className="bg-white border border-slate-200 rounded p-5 space-y-4">
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+      <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 space-y-6 shadow-xs">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-5 border-b border-slate-100 pb-5">
           <div>
-            <div className="flex items-center gap-3">
-              <h1 className="text-xl font-bold font-mono text-slate-950">
+            <div className="flex flex-wrap items-center gap-3">
+              <h1 className="text-3xl sm:text-4xl font-extrabold font-mono text-slate-950">
                 {claim.id}
               </h1>
               <span
-                className={`text-[11px] font-medium px-2.5 py-0.5 rounded border ${getStatusBadgeClass(
+                className={`text-xs font-semibold px-3 py-1 rounded-lg border ${getStatusBadgeClass(
                   claim.status
                 )}`}
               >
                 {getStatusLabel(claim.status)}
               </span>
               <span
-                className={`text-[10px] font-mono font-semibold px-2 py-0.5 rounded border ${
+                className={`text-xs font-mono font-bold px-2.5 py-1 rounded-lg border ${
                   claim.severity === "HIGH"
                     ? "bg-rose-50 text-rose-800 border-rose-200"
                     : claim.severity === "MEDIUM"
@@ -139,20 +139,20 @@ export default function ConsoleClaimDetailPage() {
                 {claim.severity} SEVERITY
               </span>
             </div>
-            <p className="text-xs text-slate-600 mt-1 font-medium">
+            <p className="text-base text-slate-600 mt-2 font-medium">
               {claim.policyholder.fullName} • {claim.vehicleA.make} {claim.vehicleA.model} (
-              <span className="font-mono">{claim.vehicleA.plate}</span>)
+              <span className="font-mono font-semibold text-slate-900">{claim.vehicleA.plate}</span>)
             </p>
           </div>
 
           {/* Quick Assignee & Status Changers */}
-          <div className="flex flex-wrap items-center gap-3 text-xs">
+          <div className="flex flex-wrap items-center gap-4 text-sm">
             <div className="flex items-center gap-2">
-              <span className="text-slate-400 font-medium">Status:</span>
+              <span className="text-slate-500 font-semibold">Status:</span>
               <select
                 value={claim.status}
                 onChange={(e) => updateStatus(claim.id, e.target.value as ClaimStatus)}
-                className="bg-slate-50 border border-slate-200 rounded px-2.5 py-1 text-xs text-slate-900 font-medium focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="bg-slate-50/70 border border-slate-200 rounded-xl px-3 py-2 text-sm text-slate-900 font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[40px]"
               >
                 <option value="NEW">New</option>
                 <option value="IN_REVIEW">In Review</option>
@@ -163,11 +163,11 @@ export default function ConsoleClaimDetailPage() {
             </div>
 
             <div className="flex items-center gap-2">
-              <span className="text-slate-400 font-medium">Assignee:</span>
+              <span className="text-slate-500 font-semibold">Assignee:</span>
               <select
                 value={claim.assignee?.id || ""}
                 onChange={(e) => assignReviewer(claim.id, e.target.value || null)}
-                className="bg-slate-50 border border-slate-200 rounded px-2.5 py-1 text-xs text-slate-900 font-medium focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="bg-slate-50/70 border border-slate-200 rounded-xl px-3 py-2 text-sm text-slate-900 font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[40px]"
               >
                 <option value="">Unassigned</option>
                 {reviewers.map((r) => (
@@ -181,44 +181,44 @@ export default function ConsoleClaimDetailPage() {
         </div>
 
         {/* Header Metadata Chips */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm">
           <div>
-            <div className="text-[10px] uppercase font-semibold text-slate-400">Incident Timestamp</div>
-            <div className="font-medium text-slate-900 mt-0.5">{formatDateTime(claim.incidentDate)}</div>
+            <div className="text-xs uppercase font-mono font-bold text-slate-400">Incident Timestamp</div>
+            <div className="font-semibold text-slate-900 mt-1">{formatDateTime(claim.incidentDate)}</div>
           </div>
 
           <div>
-            <div className="text-[10px] uppercase font-semibold text-slate-400">Location</div>
-            <div className="font-medium text-slate-900 mt-0.5 truncate">
+            <div className="text-xs uppercase font-mono font-bold text-slate-400">Location</div>
+            <div className="font-semibold text-slate-900 mt-1 truncate">
               {claim.incident.location.city}, {claim.incident.location.street}
             </div>
           </div>
 
           <div>
-            <div className="text-[10px] uppercase font-semibold text-slate-400">AI Confidence</div>
-            <div className="font-medium text-slate-900 mt-0.5 flex items-center gap-1.5">
+            <div className="text-xs uppercase font-mono font-bold text-slate-400">AI Confidence</div>
+            <div className="font-semibold text-slate-900 mt-1 flex items-center gap-2">
               <span
-                className={`font-mono text-[11px] font-bold px-1.5 py-0.2 rounded border ${getConfidenceBadgeClass(
+                className={`font-mono text-xs font-bold px-2 py-0.5 rounded-md border ${getConfidenceBadgeClass(
                   claim.aiAnalysis.overallConfidence
                 )}`}
               >
                 {claim.aiAnalysis.overallConfidence}%
               </span>
-              <span className="text-[11px] text-slate-500">
+              <span className="text-xs text-slate-500 font-medium">
                 {claim.aiAnalysis.confidenceBand}
               </span>
             </div>
           </div>
 
           <div>
-            <div className="text-[10px] uppercase font-semibold text-slate-400">Black-Box Telemetry</div>
-            <div className="font-medium mt-0.5">
+            <div className="text-xs uppercase font-mono font-bold text-slate-400">Black-Box Telemetry</div>
+            <div className="font-semibold mt-1">
               {claim.telemetry.hasTelemetry ? (
-                <span className="font-mono text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200 text-[11px]">
+                <span className="font-mono text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200 text-xs">
                   Synchronized (ΔV {claim.telemetry.deltaVKmh} km/h)
                 </span>
               ) : (
-                <span className="text-slate-400 text-[11px]">Unavailable</span>
+                <span className="text-slate-400 text-xs">Unavailable</span>
               )}
             </div>
           </div>
@@ -227,7 +227,7 @@ export default function ConsoleClaimDetailPage() {
 
       {/* Tabs Navigation */}
       <div className="border-b border-slate-200">
-        <nav className="flex space-x-1 sm:space-x-4 overflow-x-auto" aria-label="Claim detail tabs">
+        <nav className="flex space-x-2 sm:space-x-6 overflow-x-auto" aria-label="Claim detail tabs">
           {tabs.map((t) => {
             const isActive = activeTab === t.id;
             return (
@@ -235,18 +235,18 @@ export default function ConsoleClaimDetailPage() {
                 key={t.id}
                 type="button"
                 onClick={() => setActiveTab(t.id)}
-                className={`py-3 px-3 border-b-2 text-xs font-semibold whitespace-nowrap transition-colors flex items-center gap-1.5 ${
+                className={`py-3.5 px-3 border-b-2 text-sm font-semibold whitespace-nowrap transition-colors flex items-center gap-2 ${
                   isActive
-                    ? "border-blue-600 text-blue-700"
-                    : "border-transparent text-slate-500 hover:text-slate-800 hover:border-slate-300"
+                    ? "border-blue-600 text-blue-700 font-bold"
+                    : "border-transparent text-slate-500 hover:text-slate-900 hover:border-slate-300"
                 }`}
               >
                 <span>{t.label}</span>
                 {t.count !== undefined && (
                   <span
-                    className={`text-[10px] font-mono px-1.5 py-0.2 rounded-full border ${
+                    className={`text-xs font-mono px-2 py-0.5 rounded-full border ${
                       isActive
-                        ? "bg-blue-50 text-blue-800 border-blue-200"
+                        ? "bg-blue-50 text-blue-800 border-blue-200 font-bold"
                         : "bg-slate-100 text-slate-600 border-slate-200"
                     }`}
                   >

@@ -34,7 +34,7 @@ export function HeroMedia({
 
   return (
     <div
-      className={`relative w-full overflow-hidden bg-slate-900 ${className}`}
+      className={`relative w-full overflow-hidden bg-slate-100 ${className}`}
       role="region"
       aria-label={alt}
     >
@@ -54,7 +54,7 @@ export function HeroMedia({
         />
       )}
 
-      {/* Cinematic Photography (always present as poster or primary media) */}
+      {/* Cinematic Daylight Photography */}
       <Image
         src={posterSrc}
         alt={alt}
@@ -63,11 +63,11 @@ export function HeroMedia({
         className={`object-cover transition-transform duration-[4000ms] ease-out ${
           !prefersReducedMotion ? "scale-105 hover:scale-100" : "scale-100"
         } ${videoAvailable ? "opacity-0" : "opacity-100"}`}
-        sizes="(max-width: 1024px) 100vw, 1200px"
+        sizes="(max-width: 1024px) 100vw, 1400px"
       />
 
-      {/* Subtle European daylight gradient vignette to ensure typographic contrast */}
-      <div className="absolute inset-0 bg-gradient-to-t from-slate-950/75 via-slate-950/25 to-slate-950/40 pointer-events-none" />
+      {/* Crisp daylight gradient overlay for depth */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none" />
     </div>
   );
 }

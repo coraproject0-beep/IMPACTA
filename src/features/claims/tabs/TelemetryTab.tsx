@@ -70,88 +70,88 @@ export function TelemetryTab({ claim }: TelemetryTabProps) {
   return (
     <div className="space-y-6">
       {/* Synthetic Black-Box Disclaimer & Hardware Header */}
-      <div className="bg-slate-900 text-white rounded-lg p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-7 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xs">
         <div>
-          <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            <h3 className="text-sm font-bold tracking-tight">
+          <div className="flex items-center gap-2.5">
+            <span className="w-2.5 h-2.5 rounded-full bg-emerald-600" />
+            <h3 className="text-base sm:text-lg font-bold text-slate-950 tracking-tight">
               Synchronous Black-Box Telemetry Ingestion
             </h3>
-            <span className="text-[10px] font-mono px-1.5 py-0.2 bg-slate-800 text-slate-300 border border-slate-700 rounded">
-              SYNTHETIC BLACK-BOX TELEMETRY
+            <span className="text-xs font-mono font-bold text-slate-500 uppercase tracking-wider">
+              Demo Kinematics
             </span>
           </div>
-          <p className="text-xs text-slate-400 mt-1">
-            Device ID: <span className="font-mono text-slate-200">{telemetry.deviceId}</span> • Firmware:{" "}
-            <span className="font-mono text-slate-200">{telemetry.firmwareVersion}</span> • Sampling:{" "}
-            <span className="font-mono text-slate-200">{telemetry.samplingRateHz} Hz</span>
+          <p className="text-sm text-slate-600 mt-1">
+            Device ID: <span className="font-mono text-slate-900 font-semibold">{telemetry.deviceId}</span> • Firmware:{" "}
+            <span className="font-mono text-slate-900 font-semibold">{telemetry.firmwareVersion}</span> • Sampling:{" "}
+            <span className="font-mono text-slate-900 font-semibold">{telemetry.samplingRateHz} Hz</span>
           </p>
         </div>
 
         <div className="flex items-center gap-3">
           <div className="text-right">
-            <div className="text-[10px] uppercase text-slate-400 font-semibold">Principal Delta-V</div>
-            <div className="text-xl font-bold font-mono text-white">
-              {telemetry.deltaVKmh} <span className="text-xs font-normal text-slate-400">km/h</span>
+            <div className="text-xs uppercase font-mono font-bold text-slate-400">Principal Delta-V</div>
+            <div className="text-2xl font-bold font-mono text-slate-950 mt-0.5">
+              {telemetry.deltaVKmh} <span className="text-sm font-normal text-slate-500">km/h</span>
             </div>
           </div>
         </div>
       </div>
 
       {/* Key Telemetry Metrics Grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        <div className="bg-white border border-slate-200 rounded p-3.5">
-          <div className="text-[10px] font-semibold text-slate-400 uppercase">Impact Speed</div>
-          <div className="mt-1 font-mono font-bold text-lg text-slate-900">
-            {impactPoint.speedKmh.toFixed(1)} <span className="text-xs text-slate-500 font-normal">km/h</span>
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-xs">
+          <div className="text-xs font-mono font-bold text-slate-400 uppercase">Impact Speed</div>
+          <div className="mt-2 font-mono font-bold text-xl text-slate-950">
+            {impactPoint.speedKmh.toFixed(1)} <span className="text-sm text-slate-500 font-normal">km/h</span>
           </div>
-          <div className="text-[10px] text-slate-400 mt-1">At contact marker T=0</div>
+          <div className="text-xs text-slate-500 mt-1">At contact marker T=0</div>
         </div>
 
-        <div className="bg-white border border-slate-200 rounded p-3.5">
-          <div className="text-[10px] font-semibold text-slate-400 uppercase">Peak Deceleration</div>
-          <div className="mt-1 font-mono font-bold text-lg text-rose-700">
+        <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-xs">
+          <div className="text-xs font-mono font-bold text-slate-400 uppercase">Peak Deceleration</div>
+          <div className="mt-2 font-mono font-bold text-xl text-rose-700">
             {telemetry.peakDecelerationG ? `${telemetry.peakDecelerationG.toFixed(2)} G` : "N/A"}
           </div>
-          <div className="text-[10px] text-slate-400 mt-1">Longitudinal deceleration pulse</div>
+          <div className="text-xs text-slate-500 mt-1">Longitudinal deceleration pulse</div>
         </div>
 
-        <div className="bg-white border border-slate-200 rounded p-3.5">
-          <div className="text-[10px] font-semibold text-slate-400 uppercase">Impact Angle Vector</div>
-          <div className="mt-1 font-mono font-bold text-lg text-slate-900">
+        <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-xs">
+          <div className="text-xs font-mono font-bold text-slate-400 uppercase">Impact Angle Vector</div>
+          <div className="mt-2 font-mono font-bold text-xl text-slate-950">
             {telemetry.impactAngleDeg}°
           </div>
-          <div className="text-[10px] text-slate-500 mt-1 truncate">
+          <div className="text-xs text-slate-500 mt-1 truncate">
             {telemetry.impactVectorDescription || "Angular contact"}
           </div>
         </div>
 
-        <div className="bg-white border border-slate-200 rounded p-3.5">
-          <div className="text-[10px] font-semibold text-slate-400 uppercase">Vehicle Heading</div>
-          <div className="mt-1 font-mono font-bold text-lg text-slate-900">
+        <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-xs">
+          <div className="text-xs font-mono font-bold text-slate-400 uppercase">Vehicle Heading</div>
+          <div className="mt-2 font-mono font-bold text-xl text-slate-950">
             {impactPoint.headingDeg}°
           </div>
-          <div className="text-[10px] text-slate-400 mt-1">Compass azimuth relative to North</div>
+          <div className="text-xs text-slate-500 mt-1">Compass azimuth relative to North</div>
         </div>
       </div>
 
       {/* Speed & Brake Line SVG Chart */}
-      <div className="bg-white border border-slate-200 rounded p-5 space-y-3">
+      <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-7 space-y-4 shadow-xs">
         <div className="flex items-center justify-between border-b border-slate-100 pb-3">
           <div>
-            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-900">
+            <h4 className="text-base font-bold text-slate-950">
               Kinematics Timeline: Velocity &amp; Brake Engagement
             </h4>
-            <p className="text-[11px] text-slate-500">
+            <p className="text-xs text-slate-500 mt-0.5">
               Evolution of speed (km/h) and deceleration leading into impact point (T = 0s)
             </p>
           </div>
-          <div className="flex items-center gap-3 text-[11px]">
-            <span className="flex items-center gap-1 text-blue-600 font-semibold font-mono">
-              <span className="w-3 h-0.5 bg-blue-600" /> Velocity (km/h)
+          <div className="flex items-center gap-4 text-xs">
+            <span className="flex items-center gap-1.5 text-blue-600 font-bold font-mono">
+              <span className="w-3.5 h-1 bg-blue-600 rounded" /> Velocity (km/h)
             </span>
-            <span className="flex items-center gap-1 text-rose-600 font-semibold font-mono">
-              <span className="w-2 h-2 rounded-full bg-rose-600" /> Impact T=0
+            <span className="flex items-center gap-1.5 text-rose-600 font-bold font-mono">
+              <span className="w-2.5 h-2.5 rounded-full bg-rose-600" /> Impact T=0
             </span>
           </div>
         </div>
@@ -169,7 +169,7 @@ export function TelemetryTab({ claim }: TelemetryTabProps) {
                 return (
                   <g key={ratio}>
                     <line x1={padLeft} y1={y} x2={padLeft + plotW} y2={y} stroke="#e2e8f0" strokeDasharray="3 3" />
-                    <text x={padLeft - 6} y={y + 3} textAnchor="end" fontSize="9" fill="#94a3b8" fontFamily="monospace">
+                    <text x={padLeft - 6} y={y + 3} textAnchor="end" fontSize="10" fill="#94a3b8" fontFamily="monospace">
                       {val}
                     </text>
                   </g>
@@ -186,7 +186,7 @@ export function TelemetryTab({ claim }: TelemetryTabProps) {
                 strokeWidth="1.5"
                 strokeDasharray="4 2"
               />
-              <text x={getX(0) + 4} y={padTop + 14} fontSize="9" fill="#ef4444" fontFamily="monospace" fontWeight="bold">
+              <text x={getX(0) + 4} y={padTop + 14} fontSize="10" fill="#ef4444" fontFamily="monospace" fontWeight="bold">
                 T=0 Impact
               </text>
 
@@ -215,7 +215,7 @@ export function TelemetryTab({ claim }: TelemetryTabProps) {
                       x={getX(p.timeSec)}
                       y={padTop + plotH + 16}
                       textAnchor="middle"
-                      fontSize="9"
+                      fontSize="10"
                       fill="#64748b"
                       fontFamily="monospace"
                     >
@@ -233,9 +233,9 @@ export function TelemetryTab({ claim }: TelemetryTabProps) {
       {/* Two-Column Detail: Vector Diagram + Raw Sample Table */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Schematic Impact Direction Compass */}
-        <div className="bg-white border border-slate-200 rounded p-5 flex flex-col justify-between">
+        <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-7 flex flex-col justify-between shadow-xs">
           <div>
-            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-900 border-b border-slate-100 pb-2 mb-3">
+            <h4 className="text-base font-bold text-slate-950 border-b border-slate-100 pb-3 mb-4">
               Directional Impact Vector
             </h4>
             <div className="h-44 flex items-center justify-center relative">
@@ -275,26 +275,26 @@ export function TelemetryTab({ claim }: TelemetryTabProps) {
               </svg>
             </div>
           </div>
-          <div className="text-[11px] text-slate-500 text-center font-mono mt-2">
+          <div className="text-xs text-slate-500 text-center font-mono mt-3">
             Vector: {telemetry.impactVectorDescription}
           </div>
         </div>
 
         {/* Chronological Sensor Points Table */}
-        <div className="lg:col-span-2 bg-white border border-slate-200 rounded p-5">
-          <h4 className="text-xs font-bold uppercase tracking-wider text-slate-900 border-b border-slate-100 pb-2 mb-3">
+        <div className="lg:col-span-2 bg-white border border-slate-200 rounded-3xl p-6 sm:p-7 shadow-xs">
+          <h4 className="text-base font-bold text-slate-950 border-b border-slate-100 pb-3 mb-4">
             Discrete Sample Points (CAN Bus Decoded)
           </h4>
-          <div className="overflow-x-auto max-h-52">
-            <table className="w-full text-left text-xs font-mono">
-              <thead className="sticky top-0 bg-slate-100 text-[10px] text-slate-600 uppercase border-b border-slate-200">
+          <div className="overflow-x-auto max-h-56">
+            <table className="w-full text-left text-xs sm:text-sm font-mono">
+              <thead className="sticky top-0 bg-slate-100 text-xs text-slate-700 uppercase font-bold border-b border-slate-200">
                 <tr>
-                  <th className="py-1.5 px-3">Time (s)</th>
-                  <th className="py-1.5 px-3">Speed (km/h)</th>
-                  <th className="py-1.5 px-3">Brake Status</th>
-                  <th className="py-1.5 px-3">Brake Press (bar)</th>
-                  <th className="py-1.5 px-3">Long. G</th>
-                  <th className="py-1.5 px-3">Lat. G</th>
+                  <th className="py-2.5 px-3">Time (s)</th>
+                  <th className="py-2.5 px-3">Speed (km/h)</th>
+                  <th className="py-2.5 px-3">Brake Status</th>
+                  <th className="py-2.5 px-3">Brake Press (bar)</th>
+                  <th className="py-2.5 px-3">Long. G</th>
+                  <th className="py-2.5 px-3">Lat. G</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
@@ -305,22 +305,22 @@ export function TelemetryTab({ claim }: TelemetryTabProps) {
                       p.timeSec === 0 ? "bg-rose-50 font-bold text-rose-900" : ""
                     }`}
                   >
-                    <td className="py-1.5 px-3 font-semibold">
+                    <td className="py-2 px-3 font-semibold">
                       {p.timeSec > 0 ? `+${p.timeSec.toFixed(1)}` : p.timeSec.toFixed(1)}
                     </td>
-                    <td className="py-1.5 px-3">{p.speedKmh.toFixed(1)}</td>
-                    <td className="py-1.5 px-3">
+                    <td className="py-2 px-3">{p.speedKmh.toFixed(1)}</td>
+                    <td className="py-2 px-3">
                       {p.brakeActive ? (
                         <span className="text-amber-700 font-semibold">Active</span>
                       ) : (
                         <span className="text-slate-400">Off</span>
                       )}
                     </td>
-                    <td className="py-1.5 px-3">{p.brakePressureBar} bar</td>
-                    <td className="py-1.5 px-3">
+                    <td className="py-2 px-3">{p.brakePressureBar} bar</td>
+                    <td className="py-2 px-3">
                       {p.longitudinalG > 0 ? `+${p.longitudinalG}` : p.longitudinalG}
                     </td>
-                    <td className="py-1.5 px-3">{p.lateralG}</td>
+                    <td className="py-2 px-3">{p.lateralG}</td>
                   </tr>
                 ))}
               </tbody>

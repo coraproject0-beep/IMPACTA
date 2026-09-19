@@ -6,10 +6,7 @@ import { usePathname } from "next/navigation";
 import {
   ActivityIcon,
   BarChartIcon,
-  CheckCircleIcon,
-  CpuIcon,
   LayersIcon,
-  ShieldIcon,
   AlertTriangleIcon,
 } from "@/components/icons/Icons";
 import { useClaims } from "@/context/ClaimsContext";
@@ -41,7 +38,7 @@ export function Sidebar({ onCloseMobile }: { onCloseMobile?: () => void }) {
       badgeCount: stats.openClaims,
     },
     {
-      name: "AI Review Queue",
+      name: "Review Queue",
       href: "/console/review",
       icon: AlertTriangleIcon,
       badgeCount: stats.manualReviewRequiredCount,
@@ -68,35 +65,33 @@ export function Sidebar({ onCloseMobile }: { onCloseMobile?: () => void }) {
 
   return (
     <aside className="w-64 flex-shrink-0 bg-white border-r border-slate-200 flex flex-col h-full select-none">
-      {/* Brand Header */}
+      {/* Brand Header explicitly linking to PUBLIC HOME (/) */}
       <div className="h-16 flex items-center px-5 border-b border-slate-200">
         <Link
-          href="/console/overview"
+          href="/"
           onClick={onCloseMobile}
           className="flex items-center gap-3 group focus:outline-none focus:ring-2 focus:ring-blue-500 rounded p-1"
+          title="Return to Public IMPACTA Corporate Website"
         >
-          <div className="w-8 h-8 rounded bg-slate-900 text-white flex items-center justify-center font-bold tracking-wider text-sm shadow-sm group-hover:bg-blue-600 transition-colors">
+          <div className="w-8 h-8 rounded-lg bg-slate-950 text-white flex items-center justify-center font-bold tracking-wider text-sm shadow-xs group-hover:bg-blue-600 transition-colors">
             IM
           </div>
           <div>
-            <div className="text-sm font-bold tracking-tight text-slate-950 flex items-center gap-1.5">
+            <div className="text-base font-extrabold tracking-tight text-slate-950">
               IMPACTA
-              <span className="text-[10px] font-mono font-medium px-1 py-0.2 bg-blue-50 text-blue-700 border border-blue-200 rounded">
-                v1.0
-              </span>
             </div>
-            <div className="text-[11px] text-slate-500 font-medium tracking-tight">
-              Claims Intelligence
+            <div className="text-xs text-slate-500 font-medium tracking-tight">
+              Claims Operations
             </div>
           </div>
         </Link>
       </div>
 
       {/* Main Navigation */}
-      <nav className="flex-1 px-3 py-4 space-y-4 overflow-y-auto" aria-label="Main navigation">
+      <nav className="flex-1 px-3 py-5 space-y-4 overflow-y-auto" aria-label="Main navigation">
         <div>
-          <div className="px-2 pb-2 text-[10px] font-semibold text-slate-400 uppercase tracking-wider">
-            Operations Console
+          <div className="px-3 pb-2 text-xs font-semibold text-slate-500 uppercase tracking-wider">
+            Operations Workspace
           </div>
           <div className="space-y-1">
             {navItems.map((item) => {
@@ -111,18 +106,18 @@ export function Sidebar({ onCloseMobile }: { onCloseMobile?: () => void }) {
                   href={item.href}
                   onClick={onCloseMobile}
                   className={cn(
-                    "flex items-center justify-between px-3 py-2 text-xs font-medium rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500",
+                    "flex items-center justify-between px-3 py-2.5 text-sm font-medium rounded-xl transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[44px]",
                     isActive
-                      ? "bg-slate-100 text-slate-950 font-semibold border border-slate-200"
-                      : "text-slate-600 hover:text-slate-900 hover:bg-slate-50 border border-transparent"
+                      ? "bg-slate-100 text-slate-950 font-bold border border-slate-200"
+                      : "text-slate-600 hover:text-slate-950 hover:bg-slate-50 border border-transparent"
                   )}
                 >
-                  <div className="flex items-center gap-2.5">
+                  <div className="flex items-center gap-3">
                     <Icon
-                      size={16}
+                      size={18}
                       className={cn(
                         "transition-colors",
-                        isActive ? "text-blue-600" : "text-slate-400 group-hover:text-slate-600"
+                        isActive ? "text-blue-700" : "text-slate-400 group-hover:text-slate-600"
                       )}
                     />
                     <span>{item.name}</span>
@@ -130,10 +125,10 @@ export function Sidebar({ onCloseMobile }: { onCloseMobile?: () => void }) {
                   {item.badgeCount !== undefined && item.badgeCount > 0 && (
                     <span
                       className={cn(
-                        "text-[10px] font-mono px-1.5 py-0.2 rounded-full border",
+                        "text-xs font-mono px-2 py-0.5 rounded-md font-semibold",
                         item.href === "/console/review"
-                          ? "bg-amber-50 text-amber-800 border-amber-300 font-bold"
-                          : "bg-slate-100 text-slate-700 border-slate-200"
+                          ? "bg-amber-100 text-amber-900 border border-amber-300"
+                          : "bg-slate-100 text-slate-800 border border-slate-200"
                       )}
                     >
                       {item.badgeCount}
@@ -147,33 +142,31 @@ export function Sidebar({ onCloseMobile }: { onCloseMobile?: () => void }) {
       </nav>
 
       {/* Bottom Quiet Utility Area */}
-      <div className="p-3 border-t border-slate-200 bg-slate-50/70 space-y-2">
-        <div className="flex items-center justify-between px-2 text-[11px] text-slate-600 font-medium">
-          <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-            <span>Local Engine Active</span>
-          </div>
-        </div>
+      <div className="p-4 border-t border-slate-200 bg-slate-50/70 space-y-3">
+        <Link
+          href="/"
+          className="flex items-center justify-between text-xs font-semibold text-slate-600 hover:text-slate-900 transition-colors p-1"
+        >
+          <span>← Back to IMPACTA.eu</span>
+          <span className="text-slate-400 font-mono">Public</span>
+        </Link>
 
-        {/* Discrete Reset Demo Data Trigger */}
+        {/* Reset Demo Data Trigger */}
         <button
           type="button"
           onClick={handleReset}
           disabled={isResetting}
-          className="w-full text-center py-1 px-2 rounded border border-slate-300 bg-white hover:bg-slate-100 text-[11px] font-medium text-slate-700 transition-colors disabled:opacity-50"
+          className="w-full text-center py-2 px-3 rounded-lg border border-slate-300 bg-white hover:bg-slate-100 text-xs font-semibold text-slate-700 transition-colors disabled:opacity-50 min-h-[38px]"
         >
           {isResetting ? "Resetting data..." : resetSuccess ? "✓ Demo data restored" : "Reset Demo Data"}
         </button>
 
-        <div className="p-2 rounded border border-slate-200 bg-white text-[10px] space-y-1 text-slate-500">
-          <div className="font-semibold text-slate-800 flex items-center justify-between">
-            <span>DEMO ENVIRONMENT</span>
-            <span className="text-[9px] uppercase px-1 py-0.2 bg-slate-100 border border-slate-200 text-slate-600 rounded">
-              Synthetic
-            </span>
+        <div className="p-2.5 rounded-lg border border-slate-200 bg-white text-xs space-y-1 text-slate-600">
+          <div className="font-bold text-slate-900">
+            Aura Mutua Assicurazioni
           </div>
-          <p className="leading-tight text-[10px] text-slate-500">
-            Token Titans academic prototype. Shared browser persistence active.
+          <p className="leading-relaxed text-slate-500 text-[11px]">
+            Academic claims console prototype. Shared local browser persistence active.
           </p>
         </div>
       </div>

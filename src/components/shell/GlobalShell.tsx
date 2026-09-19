@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { AuthProvider } from "@/context/AuthContext";
 import { ClaimsProvider } from "@/context/ClaimsContext";
 import { Sidebar } from "./Sidebar";
 import { Header } from "./Header";
@@ -10,7 +11,8 @@ export function GlobalShell({ children }: { children: React.ReactNode }) {
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
   return (
-    <ClaimsProvider>
+    <AuthProvider>
+      <ClaimsProvider>
       <div className="flex h-screen w-screen overflow-hidden bg-slate-50 text-slate-900 font-sans">
         {/* Desktop Left Sidebar */}
         <div className="hidden md:flex h-full flex-shrink-0">
@@ -53,5 +55,6 @@ export function GlobalShell({ children }: { children: React.ReactNode }) {
         </div>
       </div>
     </ClaimsProvider>
+  </AuthProvider>
   );
 }

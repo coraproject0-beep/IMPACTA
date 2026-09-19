@@ -53,30 +53,30 @@ export default function DriverProfilePage() {
   return (
     <div className="space-y-8 max-w-3xl mx-auto py-2 selection:bg-blue-100 selection:text-blue-900">
       {/* Header with Navigation and Logout */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200/80 pb-5">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-6">
         <div>
-          <span className="text-xs font-mono font-bold uppercase tracking-wider text-blue-700 bg-blue-50 px-2.5 py-0.5 rounded border border-blue-200">
+          <p className="text-xs font-mono font-bold uppercase tracking-widest text-blue-700">
             {t.nav.profile}
-          </span>
-          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-950 mt-1">
+          </p>
+          <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-950 mt-1">
             {driverUser?.name || SYNTHETIC_DRIVER_PROFILE.fullName}
           </h1>
-          <p className="text-xs sm:text-sm text-slate-600">
+          <p className="text-base text-slate-600 mt-1">
             Policyholder account credentials, language preferences, and evaluation utilities.
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
           <Link
             href="/"
-            className="min-h-[44px] px-4 py-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 rounded-xl text-xs font-semibold transition-colors flex items-center gap-1.5"
+            className="min-h-[48px] px-5 py-2.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 rounded-xl text-sm font-semibold transition-colors flex items-center gap-1.5"
           >
             <span>{t.nav.backToImpacta}</span>
           </Link>
           <button
             type="button"
             onClick={handleLogout}
-            className="min-h-[44px] px-4 py-2 bg-rose-50 border border-rose-200 hover:bg-rose-100 text-rose-800 rounded-xl text-xs font-bold transition-colors"
+            className="min-h-[48px] px-5 py-2.5 bg-rose-50 border border-rose-200 hover:bg-rose-100 text-rose-800 rounded-xl text-sm font-bold transition-colors"
           >
             {t.nav.logout}
           </button>

@@ -148,24 +148,24 @@ export default function ReportWizardPage() {
                 sizes="(max-width: 1024px) 100vw, 400px"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-slate-950/75 via-slate-950/15 to-transparent" />
-              <div className="absolute bottom-4 left-4 right-4 text-white">
-                <span className="text-[10px] font-mono uppercase tracking-wider text-slate-300 block font-bold">
+              <div className="absolute bottom-5 left-5 right-5 text-white">
+                <span className="text-xs font-mono uppercase tracking-wider text-slate-300 block font-bold">
                   Phase {macroPhase <= 4 ? macroPhase : 4} of 4
                 </span>
-                <span className="text-base font-bold block">{phaseMeta[macroPhase]?.title}</span>
+                <span className="text-lg font-bold block mt-0.5">{phaseMeta[macroPhase]?.title}</span>
               </div>
             </div>
 
             {/* 4 Macro Phases Roadmap */}
-            <div className="bg-white rounded-3xl border border-slate-200 p-5 space-y-3 shadow-xs">
-              <div className="flex items-center justify-between border-b border-slate-100 pb-2.5">
-                <span className="text-xs font-bold text-slate-900">Intake Progress</span>
-                <span className="text-[11px] font-mono font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">
+            <div className="bg-white rounded-3xl border border-slate-200 p-6 space-y-4 shadow-xs">
+              <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+                <span className="text-sm font-bold text-slate-900">Intake Progress</span>
+                <span className="text-xs font-mono font-semibold text-emerald-600">
                   Autosaved
                 </span>
               </div>
 
-              <div className="space-y-2">
+              <div className="space-y-2.5">
                 {[
                   { num: 1, title: t.wizard.phase1Title },
                   { num: 2, title: t.wizard.phase2Title },
@@ -177,7 +177,7 @@ export default function ReportWizardPage() {
                   return (
                     <div
                       key={p.num}
-                      className={`flex items-center gap-3 p-2.5 rounded-xl text-xs transition-colors ${
+                      className={`flex items-center gap-3 p-3 rounded-xl text-sm transition-colors ${
                         isCurrent
                           ? "bg-blue-50 text-blue-900 font-bold"
                           : isPast
@@ -186,7 +186,7 @@ export default function ReportWizardPage() {
                       }`}
                     >
                       <div
-                        className={`w-6 h-6 rounded-full flex items-center justify-center font-mono text-[11px] font-bold ${
+                        className={`w-7 h-7 rounded-full flex items-center justify-center font-mono text-xs font-bold ${
                           isPast
                             ? "bg-emerald-100 text-emerald-800"
                             : isCurrent
@@ -204,20 +204,20 @@ export default function ReportWizardPage() {
             </div>
 
             {/* Vehicle & Emergency Reference */}
-            <div className="bg-slate-100/80 rounded-3xl p-5 border border-slate-200 text-xs space-y-2.5">
+            <div className="bg-white rounded-3xl p-6 border border-slate-200 text-sm space-y-3 shadow-xs">
               <div className="flex items-center justify-between text-slate-500 font-medium">
                 <span>Insured Driver</span>
                 <span className="font-mono text-slate-900 font-bold">
                   {SYNTHETIC_DRIVER_PROFILE.vehicle.plate}
                 </span>
               </div>
-              <div className="text-slate-900 font-bold">
+              <div className="text-slate-900 font-bold text-base">
                 {SYNTHETIC_DRIVER_PROFILE.fullName} • {SYNTHETIC_DRIVER_PROFILE.vehicle.make} {SYNTHETIC_DRIVER_PROFILE.vehicle.model}
               </div>
-              <div className="text-[11px] text-slate-500">
+              <div className="text-xs text-slate-500">
                 Policy: {SYNTHETIC_DRIVER_PROFILE.policy.insurerName} ({SYNTHETIC_DRIVER_PROFILE.policy.policyNumber})
               </div>
-              <div className="pt-2 border-t border-slate-200 flex items-center justify-between text-[11px]">
+              <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
                 <span className="text-slate-500">Emergency Hotline:</span>
                 <a href="tel:112" className="text-rose-600 font-bold hover:underline">
                   Dial 112

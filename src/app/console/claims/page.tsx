@@ -109,42 +109,42 @@ export default function ConsoleClaimsPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-5">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-6">
         <div>
-          <h1 className="text-xl font-bold tracking-tight text-slate-950">
+          <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-950">
             Claims Management
           </h1>
-          <p className="mt-1 text-xs text-slate-500">
+          <p className="mt-2 text-base text-slate-600">
             Comprehensive ledger of active and archived motor accident dossiers ({filteredClaims.length} of {claims.length} claims showing)
           </p>
         </div>
       </div>
 
       {/* Filter and Search Bar */}
-      <div className="bg-white border border-slate-200 rounded p-4 space-y-3">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+      <div className="bg-white border border-slate-200 rounded-3xl p-6 space-y-4 shadow-xs">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
           {/* Free-text Search */}
           <div className="lg:col-span-2 relative">
             <SearchIcon
-              size={15}
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
+              size={18}
+              className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
             />
             <input
               type="text"
               placeholder="Search by ID, plate, policyholder, city..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-9 pr-3 py-1.5 bg-slate-50 border border-slate-200 rounded text-xs text-slate-900 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full pl-10 pr-4 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl text-sm text-slate-900 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[44px]"
             />
             {searchQuery && (
               <button
                 type="button"
                 onClick={() => setSearchQuery("")}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
               >
-                <CloseIcon size={13} />
+                <CloseIcon size={14} />
               </button>
             )}
           </div>
@@ -154,7 +154,7 @@ export default function ConsoleClaimsPage() {
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded text-xs text-slate-700 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3.5 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl text-sm text-slate-700 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[44px]"
             >
               <option value="ALL">Status: All</option>
               <option value="NEW">New Ingest</option>
@@ -170,7 +170,7 @@ export default function ConsoleClaimsPage() {
             <select
               value={confidenceFilter}
               onChange={(e) => setConfidenceFilter(e.target.value)}
-              className="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded text-xs text-slate-700 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3.5 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl text-sm text-slate-700 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[44px]"
             >
               <option value="ALL">AI Confidence: All</option>
               <option value="HIGH">High (≥ 85%)</option>
@@ -184,7 +184,7 @@ export default function ConsoleClaimsPage() {
             <select
               value={telemetryFilter}
               onChange={(e) => setTelemetryFilter(e.target.value)}
-              className="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded text-xs text-slate-700 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3.5 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl text-sm text-slate-700 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[44px]"
             >
               <option value="ALL">Telemetry: All</option>
               <option value="YES">Telemetry Present</option>
@@ -194,12 +194,12 @@ export default function ConsoleClaimsPage() {
         </div>
 
         {/* Sorting & Clear row */}
-        <div className="flex items-center justify-between pt-2 border-t border-slate-100 text-xs text-slate-500">
+        <div className="flex items-center justify-between pt-3 border-t border-slate-100 text-sm text-slate-500">
           <div className="flex items-center gap-3">
-            <span className="text-[11px] font-medium uppercase tracking-wider text-slate-400">
+            <span className="text-xs font-mono font-bold uppercase tracking-wider text-slate-400">
               Sort by:
             </span>
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-2">
               {[
                 { id: "incidentDate", label: "Date" },
                 { id: "confidence", label: "AI Confidence" },
@@ -216,9 +216,9 @@ export default function ConsoleClaimsPage() {
                       setSortOrder("desc");
                     }
                   }}
-                  className={`px-2 py-1 rounded text-xs font-medium transition-colors ${
+                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
                     sortField === s.id
-                      ? "bg-slate-100 text-slate-900 border border-slate-300 font-semibold"
+                      ? "bg-slate-100 text-slate-900 border border-slate-300 font-bold"
                       : "text-slate-600 hover:bg-slate-50"
                   }`}
                 >
@@ -232,9 +232,9 @@ export default function ConsoleClaimsPage() {
             <button
               type="button"
               onClick={handleClearFilters}
-              className="text-xs font-medium text-rose-600 hover:text-rose-800 flex items-center gap-1"
+              className="text-xs sm:text-sm font-semibold text-rose-600 hover:text-rose-800 flex items-center gap-1"
             >
-              <CloseIcon size={12} />
+              <CloseIcon size={14} />
               <span>Clear filters</span>
             </button>
           )}
@@ -242,22 +242,22 @@ export default function ConsoleClaimsPage() {
       </div>
 
       {/* Claims Table */}
-      <div className="bg-white border border-slate-200 rounded overflow-hidden">
+      <div className="bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-xs">
         {filteredClaims.length === 0 ? (
           /* Empty State */
-          <div className="py-16 px-4 text-center">
-            <div className="w-12 h-12 mx-auto rounded-full bg-slate-100 flex items-center justify-center text-slate-400 mb-3">
-              <FilterIcon size={20} />
+          <div className="py-20 px-6 text-center">
+            <div className="w-14 h-14 mx-auto rounded-full bg-slate-100 flex items-center justify-center text-slate-400 mb-4">
+              <FilterIcon size={24} />
             </div>
-            <h3 className="text-sm font-semibold text-slate-900">No matching claims found</h3>
-            <p className="mt-1 text-xs text-slate-500 max-w-sm mx-auto">
+            <h3 className="text-base font-bold text-slate-900">No matching claims found</h3>
+            <p className="mt-1 text-sm text-slate-500 max-w-sm mx-auto">
               No claims match your active search filters. Try adjusting the query, status, or confidence criteria.
             </p>
-            <div className="mt-4">
+            <div className="mt-5">
               <button
                 type="button"
                 onClick={handleClearFilters}
-                className="px-3 py-1.5 text-xs font-medium bg-slate-100 hover:bg-slate-200 text-slate-800 rounded transition-colors"
+                className="px-4 py-2 text-sm font-bold bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-xl transition-colors"
               >
                 Reset All Filters
               </button>
@@ -265,19 +265,19 @@ export default function ConsoleClaimsPage() {
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse text-xs">
+            <table className="w-full text-left border-collapse text-sm">
               <thead>
-                <tr className="border-b border-slate-200 bg-slate-50 text-[10px] uppercase font-semibold text-slate-500 tracking-wider">
-                  <th className="py-3 px-4">Claim ID</th>
-                  <th className="py-3 px-4">Incident Date</th>
-                  <th className="py-3 px-4">Policyholder</th>
-                  <th className="py-3 px-4">Location</th>
-                  <th className="py-3 px-4">Vehicles</th>
-                  <th className="py-3 px-4">Status</th>
-                  <th className="py-3 px-4 text-center">AI Confidence</th>
-                  <th className="py-3 px-4 text-center">Evidence</th>
-                  <th className="py-3 px-4 text-center">Telemetry</th>
-                  <th className="py-3 px-4">Assignee</th>
+                <tr className="border-b border-slate-200 bg-slate-50/80 text-xs uppercase font-mono font-bold text-slate-500 tracking-wider">
+                  <th className="py-3.5 px-6">Claim ID</th>
+                  <th className="py-3.5 px-6">Incident Date</th>
+                  <th className="py-3.5 px-6">Policyholder</th>
+                  <th className="py-3.5 px-6">Location</th>
+                  <th className="py-3.5 px-6">Vehicles</th>
+                  <th className="py-3.5 px-6">Status</th>
+                  <th className="py-3.5 px-6 text-center">AI Confidence</th>
+                  <th className="py-3.5 px-6 text-center">Evidence</th>
+                  <th className="py-3.5 px-6 text-center">Telemetry</th>
+                  <th className="py-3.5 px-6">Assignee</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 font-normal">
@@ -288,14 +288,14 @@ export default function ConsoleClaimsPage() {
                     className="hover:bg-blue-50/40 cursor-pointer transition-colors"
                   >
                     {/* ID */}
-                    <td className="py-3.5 px-4 font-mono font-semibold text-blue-700 whitespace-nowrap">
+                    <td className="py-4 px-6 font-mono font-bold text-blue-700 whitespace-nowrap">
                       {claim.id}
                     </td>
 
                     {/* Date */}
-                    <td className="py-3.5 px-4 text-slate-700 whitespace-nowrap">
-                      <div>{formatDate(claim.incidentDate)}</div>
-                      <div className="text-[10px] text-slate-400 font-mono">
+                    <td className="py-4 px-6 text-slate-700 whitespace-nowrap">
+                      <div className="font-semibold text-slate-900">{formatDate(claim.incidentDate)}</div>
+                      <div className="text-xs text-slate-400 font-mono">
                         {new Date(claim.incidentDate).toLocaleTimeString("it-IT", {
                           hour: "2-digit",
                           minute: "2-digit",
@@ -304,34 +304,34 @@ export default function ConsoleClaimsPage() {
                     </td>
 
                     {/* Policyholder */}
-                    <td className="py-3.5 px-4 font-medium text-slate-900 whitespace-nowrap">
+                    <td className="py-4 px-6 font-semibold text-slate-900 whitespace-nowrap">
                       {claim.policyholder.fullName}
                     </td>
 
                     {/* Location */}
-                    <td className="py-3.5 px-4 text-slate-600 whitespace-nowrap">
-                      <div className="font-medium text-slate-800">{claim.incident.location.city}</div>
-                      <div className="text-[11px] text-slate-400 truncate max-w-[140px]">
+                    <td className="py-4 px-6 text-slate-600 whitespace-nowrap">
+                      <div className="font-semibold text-slate-800">{claim.incident.location.city}</div>
+                      <div className="text-xs text-slate-400 truncate max-w-[150px]">
                         {claim.incident.location.street}
                       </div>
                     </td>
 
                     {/* Vehicles */}
-                    <td className="py-3.5 px-4">
-                      <div className="font-mono text-slate-900 font-medium whitespace-nowrap">
+                    <td className="py-4 px-6">
+                      <div className="font-mono text-xs text-slate-900 font-semibold whitespace-nowrap">
                         {claim.vehicleA.plate}{" "}
-                        <span className="text-slate-400 font-sans text-[10px]">vs</span>{" "}
+                        <span className="text-slate-400 font-sans text-xs">vs</span>{" "}
                         {claim.vehicleB?.plate || "N/A"}
                       </div>
-                      <div className="text-[10px] text-slate-500 whitespace-nowrap">
+                      <div className="text-xs text-slate-500 whitespace-nowrap">
                         {claim.vehicleA.make} {claim.vehicleA.model}
                       </div>
                     </td>
 
                     {/* Status */}
-                    <td className="py-3.5 px-4 whitespace-nowrap">
+                    <td className="py-4 px-6 whitespace-nowrap">
                       <span
-                        className={`inline-block text-[10px] px-2 py-0.5 rounded border font-medium ${getStatusBadgeClass(
+                        className={`inline-block text-xs px-2.5 py-1 rounded-lg border font-semibold ${getStatusBadgeClass(
                           claim.status
                         )}`}
                       >
@@ -340,9 +340,9 @@ export default function ConsoleClaimsPage() {
                     </td>
 
                     {/* AI Confidence */}
-                    <td className="py-3.5 px-4 text-center whitespace-nowrap">
+                    <td className="py-4 px-6 text-center whitespace-nowrap">
                       <span
-                        className={`inline-block font-mono text-[11px] px-2 py-0.5 rounded border font-semibold ${getConfidenceBadgeClass(
+                        className={`inline-block font-mono text-xs px-2.5 py-1 rounded-lg border font-bold ${getConfidenceBadgeClass(
                           claim.aiAnalysis.overallConfidence
                         )}`}
                       >
@@ -351,35 +351,35 @@ export default function ConsoleClaimsPage() {
                     </td>
 
                     {/* Evidence count */}
-                    <td className="py-3.5 px-4 text-center whitespace-nowrap">
-                      <span className="inline-flex items-center gap-1 text-[11px] text-slate-600 font-mono">
-                        <CameraIcon size={12} className="text-slate-400" />
+                    <td className="py-4 px-6 text-center whitespace-nowrap">
+                      <span className="inline-flex items-center gap-1.5 text-xs text-slate-600 font-mono font-medium">
+                        <CameraIcon size={14} className="text-slate-400" />
                         <span>{claim.evidence.length}</span>
                       </span>
                     </td>
 
                     {/* Telemetry */}
-                    <td className="py-3.5 px-4 text-center whitespace-nowrap">
+                    <td className="py-4 px-6 text-center whitespace-nowrap">
                       {claim.telemetry.hasTelemetry ? (
-                        <span className="inline-block text-[10px] font-mono px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200 font-medium">
+                        <span className="inline-block text-xs font-mono px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200 font-semibold">
                           Active
                         </span>
                       ) : (
-                        <span className="text-slate-300 font-mono">—</span>
+                        <span className="text-slate-300 font-mono text-xs">—</span>
                       )}
                     </td>
 
                     {/* Assignee */}
-                    <td className="py-3.5 px-4 text-slate-700 whitespace-nowrap">
+                    <td className="py-4 px-6 text-slate-700 whitespace-nowrap">
                       {claim.assignee ? (
-                        <div className="flex items-center gap-1.5">
-                          <span className="w-5 h-5 rounded-full bg-slate-200 text-slate-700 flex items-center justify-center text-[10px] font-bold">
+                        <div className="flex items-center gap-2">
+                          <span className="w-6 h-6 rounded-full bg-slate-200 text-slate-700 flex items-center justify-center text-xs font-bold">
                             {claim.assignee.avatarInitials}
                           </span>
-                          <span className="font-medium text-slate-800">{claim.assignee.name}</span>
+                          <span className="font-medium text-slate-900">{claim.assignee.name}</span>
                         </div>
                       ) : (
-                        <span className="text-amber-700 text-[11px] italic">Unassigned</span>
+                        <span className="text-amber-700 text-xs italic font-medium">Unassigned</span>
                       )}
                     </td>
                   </tr>

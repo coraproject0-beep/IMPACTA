@@ -57,10 +57,10 @@ export function ReportHeader({
 
         {/* Center: Phase Title & Step Indicator */}
         <div className="text-center min-w-0 px-2">
-          <div className="text-[10px] uppercase font-mono font-bold text-slate-400 tracking-wider">
+          <div className="text-xs uppercase font-mono font-bold text-slate-400 tracking-wider">
             {isIt ? `Fase ${phaseNumber} di ${totalPhases}` : `Phase ${phaseNumber} of ${totalPhases}`}
           </div>
-          <div className="text-xs sm:text-sm font-bold text-slate-950 truncate">
+          <div className="text-sm sm:text-base font-bold text-slate-950 truncate">
             {phaseTitle}
           </div>
         </div>
@@ -71,7 +71,7 @@ export function ReportHeader({
             <button
               type="button"
               onClick={onSaveAndExit}
-              className="min-h-[44px] inline-flex items-center gap-1 py-1.5 px-3 text-xs font-bold text-slate-600 hover:text-slate-950 rounded-xl hover:bg-slate-100 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="min-h-[44px] inline-flex items-center gap-1 py-1.5 px-3 text-xs sm:text-sm font-bold text-slate-600 hover:text-slate-950 rounded-xl hover:bg-slate-100 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
               title="Save your progress and return to home"
             >
               <span>{isIt ? "Salva ed esci" : "Save & exit"}</span>

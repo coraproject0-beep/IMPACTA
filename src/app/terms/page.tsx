@@ -1,40 +1,39 @@
+"use client";
+
 import React from "react";
 import Link from "next/link";
 import { PublicShell } from "@/components/public/PublicShell";
-
-export const metadata = {
-  title: "Terms of Use (Academic Prototype) — IMPACTA",
-  description:
-    "Terms of use and operational conditions governing the IMPACTA academic research prototype.",
-};
+import { TextReveal } from "@/components/motion/TextReveal";
 
 export default function TermsPage() {
   return (
     <PublicShell>
-      <section className="py-16 sm:py-24 bg-white border-b border-slate-200/80">
+      <section className="py-20 sm:py-32 bg-white border-b border-slate-200">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4">
-          <span className="text-xs font-mono font-bold uppercase tracking-wider text-slate-500">
-            Terms of Use · Academic Prototype
-          </span>
-          <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-950">
+          <TextReveal delayMs={0}>
+            <p className="text-xs sm:text-sm font-mono font-bold uppercase tracking-widest text-slate-500">
+              Terms of Use · Academic Prototype
+            </p>
+          </TextReveal>
+          <TextReveal delayMs={80} as="h1" className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-slate-950">
             Terms of Use &amp; Evaluation Conditions
-          </h1>
-          <p className="text-sm text-slate-500 font-mono">
+          </TextReveal>
+          <TextReveal delayMs={140} as="p" className="text-sm sm:text-base text-slate-500 font-mono">
             Version 2.0 (Prototype) · September 2026
-          </p>
+          </TextReveal>
         </div>
       </section>
 
-      <section className="py-16 bg-slate-50">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 bg-white p-8 sm:p-12 rounded-2xl border border-slate-200 shadow-xs space-y-8 text-xs sm:text-sm text-slate-700 leading-relaxed">
-          <div className="p-4 bg-amber-50 border border-amber-200 rounded-xl text-amber-950 text-xs leading-relaxed space-y-1">
-            <span className="font-bold block">Important Notice Regarding Real Emergencies</span>
-            This web application is an experimental, non-commercial software prototype. If you or anyone around you has been involved in a real motor vehicle accident requiring medical attention, fire rescue, or law enforcement, please stop immediately and dial the Single European Emergency Number (112) or your local emergency dispatcher directly from your telephone keypad.
+      <section className="py-20 sm:py-28 bg-slate-50">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 bg-white p-8 sm:p-14 rounded-2xl border border-slate-200 shadow-xs space-y-10 text-base sm:text-lg text-slate-700 leading-relaxed">
+          <div className="p-6 bg-amber-50 border border-amber-200 rounded-xl text-amber-950 text-sm sm:text-base leading-relaxed space-y-2">
+            <span className="font-bold text-base sm:text-lg block">Important Notice Regarding Real Emergencies</span>
+            <p>This web application is an experimental, non-commercial software prototype. If you or anyone around you has been involved in a real motor vehicle accident requiring medical attention, fire rescue, or law enforcement, please stop immediately and dial the Single European Emergency Number (112) or your local emergency dispatcher directly from your telephone keypad.</p>
           </div>
 
           {/* Section 1 */}
-          <div className="space-y-2">
-            <h2 className="text-base font-bold text-slate-950">
+          <div className="space-y-3">
+            <h2 className="text-xl sm:text-2xl font-bold text-slate-950">
               1. Acceptance &amp; Academic Scope
             </h2>
             <p>
@@ -43,8 +42,8 @@ export default function TermsPage() {
           </div>
 
           {/* Section 2 */}
-          <div className="space-y-2">
-            <h2 className="text-base font-bold text-slate-950">
+          <div className="space-y-3">
+            <h2 className="text-xl sm:text-2xl font-bold text-slate-950">
               2. No Legal Advice or Liability Determination
             </h2>
             <p>
@@ -53,8 +52,8 @@ export default function TermsPage() {
           </div>
 
           {/* Section 3 */}
-          <div className="space-y-2">
-            <h2 className="text-base font-bold text-slate-950">
+          <div className="space-y-3">
+            <h2 className="text-xl sm:text-2xl font-bold text-slate-950">
               3. Synthetic Outputs &amp; Demonstrations
             </h2>
             <p>
@@ -63,8 +62,8 @@ export default function TermsPage() {
           </div>
 
           {/* Section 4 */}
-          <div className="space-y-2">
-            <h2 className="text-base font-bold text-slate-950">
+          <div className="space-y-3">
+            <h2 className="text-xl sm:text-2xl font-bold text-slate-950">
               4. Absence of Carrier Transmission
             </h2>
             <p>
@@ -73,8 +72,8 @@ export default function TermsPage() {
           </div>
 
           {/* Section 5 */}
-          <div className="space-y-2">
-            <h2 className="text-base font-bold text-slate-950">
+          <div className="space-y-3">
+            <h2 className="text-xl sm:text-2xl font-bold text-slate-950">
               5. Intellectual Property &amp; Open Inspection
             </h2>
             <p>
@@ -83,26 +82,12 @@ export default function TermsPage() {
           </div>
 
           {/* Section 6 */}
-          <div className="space-y-2">
-            <h2 className="text-base font-bold text-slate-950">
+          <div className="space-y-3">
+            <h2 className="text-xl sm:text-2xl font-bold text-slate-950">
               6. Limitation of Liability
             </h2>
             <p>
               The prototype is provided &ldquo;as is&rdquo; without warranties of any kind, express or implied. In no event shall the authors, developers, or researchers be held liable for any claim, damages, data loss, or other liability arising from the use of or inability to use this prototype.
-            </p>
-          </div>
-
-          {/* Section 7 */}
-          <div className="space-y-2">
-            <h2 className="text-base font-bold text-slate-950">
-              7. Inquiries &amp; Contact
-            </h2>
-            <p>
-              For questions regarding the terms or scope of this prototype, please contact{" "}
-              <span className="font-mono text-blue-600">hello@impacta-demo.eu</span> or visit our{" "}
-              <Link href="/contact" className="text-blue-600 hover:underline">
-                Contact Page
-              </Link>.
             </p>
           </div>
         </div>

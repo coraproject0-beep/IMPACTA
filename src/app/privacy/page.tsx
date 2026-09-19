@@ -1,35 +1,34 @@
+"use client";
+
 import React from "react";
 import Link from "next/link";
 import { PublicShell } from "@/components/public/PublicShell";
-
-export const metadata = {
-  title: "Privacy Policy (Academic Prototype) — IMPACTA",
-  description:
-    "Privacy and data disclosure policy for the IMPACTA academic research and evaluation prototype.",
-};
+import { TextReveal } from "@/components/motion/TextReveal";
 
 export default function PrivacyPage() {
   return (
     <PublicShell>
-      <section className="py-16 sm:py-24 bg-white border-b border-slate-200/80">
+      <section className="py-20 sm:py-32 bg-white border-b border-slate-200">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4">
-          <span className="text-xs font-mono font-bold uppercase tracking-wider text-slate-500">
-            Academic Prototype Disclosure
-          </span>
-          <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-950">
+          <TextReveal delayMs={0}>
+            <p className="text-xs sm:text-sm font-mono font-bold uppercase tracking-widest text-slate-500">
+              Academic Prototype Disclosure
+            </p>
+          </TextReveal>
+          <TextReveal delayMs={80} as="h1" className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-slate-950">
             Privacy Policy &amp; Data Disclosures
-          </h1>
-          <p className="text-sm text-slate-500 font-mono">
+          </TextReveal>
+          <TextReveal delayMs={140} as="p" className="text-sm sm:text-base text-slate-500 font-mono">
             Effective Date: September 2026 · Version 2.0 (Prototype)
-          </p>
+          </TextReveal>
         </div>
       </section>
 
-      <section className="py-16 bg-slate-50">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 bg-white p-8 sm:p-12 rounded-2xl border border-slate-200 shadow-xs space-y-8 text-xs sm:text-sm text-slate-700 leading-relaxed">
+      <section className="py-20 sm:py-28 bg-slate-50">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 bg-white p-8 sm:p-14 rounded-2xl border border-slate-200 shadow-xs space-y-10 text-base sm:text-lg text-slate-700 leading-relaxed">
           {/* Section 1 */}
-          <div className="space-y-2">
-            <h2 className="text-base font-bold text-slate-950">
+          <div className="space-y-3">
+            <h2 className="text-xl sm:text-2xl font-bold text-slate-950">
               1. Prototype Status &amp; Scope
             </h2>
             <p>
@@ -38,14 +37,14 @@ export default function PrivacyPage() {
           </div>
 
           {/* Section 2 */}
-          <div className="space-y-2">
-            <h2 className="text-base font-bold text-slate-950">
+          <div className="space-y-3">
+            <h2 className="text-xl sm:text-2xl font-bold text-slate-950">
               2. Browser-Local Storage Architecture
             </h2>
             <p>
               All data entered into the application—including accident dates, location coordinates, vehicle registrations, and driver narratives—is processed and persisted <strong>exclusively inside your local web browser</strong>. We utilize two standard HTML5 client-side storage technologies:
             </p>
-            <ul className="list-disc pl-5 space-y-1 text-slate-600">
+            <ul className="list-disc pl-6 space-y-2 text-slate-600">
               <li>
                 <strong>`localStorage`:</strong> Stores structured text fields, draft reporting states, claims ledgers (`impacta_claims_v1`, `impacta_driver_draft_v1`), language preference (`impacta_language_preference`), and local demo session tokens (`impacta_driver_session`, `impacta_insurer_session`).
               </li>
@@ -59,8 +58,8 @@ export default function PrivacyPage() {
           </div>
 
           {/* Section 3 */}
-          <div className="space-y-2">
-            <h2 className="text-base font-bold text-slate-950">
+          <div className="space-y-3">
+            <h2 className="text-xl sm:text-2xl font-bold text-slate-950">
               3. Handling of Photographic Evidence
             </h2>
             <p>
@@ -69,8 +68,8 @@ export default function PrivacyPage() {
           </div>
 
           {/* Section 4 */}
-          <div className="space-y-2">
-            <h2 className="text-base font-bold text-slate-950">
+          <div className="space-y-3">
+            <h2 className="text-xl sm:text-2xl font-bold text-slate-950">
               4. No Carrier Transmission
             </h2>
             <p>
@@ -79,8 +78,8 @@ export default function PrivacyPage() {
           </div>
 
           {/* Section 5 */}
-          <div className="space-y-2">
-            <h2 className="text-base font-bold text-slate-950">
+          <div className="space-y-3">
+            <h2 className="text-xl sm:text-2xl font-bold text-slate-950">
               5. Synthetic &amp; Fictional Demonstrations
             </h2>
             <p>
@@ -89,44 +88,18 @@ export default function PrivacyPage() {
           </div>
 
           {/* Section 6 */}
-          <div className="space-y-2">
-            <h2 className="text-base font-bold text-slate-950">
+          <div className="space-y-3">
+            <h2 className="text-xl sm:text-2xl font-bold text-slate-950">
               6. Data Deletion &amp; Reset Hook
             </h2>
             <p>
               You maintain total sovereignty over all data created during your evaluation. You may purge all local data at any time by:
             </p>
-            <ol className="list-decimal pl-5 space-y-1 text-slate-600">
+            <ol className="list-decimal pl-6 space-y-2 text-slate-600">
               <li>Navigating to the <strong>Driver Profile</strong> (`/app/profile`) and clicking &ldquo;Reset Prototype Data&rdquo;.</li>
-              <li>Or clearing your browser&apos;s site data and cookies for this origin.</li>
+              <li>Or clicking &ldquo;Reset Demo Data&rdquo; in the Claims Operations sidebar.</li>
+              <li>Or clearing cookies and site data for this origin in your browser settings.</li>
             </ol>
-            <p>
-              This action completely wipes `impacta_claims_v1`, `impacta_driver_draft_v1`, and clears the `evidence_blobs` store in IndexedDB.
-            </p>
-          </div>
-
-          {/* Section 7 */}
-          <div className="space-y-2">
-            <h2 className="text-base font-bold text-slate-950">
-              7. Future Production Security Requirements
-            </h2>
-            <p>
-              Prior to any future commercial or production deployment, IMPACTA will implement full compliance with the European Union General Data Protection Regulation (GDPR / Regulation (EU) 2016/679), Italian Data Protection Code (D.Lgs. 196/2003 as amended), ANIA/IVASS regulatory security directives, ISO/IEC 27001 certification, end-to-end TLS 1.3 encryption, and data processing agreements with carrier partners.
-            </p>
-          </div>
-
-          {/* Section 8 */}
-          <div className="space-y-2">
-            <h2 className="text-base font-bold text-slate-950">
-              8. Contact &amp; Questions
-            </h2>
-            <p>
-              For academic or technical inquiries regarding this prototype, contact the research team at{" "}
-              <span className="font-mono text-blue-600">hello@impacta-demo.eu</span> or consult our{" "}
-              <Link href="/contact" className="text-blue-600 hover:underline">
-                Contact Page
-              </Link>.
-            </p>
           </div>
         </div>
       </section>

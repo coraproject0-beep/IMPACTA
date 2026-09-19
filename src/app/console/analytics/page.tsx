@@ -46,73 +46,73 @@ export default function ConsoleAnalyticsPage() {
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-5">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-6">
         <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-xl font-bold tracking-tight text-slate-950">
+          <div className="flex items-center gap-3">
+            <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-950">
               Pipeline Evaluation &amp; Metrics
             </h1>
-            <span className="text-[10px] font-mono px-1.5 py-0.5 bg-blue-50 text-blue-800 border border-blue-200 rounded font-semibold">
-              SYNTHETIC EVALUATION METRICS
+            <span className="text-xs font-mono font-bold text-blue-700 uppercase tracking-wider">
+              Synthetic Benchmarking
             </span>
           </div>
-          <p className="mt-1 text-xs text-slate-500">
+          <p className="mt-2 text-base text-slate-600">
             Empirical benchmarking of multimodal AI accuracy, human review escalation, and sensor telemetry lift for academic evaluation.
           </p>
         </div>
 
         <div className="text-right">
-          <div className="text-[10px] font-mono text-slate-400">Token Titans Research Prototype</div>
-          <div className="text-xs font-semibold text-slate-800 font-mono">Dataset Sample: N = {claims.length} Dossiers</div>
+          <div className="text-xs font-mono text-slate-400 font-semibold">Token Titans Research Prototype</div>
+          <div className="text-sm font-bold text-slate-900 font-mono mt-0.5">Sample: N = {claims.length} Dossiers</div>
         </div>
       </div>
 
       {/* Core Academic Metric Cards Strip */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="bg-white border border-slate-200 rounded p-4">
-          <div className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
+        <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-xs">
+          <div className="text-xs font-mono font-bold text-slate-400 uppercase tracking-wider">
             Mean AI Confidence
           </div>
-          <div className="mt-2 text-2xl font-bold text-slate-900 font-mono">
+          <div className="mt-3 text-3xl sm:text-4xl font-extrabold text-slate-950 font-mono">
             {stats.meanConfidence}%
           </div>
-          <div className="mt-1 text-[11px] text-slate-500">
+          <div className="mt-2 text-xs text-slate-600">
             Telemetry Lift: +{telemMeanConf - nonTelemMeanConf}% with EDR
           </div>
         </div>
 
-        <div className="bg-white border border-slate-200 rounded p-4">
-          <div className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">
+        <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-xs">
+          <div className="text-xs font-mono font-bold text-slate-400 uppercase tracking-wider">
             Human Review Escalation
           </div>
-          <div className="mt-2 text-2xl font-bold text-amber-700 font-mono">
+          <div className="mt-3 text-3xl sm:text-4xl font-extrabold text-amber-700 font-mono">
             {stats.manualReviewRequiredPercent}%
           </div>
-          <div className="mt-1 text-[11px] text-slate-500">
+          <div className="mt-2 text-xs text-slate-600">
             {stats.manualReviewRequiredCount} flagged of {claims.length} claims
           </div>
         </div>
 
-        <div className="bg-white border border-slate-200 rounded p-4">
-          <div className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">
+        <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-xs">
+          <div className="text-xs font-mono font-bold text-slate-400 uppercase tracking-wider">
             CAI Extraction Accuracy
           </div>
-          <div className="mt-2 text-2xl font-bold text-blue-700 font-mono">
+          <div className="mt-3 text-3xl sm:text-4xl font-extrabold text-blue-700 font-mono">
             {stats.caiFieldCompletionPercent}%
           </div>
-          <div className="mt-1 text-[11px] text-slate-500">
+          <div className="mt-2 text-xs text-slate-600">
             {stats.confirmedCaiFields} confirmed of {stats.totalCaiFields} fields
           </div>
         </div>
 
-        <div className="bg-white border border-slate-200 rounded p-4">
-          <div className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">
+        <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-xs">
+          <div className="text-xs font-mono font-bold text-slate-400 uppercase tracking-wider">
             Review Clearance Rate
           </div>
-          <div className="mt-2 text-2xl font-bold text-emerald-700 font-mono">
+          <div className="mt-3 text-3xl sm:text-4xl font-extrabold text-emerald-700 font-mono">
             {reviewAcceptanceRate}%
           </div>
-          <div className="mt-1 text-[11px] text-slate-500">
+          <div className="mt-2 text-xs text-slate-600">
             {totalReviewedOrClosed} reviewed / closed dossiers
           </div>
         </div>
@@ -121,48 +121,48 @@ export default function ConsoleAnalyticsPage() {
       {/* Analytical Visualizations Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* 1. Telemetry vs Non-Telemetry Comparative Performance */}
-        <div className="bg-white border border-slate-200 rounded p-5 space-y-4">
-          <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+        <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-7 space-y-5 shadow-xs">
+          <div className="flex items-center justify-between border-b border-slate-100 pb-4">
             <div>
-              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900">
+              <h3 className="text-base font-bold text-slate-950">
                 Telemetry Lift: Connected Black-Box vs Baseline
               </h3>
-              <p className="text-[11px] text-slate-500">
+              <p className="text-xs text-slate-500 mt-0.5">
                 Comparative certainty with synchronous vehicle kinematics vs optical-only
               </p>
             </div>
-            <span className="text-[10px] font-mono text-slate-400">Δ = +{telemMeanConf - nonTelemMeanConf}%</span>
+            <span className="text-xs font-mono text-slate-400 font-bold">Δ = +{telemMeanConf - nonTelemMeanConf}%</span>
           </div>
 
           <div className="space-y-4">
             <div>
-              <div className="flex justify-between text-xs font-medium mb-1">
-                <span className="text-slate-800 font-semibold flex items-center gap-1.5">
+              <div className="flex justify-between text-sm font-medium mb-1.5">
+                <span className="text-slate-800 font-bold flex items-center gap-2">
                   <span className="w-2.5 h-2.5 rounded-full bg-emerald-600" />
                   Telemetry-Equipped Vehicles ({telemCount} claims)
                 </span>
                 <span className="font-mono text-emerald-800 font-bold">{telemMeanConf}% Mean Conf</span>
               </div>
-              <div className="w-full bg-slate-100 h-3 rounded overflow-hidden">
-                <div className="bg-emerald-600 h-full" style={{ width: `${telemMeanConf}%` }} />
+              <div className="w-full bg-slate-100 h-3 rounded-full overflow-hidden">
+                <div className="bg-emerald-600 h-full rounded-full" style={{ width: `${telemMeanConf}%` }} />
               </div>
-              <div className="text-[10px] text-slate-500 mt-1">
+              <div className="text-xs text-slate-500 mt-1.5">
                 Direct CAN bus deceleration, Delta-V calculation, sub-second impact angle.
               </div>
             </div>
 
             <div>
-              <div className="flex justify-between text-xs font-medium mb-1">
-                <span className="text-slate-800 font-semibold flex items-center gap-1.5">
+              <div className="flex justify-between text-sm font-medium mb-1.5">
+                <span className="text-slate-800 font-bold flex items-center gap-2">
                   <span className="w-2.5 h-2.5 rounded-full bg-slate-500" />
                   Non-Telemetry Baseline ({nonTelemCount} claims)
                 </span>
                 <span className="font-mono text-slate-700 font-bold">{nonTelemMeanConf}% Mean Conf</span>
               </div>
-              <div className="w-full bg-slate-100 h-3 rounded overflow-hidden">
-                <div className="bg-slate-500 h-full" style={{ width: `${nonTelemMeanConf}%` }} />
+              <div className="w-full bg-slate-100 h-3 rounded-full overflow-hidden">
+                <div className="bg-slate-500 h-full rounded-full" style={{ width: `${nonTelemMeanConf}%` }} />
               </div>
-              <div className="text-[10px] text-slate-500 mt-1">
+              <div className="text-xs text-slate-500 mt-1.5">
                 Requires manual adjuster review for disputed traffic light or lane-crossing priorities.
               </div>
             </div>
@@ -170,40 +170,40 @@ export default function ConsoleAnalyticsPage() {
         </div>
 
         {/* 2. AI Confidence Band Distribution */}
-        <div className="bg-white border border-slate-200 rounded p-5 space-y-4">
-          <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+        <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-7 space-y-5 shadow-xs">
+          <div className="flex items-center justify-between border-b border-slate-100 pb-4">
             <div>
-              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900">
+              <h3 className="text-base font-bold text-slate-950">
                 Confidence Band Distribution
               </h3>
-              <p className="text-[11px] text-slate-500">
+              <p className="text-xs text-slate-500 mt-0.5">
                 Categorization by automated validation threshold
               </p>
             </div>
-            <span className="text-[10px] font-mono text-slate-400">Total N={claims.length}</span>
+            <span className="text-xs font-mono text-slate-400 font-semibold">Total N={claims.length}</span>
           </div>
 
-          <div className="space-y-3">
+          <div className="space-y-4">
             {confBrackets.map((bracket) => {
               const pct = Math.round((bracket.count / (claims.length || 1)) * 100);
               return (
-                <div key={bracket.label} className="text-xs">
-                  <div className="flex items-center justify-between mb-1">
+                <div key={bracket.label} className="text-sm">
+                  <div className="flex items-center justify-between mb-1.5">
                     <span className="font-semibold text-slate-800">{bracket.label}</span>
                     <div className="font-mono text-slate-600">
                       <span>{bracket.count} dossiers</span>
-                      <span className="text-slate-400 text-[10px] ml-2">({pct}%)</span>
+                      <span className="text-slate-400 text-xs ml-2">({pct}%)</span>
                     </div>
                   </div>
-                  <div className="w-full bg-slate-100 h-2.5 rounded overflow-hidden">
-                    <div className={`${bracket.color} h-full`} style={{ width: `${pct}%` }} />
+                  <div className="w-full bg-slate-100 h-3 rounded-full overflow-hidden">
+                    <div className={`${bracket.color} h-full rounded-full`} style={{ width: `${pct}%` }} />
                   </div>
                 </div>
               );
             })}
           </div>
 
-          <div className="pt-2 border-t border-slate-100 text-[11px] text-slate-500">
+          <div className="pt-3 border-t border-slate-100 text-xs text-slate-500">
             Claims with &lt;85% confidence automatically route to the Priority Human Review queue.
           </div>
         </div>
@@ -212,15 +212,15 @@ export default function ConsoleAnalyticsPage() {
       {/* Lower Row: Escalation Drivers + Pipeline Latency */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Escalation Drivers */}
-        <div className="bg-white border border-slate-200 rounded p-5 space-y-3">
-          <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 border-b border-slate-100 pb-2">
+        <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-7 space-y-4 shadow-xs">
+          <h3 className="text-base font-bold text-slate-950 border-b border-slate-100 pb-3">
             Escalation Root-Cause Breakdown
           </h3>
-          <div className="space-y-2.5">
+          <div className="space-y-3">
             {stats.reviewCategories.map((cat) => (
-              <div key={cat.category} className="flex items-center justify-between text-xs p-2.5 bg-slate-50 rounded border border-slate-200">
+              <div key={cat.category} className="flex items-center justify-between text-sm p-3.5 bg-slate-50/80 rounded-2xl border border-slate-200">
                 <span className="font-medium text-slate-800">{cat.label}</span>
-                <span className="font-mono font-bold text-amber-800 bg-amber-50 px-2 py-0.5 rounded border border-amber-200">
+                <span className="font-mono font-bold text-amber-900 bg-amber-100/60 px-2.5 py-1 rounded-lg">
                   {cat.count} cases
                 </span>
               </div>
@@ -229,28 +229,28 @@ export default function ConsoleAnalyticsPage() {
         </div>
 
         {/* Synthetic Processing Latency Distribution */}
-        <div className="bg-white border border-slate-200 rounded p-5 space-y-3">
-          <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 border-b border-slate-100 pb-2">
+        <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-7 space-y-4 shadow-xs">
+          <h3 className="text-base font-bold text-slate-950 border-b border-slate-100 pb-3">
             Multimodal Pipeline Latency Distribution (Synthetic)
           </h3>
-          <p className="text-[11px] text-slate-500">
+          <p className="text-xs text-slate-500">
             Model inference, OCR extraction, and kinematic solver execution time per claim
           </p>
 
-          <div className="space-y-3 pt-1">
+          <div className="space-y-4 pt-1">
             {latencyBrackets.map((lat) => (
-              <div key={lat.label} className="text-xs">
-                <div className="flex justify-between font-medium mb-1">
-                  <span className="text-slate-700">{lat.label}</span>
-                  <span className="font-mono text-slate-900">{lat.pct}% ({lat.count} claims)</span>
+              <div key={lat.label} className="text-sm">
+                <div className="flex justify-between font-medium mb-1.5">
+                  <span className="text-slate-800">{lat.label}</span>
+                  <span className="font-mono text-slate-950 font-bold">{lat.pct}% ({lat.count} claims)</span>
                 </div>
-                <div className="w-full bg-slate-100 h-2 rounded overflow-hidden">
-                  <div className="bg-blue-600 h-full" style={{ width: `${lat.pct}%` }} />
+                <div className="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
+                  <div className="bg-blue-600 h-full rounded-full" style={{ width: `${lat.pct}%` }} />
                 </div>
               </div>
             ))}
           </div>
-          <div className="pt-2 text-[10px] text-slate-400 italic">
+          <div className="pt-3 text-xs text-slate-400 italic">
             Synthetic benchmark based on lightweight containerized vision transformer and numerical physics kernel.
           </div>
         </div>

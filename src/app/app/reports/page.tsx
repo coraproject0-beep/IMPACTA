@@ -41,15 +41,15 @@ export default function DriverReportsPage() {
   return (
     <div className="space-y-8 max-w-3xl mx-auto py-2 selection:bg-blue-100 selection:text-blue-900">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200/80 pb-5">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-6">
         <div>
-          <span className="text-xs font-mono font-bold uppercase tracking-wider text-blue-700 bg-blue-50 px-2.5 py-0.5 rounded border border-blue-200">
+          <p className="text-xs font-mono font-bold uppercase tracking-widest text-blue-700">
             {t.nav.reports}
-          </span>
-          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-950 mt-1">
+          </p>
+          <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-950 mt-1">
             {t.driverHome.recentReports}
           </h1>
-          <p className="text-xs sm:text-sm text-slate-600">
+          <p className="text-base text-slate-600 mt-1">
             Submitted accident dossiers and documentation records preserved on this device.
           </p>
         </div>
@@ -57,7 +57,7 @@ export default function DriverReportsPage() {
         <button
           type="button"
           onClick={handleStartNewReport}
-          className="min-h-[44px] inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-slate-950 hover:bg-blue-600 text-white rounded-xl text-xs font-bold shadow-xs transition-colors self-start sm:self-auto active:scale-[0.98]"
+          className="min-h-[48px] inline-flex items-center justify-center gap-2 px-6 py-3 bg-slate-950 hover:bg-blue-600 text-white rounded-xl text-sm font-bold shadow-xs transition-colors self-start sm:self-auto active:scale-[0.98]"
         >
           <span>+ {t.nav.reportAccident}</span>
         </button>
