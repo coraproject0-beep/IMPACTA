@@ -44,13 +44,13 @@ export function Phase5Submitted({ draft, onReturnHome }: Phase5SubmittedProps) {
 
       <div className="space-y-1.5">
         <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded border border-emerald-200">
-          Claim Dossier Confirmed
+          Report Received
         </span>
         <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-950">
           Your accident report is saved
         </h2>
         <p className="text-xs sm:text-sm text-slate-600 max-w-md mx-auto">
-          Your insurer intake package has been generated and filed. A copy is accessible under your reports.
+          Your incident dossier has been assembled and stored locally on this device. You can review or export your report at any time.
         </p>
       </div>
 
@@ -59,7 +59,7 @@ export function Phase5Submitted({ draft, onReturnHome }: Phase5SubmittedProps) {
         <div className="flex items-center justify-between border-b border-slate-100 pb-3">
           <div>
             <span className="text-[10px] font-mono uppercase tracking-wider text-slate-400 block">
-              Official Reference
+              Report Reference
             </span>
             <span className="font-mono font-bold text-base sm:text-lg text-blue-700">
               {claimId}
@@ -132,7 +132,7 @@ export function Phase5Submitted({ draft, onReturnHome }: Phase5SubmittedProps) {
           <span>Local Storage Persistence</span>
         </div>
         <p className="text-[11px] text-slate-500 leading-relaxed">
-          This claim is preserved in your browser&apos;s local memory on this device. You can reopen and inspect it at any time from your Reports tab.
+          Stored locally in this browser for the prototype. No external servers or real insurers were notified. You can inspect, review, or reopen this dossier at any time from your Reports tab.
         </p>
       </div>
 

@@ -128,15 +128,15 @@ export function Phase3Capture({
       />
 
       {/* Header */}
-      <div className="space-y-2">
-        <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
-          Phase 3: Evidence &amp; Details
+      <div className="space-y-3">
+        <span className="text-xs font-mono font-bold uppercase tracking-wider text-blue-700 bg-blue-50 px-2.5 py-0.5 rounded border border-blue-200">
+          Step 3 · Capture Evidence
         </span>
-        <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-950">
-          Capture the scene, vehicle damage &amp; statements
-        </h2>
-        <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-          Clear daylight photos and other driver details provide factual evidence for your claim without technical complexity.
+        <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-slate-950 leading-tight">
+          Capture the scene, vehicle damage &amp; details
+        </h1>
+        <p className="text-sm sm:text-base text-slate-600 leading-relaxed">
+          Clear daylight photos and counterparty details establish the physical facts for your claim without legal complexity.
         </p>
       </div>
 

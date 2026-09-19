@@ -49,7 +49,7 @@ export default function DriverLayout({ children }: { children: React.ReactNode }
                   </div>
                 </Link>
 
-                <DriverNavigation />
+                <DriverNavigation variant="desktop" />
               </div>
             </header>
           )}
@@ -61,7 +61,7 @@ export default function DriverLayout({ children }: { children: React.ReactNode }
           </main>
 
           {/* Mobile Bottom Navigation */}
-          <DriverNavigation />
+          <DriverNavigation variant="mobile" />
         </div>
       </DriverDraftProvider>
     </ClaimsProvider>

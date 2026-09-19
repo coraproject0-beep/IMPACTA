@@ -11,6 +11,7 @@ interface ReportHeaderProps {
   onBack: () => void;
   onSaveAndExit: () => void;
   showBack?: boolean;
+  showSaveAndExit?: boolean;
 }
 
 export function ReportHeader({
@@ -20,6 +21,7 @@ export function ReportHeader({
   onBack,
   onSaveAndExit,
   showBack = true,
+  showSaveAndExit = true,
 }: ReportHeaderProps) {
   return (
     <header className="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-200/80 px-4 sm:px-6 py-3 select-none">
@@ -61,14 +63,16 @@ export function ReportHeader({
 
         {/* Right: Explicit Save & Exit Button */}
         <div className="flex items-center justify-end min-w-[90px]">
-          <button
-            type="button"
-            onClick={onSaveAndExit}
-            className="inline-flex items-center gap-1 py-1 px-2 text-xs font-semibold text-slate-600 hover:text-slate-950 rounded-md hover:bg-slate-100 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
-            title="Save your progress and return to home"
-          >
-            <span>Save &amp; exit</span>
-          </button>
+          {showSaveAndExit && (
+            <button
+              type="button"
+              onClick={onSaveAndExit}
+              className="inline-flex items-center gap-1 py-1 px-2 text-xs font-semibold text-slate-600 hover:text-slate-950 rounded-md hover:bg-slate-100 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
+              title="Save your progress and return to home"
+            >
+              <span>Save &amp; exit</span>
+            </button>
+          )}
         </div>
       </div>
     </header>

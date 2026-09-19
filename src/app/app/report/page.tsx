@@ -125,6 +125,7 @@ export default function ReportWizardPage() {
         totalPhases={4}
         phaseTitle={phaseMeta[macroPhase].title}
         showBack={macroPhase > 1 && macroPhase <= 4}
+        showSaveAndExit={macroPhase <= 4}
         onBack={handleBack}
         onSaveAndExit={handleSaveAndExit}
       />

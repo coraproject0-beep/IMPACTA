@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { DriverDraft } from "@/types/driver";
-import { MapPinIcon, ArrowRightIcon, CheckCircleIcon } from "@/components/icons/Icons";
+import { ArrowRightIcon, CheckCircleIcon, MapPinIcon } from "@/components/icons/Icons";
 
 interface Phase2AccidentProps {
   draft: DriverDraft;
@@ -44,85 +44,77 @@ export function Phase2Accident({ draft, onUpdate, onNext }: Phase2AccidentProps)
   };
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="space-y-2">
-        <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
-          Phase 2: Accident Details
+    <div className="space-y-8 py-2 max-w-2xl">
+      {/* Step Header */}
+      <div className="space-y-3">
+        <span className="text-xs font-mono font-bold uppercase tracking-wider text-blue-700 bg-blue-50 px-2.5 py-0.5 rounded border border-blue-200">
+          Step 2 · Accident Context
         </span>
-        <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-950">
+        <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-slate-950 leading-tight">
           Where and when did the accident happen?
-        </h2>
-        <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-          Provide the crash location and circumstance basics so your claim can be positioned on the road network.
+        </h1>
+        <p className="text-sm sm:text-base text-slate-600 leading-relaxed">
+          Provide the location and basic circumstances to position the event accurately for insurer review.
         </p>
       </div>
 
-      {/* Decision 1: Location */}
-      <div className="space-y-3 p-5 bg-white border border-slate-200 rounded-2xl shadow-xs">
+      {/* 1. Location Question */}
+      <div className="bg-slate-50 rounded-2xl border border-slate-200 p-6 space-y-4">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
+          <label className="font-bold text-slate-900 text-sm flex items-center gap-2">
             <MapPinIcon size={16} className="text-blue-600" />
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-900">
-              Collision Location
-            </span>
-          </div>
+            <span>Where did the collision occur?</span>
+          </label>
           <button
             type="button"
             onClick={setDemoLocation}
-            className="text-[11px] font-medium text-blue-600 hover:text-blue-800 underline"
+            className="text-xs font-semibold text-blue-600 hover:underline"
           >
             Use Florence Roundabout
           </button>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-          <div>
-            <label className="block text-[11px] font-medium text-slate-500 mb-1">
-              City / Comune
-            </label>
+          <div className="space-y-1">
+            <span className="text-slate-500 font-medium">City / Municipality</span>
             <input
               type="text"
               value={city}
               onChange={(e) => setCity(e.target.value)}
-              placeholder="e.g. Firenze, Roma, Milano"
-              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="e.g. Firenze"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-blue-600 text-slate-900"
             />
           </div>
-
-          <div>
-            <label className="block text-[11px] font-medium text-slate-500 mb-1">
-              Street, Square or Road
-            </label>
+          <div className="space-y-1">
+            <span className="text-slate-500 font-medium">Street or Junction</span>
             <input
               type="text"
               value={street}
               onChange={(e) => setStreet(e.target.value)}
-              placeholder="e.g. Piazza San Giovanni, Via Roma"
-              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="e.g. Piazza San Giovanni"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-blue-600 text-slate-900"
             />
           </div>
         </div>
 
-        <div className="pt-2">
-          <label className="block text-[11px] font-medium text-slate-500 mb-1.5">
-            Road Configuration
-          </label>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+        {/* Junction Type Selector */}
+        <div className="space-y-1.5 pt-1 text-xs">
+          <span className="text-slate-500 font-medium block">Road Geometry</span>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
             {[
               { id: "ROUNDABOUT", label: "Roundabout" },
-              { id: "INTERSECTION", label: "Intersection" },
+              { id: "INTERSECTION", label: "Crossroads" },
               { id: "STRAIGHT_ROAD", label: "Straight Road" },
-              { id: "PARKING_AREA", label: "Parking Area" },
+              { id: "PARKING", label: "Parking / Lot" },
             ].map((j) => (
               <button
                 key={j.id}
                 type="button"
-                onClick={() => setJunctionType(j.id as any)}
-                className={`py-2 px-2.5 rounded-lg border text-xs font-medium transition-all text-center ${
+                onClick={() => setJunctionType(j.id as typeof junctionType)}
+                className={`py-2 px-3 rounded-xl font-medium text-xs border transition-colors text-center ${
                   junctionType === j.id
-                    ? "bg-slate-900 text-white border-slate-900 shadow-2xs font-semibold"
-                    : "bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100"
+                    ? "bg-blue-600 text-white border-blue-600 shadow-2xs font-semibold"
+                    : "bg-white text-slate-700 border-slate-200 hover:bg-slate-100"
                 }`}
               >
                 {j.label}
@@ -132,79 +124,71 @@ export function Phase2Accident({ draft, onUpdate, onNext }: Phase2AccidentProps)
         </div>
       </div>
 
-      {/* Decision 2: Date & Time */}
-      <div className="space-y-3 p-5 bg-white border border-slate-200 rounded-2xl shadow-xs">
-        <span className="text-xs font-bold uppercase tracking-wider text-slate-900 block">
-          Date &amp; Time
-        </span>
-
+      {/* 2. Date and Time Question */}
+      <div className="bg-slate-50 rounded-2xl border border-slate-200 p-6 space-y-4">
+        <label className="font-bold text-slate-900 text-sm block">
+          When did it occur?
+        </label>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-          <div>
-            <label className="block text-[11px] font-medium text-slate-500 mb-1">
-              Incident Date
-            </label>
+          <div className="space-y-1">
+            <span className="text-slate-500 font-medium">Date</span>
             <input
               type="date"
               value={date}
               onChange={(e) => setDate(e.target.value)}
-              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-blue-600 text-slate-900 font-mono"
             />
           </div>
-
-          <div>
-            <label className="block text-[11px] font-medium text-slate-500 mb-1">
-              Approximate Time
-            </label>
+          <div className="space-y-1">
+            <span className="text-slate-500 font-medium">Approximate Time</span>
             <input
               type="time"
               value={time}
               onChange={(e) => setTime(e.target.value)}
-              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-blue-600 text-slate-900 font-mono"
             />
           </div>
         </div>
       </div>
 
-      {/* Decision 3: Vehicles & Circumstances */}
-      <div className="space-y-3 p-5 bg-white border border-slate-200 rounded-2xl shadow-xs text-xs">
-        <span className="text-xs font-bold uppercase tracking-wider text-slate-900 block">
-          Involved Parties
-        </span>
-
-        <div className="space-y-3">
-          <div className="flex items-center justify-between py-1 border-b border-slate-100">
-            <span className="text-slate-700 font-medium">Number of vehicles involved</span>
-            <div className="flex items-center gap-1.5">
-              {[2, 1, 3].map((num) => (
+      {/* 3. Circumstances & Emergency Inquiries */}
+      <div className="bg-slate-50 rounded-2xl border border-slate-200 p-6 space-y-4">
+        <label className="font-bold text-slate-900 text-sm block">
+          Vehicles &amp; Circumstances
+        </label>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+          {/* Vehicles count */}
+          <div className="space-y-1.5">
+            <span className="text-slate-500 font-medium block">Vehicles Involved</span>
+            <div className="flex items-center gap-2">
+              {[2, 3, 1].map((n) => (
                 <button
-                  key={num}
+                  key={n}
                   type="button"
-                  onClick={() => setVehiclesCount(num)}
-                  className={`w-8 h-8 rounded-md text-xs font-bold transition-colors ${
-                    vehiclesCount === num
-                      ? "bg-slate-900 text-white"
-                      : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+                  onClick={() => setVehiclesCount(n)}
+                  className={`flex-1 py-2 rounded-xl font-medium border text-center ${
+                    vehiclesCount === n
+                      ? "bg-slate-950 text-white border-slate-950"
+                      : "bg-white text-slate-700 border-slate-200"
                   }`}
                 >
-                  {num}
+                  {n === 1 ? "Single" : `${n}`}
                 </button>
               ))}
             </div>
           </div>
 
-          <div className="flex items-center justify-between py-1 border-b border-slate-100">
-            <div>
-              <span className="text-slate-900 font-medium block">Were any persons injured?</span>
-              <span className="text-[11px] text-slate-400">Drivers, passengers, or pedestrians</span>
-            </div>
-            <div className="flex items-center gap-1">
+          {/* Injuries */}
+          <div className="space-y-1.5">
+            <span className="text-slate-500 font-medium block">Anyone Injured?</span>
+            <div className="flex items-center gap-2">
               <button
                 type="button"
                 onClick={() => setAnyInjured(false)}
-                className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${
+                className={`flex-1 py-2 rounded-xl font-medium border text-center ${
                   !anyInjured
-                    ? "bg-slate-900 text-white font-semibold"
-                    : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                    ? "bg-emerald-600 text-white border-emerald-600"
+                    : "bg-white text-slate-700 border-slate-200"
                 }`}
               >
                 No
@@ -212,10 +196,10 @@ export function Phase2Accident({ draft, onUpdate, onNext }: Phase2AccidentProps)
               <button
                 type="button"
                 onClick={() => setAnyInjured(true)}
-                className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${
+                className={`flex-1 py-2 rounded-xl font-medium border text-center ${
                   anyInjured
-                    ? "bg-rose-600 text-white font-semibold"
-                    : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                    ? "bg-rose-600 text-white border-rose-600"
+                    : "bg-white text-slate-700 border-slate-200"
                 }`}
               >
                 Yes
@@ -223,19 +207,17 @@ export function Phase2Accident({ draft, onUpdate, onNext }: Phase2AccidentProps)
             </div>
           </div>
 
-          <div className="flex items-center justify-between py-1">
-            <div>
-              <span className="text-slate-900 font-medium block">Did Police or Carabinieri arrive?</span>
-              <span className="text-[11px] text-slate-400">Formal traffic incident report drafted</span>
-            </div>
-            <div className="flex items-center gap-1">
+          {/* Police */}
+          <div className="space-y-1.5">
+            <span className="text-slate-500 font-medium block">Police Called?</span>
+            <div className="flex items-center gap-2">
               <button
                 type="button"
                 onClick={() => setPolicePresent(false)}
-                className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${
+                className={`flex-1 py-2 rounded-xl font-medium border text-center ${
                   !policePresent
-                    ? "bg-slate-900 text-white font-semibold"
-                    : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                    ? "bg-slate-950 text-white border-slate-950"
+                    : "bg-white text-slate-700 border-slate-200"
                 }`}
               >
                 No
@@ -243,10 +225,10 @@ export function Phase2Accident({ draft, onUpdate, onNext }: Phase2AccidentProps)
               <button
                 type="button"
                 onClick={() => setPolicePresent(true)}
-                className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${
+                className={`flex-1 py-2 rounded-xl font-medium border text-center ${
                   policePresent
-                    ? "bg-blue-600 text-white font-semibold"
-                    : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                    ? "bg-blue-600 text-white border-blue-600"
+                    : "bg-white text-slate-700 border-slate-200"
                 }`}
               >
                 Yes
@@ -256,15 +238,15 @@ export function Phase2Accident({ draft, onUpdate, onNext }: Phase2AccidentProps)
         </div>
       </div>
 
-      {/* Forward Button */}
-      <div className="pt-4 border-t border-slate-200/80">
+      {/* Primary Action Button */}
+      <div className="pt-2">
         <button
           type="button"
           onClick={handleContinue}
-          className="w-full py-3.5 px-5 bg-slate-950 hover:bg-blue-600 text-white font-semibold text-xs sm:text-sm rounded-lg shadow-xs transition-all flex items-center justify-center gap-2 active:scale-[0.99]"
+          className="w-full py-4 px-6 rounded-2xl font-bold text-sm sm:text-base bg-blue-600 hover:bg-blue-700 text-white shadow-xs flex items-center justify-center gap-2.5 transition-all active:scale-[0.98]"
         >
-          <span>Continue to Photo &amp; Evidence Capture</span>
-          <ArrowRightIcon size={14} />
+          <span>Continue to Evidence Capture</span>
+          <ArrowRightIcon size={16} />
         </button>
       </div>
     </div>
