@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect, useMemo, useCallback } from "react";
 import { Claim, ClaimStatus, Reviewer } from "@/types";
+import { DriverDraft } from "@/types/driver";
 import { claimsRepository } from "@/lib/repositories/claimsRepository";
 
 interface ComputedStats {
@@ -43,6 +44,8 @@ interface ClaimsContextType {
   updateCAIField: (id: string, fieldId: string, value: string) => Promise<void>;
   generateCAIDraft: (id: string) => Promise<void>;
   confirmInference: (id: string, inferenceId: string, confirmed: boolean) => Promise<void>;
+  createClaimFromDriverDraft: (draft: DriverDraft) => Promise<Claim>;
+  resetDemoData: () => Promise<void>;
   refreshClaims: () => Promise<void>;
 }
 
@@ -83,6 +86,15 @@ export function ClaimsProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     loadData();
+
+    // Listen to localStorage changes across browser tabs/windows
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === "impacta_claims_v1") {
+        loadData();
+      }
+    };
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
   }, [loadData]);
 
   const getClaim = useCallback(
@@ -145,6 +157,22 @@ export function ClaimsProvider({ children }: { children: React.ReactNode }) {
     [currentReviewer.name]
   );
 
+  const createClaimFromDriverDraft = useCallback(
+    async (draft: DriverDraft): Promise<Claim> => {
+      const newClaim = await claimsRepository.createFromDriverDraft(draft);
+      setClaims((prev) => [newClaim, ...prev.filter((c) => c.id !== newClaim.id)]);
+      return newClaim;
+    },
+    []
+  );
+
+  const resetDemoData = useCallback(async () => {
+    setIsLoading(true);
+    await claimsRepository.resetToDefaults();
+    await loadData();
+    setIsLoading(false);
+  }, [loadData]);
+
   // Compute all KPI stats directly from the claims dataset
   const stats: ComputedStats = useMemo(() => {
     const totalClaims = claims.length;
@@ -175,14 +203,14 @@ export function ClaimsProvider({ children }: { children: React.ReactNode }) {
     const reviewed = claims.filter((c) => c.status === "REVIEWED").length;
     const closed = claims.filter((c) => c.status === "CLOSED").length;
 
-    const withTelemetry = claims.filter((c) => c.telemetry.hasTelemetry).length;
+    const withTelemetry = claims.filter((c) => c.telemetry?.hasTelemetry).length;
     const telemetryCoveragePercent = Math.round((withTelemetry / totalClaims) * 100);
 
-    const confidenceSum = claims.reduce((acc, c) => acc + c.aiAnalysis.overallConfidence, 0);
+    const confidenceSum = claims.reduce((acc, c) => acc + (c.aiAnalysis?.overallConfidence || 70), 0);
     const meanConfidence = Math.round(confidenceSum / totalClaims);
 
     const requiringReviewClaims = claims.filter(
-      (c) => c.aiAnalysis.reviewCategory !== undefined || c.aiAnalysis.overallConfidence < 85
+      (c) => c.aiAnalysis?.reviewCategory !== undefined || (c.aiAnalysis?.overallConfidence || 70) < 85
     );
     const manualReviewRequiredCount = requiringReviewClaims.length;
     const manualReviewRequiredPercent = Math.round((manualReviewRequiredCount / totalClaims) * 100);
@@ -190,33 +218,34 @@ export function ClaimsProvider({ children }: { children: React.ReactNode }) {
     let totalCai = 0;
     let confirmedCai = 0;
     claims.forEach((c) => {
-      totalCai += c.caiFields.length;
-      confirmedCai += c.caiFields.filter((f) => f.isConfirmed).length;
+      if (c.caiFields) {
+        totalCai += c.caiFields.length;
+        confirmedCai += c.caiFields.filter((f) => f.isConfirmed).length;
+      }
     });
     const caiFieldCompletionPercent = totalCai > 0 ? Math.round((confirmedCai / totalCai) * 100) : 0;
 
     // AI Funnel counts
     const funnel = {
       received: totalClaims,
-      evidenceParsed: claims.filter((c) => c.evidence.length > 0 || c.telemetry.hasTelemetry).length,
-      aiAnalysed: claims.filter((c) => c.aiAnalysis.overallConfidence > 0).length,
+      evidenceParsed: claims.filter((c) => (c.evidence && c.evidence.length > 0) || c.telemetry?.hasTelemetry).length,
+      aiAnalysed: claims.filter((c) => c.aiAnalysis && c.aiAnalysis.overallConfidence > 0).length,
       humanReviewed: claims.filter((c) => c.status === "REVIEWED" || c.status === "CLOSED").length,
       caiReady: claims.filter((c) => c.status === "CAI_READY" || c.caiDraftGenerated).length,
     };
 
     // Claims Volume grouped by Date (sorted chronologically)
     const dateMap: Record<string, { label: string; count: number }> = {};
-    // Last 14 days baseline
-    for (let d = 2; d <= 15; d++) {
+    for (let d = 2; d <= 19; d++) {
       const dayStr = d < 10 ? `0${d}` : `${d}`;
       const key = `2026-09-${dayStr}`;
       dateMap[key] = { label: `${d} Sep`, count: 0 };
     }
     claims.forEach((c) => {
-      const dateKey = c.incidentDate.substring(0, 10);
+      const dateKey = (c.incidentDate || "").substring(0, 10);
       if (dateMap[dateKey]) {
         dateMap[dateKey].count += 1;
-      } else {
+      } else if (dateKey) {
         const dNum = new Date(c.incidentDate).getDate();
         dateMap[dateKey] = { label: `${dNum} Sep`, count: 1 };
       }
@@ -234,7 +263,7 @@ export function ClaimsProvider({ children }: { children: React.ReactNode }) {
       STATEMENT_MISMATCH: 0,
     };
     claims.forEach((c) => {
-      if (c.aiAnalysis.reviewCategory) {
+      if (c.aiAnalysis?.reviewCategory) {
         catMap[c.aiAnalysis.reviewCategory] = (catMap[c.aiAnalysis.reviewCategory] || 0) + 1;
       }
     });
@@ -282,6 +311,8 @@ export function ClaimsProvider({ children }: { children: React.ReactNode }) {
         updateCAIField,
         generateCAIDraft,
         confirmInference,
+        createClaimFromDriverDraft,
+        resetDemoData,
         refreshClaims: loadData,
       }}
     >

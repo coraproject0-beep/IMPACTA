@@ -14,11 +14,11 @@ import {
 import { getConfidenceBadgeClass } from "@/lib/utils";
 import { Button } from "@/components/ui/Button";
 
-interface AIRepairReconstructionTabProps {
+interface AIReconstructionTabProps {
   claim: Claim;
 }
 
-export function AIRepairReconstructionTab({ claim }: AIRepairReconstructionTabProps) {
+export function AIReconstructionTab({ claim }: AIReconstructionTabProps) {
   const { confirmInference } = useClaims();
   const { aiAnalysis } = claim;
   const [togglingId, setTogglingId] = useState<string | null>(null);
@@ -61,7 +61,7 @@ export function AIRepairReconstructionTab({ claim }: AIRepairReconstructionTabPr
               Multimodal Kinematic Pipeline v2.4
             </div>
             <div className="text-[11px] text-slate-500">
-              Evaluated {claim.evidence.length} artifacts • Telemetry: {claim.telemetry.hasTelemetry ? "Available (10Hz)" : "None"}
+              Evaluated {claim.evidence?.length || 0} artifacts • Telemetry: {claim.telemetry?.hasTelemetry ? "Available (10Hz)" : "None"}
             </div>
           </div>
         </div>
@@ -70,9 +70,9 @@ export function AIRepairReconstructionTab({ claim }: AIRepairReconstructionTabPr
           <div className="text-right">
             <div className="text-[10px] font-semibold text-slate-400 uppercase">Composite AI Confidence</div>
             <div className="text-sm font-bold text-slate-900 font-mono flex items-center gap-1.5 justify-end">
-              <span>{aiAnalysis.overallConfidence}%</span>
-              <span className={`text-[10px] px-1.5 py-0.2 rounded border font-semibold ${getConfidenceBadgeClass(aiAnalysis.overallConfidence)}`}>
-                {aiAnalysis.confidenceBand}
+              <span>{aiAnalysis?.overallConfidence || 70}%</span>
+              <span className={`text-[10px] px-1.5 py-0.2 rounded border font-semibold ${getConfidenceBadgeClass(aiAnalysis?.overallConfidence || 70)}`}>
+                {aiAnalysis?.confidenceBand || "MEDIUM"}
               </span>
             </div>
           </div>
@@ -100,7 +100,7 @@ export function AIRepairReconstructionTab({ claim }: AIRepairReconstructionTabPr
               Factual indicators isolated directly from photographs, telemetry packets, or official police notices without speculative extrapolation:
             </p>
 
-            {aiAnalysis.observations.length === 0 ? (
+            {!aiAnalysis?.observations || aiAnalysis.observations.length === 0 ? (
               <div className="py-8 text-center text-xs text-slate-400">
                 No direct visual or sensor observations recorded.
               </div>
@@ -157,7 +157,7 @@ export function AIRepairReconstructionTab({ claim }: AIRepairReconstructionTabPr
             </p>
 
             <div className="space-y-3">
-              {aiAnalysis.inferences.map((inf) => (
+              {(aiAnalysis?.inferences || []).map((inf) => (
                 <div
                   key={inf.id}
                   className="p-3.5 bg-slate-50 rounded border border-slate-200 text-xs space-y-2"
@@ -234,11 +234,11 @@ export function AIRepairReconstructionTab({ claim }: AIRepairReconstructionTabPr
             </p>
           </div>
           <span className="text-[10px] font-mono text-slate-400">
-            {aiAnalysis.probableSequence.length} chronological milestones
+            {aiAnalysis?.probableSequence?.length || 0} chronological milestones
           </span>
         </div>
 
-        {aiAnalysis.probableSequence.length === 0 ? (
+        {!aiAnalysis?.probableSequence || aiAnalysis.probableSequence.length === 0 ? (
           <div className="py-8 text-center text-xs text-slate-400">
             Insufficient temporal or telemetry data to formulate a multi-step sequence.
           </div>
@@ -246,7 +246,6 @@ export function AIRepairReconstructionTab({ claim }: AIRepairReconstructionTabPr
           <div className="relative pl-6 space-y-4 before:absolute before:left-2.5 before:top-2 before:bottom-2 before:w-0.5 before:bg-slate-200">
             {aiAnalysis.probableSequence.map((step) => (
               <div key={step.stepNumber} className="relative group">
-                {/* Step dot */}
                 <span className="absolute -left-6 top-1 w-5 h-5 rounded-full bg-blue-600 text-white font-mono text-[10px] font-bold flex items-center justify-center ring-4 ring-white shadow-xs">
                   {step.stepNumber}
                 </span>
@@ -286,7 +285,7 @@ export function AIRepairReconstructionTab({ claim }: AIRepairReconstructionTabPr
         </p>
 
         <ul className="space-y-2">
-          {aiAnalysis.uncertaintiesAndLimitations.map((item, idx) => (
+          {(aiAnalysis?.uncertaintiesAndLimitations || []).map((item, idx) => (
             <li
               key={idx}
               className="text-xs text-slate-700 bg-amber-50/40 border border-amber-200/70 p-2.5 rounded flex items-start gap-2"

@@ -1,9 +1,9 @@
-# IMPACTA Architectural Specification — v1.0
+# IMPACTA Architectural Specification — v2.0
 
-**Product:** IMPACTA (Claims Intelligence Console)  
+**Product:** IMPACTA (Road Accident Intelligence & Claims Intake Platform)  
 **Team:** Token Titans  
-**Document Version:** 1.0.0  
-**Status:** Implemented (Frontend Operational Prototype)  
+**Document Version:** 2.0.0  
+**Status:** Implemented (Dual-Product Operational Prototype)  
 
 ---
 
@@ -11,15 +11,10 @@
 
 **IMPACTA** is an AI-native road-accident intelligence and insurance claims-intake platform designed to bridge the operational gap between messy, fragmented real-world accident evidence and structured, actionable insurer claims processing.
 
-IMPACTA is **not** merely a digital CAI (Constatazione Amichevole d'Incidente) form. Its primary value proposition lies in ingesting and correlating multimodal evidence:
-- Scene and vehicle damage photographs
-- Driver personal statements and counterparty testimonies
-- Vehicle registrations and official insurance policy records
-- Optional black-box and connected-vehicle (CAN-bus / EDR) telemetry data
-- AI-assisted evidence extraction and damage localization
-- Cautious, physics-constrained accident reconstruction
-- CAI-compatible structured workspaces for formal claims adjusters
-- Human-in-the-loop review and validation workflows
+The platform unites two complementary user surfaces:
+1. **IMPACTA Driver (`/app`):** A low-cognitive-load, mobile-first progressive web application for drivers at the roadside. Guides physical safety checks, 6-view photographic evidence capture, counterparty data exchange, instant scenario reconstruction, and driver-friendly CAI validation.
+2. **Claims Operations Console (`/console/*`):** A high-density enterprise workspace for insurance claims adjusters and SIU (Special Investigation Unit) fraud triage specialists. Features automated kinematics reconstruction, 10–20Hz vehicle telemetry correlation, CAI workspace review, and human-in-the-loop triage queues.
+3. **Prototype Gateway (`/`):** A restrained entry point connecting both experiences with explicit academic prototype disclosures.
 
 ### Epistemic Separation & Legal Governance
 A core tenet of IMPACTA is strict epistemic demarcation. Machine intelligence must never be conflated with ground truth or legal liability:
@@ -32,107 +27,107 @@ A core tenet of IMPACTA is strict epistemic demarcation. Machine intelligence mu
 
 ---
 
-## 2. Current Frontend-Only Scope
+## 2. Shared Browser-Local Architecture
 
-The v1 console is implemented as an enterprise-grade, frontend-only operational application:
-- **No External Backend / Secret Requirements:** Runs completely offline without database connections, API keys, or cloud environment variables.
-- **Deterministic Synthetic Fixture:** 14 diverse Italian motor claims covering various severity levels, weather conditions, sensor coverage, and dispute scenarios.
-- **Pure Local State Management:** State transitions (review status changes, adjuster assignments, working notes, CAI field validations, manual overrides) are stored in an in-memory repository boundary (`ClaimsRepository`) wrapped in a reactive React Context.
-- **Client-Side Artifact Export:** One-click JSON dossier export for downstream ingestion.
+IMPACTA v2 operates completely client-side while offering full cross-product interoperability and persistence:
+
+```
+┌─────────────────────────┐          ┌─────────────────────────┐
+│     IMPACTA Driver      │          │     Claims Console      │
+│          /app           │          │        /console         │
+└────────────┬────────────┘          └────────────▲────────────┘
+             │                                    │
+             │ Creates Claim                      │ Cross-Tab Sync
+             ▼                                    │
+    ┌─────────────────┐                  ┌────────┴────────┐
+    │  Driver Mapper  ├─────────────────►│ Claims Context  │
+    └────────┬────────┘                  └────────┬────────┘
+             │                                    │
+             ▼                                    ▼
+┌───────────────────────────┐        ┌─────────────────────────┐
+│         IndexedDB         │        │      localStorage       │
+│    `impacta_media_db`     │        │   `impacta_claims_v1`   │
+│   (Binary Photo Blobs)    │        │  (14 Synthetic Claims)  │
+└───────────────────────────┘        └─────────────────────────┘
+```
+
+- **Structured Claims Storage (`localStorage`):** Structured dossiers persist in `localStorage` under `impacta_claims_v1`. A separate key `impacta_driver_draft_v1` preserves unfinished driver intake drafts across browser refreshes.
+- **Binary Media Storage (`IndexedDB`):** To avoid browser quota overflow (`QUOTA_EXCEEDED_ERR`), photo evidence blobs captured in Driver are written to IndexedDB (`impacta_media_db`, object store `evidence_blobs`).
+- **Cross-Tab Reactive Sync:** The `ClaimsContext` listens to window `storage` events. When a driver submits an incident report in one tab, open Claims Console tabs immediately update their KPI metrics and claims directory in real time without manual reloads.
+- **Deterministic Reset:** A discrete "Reset demo data" trigger flushes both `localStorage` and `IndexedDB` and restores the original 14 synthetic claims and Matteo Bianchi profile fixtures.
 
 ---
 
 ## 3. Domain Model
 
-The domain architecture is strongly typed in `src/types/index.ts`:
+The domain architecture is strongly typed in `src/types/index.ts` and `src/types/driver.ts`:
 
 - **`Claim`**: Primary entity encapsulating policyholder identity, incident context, driver/vehicle pairs, evidence, telemetry, AI analysis, CAI fields, and audit log.
 - **`ClaimStatus`**: Finite states: `'NEW' | 'IN_REVIEW' | 'CAI_READY' | 'REVIEWED' | 'CLOSED'`.
-- **`Driver`**: Full name, Italian tax code (*codice fiscale*), driving license number, phone, role (`DRIVER_A` vs `DRIVER_B`), statement, and injury flag.
-- **`Vehicle`**: License plate, make, model, year, color, VIN, damage description, estimated impact zone, and drivable state.
-- **`InsurancePolicy`**: Insurer name, policy number, coverage type (`RCA_BASE`, `KASKO_FULL`, `MINI_KASKO`), validity period, agency code, policyholder match boolean.
-- **`Incident`**: Timestamp, geographic location (street, city, GPS coordinates, junction type), weather, road surface, police attendance, and narrative summary.
+- **`DriverDraft`**: Consumer intake state machine tracking reporting steps, safety checklists, basic incident context, 6-view photo items, counterparty info, statement, and CAI confirmations.
+- **`EvidenceDraftItem`**: Item category (`VEHICLE_A`, `VEHICLE_B`, `DAMAGE_A`, `DAMAGE_B`, `SCENE_OVERVIEW`, `ROAD_SIGNS`, `DOCUMENT`), preview data URL, optional blob storage key, and driver notes.
 - **`EvidenceItem`**: ID, title, type (`SCENE_PHOTO`, `VEHICLE_DAMAGE_PHOTO`, `DOCUMENT`, `TELEMETRY_RECORD`, `POLICE_REPORT`), timestamp, provenance, extraction status, and extracted attribute key-values.
-- **`TelemetrySnapshot`**: Device ID, sampling rate (Hz), Delta-V (km/h), peak deceleration (G), impact angle vector (degrees), and discrete chronological sensor points (speed, brake pressure, longitudinal G, lateral G, heading).
+- **`TelemetrySnapshot`**: Device ID, sampling rate (10–20Hz), Delta-V (km/h), peak deceleration (G), impact angle vector (degrees), and discrete chronological sensor points (speed, brake pressure, longitudinal G, lateral G, heading).
 - **`AIObservation`**: Statement, target component, supporting evidence citations, timestamp.
 - **`AIInference`**: Hypothesized dynamic, confidence score, evidence citations, alternative hypotheses, confirmation status flag.
 - **`CAIField`**: Standardized CAI box index, label, section (`CIRCUMSTANCES`, `VEHICLE_A`, `VEHICLE_B`, `DAMAGE`, `ADMIN`), value, provenance, confirmation status.
-- **`AuditEvent`**: Timestamp, actor (`AI_ENGINE`, `REVIEWER`, `SYSTEM_INGEST`, `TELEMETRY_PIPELINE`), actor name, action, and object affected.
+- **`AuditEvent`**: Timestamp, actor (`AI_ENGINE`, `REVIEWER`, `SYSTEM_INGEST`, `TELEMETRY_PIPELINE`), actor name, action, and object affected. System events maintain a strict chronological ledger without exaggerated security or blockchain claims.
 - **`Reviewer`**: Specialist ID, name, email, department, initials.
 
 ---
 
-## 4. Claim Lifecycle
+## 4. UI Information Architecture
 
-```
-[Ingestion] ────► [Multimodal Parsing] ────► [Kinematic Reconstruction]
-(Driver / API)   (Vision / Document OCR)    (Physics & Telemetry Correlation)
-                                                         │
-                                                         ▼
-[Settlement / Archive] ◄── [CAI Generation] ◄── [Human Review & Triage]
- (Status: CLOSED)          (Status: CAI_READY)   (Status: IN_REVIEW / REVIEWED)
-```
+The application provides distinct, purpose-built viewports:
 
-1. **Intake (`NEW`):** Incident created from mobile web portal or EDR crash notification. Initial data loaded into ledger.
-2. **Automated Parsing & AI Analysis:** Photos segmented for structural damage; documents OCR-parsed; black-box telemetry aligned to impact T=0.
-3. **Escalation / Triage (`IN_REVIEW`):** If overall AI confidence is <85%, evidence contradicts driver statement, or documents are missing, the claim is routed into the **Priority Review Queue**.
-4. **CAI Compilation (`CAI_READY`):** Extraction completed; adjuster validates uncertain fields; standardized CAI draft dossier compiled.
-5. **Human Sign-Off (`REVIEWED` / `CLOSED`):** Adjuster validates settlement conditions and closes claim.
+### 4.1 Prototype Gateway (`/`)
+- Restrained launchpad providing entry points to **IMPACTA Driver** (`/app`) and **Claims Console** (`/console`).
+- Academic prototype disclosure by Token Titans.
 
----
+### 4.2 IMPACTA Driver (`/app`)
+- `/app`: Driver home featuring Matteo Bianchi policyholder profile card (Volkswagen Golf VIII, plate `GF492XP`, Aura Mutua policy), existing filed claims summary, and one-tap demo vs. real reporting triggers.
+- `/app/report`: 9-step mobile intake wizard with offline indicator, guided 6-point damage camera capture, deterministic demo simulation vs. transparent real upload disclaimers, driver-friendly CAI review, and final confirmation.
 
-## 5. UI Information Architecture
-
-The interface follows strict European enterprise insurtech standards (light theme, high information density, crisp typography, neutral borders):
-
-- `/overview`: Operational dashboard with computed KPI metrics (Open Claims, Awaiting AI Review, CAI Ready, Telemetry Coverage), AI processing funnel, 14-day SVG arrival histogram, recent claims table, and top priority review queue.
-- `/claims`: Enterprise claims ledger with multi-column sorting, free-text search (ID, policyholder, plate, city), status filter, AI confidence band filter, telemetry filter, and empty states.
-- `/claims/[id]`: Comprehensive 6-tab claim detail workbench:
-  - **Tab 1: Overview:** Incident narrative, dual party comparison (Party A vs Party B), coverage verification, editable reviewer working notes, and status/assignee controls.
-  - **Tab 2: Evidence:** Gallery of categorized artifacts with SVG schematics, extraction statuses, and modal metadata inspector.
-  - **Tab 3: AI Reconstruction:** Legal liability disclaimer, epistemic two-column layout (Observed Physical Facts vs AI Inferences), chronological micro-timeline, and analytical limitations.
+### 4.3 Claims Operations Console (`/console/*`)
+- `/console/overview`: Operations dashboard with computed KPI metrics, AI intake funnel, 14-day SVG histogram, recent claims table, and priority review queue.
+- `/console/claims`: Claims directory with multi-column sorting, free-text search (ID, policyholder, plate, city), status filter, AI confidence band filter, and telemetry filter.
+- `/console/claims/[id]`: Comprehensive 6-tab claim detail workbench:
+  - **Tab 1: Overview:** Incident narrative, dual party comparison, coverage verification, reviewer working notes, and status/assignee controls.
+  - **Tab 2: Evidence:** Categorized artifacts with SVG schematics, extraction statuses, and modal metadata inspector.
+  - **Tab 3: AI Reconstruction:** Physical facts vs AI inferences, chronological micro-timeline, legal liability disclaimers, and analytical limitations (`AIReconstructionTab`).
   - **Tab 4: CAI Workspace:** CAI box-mapped review table with provenance badges, inline field editing, field confirmation, and demo CAI draft generation.
   - **Tab 5: Telemetry:** Speed timeline SVG chart, brake line pressure trace, 360° impact angle compass, and CAN bus sample table.
-  - **Tab 6: Audit Trail:** Chronological ledger of system and human actions.
-- `/review`: Dedicated human triage queue filtering exclusively by escalation category (`LOW_CONFIDENCE`, `CONFLICTING_EVIDENCE`, `MISSING_DATA`, `STATEMENT_MISMATCH`) with one-click "Assign to me" and "Mark Reviewed" actions.
-- `/analytics`: Synthetic pipeline evaluation workbench displaying mean AI confidence, telemetry lift (+%), extraction accuracy, escalation root causes, and inference latency distribution.
+  - **Tab 6: Audit Trail:** Chronological action ledger of system and adjuster modifications.
+- `/console/review`: Dedicated human triage queue filtering by escalation category (`LOW_CONFIDENCE`, `CONFLICTING_EVIDENCE`, `MISSING_DATA`, `STATEMENT_MISMATCH`).
+- `/console/analytics`: Pipeline evaluation displaying mean AI confidence, dynamic telemetry lift (`telemMeanConf - nonTelemMeanConf`), extraction accuracy, and processing latency distribution.
+
+### 4.4 Backward-Compatible Redirects
+To ensure stability for existing links and bookmarks, legacy routes seamlessly redirect to the console:
+- `/overview` ──► `/console/overview`
+- `/claims` ──► `/console/claims`
+- `/claims/[id]` ──► `/console/claims/[id]`
+- `/review` ──► `/console/review`
+- `/analytics` ──► `/console/analytics`
 
 ---
 
-## 6. AI Provenance Model
+## 5. Dual Transformation Path
 
-Every field in the CAI workspace and evidence report displays its computational provenance:
-
-| Provenance Tag | Source | Verification Requirement |
-| :--- | :--- | :--- |
-| `PROFILE` | Insured policyholder profile | Pre-verified via policy contract |
-| `DOCUMENT` | OCR extraction from green card / police report | Verified against document scan |
-| `AI_OBSERVATION` | Computer vision segmentation on photo | Low uncertainty; directly visible |
-| `AI_INFERENCE` | Kinematics and dynamic extrapolation | Requires adjuster validation |
-| `TELEMETRY` | On-board black box CAN bus stream | Deterministic physical sensor |
-| `MANUAL` | Human claims adjuster modification | Traceable in audit trail |
+To maintain complete intellectual honesty:
+- **Canonical Demo Incident:** A pre-recorded collision in Piazza San Giovanni, Florence. Provides a deterministic, multi-stage simulated analysis sequence (plate OCR, damage segmentation, kinematic solver, CAI compilation) illustrating the platform's vision when connected to carrier backends.
+- **Arbitrary Real Uploads:** Policyholders and testers can upload real photos and statements. The system transparently informs the user that live neural networks and physics solvers are disconnected in the prototype, stores the photos safely in IndexedDB, and creates a clean base claim for manual adjuster triage without hallucinating fake AI metrics.
 
 ---
 
-## 7. Synthetic Data Policy
-
-- **Demarcation:** Every page prominently displays a `SYNTHETIC DEMO DATA` indicator.
-- **Entity Anonymity:** Insurer names (*Aura Mutua Assicurazioni*, *Liguria Mutua*, *Tirrena Polizze*, *Adriatica Protezione*, *Vittoria Futura*) and driver identities are purely fictitious.
-- **Dynamic Derivation:** All dashboard KPIs, percentages, distributions, and charts are calculated dynamically from the 14 synthetic dossiers, ensuring 100% internal consistency.
-
----
-
-## 8. Future Integration Architecture (Provisional)
+## 6. Future Integration Architecture (Provisional)
 
 > [!IMPORTANT]
-> **Provisional Notice:** None of the following external services or APIs are implemented or invoked in v1.0. The current architecture provides clean repository interfaces (`ClaimsRepository`, `exportClaimAsJson`) specifically designed to allow future drop-in replacement without altering the frontend UI.
-
-When transitioning from the current prototype to production, the provisional stack is planned as follows:
+> **Provisional Notice:** None of the following external services or APIs are invoked in v2.0. The architecture provides clean repository interfaces (`ClaimsRepository`, `mediaStorage`) specifically designed to allow future drop-in replacement without altering frontend business logic.
 
 1. **Frontend:** Next.js App Router (TypeScript, Tailwind CSS) — *Preserved as built in this repository*.
-2. **Database, Authentication & Object Storage:** **Supabase** (PostgreSQL with Row Level Security, pgvector for semantic evidence search, and S3-compatible bucket storage for high-resolution accident photos).
-3. **Multimodal AI Engine:** **Google Gemini API** (using Gemini 1.5 Pro / Flash with structured JSON schemas and multimodal inputs for photo damage localization, OCR extraction, and kinematic sequence generation).
-4. **Workflow Orchestration & Event Bus:** **n8n** (Automating intake webhooks, SITA/ANIA database queries, counterparty notifications, and insurer API sync).
-5. **Driver Direct Billing / Payments:** **Polar** (Merchant of Record for optional direct-to-consumer premium services).
-6. **Connected Vehicle Ingestion:** External Telemetry Broker / Webhook Ingestion (Direct CAN bus / OBD-II eCall packet ingestion).
+2. **Database & Storage:** **Supabase** (PostgreSQL with RLS, pgvector for semantic evidence search, S3-compatible bucket storage for photos).
+3. **Multimodal AI Engine:** **Google Gemini API** (using Gemini 1.5 Pro / Flash with structured JSON schemas for damage localization, OCR extraction, and kinematic sequence generation).
+4. **Workflow Orchestration:** **n8n** (Automating intake webhooks, ANIA database queries, counterparty notifications, and carrier API sync).
+5. **Driver Direct Billing:** **Polar** (Merchant of Record for direct-to-consumer services).
+6. **Connected Vehicle Ingestion:** External Telemetry Broker / Webhook Ingestion (CAN bus / OBD-II eCall packet ingestion).
 7. **Electronic Signatures:** eIDAS-compliant digital signature provider for binding bilateral CAI forms.

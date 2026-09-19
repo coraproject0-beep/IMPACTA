@@ -42,21 +42,21 @@ export function AuditTrailTab({ claim }: AuditTrailTabProps) {
       <div className="bg-white border border-slate-200 rounded p-4 flex items-center justify-between">
         <div>
           <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900">
-            Immutable Audit Trail &amp; Human Oversight Ledger
+            Audit Trail &amp; Human Oversight Ledger
           </h3>
           <p className="text-[11px] text-slate-500 mt-0.5">
-            Cryptographic and timestamped ledger tracking every automated event and manual adjuster override
+            Timestamped event history tracking automated intake events, sensor synchronization, and manual adjuster overrides
           </p>
         </div>
         <span className="text-[10px] font-mono text-slate-400">
-          {claim.auditTrail.length} recorded events
+          {claim.auditTrail?.length || 0} recorded events
         </span>
       </div>
 
       {/* Chronological Audit Events Timeline */}
       <div className="bg-white border border-slate-200 rounded p-5">
         <div className="relative pl-6 space-y-5 before:absolute before:left-2.5 before:top-2 before:bottom-2 before:w-0.5 before:bg-slate-200">
-          {claim.auditTrail.map((ev) => (
+          {(claim.auditTrail || []).map((ev) => (
             <div key={ev.id} className="relative group">
               {/* Actor node marker */}
               <span className="absolute -left-6 top-1 w-5 h-5 rounded-full bg-white border border-slate-300 flex items-center justify-center shadow-xs">

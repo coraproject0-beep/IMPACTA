@@ -60,25 +60,28 @@ export function Header({ onOpenMobile }: HeaderProps) {
   // Compute breadcrumbs
   const breadcrumbs = React.useMemo(() => {
     const parts = pathname.split("/").filter(Boolean);
-    if (parts.length === 0 || parts[0] === "overview") {
-      return [{ label: "Overview", href: "/overview" }];
+    if (parts.length === 0 || (parts[0] === "console" && (parts.length === 1 || parts[1] === "overview"))) {
+      return [{ label: "Console Overview", href: "/console/overview" }];
     }
-    if (parts[0] === "claims") {
-      if (parts.length === 1) {
-        return [{ label: "Claims Management", href: "/claims" }];
+    if (parts[0] === "console" && parts[1] === "claims") {
+      if (parts.length === 2) {
+        return [{ label: "Claims Ledger", href: "/console/claims" }];
       }
       return [
-        { label: "Claims", href: "/claims" },
-        { label: parts[1], href: `/claims/${parts[1]}` },
+        { label: "Claims", href: "/console/claims" },
+        { label: parts[2], href: `/console/claims/${parts[2]}` },
       ];
     }
-    if (parts[0] === "review") {
-      return [{ label: "AI Review Queue", href: "/review" }];
+    if (parts[0] === "console" && parts[1] === "review") {
+      return [{ label: "AI Review Queue", href: "/console/review" }];
     }
-    if (parts[0] === "analytics") {
-      return [{ label: "Pipeline Analytics", href: "/analytics" }];
+    if (parts[0] === "console" && parts[1] === "analytics") {
+      return [{ label: "Pipeline Analytics", href: "/console/analytics" }];
     }
-    return [{ label: parts[0], href: `/${parts[0]}` }];
+    if (parts[0] === "claims") {
+      return [{ label: "Claims", href: "/console/claims" }];
+    }
+    return parts.map((p, i) => ({ label: p, href: "/" + parts.slice(0, i + 1).join("/") }));
   }, [pathname]);
 
   return (
@@ -95,7 +98,7 @@ export function Header({ onOpenMobile }: HeaderProps) {
         </button>
 
         <nav aria-label="Breadcrumb" className="flex items-center text-xs font-medium text-slate-500 truncate">
-          <Link href="/overview" className="hover:text-slate-900 transition-colors">
+          <Link href="/console/overview" className="hover:text-slate-900 transition-colors">
             IMPACTA
           </Link>
           {breadcrumbs.map((bc, idx) => (
@@ -115,8 +118,18 @@ export function Header({ onOpenMobile }: HeaderProps) {
         </nav>
       </div>
 
-      {/* Right: Quick Search & Reviewer identity */}
+      {/* Right: Quick Search, Driver App link & Reviewer identity */}
       <div className="flex items-center gap-3 flex-shrink-0">
+        {/* Quick Driver Link */}
+        <Link
+          href="/app"
+          className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium text-slate-700 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 border border-slate-200 rounded transition-colors"
+          title="Open IMPACTA Driver Mobile Intake"
+        >
+          <span className="w-1.5 h-1.5 rounded-full bg-blue-600" />
+          <span>Driver App</span>
+        </Link>
+
         {/* Global Search Input */}
         <div ref={searchContainerRef} className="relative hidden sm:block w-64 md:w-80">
           <div className="relative">
@@ -165,7 +178,7 @@ export function Header({ onOpenMobile }: HeaderProps) {
                       onClick={() => {
                         setIsSearchOpen(false);
                         setSearchQuery("");
-                        router.push(`/claims/${c.id}`);
+                        router.push(`/console/claims/${c.id}`);
                       }}
                       className="w-full text-left px-3 py-2.5 hover:bg-slate-50 flex items-center justify-between gap-2 transition-colors"
                     >

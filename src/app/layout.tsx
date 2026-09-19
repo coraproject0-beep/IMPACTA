@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { GlobalShell } from "@/components/shell/GlobalShell";
 
 export const metadata: Metadata = {
-  title: "IMPACTA | Claims Intelligence Console",
+  title: "IMPACTA | AI Accident Intelligence & Claims Intake",
   description: "AI-native road-accident intelligence and insurance claims-intake platform",
 };
 
@@ -15,7 +14,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="min-h-screen bg-slate-50 text-slate-900 antialiased">
-        <GlobalShell>{children}</GlobalShell>
+        {children}
       </body>
     </html>
   );
