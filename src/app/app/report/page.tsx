@@ -3,10 +3,11 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { useLanguage } from "@/context/LanguageContext";
 import { useDriverDraft } from "@/context/DriverDraftContext";
 import { ReportHeader } from "@/features/driver/components/ReportHeader";
 import { SYNTHETIC_DRIVER_PROFILE } from "@/features/driver/data/driverProfileFixture";
-import { CheckCircleIcon, ShieldCheckIcon } from "@/components/icons/Icons";
+import { CheckCircleIcon } from "@/components/icons/Icons";
 
 // 4 Macro Phase Components + Submitted Receipt
 import { Phase1Safety } from "@/features/driver/phases/Phase1Safety";
@@ -17,6 +18,7 @@ import { Phase5Submitted } from "@/features/driver/phases/Phase5Submitted";
 
 export default function ReportWizardPage() {
   const router = useRouter();
+  const { t } = useLanguage();
   const {
     draft,
     updateDraft,
@@ -29,7 +31,7 @@ export default function ReportWizardPage() {
 
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
-  // Map legacy / internal step values to 4 Macro Phases (1 to 4) and 5 (Submitted)
+  // Map step values to 4 Macro Phases (1 to 4) and 5 (Submitted)
   const getMacroPhase = (): number => {
     switch (draft.step) {
       case "SAFETY":
@@ -55,27 +57,27 @@ export default function ReportWizardPage() {
 
   const phaseMeta: Record<number, { title: string; image: string; hint: string }> = {
     1: {
-      title: "Safety Check",
+      title: t.wizard.phase1Title,
       image: "/images/road-context.jpg",
       hint: "Secure yourself, your passengers, and the vehicle before capturing information.",
     },
     2: {
-      title: "Accident Details",
+      title: t.wizard.phase2Title,
       image: "/images/road-context.jpg",
       hint: "Position the accident on the road network with date, time, and road junction type.",
     },
     3: {
-      title: "Capture Evidence & Statement",
+      title: t.wizard.phase3Title,
       image: "/images/evidence-scene.jpg",
       hint: "Document the scene overview, contact damage on both vehicles, and record your statement.",
     },
     4: {
-      title: "Review & Confirmation",
+      title: t.wizard.phase4Title,
       image: "/images/hero-car.jpg",
       hint: "Verify summarized accident circumstances and confirm the declaration for insurer intake.",
     },
     5: {
-      title: "Report Confirmed",
+      title: t.wizard.phase5Subheader,
       image: "/images/hero-car.jpg",
       hint: "Your report has been safely persisted in local browser storage.",
     },
@@ -110,11 +112,11 @@ export default function ReportWizardPage() {
   };
 
   return (
-    <div className="-mx-4 sm:-mx-6 md:-mx-8 -my-6 md:-my-8 min-h-screen bg-slate-50 flex flex-col justify-between">
+    <div className="-mx-4 sm:-mx-6 md:-mx-8 -my-6 md:-my-8 min-h-screen bg-slate-50 flex flex-col justify-between selection:bg-blue-100 selection:text-blue-900">
       {/* Toast Notification */}
       {toastMessage && (
-        <div className="fixed top-14 left-1/2 -translate-x-1/2 z-50 bg-slate-900 text-white text-xs font-medium px-4 py-2 rounded-full shadow-lg flex items-center gap-2 animate-fade-in">
-          <CheckCircleIcon size={14} className="text-emerald-400" />
+        <div className="fixed top-14 left-1/2 -translate-x-1/2 z-50 bg-slate-900 text-white text-xs font-semibold px-4 py-2 rounded-full shadow-lg flex items-center gap-2 animate-fade-in">
+          <CheckCircleIcon size={16} className="text-emerald-400" />
           <span>{toastMessage}</span>
         </div>
       )}
@@ -123,7 +125,7 @@ export default function ReportWizardPage() {
       <ReportHeader
         phaseNumber={macroPhase <= 4 ? macroPhase : 4}
         totalPhases={4}
-        phaseTitle={phaseMeta[macroPhase].title}
+        phaseTitle={phaseMeta[macroPhase]?.title || "Incident Report"}
         showBack={macroPhase > 1 && macroPhase <= 4}
         showSaveAndExit={macroPhase <= 4}
         onBack={handleBack}
@@ -136,51 +138,50 @@ export default function ReportWizardPage() {
           {/* Left Column: Context, Visual Anchor & Phase Roadmap (Desktop only) */}
           <aside className="hidden lg:block lg:col-span-5 space-y-6 sticky top-20">
             {/* Editorial Context Photo */}
-            <div className="relative aspect-[16/10] w-full rounded-2xl overflow-hidden bg-slate-200 border border-slate-200/80 shadow-xs">
+            <div className="relative aspect-[16/10] w-full rounded-3xl overflow-hidden bg-slate-900 border border-slate-200 shadow-xs">
               <Image
-                src={phaseMeta[macroPhase].image}
+                src={phaseMeta[macroPhase]?.image || "/images/road-context.jpg"}
                 alt="Context photography"
                 fill
                 priority
                 className="object-cover transition-all duration-700"
                 sizes="(max-width: 1024px) 100vw, 400px"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-slate-950/10 to-transparent" />
-              <div className="absolute bottom-3 left-3 right-3 text-white">
-                <span className="text-[10px] font-mono uppercase tracking-wider text-slate-200 block">
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/75 via-slate-950/15 to-transparent" />
+              <div className="absolute bottom-4 left-4 right-4 text-white">
+                <span className="text-[10px] font-mono uppercase tracking-wider text-slate-300 block font-bold">
                   Phase {macroPhase <= 4 ? macroPhase : 4} of 4
                 </span>
-                <span className="text-sm font-bold block">{phaseMeta[macroPhase].title}</span>
+                <span className="text-base font-bold block">{phaseMeta[macroPhase]?.title}</span>
               </div>
             </div>
 
             {/* 4 Macro Phases Roadmap */}
-            <div className="bg-white rounded-2xl border border-slate-200 p-4 space-y-3 shadow-xs">
-              <div className="flex items-center justify-between border-b border-slate-100 pb-2">
+            <div className="bg-white rounded-3xl border border-slate-200 p-5 space-y-3 shadow-xs">
+              <div className="flex items-center justify-between border-b border-slate-100 pb-2.5">
                 <span className="text-xs font-bold text-slate-900">Intake Progress</span>
-                <div className="flex items-center gap-1.5 text-[11px] text-emerald-700 font-medium">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                  <span>Autosaved</span>
-                </div>
+                <span className="text-[11px] font-mono font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">
+                  Autosaved
+                </span>
               </div>
 
               <div className="space-y-2">
                 {[
-                  { num: 1, title: "Safety Check" },
-                  { num: 2, title: "Accident Details" },
-                  { num: 3, title: "Capture Evidence & Statement" },
-                  { num: 4, title: "Review & Confirmation" },
+                  { num: 1, title: t.wizard.phase1Title },
+                  { num: 2, title: t.wizard.phase2Title },
+                  { num: 3, title: t.wizard.phase3Title },
+                  { num: 4, title: t.wizard.phase4Title },
                 ].map((p) => {
                   const isPast = macroPhase > p.num;
                   const isCurrent = macroPhase === p.num;
                   return (
                     <div
                       key={p.num}
-                      className={`flex items-center gap-3 p-2 rounded-lg text-xs transition-colors ${
+                      className={`flex items-center gap-3 p-2.5 rounded-xl text-xs transition-colors ${
                         isCurrent
-                          ? "bg-blue-50 text-blue-900 font-semibold"
+                          ? "bg-blue-50 text-blue-900 font-bold"
                           : isPast
-                          ? "text-slate-700"
+                          ? "text-slate-700 font-medium"
                           : "text-slate-400"
                       }`}
                     >
@@ -203,21 +204,21 @@ export default function ReportWizardPage() {
             </div>
 
             {/* Vehicle & Emergency Reference */}
-            <div className="bg-slate-100/70 rounded-2xl p-4 border border-slate-200 text-xs space-y-2.5">
+            <div className="bg-slate-100/80 rounded-3xl p-5 border border-slate-200 text-xs space-y-2.5">
               <div className="flex items-center justify-between text-slate-500 font-medium">
                 <span>Insured Driver</span>
-                <span className="font-mono text-slate-800 font-semibold">
+                <span className="font-mono text-slate-900 font-bold">
                   {SYNTHETIC_DRIVER_PROFILE.vehicle.plate}
                 </span>
               </div>
-              <div className="text-slate-800 font-semibold">
+              <div className="text-slate-900 font-bold">
                 {SYNTHETIC_DRIVER_PROFILE.fullName} • {SYNTHETIC_DRIVER_PROFILE.vehicle.make} {SYNTHETIC_DRIVER_PROFILE.vehicle.model}
               </div>
               <div className="text-[11px] text-slate-500">
                 Policy: {SYNTHETIC_DRIVER_PROFILE.policy.insurerName} ({SYNTHETIC_DRIVER_PROFILE.policy.policyNumber})
               </div>
               <div className="pt-2 border-t border-slate-200 flex items-center justify-between text-[11px]">
-                <span className="text-slate-500">Emergency 112:</span>
+                <span className="text-slate-500">Emergency Hotline:</span>
                 <a href="tel:112" className="text-rose-600 font-bold hover:underline">
                   Dial 112
                 </a>
@@ -225,8 +226,8 @@ export default function ReportWizardPage() {
             </div>
           </aside>
 
-          {/* Right Column (or Full Width on Mobile): Active Phase Content */}
-          <main className="lg:col-span-7 bg-white rounded-2xl border border-slate-200 p-5 sm:p-7 shadow-xs">
+          {/* Right Column: Active Phase Content */}
+          <main className="lg:col-span-7 bg-white rounded-3xl border border-slate-200 p-6 sm:p-9 shadow-xs">
             {macroPhase === 1 && (
               <Phase1Safety
                 draft={draft}

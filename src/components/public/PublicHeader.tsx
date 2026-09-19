@@ -3,28 +3,29 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useLanguage, LanguageSelector } from "@/context/LanguageContext";
+import { useAuth } from "@/context/AuthContext";
 import { MenuIcon, CloseIcon, ArrowRightIcon } from "@/components/icons/Icons";
-
-interface NavItem {
-  label: string;
-  href: string;
-}
-
-const NAV_ITEMS: NavItem[] = [
-  { label: "Platform", href: "/platform" },
-  { label: "Drivers", href: "/drivers" },
-  { label: "Insurers", href: "/insurers" },
-  { label: "Technology", href: "/technology" },
-  { label: "Safety", href: "/safety" },
-];
 
 export function PublicHeader() {
   const pathname = usePathname();
+  const { t } = useLanguage();
+  const { isDriverAuthenticated } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const navItems = [
+    { label: t.nav.platform, href: "/platform" },
+    { label: t.nav.drivers, href: "/drivers" },
+    { label: t.nav.insurers, href: "/insurers" },
+    { label: t.nav.technology, href: "/technology" },
+    { label: t.nav.safety, href: "/safety" },
+  ];
+
+  const reportLink = isDriverAuthenticated ? "/app/report" : "/login?redirect=/app/report";
 
   return (
     <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200/80 select-none">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-18 flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 flex items-center justify-between">
         {/* Brand Logo */}
         <Link
           href="/"
@@ -34,7 +35,7 @@ export function PublicHeader() {
             IM
           </div>
           <div className="flex flex-col">
-            <span className="text-base font-bold tracking-tight text-slate-950 leading-tight">
+            <span className="text-base font-extrabold tracking-tight text-slate-950 leading-tight">
               IMPACTA
             </span>
             <span className="text-[10px] font-mono text-slate-400 uppercase tracking-wider -mt-0.5">
@@ -45,7 +46,7 @@ export function PublicHeader() {
 
         {/* Desktop Navigation Links */}
         <nav className="hidden md:flex items-center gap-1 lg:gap-2">
-          {NAV_ITEMS.map((item) => {
+          {navItems.map((item) => {
             const isActive = pathname === item.href;
             return (
               <Link
@@ -64,33 +65,44 @@ export function PublicHeader() {
         </nav>
 
         {/* Action Triggers */}
-        <div className="hidden sm:flex items-center gap-3">
-          {/* Professional access route (quiet) */}
+        <div className="hidden sm:flex items-center gap-2.5 lg:gap-3">
+          {/* Language Selector */}
+          <LanguageSelector />
+
+          {/* Sign In Link */}
           <Link
-            href="/console"
-            className="text-xs font-semibold text-slate-600 hover:text-slate-900 px-3 py-1.5 rounded-lg hover:bg-slate-50 transition-colors"
+            href="/login"
+            className="text-xs font-semibold text-slate-600 hover:text-slate-950 px-2.5 py-1.5 rounded-lg hover:bg-slate-50 transition-colors"
           >
-            <span>Insurer access</span>
-            <span className="text-slate-400 ml-1">→</span>
+            {t.nav.signIn}
+          </Link>
+
+          {/* Quiet Insurer access */}
+          <Link
+            href="/console/login"
+            className="text-xs font-semibold text-slate-500 hover:text-slate-800 px-2 py-1.5 rounded-lg transition-colors"
+          >
+            {t.nav.insurerAccess}
           </Link>
 
           {/* Primary Consumer Intake CTA */}
           <Link
-            href="/app"
-            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold tracking-tight bg-blue-600 hover:bg-blue-700 text-white shadow-xs transition-all active:scale-[0.98]"
+            href={reportLink}
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold tracking-tight bg-slate-950 hover:bg-blue-600 text-white shadow-xs transition-all active:scale-[0.98]"
           >
-            <span>Report an accident</span>
+            <span>{t.nav.reportAccident}</span>
             <ArrowRightIcon size={14} />
           </Link>
         </div>
 
-        {/* Mobile Hamburger Toggle */}
+        {/* Mobile Controls */}
         <div className="flex md:hidden items-center gap-2">
+          <LanguageSelector />
           <Link
-            href="/app"
-            className="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-bold bg-blue-600 text-white"
+            href={reportLink}
+            className="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-950 text-white"
           >
-            Report
+            {t.nav.reportAccident.split(" ")[0]}
           </Link>
           <button
             type="button"
@@ -105,9 +117,9 @@ export function PublicHeader() {
 
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="md:hidden bg-white border-b border-slate-200 px-5 py-4 space-y-3 animate-fade-in">
+        <div className="md:hidden bg-white border-b border-slate-200 px-5 py-4 space-y-4 animate-fade-in">
           <div className="space-y-1">
-            {NAV_ITEMS.map((item) => {
+            {navItems.map((item) => {
               const isActive = pathname === item.href;
               return (
                 <Link
@@ -128,20 +140,29 @@ export function PublicHeader() {
 
           <div className="pt-3 border-t border-slate-100 flex flex-col gap-2">
             <Link
-              href="/app"
+              href={reportLink}
               onClick={() => setMobileMenuOpen(false)}
-              className="w-full py-2.5 px-4 rounded-xl text-xs font-bold bg-blue-600 hover:bg-blue-700 text-white text-center flex items-center justify-center gap-1.5"
+              className="w-full py-2.5 px-4 rounded-xl text-xs font-bold bg-slate-950 hover:bg-blue-600 text-white text-center flex items-center justify-center gap-1.5"
             >
-              <span>Report an accident</span>
+              <span>{t.nav.reportAccident}</span>
               <ArrowRightIcon size={14} />
             </Link>
-            <Link
-              href="/console"
-              onClick={() => setMobileMenuOpen(false)}
-              className="w-full py-2 px-4 rounded-xl text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 text-center"
-            >
-              Insurer access →
-            </Link>
+            <div className="grid grid-cols-2 gap-2">
+              <Link
+                href="/login"
+                onClick={() => setMobileMenuOpen(false)}
+                className="py-2 px-3 rounded-xl text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 text-center"
+              >
+                {t.nav.signIn}
+              </Link>
+              <Link
+                href="/console/login"
+                onClick={() => setMobileMenuOpen(false)}
+                className="py-2 px-3 rounded-xl text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 text-center"
+              >
+                {t.nav.insurerAccess}
+              </Link>
+            </div>
           </div>
         </div>
       )}

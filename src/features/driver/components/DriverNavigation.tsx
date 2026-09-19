@@ -3,6 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useLanguage } from "@/context/LanguageContext";
 import {
   HomeIcon,
   FileTextIcon,
@@ -17,43 +18,52 @@ interface DriverNavigationProps {
 
 export function DriverNavigation({ variant = "all" }: DriverNavigationProps) {
   const pathname = usePathname();
+  const { t } = useLanguage();
 
   // Hide navigation entirely during an active report
   if (pathname === "/app/report") {
     return null;
   }
 
-  const navItems = [
-    { label: "Home", href: "/app", icon: HomeIcon },
-    { label: "Reports", href: "/app/reports", icon: FileTextIcon },
-    { label: "Vehicle", href: "/app/vehicle", icon: CarIcon },
-    { label: "Insurance", href: "/app/insurance", icon: ShieldIcon },
-    { label: "Profile", href: "/app/profile", icon: UserIcon },
+  // Desktop navigation maintains all 5 core surfaces
+  const desktopNavItems = [
+    { label: t.nav.driverHome, href: "/app", icon: HomeIcon },
+    { label: t.nav.reports, href: "/app/reports", icon: FileTextIcon },
+    { label: t.nav.vehicle, href: "/app/vehicle", icon: CarIcon },
+    { label: t.nav.insurance, href: "/app/insurance", icon: ShieldIcon },
+    { label: t.nav.profile, href: "/app/profile", icon: UserIcon },
+  ];
+
+  // Mobile bottom bar focuses on the 3 essential destinations (minimized clutter)
+  const mobileNavItems = [
+    { label: t.nav.driverHome, href: "/app", icon: HomeIcon },
+    { label: t.nav.reports, href: "/app/reports", icon: FileTextIcon },
+    { label: t.nav.profile, href: "/app/profile", icon: UserIcon },
   ];
 
   return (
     <>
-      {/* Mobile Bottom Navigation Bar (5 Items) */}
+      {/* Mobile Bottom Navigation Bar (3 Items, comfortable touch target >= 44px) */}
       {(variant === "all" || variant === "mobile") && (
         <nav
-          aria-label="Consumer Navigation"
-          className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200/80 px-2 py-1.5 flex items-center justify-around select-none shadow-xs"
+          aria-label="Consumer Mobile Navigation"
+          className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200/80 px-4 py-2 flex items-center justify-around select-none shadow-sm"
         >
-          {navItems.map((item) => {
+          {mobileNavItems.map((item) => {
             const isActive = pathname === item.href;
             const Icon = item.icon;
             return (
               <Link
                 key={item.href}
                 href={item.href}
-                className={`flex flex-col items-center gap-0.5 py-1 px-2.5 rounded-lg transition-colors ${
+                className={`min-h-[44px] min-w-[64px] flex flex-col items-center justify-center gap-1 py-1 px-3 rounded-xl transition-colors ${
                   isActive
-                    ? "text-blue-700 font-semibold"
+                    ? "text-blue-700 font-bold bg-blue-50/60"
                     : "text-slate-500 hover:text-slate-800"
                 }`}
               >
-                <Icon size={18} className={isActive ? "text-blue-600" : "text-slate-400"} />
-                <span className="text-[10px] tracking-tight">{item.label}</span>
+                <Icon size={20} className={isActive ? "text-blue-600" : "text-slate-400"} />
+                <span className="text-[11px] tracking-tight">{item.label}</span>
               </Link>
             );
           })}
@@ -66,20 +76,20 @@ export function DriverNavigation({ variant = "all" }: DriverNavigationProps) {
           aria-label="Consumer Desktop Navigation"
           className="hidden md:flex items-center gap-1"
         >
-          {navItems.map((item) => {
+          {desktopNavItems.map((item) => {
             const isActive = pathname === item.href;
             const Icon = item.icon;
             return (
               <Link
                 key={item.href}
                 href={item.href}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold transition-colors ${
                   isActive
-                    ? "bg-slate-100 text-slate-950 font-semibold"
+                    ? "bg-slate-100 text-slate-950 font-bold"
                     : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
                 }`}
               >
-                <Icon size={14} className={isActive ? "text-blue-600" : "text-slate-400"} />
+                <Icon size={15} className={isActive ? "text-blue-600" : "text-slate-400"} />
                 <span>{item.label}</span>
               </Link>
             );

@@ -1,8 +1,10 @@
 "use client";
 
 import React, { useState, useRef } from "react";
+import Image from "next/image";
 import { DriverDraft, EvidenceDraftItem } from "@/types/driver";
-import { CameraIcon, CloseIcon, ArrowRightIcon, CheckCircleIcon, UserIcon } from "@/components/icons/Icons";
+import { useLanguage } from "@/context/LanguageContext";
+import { CameraIcon, CloseIcon, ArrowRightIcon, CheckCircleIcon } from "@/components/icons/Icons";
 
 interface Phase3CaptureProps {
   draft: DriverDraft;
@@ -15,36 +17,9 @@ interface Phase3CaptureProps {
 interface PhotoSlot {
   key: string;
   category: EvidenceDraftItem["category"];
-  label: string;
-  guide: string;
+  titleKey: string;
+  descKey: string;
 }
-
-const PHOTO_SLOTS: PhotoSlot[] = [
-  {
-    key: "scene",
-    category: "SCENE_OVERVIEW",
-    label: "The Whole Scene",
-    guide: "Step back 5–10 meters. Capture both vehicles, road markings, and roundabout entry.",
-  },
-  {
-    key: "my_vehicle",
-    category: "DAMAGE_A",
-    label: "Your Vehicle Damage",
-    guide: "Capture the contact area on your Golf VIII (bumper, wheel, or wing panel).",
-  },
-  {
-    key: "other_vehicle",
-    category: "DAMAGE_B",
-    label: "Other Vehicle & Plate",
-    guide: "Capture the other vehicle and its license plate clearly.",
-  },
-  {
-    key: "detail_doc",
-    category: "DOCUMENT",
-    label: "Documents or Extra Detail",
-    guide: "Green card, driving license, or a close-up of paint transfer/debris.",
-  },
-];
 
 export function Phase3Capture({
   draft,
@@ -53,6 +28,7 @@ export function Phase3Capture({
   onRemoveEvidence,
   onNext,
 }: Phase3CaptureProps) {
+  const { t } = useLanguage();
   const [counterpartyPlate, setCounterpartyPlate] = useState(draft.counterparty.plate || "");
   const [counterpartyName, setCounterpartyName] = useState(draft.counterparty.driverName || "");
   const [counterpartyPhone, setCounterpartyPhone] = useState(draft.counterparty.phone || "");
@@ -62,6 +38,33 @@ export function Phase3Capture({
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [activeSlotForInput, setActiveSlotForInput] = useState<PhotoSlot | null>(null);
+
+  const photoSlots: PhotoSlot[] = [
+    {
+      key: "scene",
+      category: "SCENE_OVERVIEW",
+      titleKey: t.wizard.phase3SceneOverview,
+      descKey: t.wizard.phase3SceneOverviewDesc,
+    },
+    {
+      key: "my_vehicle",
+      category: "DAMAGE_A",
+      titleKey: t.wizard.phase3YourVehicle,
+      descKey: t.wizard.phase3YourVehicleDesc,
+    },
+    {
+      key: "other_vehicle",
+      category: "DAMAGE_B",
+      titleKey: t.wizard.phase3OtherVehicle,
+      descKey: t.wizard.phase3OtherVehicleDesc,
+    },
+    {
+      key: "detail_doc",
+      category: "DOCUMENT",
+      titleKey: t.wizard.phase3Documents,
+      descKey: t.wizard.phase3DocumentsDesc,
+    },
+  ];
 
   const handleTriggerUpload = (slot: PhotoSlot) => {
     setActiveSlotForInput(slot);
@@ -81,11 +84,11 @@ export function Phase3Capture({
       const newItem: EvidenceDraftItem = {
         id: `evd-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
         category: activeSlotForInput.category,
-        categoryLabel: activeSlotForInput.label,
+        categoryLabel: activeSlotForInput.titleKey,
         previewUrl,
         timestamp: new Date().toISOString(),
         isRealUpload: true,
-        notes: `Uploaded by driver for: ${activeSlotForInput.label}`,
+        notes: `Uploaded by driver for: ${activeSlotForInput.titleKey}`,
       };
 
       await onAddEvidence(newItem, file);
@@ -103,93 +106,91 @@ export function Phase3Capture({
         driverName: counterpartyName,
         phone: counterpartyPhone,
         insurer: counterpartyInsurer,
-        hasInfo: true,
       },
       statement,
     });
     onNext();
   };
 
-  // Helper to find uploaded item for a given slot
-  const getItemForSlot = (slot: PhotoSlot) => {
-    return draft.evidenceItems.find((item) => item.category === slot.category);
-  };
-
   return (
-    <div className="space-y-8">
-      {/* Hidden file input supporting mobile camera capture */}
+    <div className="space-y-8 py-2 max-w-2xl selection:bg-blue-100 selection:text-blue-900">
+      {/* Hidden File Input for Native Camera and File Upload */}
       <input
         type="file"
         ref={fileInputRef}
-        onChange={handleFileChange}
         accept="image/*"
         capture="environment"
+        onChange={handleFileChange}
         className="hidden"
+        aria-label="Upload evidence photo"
       />
 
-      {/* Header */}
+      {/* Step Header */}
       <div className="space-y-3">
         <span className="text-xs font-mono font-bold uppercase tracking-wider text-blue-700 bg-blue-50 px-2.5 py-0.5 rounded border border-blue-200">
-          Step 3 · Capture Evidence
+          {t.wizard.phase3Title}
         </span>
-        <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-slate-950 leading-tight">
-          Capture the scene, vehicle damage &amp; details
+        <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-950 leading-tight">
+          Capture photos &amp; incident details
         </h1>
-        <p className="text-sm sm:text-base text-slate-600 leading-relaxed">
-          Clear daylight photos and counterparty details establish the physical facts for your claim without legal complexity.
+        <p className="text-base sm:text-lg text-slate-600 leading-relaxed">
+          Follow the 4-angle guidance to document the road scene, bumper contact points, and counterparty credentials.
         </p>
       </div>
 
-      {/* Section 1: Natural Visual Photo Capture */}
-      <section className="space-y-4">
-        <div className="flex items-center justify-between">
-          <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900">
-            1. Accident Photography ({draft.evidenceItems.length} photos attached)
-          </h3>
-          <span className="text-[11px] text-slate-400">Tap to snap with camera or upload</span>
+      {/* 4-Slot Photo Guide */}
+      <div className="space-y-4">
+        <div className="flex items-center justify-between border-b border-slate-100 pb-2">
+          <h2 className="text-lg font-bold text-slate-950 flex items-center gap-2">
+            <CameraIcon size={20} className="text-blue-600" />
+            <span>{t.wizard.phase3PhotoGuide}</span>
+          </h2>
+          <span className="text-xs font-mono font-semibold text-slate-500">
+            {draft.evidenceItems.length} photos saved
+          </span>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {PHOTO_SLOTS.map((slot) => {
-            const item = getItemForSlot(slot);
+          {photoSlots.map((slot) => {
+            const existingItem = draft.evidenceItems.find((i) => i.category === slot.category);
             const isUploading = uploadingSlot === slot.key;
 
             return (
               <div
                 key={slot.key}
-                className="bg-white border border-slate-200 hover:border-slate-300 rounded-2xl p-4 shadow-xs space-y-3 transition-all flex flex-col justify-between"
+                className="bg-white rounded-3xl border border-slate-200 p-5 flex flex-col justify-between space-y-3 shadow-xs"
               >
                 <div>
                   <div className="flex items-center justify-between mb-1">
-                    <span className="text-xs font-bold text-slate-900">
-                      {slot.label}
+                    <span className="text-sm font-bold text-slate-950 block">
+                      {slot.titleKey}
                     </span>
-                    {item && (
-                      <span className="text-[10px] font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200 flex items-center gap-1">
-                        <CheckCircleIcon size={10} />
+                    {existingItem && (
+                      <span className="text-[10px] font-mono font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded flex items-center gap-1 border border-emerald-200">
+                        <CheckCircleIcon size={12} />
                         <span>Saved</span>
                       </span>
                     )}
                   </div>
-                  <p className="text-[11px] text-slate-500 leading-relaxed">
-                    {slot.guide}
+                  <p className="text-xs text-slate-500 leading-relaxed">
+                    {slot.descKey}
                   </p>
                 </div>
 
-                {/* Photo Preview or Capture Area */}
-                {item ? (
-                  <div className="relative rounded-xl overflow-hidden aspect-video bg-slate-100 border border-slate-200 group">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={item.previewUrl}
-                      alt={item.categoryLabel}
-                      className="w-full h-full object-cover"
+                {existingItem ? (
+                  <div className="relative aspect-video rounded-2xl overflow-hidden bg-slate-900 border border-slate-200 group">
+                    <Image
+                      src={existingItem.previewUrl}
+                      alt={existingItem.categoryLabel}
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 768px) 100vw, 300px"
                     />
                     <button
                       type="button"
-                      onClick={() => onRemoveEvidence(item.id)}
-                      className="absolute top-2 right-2 p-1.5 bg-slate-900/80 hover:bg-rose-600 text-white rounded-full transition-colors shadow-xs"
-                      title="Remove photo"
+                      onClick={() => onRemoveEvidence(existingItem.id)}
+                      className="absolute top-2 right-2 p-1.5 rounded-full bg-black/70 hover:bg-rose-600 text-white transition-colors"
+                      title="Delete and retake"
                     >
                       <CloseIcon size={14} />
                     </button>
@@ -199,120 +200,90 @@ export function Phase3Capture({
                     type="button"
                     onClick={() => handleTriggerUpload(slot)}
                     disabled={isUploading}
-                    className="w-full aspect-video rounded-xl border-2 border-dashed border-slate-200 hover:border-blue-400 bg-slate-50/60 hover:bg-blue-50/20 flex flex-col items-center justify-center gap-2 text-slate-500 hover:text-blue-600 transition-all cursor-pointer p-4 group"
+                    className="min-h-[48px] w-full py-3.5 px-4 rounded-2xl border-2 border-dashed border-slate-200 hover:border-blue-500 hover:bg-blue-50/40 text-slate-700 font-semibold text-xs transition-colors flex items-center justify-center gap-2"
                   >
-                    <div className="w-10 h-10 rounded-full bg-white shadow-2xs border border-slate-200 flex items-center justify-center group-hover:scale-105 transition-transform text-slate-600 group-hover:text-blue-600">
-                      <CameraIcon size={20} />
-                    </div>
-                    <span className="text-xs font-semibold text-slate-800 group-hover:text-blue-700">
-                      {isUploading ? "Uploading..." : "Take Photo or Upload"}
-                    </span>
+                    <CameraIcon size={18} className="text-blue-600" />
+                    <span>{isUploading ? "Uploading..." : t.wizard.phase3TakeOrUpload}</span>
                   </button>
                 )}
               </div>
             );
           })}
         </div>
-      </section>
+      </div>
 
-      {/* Section 2: Other Driver Details */}
-      <section className="space-y-4 pt-2">
-        <div className="flex items-center justify-between">
-          <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900">
-            2. Other Driver &amp; Vehicle
-          </h3>
-          <span className="text-[11px] text-slate-400">From their insurance card or license</span>
-        </div>
-
-        <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-xs space-y-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
-            <div>
-              <label className="block text-[11px] font-medium text-slate-500 mb-1">
-                Other Vehicle Plate *
-              </label>
-              <input
-                type="text"
-                value={counterpartyPlate}
-                onChange={(e) => setCounterpartyPlate(e.target.value.toUpperCase())}
-                placeholder="e.g. EK712MM"
-                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-mono font-semibold text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-
-            <div>
-              <label className="block text-[11px] font-medium text-slate-500 mb-1">
-                Driver Full Name
-              </label>
-              <input
-                type="text"
-                value={counterpartyName}
-                onChange={(e) => setCounterpartyName(e.target.value)}
-                placeholder="e.g. Marco Rossi"
-                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-
-            <div>
-              <label className="block text-[11px] font-medium text-slate-500 mb-1">
-                Contact Phone
-              </label>
-              <input
-                type="tel"
-                value={counterpartyPhone}
-                onChange={(e) => setCounterpartyPhone(e.target.value)}
-                placeholder="e.g. +39 347 889 0122"
-                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-
-            <div>
-              <label className="block text-[11px] font-medium text-slate-500 mb-1">
-                Insurance Carrier (Compagnia)
-              </label>
-              <input
-                type="text"
-                value={counterpartyInsurer}
-                onChange={(e) => setCounterpartyInsurer(e.target.value)}
-                placeholder="e.g. Liguria Mutua, Generali"
-                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
+      {/* Counterparty Information */}
+      <div className="bg-slate-50 rounded-3xl border border-slate-200 p-6 sm:p-7 space-y-4">
+        <h2 className="text-base font-bold text-slate-950 block">
+          {t.wizard.phase3CounterpartyDetails}
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+          <div className="space-y-1">
+            <span className="text-slate-600 font-medium">{t.wizard.phase3CounterpartyPlate}</span>
+            <input
+              type="text"
+              value={counterpartyPlate}
+              onChange={(e) => setCounterpartyPlate(e.target.value)}
+              placeholder="e.g. EZ719TR"
+              className="w-full min-h-[48px] px-4 py-3 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-blue-600 text-slate-900 font-mono uppercase"
+            />
+          </div>
+          <div className="space-y-1">
+            <span className="text-slate-600 font-medium">{t.wizard.phase3CounterpartyName}</span>
+            <input
+              type="text"
+              value={counterpartyName}
+              onChange={(e) => setCounterpartyName(e.target.value)}
+              placeholder="e.g. Marco Rossi"
+              className="w-full min-h-[48px] px-4 py-3 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-blue-600 text-slate-900"
+            />
+          </div>
+          <div className="space-y-1">
+            <span className="text-slate-600 font-medium">{t.wizard.phase3CounterpartyPhone}</span>
+            <input
+              type="tel"
+              value={counterpartyPhone}
+              onChange={(e) => setCounterpartyPhone(e.target.value)}
+              placeholder="+39 340 123 4567"
+              className="w-full min-h-[48px] px-4 py-3 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-blue-600 text-slate-900"
+            />
+          </div>
+          <div className="space-y-1">
+            <span className="text-slate-600 font-medium">{t.wizard.phase3CounterpartyInsurer}</span>
+            <input
+              type="text"
+              value={counterpartyInsurer}
+              onChange={(e) => setCounterpartyInsurer(e.target.value)}
+              placeholder="e.g. Generali Italia"
+              className="w-full min-h-[48px] px-4 py-3 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-blue-600 text-slate-900"
+            />
           </div>
         </div>
-      </section>
+      </div>
 
-      {/* Section 3: Driver Statement */}
-      <section className="space-y-4 pt-2">
-        <div className="flex items-center justify-between">
-          <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900">
-            3. What Happened? (Your Statement)
-          </h3>
-          <span className="text-[11px] text-slate-400">In your own words</span>
-        </div>
+      {/* Driver Statement Narrative */}
+      <div className="bg-slate-50 rounded-3xl border border-slate-200 p-6 sm:p-7 space-y-3">
+        <label className="text-base font-bold text-slate-950 block">
+          {t.wizard.phase3StatementTitle}
+        </label>
+        <textarea
+          rows={4}
+          value={statement}
+          onChange={(e) => setStatement(e.target.value)}
+          placeholder={t.wizard.phase3StatementPlaceholder}
+          className="w-full p-4 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-blue-600 text-sm text-slate-900 resize-y leading-relaxed"
+        />
+      </div>
 
-        <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-xs space-y-2">
-          <textarea
-            rows={4}
-            value={statement}
-            onChange={(e) => setStatement(e.target.value)}
-            placeholder="Describe the incident simply. For example: I was circulating inside the Piazza San Giovanni roundabout in the right lane when the other vehicle entered from the right side without yielding, making contact with my front-left wing."
-            className="w-full p-3.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 leading-relaxed"
-          />
-          <p className="text-[11px] text-slate-500">
-            Do not worry about legal liability or formal terminology. Plainly describe what you saw and heard.
-          </p>
-        </div>
-      </section>
-
-      {/* Forward Button */}
-      <div className="pt-4 border-t border-slate-200/80">
+      {/* Primary Action Button */}
+      <div className="pt-2">
         <button
           type="button"
           onClick={handleContinue}
-          className="w-full py-3.5 px-5 bg-slate-950 hover:bg-blue-600 text-white font-semibold text-xs sm:text-sm rounded-lg shadow-xs transition-all flex items-center justify-center gap-2 active:scale-[0.99]"
+          className="min-h-[52px] w-full py-4 px-6 rounded-2xl font-bold text-base bg-blue-600 hover:bg-blue-700 text-white shadow-xs flex items-center justify-center gap-2.5 transition-all active:scale-[0.98]"
         >
-          <span>Continue to Review &amp; Confirmation</span>
-          <ArrowRightIcon size={14} />
+          <span>{t.wizard.phase3Next}</span>
+          <ArrowRightIcon size={18} />
         </button>
       </div>
     </div>

@@ -47,7 +47,7 @@ export default function PrivacyPage() {
             </p>
             <ul className="list-disc pl-5 space-y-1 text-slate-600">
               <li>
-                <strong>`localStorage` (Keys: `impacta_claims_v1`, `impacta_driver_draft_v1`):</strong> Stores structured text fields, draft reporting states, and claims ledgers.
+                <strong>`localStorage`:</strong> Stores structured text fields, draft reporting states, claims ledgers (`impacta_claims_v1`, `impacta_driver_draft_v1`), language preference (`impacta_language_preference`), and local demo session tokens (`impacta_driver_session`, `impacta_insurer_session`).
               </li>
               <li>
                 <strong>`IndexedDB` (Database: `impacta_media_db`, Store: `evidence_blobs`):</strong> Stores photographic binary blobs locally to prevent browser quota overflow.
