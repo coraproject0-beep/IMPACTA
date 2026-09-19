@@ -118,17 +118,8 @@ export function Header({ onOpenMobile }: HeaderProps) {
         </nav>
       </div>
 
-      {/* Right: Quick Search, Driver App link & Reviewer identity */}
+      {/* Right: Quick Search & Reviewer identity */}
       <div className="flex items-center gap-3 flex-shrink-0">
-        {/* Quick Driver Link */}
-        <Link
-          href="/app"
-          className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium text-slate-700 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 border border-slate-200 rounded transition-colors"
-          title="Open IMPACTA Driver Mobile Intake"
-        >
-          <span className="w-1.5 h-1.5 rounded-full bg-blue-600" />
-          <span>Driver App</span>
-        </Link>
 
         {/* Global Search Input */}
         <div ref={searchContainerRef} className="relative hidden sm:block w-64 md:w-80">

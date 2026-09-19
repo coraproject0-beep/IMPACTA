@@ -144,26 +144,6 @@ export function Sidebar({ onCloseMobile }: { onCloseMobile?: () => void }) {
             })}
           </div>
         </div>
-
-        {/* Consumer Portal Link */}
-        <div>
-          <div className="px-2 pb-2 text-[10px] font-semibold text-slate-400 uppercase tracking-wider">
-            Consumer Intake
-          </div>
-          <Link
-            href="/app"
-            onClick={onCloseMobile}
-            className="flex items-center justify-between px-3 py-2 text-xs font-medium text-blue-700 bg-blue-50/50 hover:bg-blue-50 border border-blue-200/60 rounded-md transition-colors"
-          >
-            <div className="flex items-center gap-2.5">
-              <span className="w-2 h-2 rounded-full bg-blue-600" />
-              <span>IMPACTA Driver</span>
-            </div>
-            <span className="text-[10px] font-medium text-blue-600">
-              Mobile App →
-            </span>
-          </Link>
-        </div>
       </nav>
 
       {/* Bottom Quiet Utility Area */}

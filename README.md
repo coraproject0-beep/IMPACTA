@@ -9,33 +9,36 @@
 
 **IMPACTA** transforms messy, fragmented road-accident evidence—smartphone damage photos, police records, driver statements, and connected-vehicle black-box telemetry—into structured, reviewable insurance claim dossiers and CAI-compatible workspaces.
 
-The platform unites two interoperable, browser-local products:
+The platform is strictly architected into two separate, dedicated products sharing a browser-local persistence foundation:
 
-1. **IMPACTA Driver (`/app`)**: A mobile-first, low-cognitive-load progressive web application for drivers at the crash scene. Guides physical safety, structured 6-view damage photography, counterparty exchange, instant simulated reconstruction, and plain-language CAI validation.
+1. **IMPACTA Driver (`/app`)**: A calm, human, mobile-first progressive web application for drivers at the crash scene or post-accident. Features warm personal context for policyholder Matteo Bianchi (Volkswagen Golf VIII), low cognitive load, a 4-macro-phase reporting workflow, high-quality photography, and clear local persistence.
 2. **Claims Operations Console (`/console/*`)**: A high-density enterprise workspace for insurance claims adjusters and SIU fraud triage specialists. Features automated kinematics reconstruction, 10–20Hz vehicle telemetry correlation, CAI workspace review, and human-in-the-loop triage queues.
-3. **Prototype Gateway (`/`)**: A restrained landing page directing users to either experience with full academic prototype disclosures.
 
 > [!NOTE]
-> **Synthetic Demo Environment**: This application runs completely offline using browser-local storage (`localStorage` and `IndexedDB`) with a deterministic dataset of 14 synthetic Italian motor claims and a pre-configured policyholder profile for Matteo Bianchi (Volkswagen Golf VIII). No external backend servers or carrier APIs are invoked.
+> **Strict Product Separation**: The root URL (`/`) routes directly to `/app`. Driver and Claims Console operate as completely separated interfaces with zero cross-linking. In evaluation and classroom environments, adjusters and evaluators access the console directly via `/console` or open separate browser tabs.
 
 ---
 
 ## Key Features
 
 ### 1. IMPACTA Driver (`/app`)
-- **Mobile-First PWA**: PWA-ready (`/manifest.json`, `/sw.js`) with responsive mobile layout and home-screen install prompt.
-- **Offline Resilience**: Automatically detects network status and reassures policyholders that all inputs and photos are safely stored locally on device.
-- **9-Step Intake Wizard (`/app/report`)**:
-  1. *Safety & Medical Check* (with 112 calling guidance)
-  2. *Incident Basics* (date, time, location, vehicles, injuries, police)
-  3. *Guided 6-Angle Photo Capture* (front, rear, profiles, suspension, scene)
-  4. *Counterparty Details* (plates, insurer, policy)
-  5. *Driver Statement* (guided narrative)
-  6. *Multimodal Transformation* (demo simulation sequence vs transparent real-upload notice)
-  7. *Kinematic Validation* (computed impact angles and speed validation)
-  8. *CAI Circumstance Confirmation* (plain-language checks and completeness gauge)
-  9. *Confirmation & Console Handoff* (instant claim ID and direct link to Console)
-- **Deterministic Demo vs. Real Uploads**: Full 5-stage simulation sequence for the canonical Piazza San Giovanni roundabout demo incident; honest, transparent status message for arbitrary user uploads stating that live AI is disconnected in the prototype.
+- **Product Separation & Dedicated Navigation**: Primary driver navigation across **Home** (`/app`), **Reports** (`/app/reports`), and **Profile** (`/app/profile`). Navigation is automatically suppressed during an active report to preserve focus.
+- **Warm & Calm Driver Home (`/app`)**:
+  - Personal greeting ("Good morning, Matteo")
+  - Insured vehicle badge with clean European daylight photography (VW Golf VIII, plate `GF492XP`)
+  - Dominant single CTA: `[ Report an accident ]`
+  - In-progress report detection with `[ Resume Accident Report ]`
+  - Summary of filed claims
+- **Streamlined 4-Macro-Phase Wizard (`/app/report`)**:
+  - Top header with `← Back`, Phase title, and explicit `Save & exit` with draft persistence.
+  - Responsive two-column desktop split screen with context photography and intake roadmap.
+  - **Phase 1: Safety**: Physical safety checklist, hazard visibility, and non-automated European Emergency 112 assistance.
+  - **Phase 2: Accident Details**: Progressive disclosure for crash location, date/time, vehicle count, injuries, and police presence with Florence Piazza San Giovanni pre-fill option.
+  - **Phase 3: Capture Evidence & Statement**: Visual 4-slot photo guide (Whole Scene, Vehicle A Damage, Other Vehicle & Plate, Documents/Detail) with device camera integration (`capture="environment"`), counterparty driver details, and calm guided narrative statement.
+  - **Phase 4: Review & Confirmation**: Plain-English reconstruction check ("Does this match what happened?"), honest demo simulation vs. real-upload local storage disclosure, CAI Box 12 circumstance toggles, accuracy declaration checkbox, and claim submission.
+  - **Phase 5: Confirmed Receipt**: Official Claim ID (`CLM-YYYY-XXXX`), submission timestamp, local persistence disclosure, and direct links to `/app/reports` and `/app` (zero console cross-navigation).
+- **Reports Directory (`/app/reports`)**: Clean driver archive showing status badges and modal dossier receipts.
+- **Profile & Prototype Settings (`/app/profile`)**: Policyholder credentials, policy status, and discreet **Prototype Evaluation & Utilities** ("Load Demo Incident" and "Reset Demo Data").
 
 ### 2. Claims Operations Console (`/console/*`)
 - **Epistemic AI Separation**: Rigorously isolates *Observed Physical Facts*, *Machine Inferences*, *Adjuster Confirmations*, and *Missing Data*. Never claims to determine legal liability.
@@ -49,13 +52,13 @@ The platform unites two interoperable, browser-local products:
   - **Black-Box Telemetry**: High-frequency deceleration curves, Delta-V calculation, CAN-bus logs, and 360° impact angle compass.
   - **Audit Trail**: Chronological event log tracking automated actions and human overrides without exaggerated security claims.
 - **AI Review Queue (`/console/review`)**: Triage workflow for low-confidence models, contradictory statements, or missing evidence.
-- **Pipeline Analytics (`/console/analytics`)**: Academic benchmarking of AI confidence distributions, dynamic EDR telemetry lift (`telemMeanConf - nonTelemMeanConf`), and escalation drivers.
+- **Pipeline Analytics (`/console/analytics`)**: Academic benchmarking of AI confidence distributions, dynamic EDR telemetry lift, and escalation drivers.
 
 ### 3. Shared Browser-Local Architecture
 - **Structured Storage**: Claims and active drafts are maintained in `localStorage` under keys `impacta_claims_v1` and `impacta_driver_draft_v1`.
 - **Blob Storage via IndexedDB**: Heavy camera photos are safely stored in IndexedDB database `impacta_media_db` (`evidence_blobs`), preventing browser quota overflow errors.
 - **Cross-Tab Reactivity**: Driver submissions trigger `storage` events that immediately update open Claims Console tabs in real-time.
-- **Reset Demo Data**: A discrete trigger available in the Console sidebar and Driver home flushes local stores and restores initial fixtures cleanly.
+- **Reset Demo Data**: A discrete trigger available in the Console sidebar and Driver profile flushes local stores and restores initial fixtures cleanly.
 
 ---
 
@@ -63,9 +66,11 @@ The platform unites two interoperable, browser-local products:
 
 | Route | View | Description |
 | :--- | :--- | :--- |
-| `/` | Prototype Gateway | Minimal launchpad with links to Driver and Claims Console |
-| `/app` | Driver Home | Policyholder dashboard, profile overview, demo & real intake start |
-| `/app/report` | Driver Intake Wizard | 9-step mobile reporting workflow with photo evidence capture |
+| `/` | Root Redirect | Automatically redirects to `/app` (Driver experience) |
+| `/app` | Driver Home | Personal policyholder greeting, vehicle context, dominant intake CTA |
+| `/app/report` | Driver Intake Wizard | 4-macro-phase report wizard with desktop split-screen and native camera capture |
+| `/app/reports` | Driver Reports | Policyholder filed claims archive and dossier receipts |
+| `/app/profile` | Driver Profile | Policy information, vehicle specs, and prototype evaluation controls |
 | `/console` | Console Index | Redirects to `/console/overview` |
 | `/console/overview` | Operations Dashboard | High-level metrics, funnel progression, and priority triage |
 | `/console/claims` | Claims Ledger | Filterable and searchable table of all dossiers |
@@ -74,73 +79,31 @@ The platform unites two interoperable, browser-local products:
 | `/console/analytics` | Pipeline Evaluation | Empirical evaluation metrics and sensor lift benchmarks |
 
 ### Backward-Compatible Redirects
-Existing bookmarks and links continue to function seamlessly:
 - `/overview` ──► `/console/overview`
 - `/claims` ──► `/console/claims`
 - `/claims/[id]` ──► `/console/claims/[id]`
-- `/review` ──► `/console/review`
-- `/analytics` ──► `/console/analytics`
 
 ---
 
-## Getting Started
+## Tech Stack
 
-### Prerequisites
+- **Framework:** Next.js 14 (App Router)
+- **Language:** TypeScript 5 (Strict Mode)
+- **Styling:** Tailwind CSS (Light Theme only, anti-slop restrained palette)
+- **Storage:** Browser `localStorage` (Structured claims and drafts) & `IndexedDB` (Binary photo blobs)
+- **Deployment Target:** Vercel / Static Node.js
 
-- Node.js (v18.17+ recommended, v20+ supported)
-- npm (v9+ recommended)
+---
 
-### Installation
+## Development & Verification
 
 ```bash
-# Clone or navigate to the repository
-cd C:\Dev\ANTI\IMPACTA
-
 # Install dependencies
 npm install
-```
 
-### Development Server
-
-```bash
+# Run development server
 npm run dev
-```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser. Launch either **IMPACTA Driver** (`/app`) or the **Claims Console** (`/console`).
-
-### Testing Cross-Product Handoff
-1. Open [http://localhost:3000/console/claims](http://localhost:3000/console/claims) in one browser window.
-2. In a second window (or mobile device emulator), open [http://localhost:3000/app](http://localhost:3000/app).
-3. Click **"Run Canonical Demo Incident"** in the Driver experience.
-4. Step through the 9 steps and submit the dossier.
-5. Watch the claim appear in the Claims Console in real time, or click the generated link to immediately inspect it.
-
-### Production Build
-
-```bash
-# Build the production bundle
+# Production build verification
 npm run build
-
-# Start the production server
-npm run start
 ```
-
----
-
-## Architecture & Technology
-
-- **Framework**: Next.js 14 (App Router)
-- **Language**: TypeScript (Strict Mode)
-- **Styling**: Tailwind CSS (Enterprise Light Theme Only)
-- **Client Persistence**: `localStorage` (claims, draft states) & `IndexedDB` (high-res media blobs)
-- **PWA Capabilities**: Service Worker shell caching, Web App Manifest, Standalone display mode
-- **Visuals & Charts**: Lightweight custom SVG charts (zero third-party chart library dependencies)
-- **Documentation**:
-  - Full Product Specification: [`docs/IMPACTA_V1_SPEC.md`](docs/IMPACTA_V1_SPEC.md)
-  - Driver Experience Deep Dive: [`docs/DRIVER_EXPERIENCE_V1.md`](docs/DRIVER_EXPERIENCE_V1.md)
-
----
-
-## License
-
-Academic Prototype — Token Titans. All rights reserved.
