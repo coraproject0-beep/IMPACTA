@@ -15,8 +15,11 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "IMPACTA | AI Accident Intelligence & Claims Intake",
-  description: "AI-native road-accident intelligence and insurance claims-intake platform",
+  title: "IMPACTA | Road Accident Intelligence & Intake",
+  description: "Road accident intelligence and European insurance claims intake platform",
+  icons: {
+    icon: "/favicon.svg",
+  },
 };
 
 export default function RootLayout({

@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useLanguage } from "@/context/LanguageContext";
 import { useClaims } from "@/context/ClaimsContext";
@@ -10,18 +9,14 @@ import { SYNTHETIC_DRIVER_PROFILE } from "@/features/driver/data/driverProfileFi
 import { Claim } from "@/types";
 import {
   FileTextIcon,
-  CheckCircleIcon,
   ChevronRightIcon,
-  CameraIcon,
   CloseIcon,
-  CarIcon,
-  ArrowRightIcon,
 } from "@/components/icons/Icons";
 import { formatDate, getStatusBadgeClass, getStatusLabel } from "@/lib/utils";
 
 export default function DriverReportsPage() {
   const router = useRouter();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const { claims } = useClaims();
   const { startNewReport } = useDriverDraft();
   const [selectedClaim, setSelectedClaim] = useState<Claim | null>(null);
@@ -39,40 +34,40 @@ export default function DriverReportsPage() {
   };
 
   return (
-    <div className="space-y-8 max-w-3xl mx-auto py-2 selection:bg-blue-100 selection:text-blue-900">
+    <div className="space-y-10 max-w-4xl mx-auto py-4">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-6">
-        <div>
-          <p className="text-xs font-mono font-bold uppercase tracking-widest text-blue-700">
-            {t.nav.reports}
-          </p>
-          <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-950 mt-1">
-            {t.driverHome.recentReports}
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 pb-6 border-b border-[#D7D9D8]">
+        <div className="space-y-1">
+          <span className="text-xs font-mono font-bold uppercase tracking-widest text-[#6F7375]">
+            {language === "it" ? "REGISTRO SINISTRI PERSONALE" : "PERSONAL CLAIMS LEDGER"}
+          </span>
+          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight uppercase text-[#090A0A]">
+            {t("driverHome.recentReports")}
           </h1>
-          <p className="text-base text-slate-600 mt-1">
-            Submitted accident dossiers and documentation records preserved on this device.
+          <p className="text-sm text-[#6F7375] font-light max-w-xl">
+            Submitted incident dossiers, photos, and circumstances preserved in local device storage.
           </p>
         </div>
 
         <button
           type="button"
           onClick={handleStartNewReport}
-          className="min-h-[48px] inline-flex items-center justify-center gap-2 px-6 py-3 bg-slate-950 hover:bg-blue-600 text-white rounded-xl text-sm font-bold shadow-xs transition-colors self-start sm:self-auto active:scale-[0.98]"
+          className="min-h-[48px] inline-flex items-center justify-center px-6 py-3 bg-[#090A0A] hover:bg-[#171819] text-white text-xs font-bold uppercase tracking-wider transition-colors self-start sm:self-auto"
         >
-          <span>+ {t.nav.reportAccident}</span>
+          <span>+ {t("nav.reportAccident")}</span>
         </button>
       </div>
 
-      {/* Reports List */}
-      <div className="space-y-3">
+      {/* Reports List (Unboxed Document Style) */}
+      <div className="space-y-4">
         {driverClaims.length === 0 ? (
-          <div className="bg-white border border-slate-200 rounded-3xl p-10 text-center space-y-3 shadow-xs">
-            <div className="w-12 h-12 rounded-2xl bg-slate-100 text-slate-400 mx-auto flex items-center justify-center">
-              <FileTextIcon size={24} />
+          <div className="bg-white border border-[#D7D9D8] p-12 text-center space-y-3">
+            <div className="w-12 h-12 border border-[#D7D9D8] text-[#6F7375] mx-auto flex items-center justify-center">
+              <FileTextIcon size={22} />
             </div>
-            <h2 className="text-base font-bold text-slate-950">No Reports Filed</h2>
-            <p className="text-xs sm:text-sm text-slate-500 max-w-sm mx-auto">
-              You have not submitted any accident reports yet. When you complete a roadside report, it will be cataloged here.
+            <h2 className="text-base font-bold uppercase tracking-tight text-[#090A0A]">No Incident Reports Filed</h2>
+            <p className="text-xs text-[#6F7375] max-w-sm mx-auto font-mono">
+              When you submit a guided roadside report, its verified facts and photos will be preserved here.
             </p>
           </div>
         ) : (
@@ -80,115 +75,110 @@ export default function DriverReportsPage() {
             <div
               key={claim.id}
               onClick={() => setSelectedClaim(claim)}
-              className="bg-white border border-slate-200 hover:border-slate-300 rounded-3xl p-5 sm:p-6 transition-all shadow-xs cursor-pointer group flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+              className="bg-white border border-[#D7D9D8] hover:border-[#090A0A] p-6 transition-colors cursor-pointer flex flex-col sm:flex-row sm:items-center justify-between gap-4"
             >
-              <div className="space-y-1.5">
-                <div className="flex items-center gap-2.5">
-                  <span className="font-mono text-sm font-bold text-blue-700">
+              <div className="space-y-2">
+                <div className="flex items-center gap-3">
+                  <span className="font-mono text-sm font-bold text-[#090A0A]">
                     {claim.id}
                   </span>
                   <span
-                    className={`text-[10px] font-semibold px-2.5 py-0.5 rounded border ${getStatusBadgeClass(
+                    className={`text-[10px] font-mono font-semibold px-2 py-0.5 border uppercase ${getStatusBadgeClass(
                       claim.status
                     )}`}
                   >
                     {getStatusLabel(claim.status)}
                   </span>
                 </div>
-                <div className="text-base font-bold text-slate-900 group-hover:text-blue-600 transition-colors">
+                <div className="text-base font-bold uppercase tracking-tight text-[#090A0A]">
                   {claim.incident.location.city} ({claim.incident.location.street})
                 </div>
-                <div className="text-xs text-slate-500 font-mono">
+                <div className="text-xs text-[#6F7375] font-mono">
                   {formatDate(claim.incidentDate)} • {claim.vehicleA.make} {claim.vehicleA.model} ({claim.vehicleA.plate})
                 </div>
               </div>
 
-              <div className="flex items-center gap-3 self-end sm:self-center">
-                <span className="text-xs font-mono font-semibold text-slate-400 bg-slate-50 px-2.5 py-1 rounded-lg border border-slate-200">
+              <div className="flex items-center gap-4 self-end sm:self-center">
+                <span className="text-xs font-mono text-[#6F7375] px-2.5 py-1 border border-[#D7D9D8] bg-[#F4F5F3]">
                   {claim.evidence.length} photos
                 </span>
-                <ChevronRightIcon size={18} className="text-slate-400 group-hover:text-slate-800 group-hover:translate-x-0.5 transition-all" />
+                <ChevronRightIcon size={16} className="text-[#6F7375]" />
               </div>
             </div>
           ))
         )}
       </div>
 
-      {/* Claim Detail Inspector Modal */}
+      {/* Claim Detail Modal (Monochrome Document Modal) */}
       {selectedClaim && (
-        <div className="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl border border-slate-200 max-w-lg w-full p-6 sm:p-8 space-y-6 shadow-xl animate-fade-in max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+        <div className="fixed inset-0 z-50 bg-[#090A0A]/70 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white border border-[#090A0A] max-w-xl w-full p-8 space-y-6 shadow-2xl max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between border-b border-[#D7D9D8] pb-4">
               <div>
-                <span className="text-[10px] font-mono uppercase tracking-wider text-slate-400 block font-semibold">
-                  Incident Dossier
+                <span className="text-xs font-mono uppercase tracking-widest text-[#6F7375] block font-bold">
+                  DOSSIER RECORD
                 </span>
-                <h3 className="text-xl font-extrabold text-slate-950 font-mono">
+                <h3 className="text-2xl font-bold font-mono text-[#090A0A] mt-0.5">
                   {selectedClaim.id}
                 </h3>
               </div>
               <button
                 type="button"
                 onClick={() => setSelectedClaim(null)}
-                className="p-2 rounded-xl text-slate-400 hover:text-slate-950 hover:bg-slate-100 transition-colors"
+                className="p-2 text-[#6F7375] hover:text-[#090A0A] transition-colors"
+                title="Close modal"
               >
                 <CloseIcon size={20} />
               </button>
             </div>
 
-            <div className="space-y-4 text-xs text-slate-700">
-              <div className="grid grid-cols-2 gap-3 p-4 bg-slate-50 rounded-2xl border border-slate-200">
+            <div className="space-y-4 text-xs font-mono">
+              <div className="grid grid-cols-2 gap-4 p-4 bg-[#F4F5F3] border border-[#D7D9D8]">
                 <div>
-                  <span className="text-slate-400 block text-[11px]">Location</span>
-                  <span className="font-bold text-slate-900 text-sm">
-                    {selectedClaim.incident.location.city}
-                  </span>
-                  <span className="text-slate-500 block text-xs">
-                    {selectedClaim.incident.location.street}
-                  </span>
+                  <span className="text-[#6F7375] block uppercase">STATUS</span>
+                  <span className="font-bold text-[#090A0A]">{getStatusLabel(selectedClaim.status)}</span>
                 </div>
                 <div>
-                  <span className="text-slate-400 block text-[11px]">Date &amp; Time</span>
-                  <span className="font-bold text-slate-900 text-sm">
-                    {formatDate(selectedClaim.incidentDate)}
-                  </span>
-                  <span className="text-slate-500 block text-xs">
-                    {selectedClaim.incident?.timestamp
-                      ? selectedClaim.incident.timestamp.split("T")[1]?.substring(0, 5) || "11:42"
-                      : "11:42"}
-                  </span>
+                  <span className="text-[#6F7375] block uppercase">DATE / TIME</span>
+                  <span className="font-bold text-[#090A0A]">{formatDate(selectedClaim.incidentDate)}</span>
+                </div>
+                <div>
+                  <span className="text-[#6F7375] block uppercase">POLICYHOLDER</span>
+                  <span className="font-bold text-[#090A0A]">{selectedClaim.policyholder.fullName}</span>
+                </div>
+                <div>
+                  <span className="text-[#6F7375] block uppercase">VEHICLE PLATE</span>
+                  <span className="font-bold text-[#090A0A]">{selectedClaim.vehicleA.plate}</span>
                 </div>
               </div>
 
-              <div>
-                <span className="text-slate-400 block text-[11px] mb-1 font-mono uppercase">
-                  Statement
-                </span>
-                <p className="p-3.5 bg-slate-50 rounded-xl border border-slate-200 text-slate-800 leading-relaxed text-xs">
-                  {selectedClaim.driverA.statement || "Standard European roundabout ingress collision recorded."}
+              <div className="space-y-2">
+                <span className="text-[#6F7375] block uppercase">INCIDENT SUMMARY</span>
+                <p className="text-sm font-sans text-[#090A0A] p-4 border border-[#D7D9D8] leading-relaxed">
+                  {selectedClaim.incident.summary}
                 </p>
               </div>
 
-              <div>
-                <span className="text-slate-400 block text-[11px] mb-1 font-mono uppercase">
-                  Evidence Preserved
-                </span>
-                <div className="flex items-center gap-2 p-3 bg-slate-50 rounded-xl border border-slate-200">
-                  <CameraIcon size={16} className="text-blue-600" />
-                  <span className="font-semibold text-slate-800">
-                    {selectedClaim.evidence.length} optical items cataloged in IndexedDB
-                  </span>
+              <div className="space-y-2">
+                <span className="text-[#6F7375] block uppercase">EVIDENCE ASSETS ({selectedClaim.evidence.length})</span>
+                <div className="grid grid-cols-2 gap-2 text-[11px]">
+                  {selectedClaim.evidence.map((ev, i) => (
+                    <div key={ev.id || i} className="p-2 border border-[#D7D9D8] bg-[#F4F5F3]">
+                      <span className="font-bold text-[#090A0A] block">{ev.type}</span>
+                      <span className="text-[#6F7375]">{ev.title || "Preserved in IDB"}</span>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
 
-            <div className="pt-2">
+            <div className="pt-4 border-t border-[#D7D9D8] flex justify-end">
               <button
                 type="button"
                 onClick={() => setSelectedClaim(null)}
-                className="w-full py-3 bg-slate-950 hover:bg-slate-800 text-white font-bold text-xs rounded-xl transition-colors"
+                className="min-h-[44px] px-6 bg-[#090A0A] text-white text-xs font-bold uppercase tracking-wider hover:bg-[#171819] transition-colors"
               >
-                Close Inspector
+                Close Dossier
               </button>
             </div>
           </div>

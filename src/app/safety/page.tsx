@@ -52,7 +52,7 @@ export default function SafetyPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12 text-sm font-mono">
             <div className="space-y-3 pb-6 border-b border-[#D7D9D8] md:border-b-0 md:border-r md:pr-8">
               <span className="text-xs text-[#DC2626] font-bold uppercase tracking-wider block">
-                PRINCIPIO 01 / EMERGENCY ESCALATION
+                EMERGENCY ESCALATION
               </span>
               <h3 className="text-xl font-bold uppercase text-[#090A0A]">
                 {language === "it" ? "Chiamata Rapida 112" : "112 Direct Access"}
@@ -66,7 +66,7 @@ export default function SafetyPage() {
 
             <div className="space-y-3 pb-6 border-b border-[#D7D9D8] md:border-b-0 md:border-r md:pr-8">
               <span className="text-xs text-[#090A0A] font-bold uppercase tracking-wider block">
-                PRINCIPIO 02 / ROADWAY EVACUATION
+                ROADWAY REFUGING
               </span>
               <h3 className="text-xl font-bold uppercase text-[#090A0A]">
                 {language === "it" ? "Incolumità Fuori Carreggiata" : "Safe Refuge Protocol"}
@@ -80,7 +80,7 @@ export default function SafetyPage() {
 
             <div className="space-y-3">
               <span className="text-xs text-[#090A0A] font-bold uppercase tracking-wider block">
-                PRINCIPIO 03 / ZERO AUTOMATED FAULT
+                HUMAN GOVERNANCE
               </span>
               <h3 className="text-xl font-bold uppercase text-[#090A0A]">
                 {language === "it" ? "Nessuna Sentenza Automatica" : "Zero Automated Decrees"}

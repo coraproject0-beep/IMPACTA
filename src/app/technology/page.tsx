@@ -59,7 +59,7 @@ export default function TechnologyPage() {
             </p>
           </div>
           <div className="text-xs font-mono text-white/40 tracking-wider whitespace-nowrap">
-            ISO 27037 FORENSIC STANDARD
+            EVIDENTIARY AUDIT PROVENANCE
           </div>
         </div>
       </section>

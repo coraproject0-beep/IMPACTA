@@ -12,5 +12,5 @@ export default function ConsoleLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <GlobalShell>{children}</GlobalShell>;
+  return <>{children}</>;
 }

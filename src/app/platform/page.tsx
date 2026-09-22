@@ -20,7 +20,7 @@ export default function PlatformPage() {
       description: language === "it"
         ? "Subito dopo la collisione, la web app guida l'incolumità personale (chiamata rapida 112, giubbotto catarifrangente) e impone 4 rilievi fotografici ortogonali con metadati GNSS ed EXIF non modificabili."
         : "Immediately post-collision, the web client prioritizes human safety (direct 112 dialer, hazard triangle) and guides the driver through 4 calibrated orthogonal evidence photos with immutable GNSS timestamps.",
-      tag: "CAPTURE • ISO 27037",
+      tag: "CAPTURE • FORENSIC FUSION",
     },
     {
       step: "02",

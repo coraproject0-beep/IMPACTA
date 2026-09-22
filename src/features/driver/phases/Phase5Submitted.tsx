@@ -37,124 +37,123 @@ export function Phase5Submitted({ draft, onReturnHome }: Phase5SubmittedProps) {
       });
 
   return (
-    <div className="space-y-8 py-2 text-center selection:bg-blue-100 selection:text-blue-900">
+    <div className="space-y-10 py-6 max-w-2xl mx-auto text-left">
       {/* Big Calm Success Indicator */}
-      <div className="w-20 h-20 mx-auto rounded-full bg-emerald-50 border border-emerald-200 text-emerald-600 flex items-center justify-center">
-        <CheckCircleIcon size={44} />
-      </div>
-
-      <div className="space-y-2">
-        <p className="text-xs sm:text-sm font-mono font-bold uppercase tracking-widest text-emerald-600">
-          {t.wizard.phase5Subheader}
-        </p>
-        <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-950">
-          {t.wizard.phase5Title}
+      <div className="space-y-3 pb-8 border-b border-[#D7D9D8]">
+        <div className="flex items-center gap-3 text-emerald-700">
+          <CheckCircleIcon size={24} />
+          <span className="text-xs font-mono font-bold uppercase tracking-widest">
+            {t("wizard.phase5Subheader")}
+          </span>
+        </div>
+        <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-[#090A0A] uppercase">
+          {t("wizard.phase5Title")}
         </h1>
-        <p className="text-base sm:text-lg text-slate-600 max-w-lg mx-auto">
-          Your incident dossier has been assembled and stored locally on this device. You can review or export your report at any time.
+        <p className="text-sm sm:text-base text-[#6F7375] font-light leading-relaxed">
+          Your accident report and photographic evidence have been securely compiled and preserved in local browser storage.
         </p>
       </div>
 
-      {/* Official Receipt Card */}
-      <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 text-left space-y-5 shadow-xs">
-        <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+      {/* Official Receipt Document (Strict Monochrome Hairline Style) */}
+      <div className="bg-white border border-[#090A0A] p-6 sm:p-8 space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-baseline justify-between border-b border-[#D7D9D8] pb-4 gap-2">
           <div>
-            <span className="text-xs font-mono uppercase tracking-wider text-slate-400 block font-bold">
-              {t.wizard.phase5Reference}
+            <span className="text-xs font-mono uppercase tracking-widest text-[#6F7375] block font-bold">
+              {t("wizard.phase5Reference")}
             </span>
-            <span className="font-mono font-bold text-xl sm:text-2xl text-blue-700 mt-0.5 block">
+            <span className="font-mono font-bold text-2xl text-[#090A0A] mt-0.5 block">
               {claimId}
             </span>
           </div>
-          <div className="text-right">
-            <span className="text-xs font-mono uppercase tracking-wider text-slate-400 block font-bold">
-              {t.wizard.phase5FiledTimestamp}
+          <div className="text-left sm:text-right">
+            <span className="text-xs font-mono uppercase tracking-widest text-[#6F7375] block font-bold">
+              {t("wizard.phase5FiledTimestamp")}
             </span>
-            <span className="text-sm font-semibold text-slate-700 mt-0.5 block">
+            <span className="text-xs font-mono text-[#090A0A] mt-0.5 block">
               {nowFormatted}
             </span>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 text-sm">
-          <div>
-            <span className="text-slate-500 block text-xs uppercase font-mono font-semibold">{t.wizard.phase5InsuredVehicle}</span>
-            <span className="font-bold text-slate-950 text-base block mt-0.5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 text-xs font-mono">
+          <div className="space-y-1">
+            <span className="text-[#6F7375] uppercase block">{t("wizard.phase5InsuredVehicle")}</span>
+            <span className="font-bold text-[#090A0A] text-sm block">
               {SYNTHETIC_DRIVER_PROFILE.vehicle.make} {SYNTHETIC_DRIVER_PROFILE.vehicle.model}
             </span>
-            <span className="text-slate-600 font-mono text-xs sm:text-sm block">
+            <span className="text-[#6F7375] block">
               {SYNTHETIC_DRIVER_PROFILE.vehicle.plate}
             </span>
           </div>
 
-          <div>
-            <span className="text-slate-500 block text-xs uppercase font-mono font-semibold">{t.wizard.phase5PolicyNumber}</span>
-            <span className="font-mono font-bold text-slate-950 text-base block mt-0.5">
+          <div className="space-y-1">
+            <span className="text-[#6F7375] uppercase block">{t("wizard.phase5PolicyNumber")}</span>
+            <span className="font-bold text-[#090A0A] text-sm block">
               {SYNTHETIC_DRIVER_PROFILE.policy.policyNumber}
             </span>
-            <span className="text-slate-600 text-xs sm:text-sm block">
+            <span className="text-[#6F7375] block">
               {SYNTHETIC_DRIVER_PROFILE.policy.insurerName}
             </span>
           </div>
 
-          <div>
-            <span className="text-slate-500 block text-xs uppercase font-mono font-semibold">{t.wizard.phase5Counterparty}</span>
-            <span className="font-semibold text-slate-950 text-base block mt-0.5">
+          <div className="space-y-1">
+            <span className="text-[#6F7375] uppercase block">{t("wizard.phase5Counterparty")}</span>
+            <span className="font-bold text-[#090A0A] text-sm block">
               {draft.counterparty.driverName || "Pending identification"}
             </span>
-            <span className="text-slate-600 font-mono text-xs sm:text-sm block">
+            <span className="text-[#6F7375] block">
               {draft.counterparty.plate || "Unknown plate"}
             </span>
           </div>
 
-          <div>
-            <span className="text-slate-500 block text-xs uppercase font-mono font-semibold">{t.wizard.phase5EvidencePreserved}</span>
-            <span className="font-bold text-emerald-700 text-base block mt-0.5">
+          <div className="space-y-1">
+            <span className="text-[#6F7375] uppercase block">{t("wizard.phase5EvidencePreserved")}</span>
+            <span className="font-bold text-emerald-700 text-sm block">
               {draft.evidenceItems.length} photos preserved
             </span>
-            <span className="text-slate-500 text-xs sm:text-sm block">
+            <span className="text-[#6F7375] block">
               IndexedDB local storage
             </span>
           </div>
         </div>
 
-        <div className="pt-4 border-t border-slate-100 flex items-center justify-between text-sm text-slate-600">
-          <span className="font-medium">Incident Location</span>
-          <span className="font-bold text-slate-950">
+        <div className="pt-4 border-t border-[#D7D9D8] flex items-center justify-between text-xs font-mono">
+          <span className="text-[#6F7375] uppercase">Location</span>
+          <span className="font-bold text-[#090A0A]">
             {draft.location.street || "Florence"}, {draft.location.city}
           </span>
         </div>
       </div>
 
-      {/* Persistence Disclosure */}
-      <div className="p-6 rounded-3xl bg-slate-50 border border-slate-200 text-left text-sm text-slate-700 space-y-2">
-        <div className="flex items-center gap-2 font-bold text-slate-950 text-base">
-          <ShieldCheckIcon size={18} className="text-blue-600" />
-          <span>{t.wizard.phase5PersistenceTitle}</span>
+      {/* Local Storage Notice */}
+      <div className="p-6 bg-[#F4F5F3] border border-[#D7D9D8] space-y-2 text-xs font-mono">
+        <div className="flex items-center gap-2 font-bold text-[#090A0A] uppercase tracking-wider">
+          <ShieldCheckIcon size={16} />
+          <span>{t("wizard.phase5PersistenceTitle")}</span>
         </div>
-        <p className="text-sm text-slate-600 leading-relaxed">
-          {t.wizard.phase5PersistenceDesc}
+        <p className="text-[#6F7375] leading-relaxed">
+          {t("wizard.phase5PersistenceDesc")}
         </p>
       </div>
 
-      {/* Action Buttons: ZERO links to /console! */}
-      <div className="space-y-3 pt-2">
-        <Link
-          href="/app/reports"
-          className="min-h-[52px] w-full py-4 px-6 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl text-base font-bold shadow-xs transition-colors flex items-center justify-center gap-2.5 active:scale-[0.98]"
-        >
-          <BookmarkIcon size={20} />
-          <span>{t.wizard.phase5ViewInReports}</span>
-        </Link>
-
+      {/* Primary Actions: Return to Driver Home or View in Reports (ZERO links to /console!) */}
+      <div className="flex flex-col sm:flex-row gap-4 pt-4 border-t border-[#D7D9D8]">
         <button
           type="button"
           onClick={onReturnHome}
-          className="min-h-[52px] w-full py-3.5 px-6 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 rounded-2xl text-base font-semibold transition-colors flex items-center justify-center gap-2.5"
+          className="min-h-[52px] flex-1 inline-flex items-center justify-center gap-2 px-8 bg-[#090A0A] text-white text-xs font-bold uppercase tracking-wider hover:bg-[#171819] transition-colors"
         >
-          <HomeIcon size={20} />
-          <span>{t.wizard.phase5ReturnHome}</span>
+          <HomeIcon size={16} />
+          <span>{t("wizard.phase5ReturnHome")}</span>
         </button>
+
+        <Link
+          href="/app/reports"
+          className="min-h-[52px] flex-1 inline-flex items-center justify-center gap-2 px-8 border border-[#D7D9D8] bg-white text-[#090A0A] text-xs font-bold uppercase tracking-wider hover:bg-[#F4F5F3] transition-colors"
+        >
+          <BookmarkIcon size={16} />
+          <span>{t("wizard.phase5ViewInReports")}</span>
+        </Link>
       </div>
     </div>
   );

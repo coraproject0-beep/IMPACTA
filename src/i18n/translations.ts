@@ -28,6 +28,8 @@ export interface Translations {
     reportCta: string;
     insurerCta: string;
     telemetryProof: string;
+    reportAccident: string;
+    seeHowItWorks: string;
   };
   evidenceStory: {
     sectionKicker: string;
@@ -83,6 +85,7 @@ export interface Translations {
     recentReports: string;
     viewAllReports: string;
     activePolicy: string;
+    insurancePolicy: string;
     noReportsYet: string;
   };
   vehicle: {
@@ -209,6 +212,17 @@ export interface Translations {
     insurerOrg: string;
     insurerRole: string;
     demoSessionNotice: string;
+    insurerLoginDesc: string;
+    loginAsElena: string;
+  };
+  login: {
+    driverTitle: string;
+    driverSubtitle: string;
+    driverDemoAction: string;
+    emailLabel: string;
+    passwordLabel: string;
+    forgotPassword: string;
+    submitDriver: string;
   };
   footer: {
     tagline: string;
@@ -218,6 +232,13 @@ export interface Translations {
     languageHeading: string;
     academicNotice: string;
     allRightsReserved: string;
+    governanceHeading: string;
+    contact: string;
+    privacy: string;
+    terms: string;
+    surfacesHeading: string;
+    driverAreaLink: string;
+    claimsOperationsLink: string;
   };
 }
 
@@ -251,6 +272,8 @@ export const translations: Record<Locale, Translations> = {
       reportCta: "Report an accident",
       insurerCta: "Claims operations portal →",
       telemetryProof: "Example Telemetry Support • CAI Box 12 Standard • Zero Liability Automation",
+      reportAccident: "Report an accident",
+      seeHowItWorks: "See how IMPACTA works",
     },
     evidenceStory: {
       sectionKicker: "The Evidence Transformation",
@@ -311,6 +334,7 @@ export const translations: Record<Locale, Translations> = {
       recentReports: "Recent Incident Reports",
       viewAllReports: "View all filed reports →",
       activePolicy: "Policy Active • 24/7 Roadside Assistance Included",
+      insurancePolicy: "Active Insurance Policy",
       noReportsYet: "No incident reports filed yet. Safe travels.",
     },
     vehicle: {
@@ -440,6 +464,17 @@ export const translations: Record<Locale, Translations> = {
       insurerOrg: "Aura Mutua Assicurazioni",
       insurerRole: "Claims Operations & Adjuster Workbench",
       demoSessionNotice: "Academic Prototype Demo Environment • No external authentication backend required",
+      insurerLoginDesc: "Access verified collision dossiers, 10–20Hz deceleration telemetry, and CAI Box 12 circumstances.",
+      loginAsElena: "Sign in as Elena Rostagno",
+    },
+    login: {
+      driverTitle: "Welcome back",
+      driverSubtitle: "Sign in to access your vehicle profile, insurance policies, and collision dossiers.",
+      driverDemoAction: "Continue as Matteo Bianchi (Demo)",
+      emailLabel: "Email address",
+      passwordLabel: "Password",
+      forgotPassword: "Forgot password?",
+      submitDriver: "Sign in to Driver Area",
     },
     footer: {
       tagline: "The European standard for objective collision intake and verifiable telemetry preservation.",
@@ -449,6 +484,13 @@ export const translations: Record<Locale, Translations> = {
       languageHeading: "Language",
       academicNotice: "Academic Demonstration Prototype • IMPACTA Labs Milano • Local Browser Persistence Only",
       allRightsReserved: "IMPACTA Mobility Platform. All rights reserved.",
+      governanceHeading: "Governance & Safety",
+      contact: "Contact",
+      privacy: "Privacy Notice",
+      terms: "Terms of Service",
+      surfacesHeading: "Access Portals",
+      driverAreaLink: "Driver Personal Area",
+      claimsOperationsLink: "Claims Operations Console",
     },
   },
   it: {
@@ -480,6 +522,8 @@ export const translations: Record<Locale, Translations> = {
       reportCta: "Segnala un sinistro",
       insurerCta: "Portale liquidatori sinistri →",
       telemetryProof: "Supporto Telemetria di Esempio • Standard CAI Casella 12 • Nessuna Automazione di Responsabilità",
+      reportAccident: "Segnala un sinistro",
+      seeHowItWorks: "Scopri come funziona IMPACTA",
     },
     evidenceStory: {
       sectionKicker: "La Trasformazione delle Prove",
@@ -540,6 +584,7 @@ export const translations: Record<Locale, Translations> = {
       recentReports: "Sinistri Recenti Registrati",
       viewAllReports: "Visualizza tutti i sinistri registrati →",
       activePolicy: "Polizza Attiva • Soccorso Stradale 24/7 Incluso",
+      insurancePolicy: "Polizza Assicurativa Attiva",
       noReportsYet: "Nessun sinistro registrato finora. Buon viaggio.",
     },
     vehicle: {
@@ -669,6 +714,17 @@ export const translations: Record<Locale, Translations> = {
       insurerOrg: "Aura Mutua Assicurazioni",
       insurerRole: "Ufficio Gestione Sinistri e Liquidazione",
       demoSessionNotice: "Ambiente Dimostrativo Prototipale • Nessun server di autenticazione esterno richiesto",
+      insurerLoginDesc: "Accedi ai dossier collisione verificati, telemetria a 10–20Hz e circostanze CAI Casella 12.",
+      loginAsElena: "Accedi come Elena Rostagno",
+    },
+    login: {
+      driverTitle: "Bentornato",
+      driverSubtitle: "Accedi per visualizzare il tuo veicolo, la polizza assicurativa e i sinistri registrati.",
+      driverDemoAction: "Continua come Matteo Bianchi (Demo)",
+      emailLabel: "Indirizzo Email",
+      passwordLabel: "Password",
+      forgotPassword: "Password dimenticata?",
+      submitDriver: "Accedi all'Area Conducente",
     },
     footer: {
       tagline: "Lo standard europeo per l'acquisizione oggettiva dei sinistri e la conservazione telemetrica verificabile.",
@@ -678,6 +734,13 @@ export const translations: Record<Locale, Translations> = {
       languageHeading: "Lingua",
       academicNotice: "Prototipo Dimostrativo Accademico • IMPACTA Labs Milano • Solo Salvataggio Locale su Browser",
       allRightsReserved: "IMPACTA Mobility Platform. Tutti i diritti riservati.",
+      governanceHeading: "Normativa e Sicurezza",
+      contact: "Contatti",
+      privacy: "Informativa Privacy",
+      terms: "Termini di Servizio",
+      surfacesHeading: "Portali di Accesso",
+      driverAreaLink: "Area Personale Conducente",
+      claimsOperationsLink: "Console Operativa Sinistri",
     },
   },
 };

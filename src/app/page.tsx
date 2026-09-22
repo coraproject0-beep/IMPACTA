@@ -1,11 +1,9 @@
 "use client";
 
 import React from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { PublicShell } from "@/components/public/PublicShell";
 import BlackBoxScene from "@/components/3d/BlackBoxScene";
-import { EvidenceClaimStory } from "@/components/public/EvidenceClaimStory";
 import { FullBleedImage } from "@/components/motion/FullBleedImage";
 import { EditorialReveal } from "@/components/motion/EditorialReveal";
 import { StatementReveal } from "@/components/motion/StatementReveal";
@@ -23,10 +21,10 @@ export default function HomePage() {
 
   return (
     <PublicShell>
-      {/* SCENE 1: THE 3D BLACK BOX HERO (Native Scroll Scrubbing 320vh Pinned Experience) */}
+      {/* CHAPTER 1: 3D BLACK BOX V2 (10-Stage Recursive Three.js Engine & Incident Simulation) */}
       <BlackBoxScene />
 
-      {/* SCENE 2: THE MOMENT AFTER IMPACT (Full-Viewport Edge-to-Edge Photographic Chapter) */}
+      {/* CHAPTER 2: THE ROAD (Full-Bleed Photographic Chapter) */}
       <section className="relative w-full bg-[#090A0A] text-white">
         <FullBleedImage
           src="/images/road-context.jpg"
@@ -35,7 +33,7 @@ export default function HomePage() {
         >
           <div className="max-w-4xl space-y-6">
             <TechnicalReveal className="text-xs sm:text-sm font-mono tracking-widest text-white/50 uppercase">
-              {language === "it" ? "SCENA 02 / LA STRADA" : "SCENE 02 / THE ROAD"}
+              {language === "it" ? "IL CONTESTO STRADALE" : "THE ROADSIDE CONTEXT"}
             </TechnicalReveal>
 
             <EditorialReveal
@@ -59,8 +57,8 @@ export default function HomePage() {
 
             <p className="text-lg sm:text-xl text-white/70 max-w-2xl font-light leading-relaxed">
               {language === "it"
-                ? "Subito dopo l'impatto, lo stress cancella i dettagli. IMPACTA guida l'automobilista in una sequenza rilassata ma rigorosa: sicurezza personale, fotogrammi georeferenziati, e targa della controparte."
-                : "Immediately following impact, adrenaline obscures critical facts. IMPACTA guides the driver through a calm, disciplined protocol: human safety first, georeferenced photographic angles, and counterparty intake."}
+                ? "Subito dopo l'impatto, lo stress cancella i dettagli. IMPACTA guida l'automobilista in una sequenza rilassata: sicurezza personale, fotogrammi georeferenziati e targa della controparte."
+                : "Immediately after impact, adrenaline obscures facts. IMPACTA guides the driver through a calm sequence: human safety first, georeferenced angles, and counterparty intake."}
             </p>
 
             <div className="pt-4">
@@ -68,7 +66,7 @@ export default function HomePage() {
                 href="/drivers"
                 className="inline-flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-white hover:text-white/70 border-b border-white pb-1 transition-colors"
               >
-                <span>{language === "it" ? "Scopri l'esperienza Driver" : "Explore Driver Protocol"}</span>
+                <span>{language === "it" ? "Protocollo Conducente" : "Driver Protocol"}</span>
                 <ArrowRightIcon size={16} />
               </Link>
             </div>
@@ -76,15 +74,12 @@ export default function HomePage() {
         </FullBleedImage>
       </section>
 
-      {/* SCENE 3: EVIDENCE BECOMES STRUCTURE (Interactive Transformation Without Cards) */}
-      <EvidenceClaimStory />
-
-      {/* SCENE 4: DRIVER EXPERIENCE (Full-Bleed Product UI Showcase) */}
-      <section className="py-28 sm:py-40 bg-white text-[#090A0A] border-b border-[#D7D9D8]">
+      {/* CHAPTER 3: DRIVER EXPERIENCE (Document-Style Interface Showcase) */}
+      <section className="py-28 sm:py-36 bg-white text-[#090A0A] border-b border-[#D7D9D8]">
         <div className="w-full px-6 sm:px-12 lg:px-20 max-w-7xl mx-auto space-y-16">
           <div className="max-w-3xl space-y-4">
             <TechnicalReveal className="text-xs sm:text-sm font-mono tracking-widest text-[#6F7375] uppercase">
-              {language === "it" ? "SCENA 04 / CONDUCENTE" : "SCENE 04 / CONSUMER INTAKE"}
+              {language === "it" ? "ESPERIENZA CONDUCENTE" : "DRIVER INTAKE"}
             </TechnicalReveal>
             <EditorialReveal
               as="h2"
@@ -92,38 +87,38 @@ export default function HomePage() {
             >
               {language === "it" ? (
                 <>
-                  Nessuna app complessa.
+                  Zero attrito.
                   <br />
-                  Solo calma sul ciglio della strada.
+                  Calma sul ciglio della strada.
                 </>
               ) : (
                 <>
-                  Zero dashboard friction.
+                  Zero friction.
                   <br />
-                  Quiet clarity at roadside.
+                  Calm at the roadside.
                 </>
               )}
             </EditorialReveal>
             <p className="text-lg sm:text-xl text-[#6F7375] font-normal leading-relaxed">
               {language === "it"
-                ? "Un'interfaccia priva di rumore visivo. Grandi controlli tattili progettati per mani sotto stress, numeri di emergenza diretti e verifica istantanea delle coperture."
-                : "An uncluttered intake workflow. Oversized touch controls engineered for cold or shaken hands, direct emergency dialers, and automatic policy verification."}
+                ? "Un'interfaccia priva di rumore visivo. Controlli tattili grandi per mani sotto stress, chiamata diretta al 112 e verifica immediata della polizza."
+                : "An interface free from visual noise. Large touch controls for cold hands, direct 112 emergency escalation, and immediate policy lookup."}
             </p>
           </div>
 
           {/* Product UI Viewport */}
-          <ProductReveal className="border border-[#D7D9D8] bg-[#F4F5F3] p-6 sm:p-12 shadow-sm">
+          <ProductReveal className="border border-[#D7D9D8] bg-[#F4F5F3] p-6 sm:p-12">
             <div className="max-w-4xl mx-auto bg-white border border-[#D7D9D8] p-8 sm:p-12 space-y-8">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-6 border-b border-[#D7D9D8] gap-4">
                 <div>
                   <span className="text-xs font-mono uppercase tracking-widest text-[#6F7375]">
-                    {language === "it" ? "PROTOCOLLO SINISTRO STRADALE" : "ROADSIDE INTAKE SPECIFICATION"}
+                    {language === "it" ? "PROTOCOLLO SINISTRO STRADALE" : "ROADSIDE INTAKE PROTOCOL"}
                   </span>
                   <h3 className="text-2xl font-bold uppercase text-[#090A0A] mt-1">
                     {language === "it" ? "Fase 1: Sicurezza e Incolumità" : "Phase 1: Human Safety Check"}
                   </h3>
                 </div>
-                <div className="text-xs font-mono px-3 py-1.5 border border-[#090A0A] text-[#090A0A] font-semibold uppercase tracking-wider">
+                <div className="text-xs font-mono px-3 py-1.5 border border-[#090A0A] text-[#090A0A] font-bold uppercase tracking-wider">
                   {language === "it" ? "EMERGENZA 112 ATTIVA" : "112 DIRECT ESCALATION"}
                 </div>
               </div>
@@ -137,13 +132,13 @@ export default function HomePage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
                   <div className="p-5 border border-[#090A0A] bg-[#F4F5F3] flex items-center justify-between">
                     <span className="font-bold text-sm tracking-wider uppercase">
-                      {language === "it" ? "Sì, tutti sono al sicuro" : "Yes, everyone is safe"}
+                      {language === "it" ? "Sì, tutti al sicuro" : "Yes, everyone is safe"}
                     </span>
                     <CheckCircleIcon size={18} className="text-[#090A0A]" />
                   </div>
                   <div className="p-5 border border-[#D7D9D8] text-[#6F7375] flex items-center justify-between opacity-80">
                     <span className="font-medium text-sm tracking-wider uppercase">
-                      {language === "it" ? "Qualcuno è ferito (Chiama 112)" : "Someone needs help (Call 112)"}
+                      {language === "it" ? "Richiedi soccorso (112)" : "Someone needs help (112)"}
                     </span>
                   </div>
                 </div>
@@ -163,12 +158,12 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* SCENE 5: INSURER INTELLIGENCE (Claims Console Workbench Preview) */}
-      <section className="py-28 sm:py-40 bg-[#F4F5F3] text-[#090A0A] border-b border-[#D7D9D8]">
+      {/* CHAPTER 4: CLAIMS OPERATIONS (Forensic Inspection Workbench) */}
+      <section className="py-28 sm:py-36 bg-[#F4F5F3] text-[#090A0A] border-b border-[#D7D9D8]">
         <div className="w-full px-6 sm:px-12 lg:px-20 max-w-7xl mx-auto space-y-16">
           <div className="max-w-3xl space-y-4">
             <TechnicalReveal className="text-xs sm:text-sm font-mono tracking-widest text-[#6F7375] uppercase">
-              {language === "it" ? "SCENA 05 / COMPAGNIE" : "SCENE 05 / CLAIMS OPERATIONS"}
+              {language === "it" ? "OPERAZIONI SINISTRI" : "CLAIMS WORKBENCH"}
             </TechnicalReveal>
             <EditorialReveal
               as="h2"
@@ -190,13 +185,13 @@ export default function HomePage() {
             </EditorialReveal>
             <p className="text-lg sm:text-xl text-[#6F7375] font-normal leading-relaxed">
               {language === "it"
-                ? "Il perito riceve una perizia pre-calibrata: rilievi metrici, dinamica d'urto, CAI precompilato e audit crittografico immutabile."
-                : "Forensic adjusters receive an audit-ready workbench: calibrated impact vectors, CAI Box 12 extraction, and continuous evidence provenance."}
+                ? "Il perito riceve una perizia calibrata: rilievi metrici, dinamica d'urto, CAI normalizzato e audit trail immutabile."
+                : "Adjusters receive an audit-ready dossier: calibrated impact vectors, CAI Box 12 extraction, and continuous evidence provenance."}
             </p>
           </div>
 
-          {/* Workbench Preview */}
-          <ProductReveal className="border border-[#D7D9D8] bg-white p-6 sm:p-10 shadow-sm">
+          {/* Workbench Strip */}
+          <ProductReveal className="border border-[#D7D9D8] bg-white p-6 sm:p-10">
             <div className="space-y-6">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-[#D7D9D8] gap-2">
                 <div className="flex items-center gap-3 text-xs font-mono">
@@ -242,11 +237,11 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* SCENE 6: HUMAN REVIEW & DOCUMENTARY TRUTH */}
+      {/* CHAPTER 5: ETHICAL REASONING (Epistemic Demarcation) */}
       <section className="py-28 sm:py-36 bg-[#090A0A] text-white">
         <div className="w-full px-6 sm:px-12 lg:px-20 max-w-7xl mx-auto space-y-8">
           <TechnicalReveal className="text-xs sm:text-sm font-mono tracking-widest text-white/50 uppercase">
-            {language === "it" ? "SCENA 06 / GOVERNANCE" : "SCENE 06 / ETHICAL REASONING"}
+            {language === "it" ? "GOVERNANCE ETICA" : "ETHICAL DEMARCATION"}
           </TechnicalReveal>
 
           <StatementReveal
@@ -270,19 +265,19 @@ export default function HomePage() {
 
           <p className="text-lg sm:text-2xl text-white/70 max-w-3xl font-light leading-relaxed">
             {language === "it"
-              ? "IMPACTA non liquida automaticamente i sinistri. Organizza le prove, demarca i fatti scientifici dalle congetture e mette i periti e i liquidatori umani nelle condizioni di decidere in modo equo e trasparente."
-              : "IMPACTA does not execute automated settlement. We structure forensic facts, demarcate certainty from uncertainty, and empower human adjusters to decide claims equitably."}
+              ? "IMPACTA non liquida automaticamente i sinistri. Organizza le prove fisiche, separa i fatti dalle supposizioni e lascia la decisione finale ai periti umani."
+              : "IMPACTA does not automate liability. We structure forensic evidence, separate physical facts from narrative claims, and leave the legal ruling to human experts."}
           </p>
 
           <div className="pt-4 flex items-center gap-8 text-xs font-mono text-white/50 tracking-wider">
             <span>HUMAN-IN-THE-LOOP</span>
             <span>NO BLACK BOX LIABILITY</span>
-            <span>EU AI ACT AUDITED</span>
+            <span>VERIFIABLE EVIDENCE</span>
           </div>
         </div>
       </section>
 
-      {/* SCENE 7 & 8: FINAL DISCIPLINED CTA */}
+      {/* CHAPTER 6: FINAL ACTION */}
       <section className="py-28 sm:py-36 bg-white text-[#090A0A]">
         <div className="w-full px-6 sm:px-12 lg:px-20 max-w-7xl mx-auto flex flex-col lg:flex-row lg:items-end justify-between gap-12">
           <div className="max-w-2xl space-y-4">
@@ -295,7 +290,7 @@ export default function HomePage() {
             <p className="text-lg sm:text-xl text-[#6F7375] font-normal leading-relaxed">
               {language === "it"
                 ? "Avvia una segnalazione sinistro immediata come conducente o accedi all'infrastruttura peritale per compagnie."
-                : "Report an immediate roadside incident as a driver, or explore the enterprise claims console for insurers."}
+                : "Report an immediate roadside incident as a driver, or explore the claims operations console for insurers."}
             </p>
           </div>
 
@@ -310,7 +305,7 @@ export default function HomePage() {
               href="/console/login"
               className="inline-flex items-center justify-center min-h-[56px] px-8 border border-[#D7D9D8] text-[#090A0A] text-sm font-semibold tracking-wider uppercase hover:border-[#090A0A] transition-colors"
             >
-              {t("hero.insurerCta")}
+              {t("nav.insurerAccess")}
             </Link>
           </div>
         </div>

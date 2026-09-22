@@ -76,7 +76,7 @@ export default function ConsoleLoginPage() {
           <div className="space-y-3 pt-2 text-xs font-mono text-[#6F7375]">
             <div className="flex justify-between border-b border-[#D7D9D8] pb-2">
               <span>SECURITY PROTOCOL</span>
-              <span className="text-[#090A0A]">SAML 2.0 / EN-1022 SIGNED</span>
+              <span className="text-[#090A0A]">LOCAL FORENSIC WORKBENCH</span>
             </div>
             <div className="flex justify-between border-b border-[#D7D9D8] pb-2">
               <span>LOCAL AUDIT TRAIL</span>

@@ -115,8 +115,8 @@ export function PublicFooter() {
             &copy; {new Date().getFullYear()} IMPACTA MOBILITY INTELLIGENCE. ALL RIGHTS RESERVED.
           </div>
           <div className="flex items-center gap-6">
-            <span>CAI PROTOCOL EN-1022</span>
-            <span>GDPR ART. 9 COMPLIANT</span>
+            <span>EUROPEAN CAI STANDARD</span>
+            <span>LOCAL BROWSER PERSISTENCE</span>
           </div>
         </div>
       </div>
