@@ -3,13 +3,35 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { Locale, Translations, translations } from "@/i18n/translations";
 
+export type TranslationFunction = {
+  (key: string): string;
+} & Translations;
+
 interface LanguageContextType {
   locale: Locale;
+  language: Locale;
   setLocale: (locale: Locale) => void;
-  t: Translations;
+  t: TranslationFunction;
 }
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
+
+function createTranslationProxy(locale: Locale): TranslationFunction {
+  const dict = translations[locale] || translations.en;
+  const fn = (path: string): string => {
+    const parts = path.split(".");
+    let curr: any = dict;
+    for (const part of parts) {
+      if (curr && typeof curr === "object" && part in curr) {
+        curr = curr[part];
+      } else {
+        return path;
+      }
+    }
+    return typeof curr === "string" ? curr : path;
+  };
+  return Object.assign(fn, dict);
+}
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const [locale, setLocaleState] = useState<Locale>("en");
@@ -40,10 +62,13 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const t = createTranslationProxy(locale);
+
   const value: LanguageContextType = {
     locale,
+    language: locale,
     setLocale,
-    t: translations[locale],
+    t,
   };
 
   return (
@@ -59,8 +84,9 @@ export function useLanguage() {
     // Graceful fallback for SSR or components rendered outside provider
     return {
       locale: "en" as Locale,
+      language: "en" as Locale,
       setLocale: () => {},
-      t: translations.en,
+      t: createTranslationProxy("en"),
     };
   }
   return context;
@@ -73,29 +99,29 @@ export function LanguageSelector({ className = "" }: { className?: string }) {
     <div
       role="group"
       aria-label="Language selector"
-      className={`inline-flex items-center rounded-lg border border-slate-200 bg-slate-50/80 p-0.5 text-xs font-semibold select-none ${className}`}
+      className={`inline-flex items-center rounded-none border border-[#D7D9D8] bg-transparent p-0.5 text-xs font-mono select-none ${className}`}
     >
       <button
         type="button"
         onClick={() => setLocale("en")}
-        className={`px-2 py-1 rounded-md transition-all ${
-          locale === "en"
-            ? "bg-white text-slate-950 shadow-xs font-bold"
-            : "text-slate-500 hover:text-slate-900"
-        }`}
         aria-pressed={locale === "en"}
+        className={`px-2.5 py-1 transition-colors min-h-[32px] ${
+          locale === "en"
+            ? "bg-[#090A0A] text-white font-bold"
+            : "text-[#6F7375] hover:text-[#090A0A]"
+        }`}
       >
         EN
       </button>
       <button
         type="button"
         onClick={() => setLocale("it")}
-        className={`px-2 py-1 rounded-md transition-all ${
-          locale === "it"
-            ? "bg-white text-slate-950 shadow-xs font-bold"
-            : "text-slate-500 hover:text-slate-900"
-        }`}
         aria-pressed={locale === "it"}
+        className={`px-2.5 py-1 transition-colors min-h-[32px] ${
+          locale === "it"
+            ? "bg-[#090A0A] text-white font-bold"
+            : "text-[#6F7375] hover:text-[#090A0A]"
+        }`}
       >
         IT
       </button>

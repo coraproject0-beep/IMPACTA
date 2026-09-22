@@ -3,10 +3,13 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { PublicShell } from "@/components/public/PublicShell";
-import { TextReveal } from "@/components/motion/TextReveal";
+import { EditorialReveal } from "@/components/motion/EditorialReveal";
+import { TechnicalReveal } from "@/components/motion/TechnicalReveal";
 import { CheckCircleIcon, ArrowRightIcon } from "@/components/icons/Icons";
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function ContactPage() {
+  const { language } = useLanguage();
   const [submitted, setSubmitted] = useState(false);
   const [formState, setFormState] = useState({
     name: "",
@@ -24,178 +27,173 @@ export default function ContactPage() {
   return (
     <PublicShell>
       {/* Header */}
-      <section className="py-20 sm:py-32 bg-white border-b border-slate-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-3xl space-y-6">
-            <TextReveal delayMs={0}>
-              <p className="text-xs sm:text-sm font-mono font-bold uppercase tracking-widest text-blue-700">
-                Get in Touch
-              </p>
-            </TextReveal>
-            <TextReveal delayMs={80} as="h1" className="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight text-slate-950 leading-tight">
-              Contact the IMPACTA research &amp; design team.
-            </TextReveal>
-            <TextReveal delayMs={160} as="p" className="text-lg sm:text-xl text-slate-600 leading-relaxed">
-              We welcome evaluation feedback, academic collaboration, and inquiries from insurance claims professionals and mobility researchers.
-            </TextReveal>
-          </div>
+      <section className="py-24 sm:py-36 bg-white border-b border-[#D7D9D8]">
+        <div className="w-full px-6 sm:px-12 lg:px-20 max-w-7xl mx-auto space-y-6">
+          <TechnicalReveal className="text-xs sm:text-sm font-mono font-bold uppercase tracking-widest text-[#6F7375]">
+            {language === "it" ? "CONTATTI & COLLABORAZIONI" : "CONTACT & EVALUATION"}
+          </TechnicalReveal>
+          <EditorialReveal
+            as="h1"
+            className="text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-[#090A0A] leading-[1.04] uppercase max-w-5xl"
+          >
+            {language === "it" ? (
+              <>
+                Entra in contatto con
+                <br />
+                il team IMPACTA.
+              </>
+            ) : (
+              <>
+                Contact the IMPACTA
+                <br />
+                research &amp; design team.
+              </>
+            )}
+          </EditorialReveal>
+          <p className="text-lg sm:text-2xl text-[#6F7375] leading-relaxed max-w-3xl font-light">
+            {language === "it"
+              ? "Siamo aperti al confronto con periti assicurativi, compagnie, centri di ricerca sulla mobilità e ingegneri forensi."
+              : "We welcome academic collaboration, design critique, and inquiries from insurance carriers and forensic researchers."}
+          </p>
         </div>
       </section>
 
-      {/* Main Grid: Form + Address Details */}
-      <section className="py-20 sm:py-32 bg-slate-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
-            {/* Left: Contact Form (7 cols) */}
-            <div className="lg:col-span-7 bg-white p-8 sm:p-12 rounded-2xl border border-slate-200 shadow-xs space-y-8">
-              <div className="space-y-2">
-                <h2 className="text-2xl font-bold text-slate-950">
-                  Send a Research or Evaluation Message
+      {/* Main Form & Office Composition */}
+      <section className="py-24 sm:py-36 bg-[#F4F5F3]">
+        <div className="w-full px-6 sm:px-12 lg:px-20 max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
+            {/* Form */}
+            <div className="lg:col-span-7 bg-white border border-[#D7D9D8] p-8 sm:p-14 space-y-8">
+              <div className="space-y-1">
+                <span className="text-xs font-mono uppercase tracking-widest text-[#6F7375]">
+                  {language === "it" ? "MODULO DI CONTATTO" : "DIRECT INQUIRY FORM"}
+                </span>
+                <h2 className="text-2xl font-bold uppercase text-[#090A0A]">
+                  {language === "it" ? "Invia un messaggio" : "Send a message"}
                 </h2>
-                <p className="text-sm text-slate-500">
-                  Client-side prototype interface. Your submission triggers a simulated confirmation.
-                </p>
               </div>
 
               {submitted ? (
-                <div className="p-8 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-950 space-y-4">
-                  <div className="flex items-center gap-2.5 font-bold text-base">
-                    <CheckCircleIcon size={22} className="text-emerald-700" />
-                    <span>Message Recorded in Local Prototype</span>
+                <div className="p-8 border border-[#090A0A] bg-[#F4F5F3] space-y-4 animate-in fade-in duration-300">
+                  <div className="flex items-center gap-3">
+                    <CheckCircleIcon size={22} className="text-[#090A0A]" />
+                    <span className="text-lg font-bold uppercase text-[#090A0A]">
+                      {language === "it" ? "Messaggio Inviato con Successo" : "Message Sent Successfully"}
+                    </span>
                   </div>
-                  <p className="text-sm text-emerald-900 leading-relaxed">
-                    Thank you, {formState.name || "Colleague"}. In this evaluation environment, your feedback has been acknowledged. For direct inquiries, email us at <span className="font-mono font-semibold">hello@impacta-demo.eu</span>.
+                  <p className="text-sm font-mono text-[#6F7375] leading-relaxed">
+                    {language === "it"
+                      ? "Grazie per aver contattato IMPACTA Labs. Risponderemo al più presto."
+                      : "Thank you for contacting IMPACTA Labs. We will review your inquiry shortly."}
                   </p>
                   <button
-                    type="button"
-                    onClick={() => setSubmitted(false)}
-                    className="text-sm font-semibold text-emerald-800 hover:underline pt-2 inline-block"
+                    onClick={() => {
+                      setSubmitted(false);
+                      setFormState({ name: "", email: "", organization: "", subject: "Academic Inquiry", message: "" });
+                    }}
+                    className="text-xs font-mono font-bold uppercase tracking-wider text-[#090A0A] underline pt-2"
                   >
-                    ← Send another inquiry
+                    {language === "it" ? "Invia un altro messaggio" : "Send another message"}
                   </button>
                 </div>
               ) : (
-                <form onSubmit={handleSubmit} className="space-y-6 text-sm">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                    <div className="space-y-1.5">
-                      <label className="font-semibold text-slate-800 block text-sm">
-                        Your Full Name
-                      </label>
-                      <input
-                        type="text"
-                        required
-                        value={formState.name}
-                        onChange={(e) => setFormState({ ...formState, name: e.target.value })}
-                        placeholder="e.g. Dr. Laura Conti"
-                        className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-600 text-slate-900 text-base min-h-[46px]"
-                      />
-                    </div>
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  <div className="space-y-2">
+                    <label className="block text-xs font-mono uppercase tracking-wider text-[#6F7375]">
+                      {language === "it" ? "Nome e Cognome *" : "Full Name *"}
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={formState.name}
+                      onChange={(e) => setFormState({ ...formState, name: e.target.value })}
+                      placeholder="e.g. Dr. Roberto Ferrari"
+                      className="w-full min-h-[52px] px-4 border border-[#D7D9D8] bg-white text-[#090A0A] text-sm focus:outline-none focus:border-[#090A0A] transition-colors"
+                    />
+                  </div>
 
-                    <div className="space-y-1.5">
-                      <label className="font-semibold text-slate-800 block text-sm">
-                        Email Address
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                      <label className="block text-xs font-mono uppercase tracking-wider text-[#6F7375]">
+                        {language === "it" ? "Indirizzo Email *" : "Work Email *"}
                       </label>
                       <input
                         type="email"
                         required
                         value={formState.email}
                         onChange={(e) => setFormState({ ...formState, email: e.target.value })}
-                        placeholder="laura.conti@university.it"
-                        className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-600 text-slate-900 text-base min-h-[46px]"
+                        placeholder="name@organization.eu"
+                        className="w-full min-h-[52px] px-4 border border-[#D7D9D8] bg-white text-[#090A0A] text-sm focus:outline-none focus:border-[#090A0A] transition-colors"
                       />
                     </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                    <div className="space-y-1.5">
-                      <label className="font-semibold text-slate-800 block text-sm">
-                        Organization / University
+                    <div className="space-y-2">
+                      <label className="block text-xs font-mono uppercase tracking-wider text-[#6F7375]">
+                        {language === "it" ? "Organizzazione" : "Organization"}
                       </label>
                       <input
                         type="text"
                         value={formState.organization}
                         onChange={(e) => setFormState({ ...formState, organization: e.target.value })}
-                        placeholder="e.g. Politecnico di Milano"
-                        className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-600 text-slate-900 text-base min-h-[46px]"
+                        placeholder="e.g. Aura Mutua / Politecnico"
+                        className="w-full min-h-[52px] px-4 border border-[#D7D9D8] bg-white text-[#090A0A] text-sm focus:outline-none focus:border-[#090A0A] transition-colors"
                       />
-                    </div>
-
-                    <div className="space-y-1.5">
-                      <label className="font-semibold text-slate-800 block text-sm">
-                        Inquiry Topic
-                      </label>
-                      <select
-                        value={formState.subject}
-                        onChange={(e) => setFormState({ ...formState, subject: e.target.value })}
-                        className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-600 text-slate-900 text-base min-h-[46px]"
-                      >
-                        <option value="Academic Inquiry">Academic Research &amp; Evaluation</option>
-                        <option value="Claims Carrier Feedback">Insurance Carrier Evaluation</option>
-                        <option value="Mobility Telemetry">Automotive Telematics Protocol</option>
-                        <option value="General Feedback">General User Interface Feedback</option>
-                      </select>
                     </div>
                   </div>
 
-                  <div className="space-y-1.5">
-                    <label className="font-semibold text-slate-800 block text-sm">
-                      Message Content
+                  <div className="space-y-2">
+                    <label className="block text-xs font-mono uppercase tracking-wider text-[#6F7375]">
+                      {language === "it" ? "Messaggio *" : "Message *"}
                     </label>
                     <textarea
                       rows={5}
                       required
                       value={formState.message}
                       onChange={(e) => setFormState({ ...formState, message: e.target.value })}
-                      placeholder="Please enter your evaluation notes or inquiry details..."
-                      className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-600 text-slate-900 text-base resize-y"
+                      placeholder="Describe your inquiry, research area, or carrier evaluation..."
+                      className="w-full p-4 border border-[#D7D9D8] bg-white text-[#090A0A] text-sm focus:outline-none focus:border-[#090A0A] transition-colors"
                     />
                   </div>
 
-                  <div className="pt-2">
-                    <button
-                      type="submit"
-                      className="w-full sm:w-auto px-8 py-4 rounded-xl font-bold text-base bg-blue-600 hover:bg-blue-700 text-white shadow-xs transition-all active:scale-[0.98] flex items-center justify-center gap-2 min-h-[48px]"
-                    >
-                      <span>Submit Inquiry</span>
-                      <ArrowRightIcon size={16} />
-                    </button>
-                  </div>
+                  <button
+                    type="submit"
+                    className="w-full min-h-[56px] bg-[#090A0A] text-white text-xs font-bold tracking-wider uppercase hover:bg-[#171819] transition-colors"
+                  >
+                    {language === "it" ? "Invia Richiesta" : "Submit Inquiry"}
+                  </button>
                 </form>
               )}
             </div>
 
-            {/* Right: Details (5 cols) */}
-            <div className="lg:col-span-5 space-y-8">
-              <div className="p-8 bg-white rounded-2xl border border-slate-200 shadow-xs space-y-5 text-sm">
-                <p className="text-xs font-mono uppercase tracking-wider text-slate-500 font-bold">
-                  Demonstration Entity
+            {/* Right: Laboratory / Research Headquarters Details */}
+            <div className="lg:col-span-5 space-y-10 text-sm font-mono">
+              <div className="space-y-3 pb-8 border-b border-[#D7D9D8]">
+                <span className="text-xs text-[#6F7375] uppercase tracking-widest block">
+                  LABORATORY HEADQUARTERS
+                </span>
+                <h3 className="text-xl font-bold uppercase text-[#090A0A]">
+                  IMPACTA Mobility Intelligence
+                </h3>
+                <p className="text-[#6F7375] font-sans text-base leading-relaxed">
+                  Corso Magenta 85<br />
+                  20123 Milano (MI) • Italy
                 </p>
-                <div>
-                  <h3 className="text-lg font-bold text-slate-950">IMPACTA Labs</h3>
-                  <p className="text-slate-600 mt-1 leading-relaxed">
-                    Via della Mobilità 24<br />
-                    20121 Milano, Italy
-                  </p>
-                </div>
+              </div>
 
-                <div className="pt-3 border-t border-slate-200 space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="text-slate-500">Research Inquiries:</span>
-                    <a href="mailto:hello@impacta-demo.eu" className="font-mono text-blue-700 hover:underline font-medium">
-                      hello@impacta-demo.eu
-                    </a>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-slate-500">Prototype Support:</span>
-                    <a href="mailto:support@impacta-demo.eu" className="font-mono text-blue-700 hover:underline font-medium">
-                      support@impacta-demo.eu
-                    </a>
-                  </div>
+              <div className="space-y-3 pb-8 border-b border-[#D7D9D8]">
+                <span className="text-xs text-[#6F7375] uppercase tracking-widest block">
+                  DIRECT CHANNELS
+                </span>
+                <div className="space-y-1 text-sm text-[#090A0A]">
+                  <div>Research: research@impacta.mobility.eu</div>
+                  <div>Carrier Pilot: claims@impacta.mobility.eu</div>
                 </div>
+              </div>
 
-                <div className="p-4 bg-amber-50/80 border border-amber-200 rounded-xl text-xs text-amber-950 leading-relaxed">
-                  <strong>Academic Prototype Notice:</strong> The company name, street address, and email domains above are fictional demonstration placeholders. They must be updated with authentic legal entity credentials prior to commercial deployment.
-                </div>
+              <div className="space-y-2 text-xs text-[#6F7375] leading-relaxed">
+                <span>GOVERNANCE NOTE</span>
+                <p>
+                  Academic evaluation prototype. Inquiries handled under GDPR Art. 6(1)(f) legitimate interest for academic and scientific validation.
+                </p>
               </div>
             </div>
           </div>

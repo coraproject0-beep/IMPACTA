@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useLanguage, LanguageSelector } from "@/context/LanguageContext";
@@ -12,161 +12,205 @@ export function PublicHeader() {
   const { t } = useLanguage();
   const { isDriverAuthenticated } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  // Monitor scroll for header background transitions
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 300);
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const isHome = pathname === "/";
+  // On homepage over dark hero, use dark theme header. When scrolled or on subpages, transition to daylight theme
+  const isTransparentDark = isHome && !isScrolled;
 
   const navItems = [
-    { label: t.nav.platform, href: "/platform" },
-    { label: t.nav.drivers, href: "/drivers" },
-    { label: t.nav.insurers, href: "/insurers" },
-    { label: t.nav.technology, href: "/technology" },
-    { label: t.nav.safety, href: "/safety" },
+    { label: t("nav.platform"), href: "/platform" },
+    { label: t("nav.drivers"), href: "/drivers" },
+    { label: t("nav.insurers"), href: "/insurers" },
+    { label: t("nav.technology"), href: "/technology" },
   ];
 
   const reportLink = isDriverAuthenticated ? "/app/report" : "/login?redirect=/app/report";
 
   return (
-    <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200/80 select-none transition-all duration-300">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-        {/* Brand Logo */}
-        <Link
-          href="/"
-          className="flex items-center gap-3 group focus:outline-none focus:ring-2 focus:ring-blue-600 rounded-md p-1"
-          title="IMPACTA Home"
-        >
-          <div className="w-9 h-9 rounded-lg bg-slate-950 text-white flex items-center justify-center font-bold tracking-tight text-sm shadow-xs group-hover:bg-blue-600 transition-colors">
-            IM
-          </div>
-          <div className="flex flex-col">
-            <span className="text-lg font-extrabold tracking-tight text-slate-950 leading-tight">
-              IMPACTA
-            </span>
-            <span className="text-xs font-mono text-slate-500 uppercase tracking-wider -mt-0.5 font-medium">
-              Accident Intelligence
-            </span>
-          </div>
-        </Link>
-
-        {/* Desktop Navigation Links: 16–18px target */}
-        <nav className="hidden md:flex items-center gap-1 lg:gap-2">
-          {navItems.map((item) => {
-            const isActive = pathname === item.href;
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`px-4 py-2 rounded-xl text-base font-medium transition-colors min-h-[44px] inline-flex items-center ${
-                  isActive
-                    ? "text-blue-700 font-bold bg-blue-50/80"
-                    : "text-slate-600 hover:text-slate-950 hover:bg-slate-100/70"
+    <>
+      <header
+        className={`fixed top-0 left-0 right-0 z-50 select-none transition-all duration-500 ${
+          isTransparentDark
+            ? "bg-transparent text-white border-b border-transparent"
+            : "bg-[#F4F5F3]/95 backdrop-blur-md text-[#090A0A] border-b border-[#D7D9D8]"
+        }`}
+      >
+        <div className="w-full px-6 sm:px-12 lg:px-20 h-20 lg:h-24 flex items-center justify-between">
+          {/* Left: Engineered Wordmark */}
+          <div className="w-1/4 flex items-center">
+            <Link
+              href="/"
+              className="flex items-center gap-3 group focus:outline-none"
+              title="IMPACTA Home"
+            >
+              <span className="text-xl lg:text-2xl font-black tracking-[-0.03em] uppercase">
+                IMPACTA
+              </span>
+              <span
+                className={`hidden xl:inline text-xs font-mono tracking-widest uppercase pl-3 border-l ${
+                  isTransparentDark ? "border-white/30 text-white/50" : "border-[#D7D9D8] text-[#6F7375]"
                 }`}
               >
-                {item.label}
-              </Link>
-            );
-          })}
-        </nav>
+                Accident Intelligence
+              </span>
+            </Link>
+          </div>
 
-        {/* Action Triggers */}
-        <div className="hidden sm:flex items-center gap-3 lg:gap-4">
-          {/* Language Selector */}
-          <LanguageSelector />
-
-          {/* Sign In Link */}
-          <Link
-            href="/login"
-            className="text-sm sm:text-base font-semibold text-slate-600 hover:text-slate-950 px-3 py-2 rounded-xl hover:bg-slate-100 transition-colors min-h-[44px] inline-flex items-center"
-          >
-            {t.nav.signIn}
-          </Link>
-
-          {/* Quiet Insurer access */}
-          <Link
-            href="/console/login"
-            className="text-xs sm:text-sm font-semibold text-slate-500 hover:text-slate-900 px-2.5 py-2 rounded-xl transition-colors min-h-[44px] inline-flex items-center"
-          >
-            {t.nav.insurerAccess}
-          </Link>
-
-          {/* Primary Consumer Intake CTA */}
-          <Link
-            href={reportLink}
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm sm:text-base font-bold tracking-tight bg-slate-950 hover:bg-blue-600 text-white shadow-xs transition-all active:scale-[0.98] min-h-[44px]"
-          >
-            <span>{t.nav.reportAccident}</span>
-            <ArrowRightIcon size={16} />
-          </Link>
-        </div>
-
-        {/* Mobile Controls */}
-        <div className="flex md:hidden items-center gap-2">
-          <LanguageSelector />
-          <Link
-            href={reportLink}
-            className="inline-flex items-center px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-950 text-white min-h-[40px]"
-          >
-            {t.nav.reportAccident.split(" ")[0]}
-          </Link>
-          <button
-            type="button"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-2.5 rounded-xl text-slate-600 hover:text-slate-950 hover:bg-slate-100 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-600 min-h-[44px] min-w-[44px] flex items-center justify-center"
-            aria-label="Toggle navigation menu"
-          >
-            {mobileMenuOpen ? <CloseIcon size={22} /> : <MenuIcon size={22} />}
-          </button>
-        </div>
-      </div>
-
-      {/* Mobile Drawer */}
-      {mobileMenuOpen && (
-        <div className="md:hidden bg-white border-b border-slate-200 px-6 py-6 space-y-5 animate-fade-in shadow-xl">
-          <div className="space-y-1">
+          {/* Center: Spacious Navigation with Wide Gaps */}
+          <nav className="hidden md:flex items-center justify-center gap-8 lg:gap-12 flex-1">
             {navItems.map((item) => {
               const isActive = pathname === item.href;
               return (
                 <Link
                   key={item.href}
                   href={item.href}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className={`block px-4 py-3 rounded-xl text-lg font-medium min-h-[48px] flex items-center ${
+                  className={`text-sm lg:text-[15px] font-medium tracking-wider uppercase transition-colors min-h-[44px] inline-flex items-center ${
                     isActive
-                      ? "text-blue-700 font-bold bg-blue-50"
-                      : "text-slate-700 hover:bg-slate-50"
+                      ? isTransparentDark
+                        ? "text-white font-semibold"
+                        : "text-[#090A0A] font-semibold"
+                      : isTransparentDark
+                      ? "text-white/70 hover:text-white"
+                      : "text-[#6F7375] hover:text-[#090A0A]"
                   }`}
                 >
                   {item.label}
                 </Link>
               );
             })}
+          </nav>
+
+          {/* Right: Language, Access, and Primary CTA */}
+          <div className="hidden sm:flex items-center justify-end gap-6 lg:gap-8 w-1/3">
+            {/* Language Selector */}
+            <div className={isTransparentDark ? "text-white" : "text-[#090A0A]"}>
+              <LanguageSelector />
+            </div>
+
+            {/* Sign In Trigger */}
+            <Link
+              href="/login"
+              className={`text-sm font-medium tracking-wider uppercase transition-colors min-h-[44px] inline-flex items-center ${
+                isTransparentDark
+                  ? "text-white/70 hover:text-white"
+                  : "text-[#6F7375] hover:text-[#090A0A]"
+              }`}
+            >
+              {t("nav.signIn")}
+            </Link>
+
+            {/* Primary Action Button (Ghost on Dark, Solid on Light) */}
+            <Link
+              href={reportLink}
+              className={`inline-flex items-center gap-2 px-6 py-2.5 text-xs lg:text-sm font-semibold tracking-wider uppercase transition-all min-h-[44px] ${
+                isTransparentDark
+                  ? "bg-white text-[#090A0A] hover:bg-[#F4F5F3]"
+                  : "bg-[#090A0A] text-white hover:bg-[#171819]"
+              }`}
+            >
+              <span>{t("nav.reportAccident")}</span>
+              <ArrowRightIcon size={15} />
+            </Link>
           </div>
 
-          <div className="pt-4 border-t border-slate-100 flex flex-col gap-3">
+          {/* Mobile Menu Button */}
+          <div className="flex md:hidden items-center gap-4">
+            <LanguageSelector />
+            <button
+              onClick={() => setMobileMenuOpen(true)}
+              className={`p-2 transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center ${
+                isTransparentDark ? "text-white hover:text-white/75" : "text-[#090A0A] hover:text-[#6F7375]"
+              }`}
+              aria-label="Open Navigation Menu"
+            >
+              <MenuIcon size={26} />
+            </button>
+          </div>
+        </div>
+      </header>
+
+      {/* FULL-SCREEN MOBILE TAKEOVER MENU (No nested cards, clean list) */}
+      {mobileMenuOpen && (
+        <div className="fixed inset-0 z-50 bg-[#090A0A] text-white flex flex-col justify-between px-8 py-10 animate-in fade-in duration-300">
+          {/* Header row in takeover */}
+          <div className="flex items-center justify-between w-full border-b border-white/15 pb-6">
+            <span className="text-2xl font-black tracking-tight uppercase">IMPACTA</span>
+            <button
+              onClick={() => setMobileMenuOpen(false)}
+              className="p-2 text-white/70 hover:text-white min-h-[44px] min-w-[44px] flex items-center justify-center"
+              aria-label="Close menu"
+            >
+              <CloseIcon size={28} />
+            </button>
+          </div>
+
+          {/* Nav items list with large typography */}
+          <div className="flex flex-col gap-6 my-auto">
+            {navItems.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                onClick={() => setMobileMenuOpen(false)}
+                className="text-3xl sm:text-4xl font-bold tracking-tight uppercase text-white hover:text-white/70 transition-colors"
+              >
+                {item.label}
+              </Link>
+            ))}
+            <Link
+              href="/safety"
+              onClick={() => setMobileMenuOpen(false)}
+              className="text-2xl font-semibold tracking-tight uppercase text-white/60 hover:text-white transition-colors"
+            >
+              {t("nav.safety")}
+            </Link>
+            <Link
+              href="/contact"
+              onClick={() => setMobileMenuOpen(false)}
+              className="text-2xl font-semibold tracking-tight uppercase text-white/60 hover:text-white transition-colors"
+            >
+              {t("footer.contact")}
+            </Link>
+          </div>
+
+          {/* Action Row at Bottom of Mobile Menu */}
+          <div className="space-y-4 pt-6 border-t border-white/15">
             <Link
               href={reportLink}
               onClick={() => setMobileMenuOpen(false)}
-              className="w-full py-3.5 px-5 rounded-xl text-base font-bold bg-slate-950 hover:bg-blue-600 text-white text-center flex items-center justify-center gap-2 min-h-[48px]"
+              className="w-full min-h-[56px] flex items-center justify-center bg-white text-[#090A0A] font-bold text-sm tracking-wider uppercase"
             >
-              <span>{t.nav.reportAccident}</span>
-              <ArrowRightIcon size={16} />
+              {t("nav.reportAccident")}
             </Link>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 gap-4">
               <Link
                 href="/login"
                 onClick={() => setMobileMenuOpen(false)}
-                className="py-3 px-4 rounded-xl text-sm font-semibold text-slate-800 bg-slate-100 hover:bg-slate-200 text-center min-h-[44px] flex items-center justify-center"
+                className="min-h-[48px] flex items-center justify-center border border-white/30 text-white font-medium text-xs tracking-wider uppercase hover:border-white"
               >
-                {t.nav.signIn}
+                {t("nav.signIn")}
               </Link>
               <Link
                 href="/console/login"
                 onClick={() => setMobileMenuOpen(false)}
-                className="py-3 px-4 rounded-xl text-sm font-semibold text-slate-800 bg-slate-100 hover:bg-slate-200 text-center min-h-[44px] flex items-center justify-center"
+                className="min-h-[48px] flex items-center justify-center border border-white/30 text-white/70 font-medium text-xs tracking-wider uppercase hover:border-white"
               >
-                {t.nav.insurerAccess}
+                {t("nav.insurerAccess")}
               </Link>
             </div>
           </div>
         </div>
       )}
-    </header>
+    </>
   );
 }

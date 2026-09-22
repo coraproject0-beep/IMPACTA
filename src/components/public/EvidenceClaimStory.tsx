@@ -20,367 +20,215 @@ export function EvidenceClaimStory() {
     {
       id: 1 as const,
       num: "01",
-      title: t.evidenceStory.stage1Title,
-      desc: t.evidenceStory.stage1Desc,
+      title: t("evidenceStory.stage1Title"),
+      desc: t("evidenceStory.stage1Desc"),
       tag: "Roadside Ingestion",
     },
     {
       id: 2 as const,
       num: "02",
-      title: t.evidenceStory.stage2Title,
-      desc: t.evidenceStory.stage2Desc,
+      title: t("evidenceStory.stage2Title"),
+      desc: t("evidenceStory.stage2Desc"),
       tag: "Demo Telemetry Fusion",
     },
     {
       id: 3 as const,
       num: "03",
-      title: t.evidenceStory.stage3Title,
-      desc: t.evidenceStory.stage3Desc,
+      title: t("evidenceStory.stage3Title"),
+      desc: t("evidenceStory.stage3Desc"),
       tag: "Spatial Trajectory",
     },
     {
       id: 4 as const,
       num: "04",
-      title: t.evidenceStory.stage4Title,
-      desc: t.evidenceStory.stage4Desc,
+      title: t("evidenceStory.stage4Title"),
+      desc: t("evidenceStory.stage4Desc"),
       tag: "Structured Claim Package",
     },
   ];
 
   return (
-    <section className="py-24 sm:py-36 bg-slate-50 border-y border-slate-200 text-slate-900 relative overflow-hidden selection:bg-blue-100 selection:text-blue-900">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        {/* Section Header: Typographic kicker without pill or border */}
-        <div className="max-w-3xl mb-14 sm:mb-20 space-y-4">
-          <p className="text-sm font-mono font-bold uppercase tracking-widest text-blue-700">
-            {t.evidenceStory.sectionKicker}
+    <section className="py-24 sm:py-36 bg-[#F4F5F3] border-y border-[#D7D9D8] text-[#090A0A] relative overflow-hidden">
+      <div className="w-full px-6 sm:px-12 lg:px-20 max-w-7xl mx-auto relative z-10">
+        {/* Section Header */}
+        <div className="max-w-3xl mb-16 sm:mb-24 space-y-4">
+          <p className="text-xs sm:text-sm font-mono font-bold uppercase tracking-widest text-[#6F7375]">
+            {t("evidenceStory.sectionKicker")}
           </p>
-          <h2 className="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-slate-950 leading-[1.08]">
-            {t.evidenceStory.sectionTitle}
+          <h2 className="text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-[#090A0A] leading-[1.04] uppercase">
+            {t("evidenceStory.sectionTitle")}
           </h2>
-          <p className="text-lg sm:text-xl text-slate-600 font-normal leading-relaxed">
-            {t.evidenceStory.sectionSubtitle}
+          <p className="text-lg sm:text-xl text-[#6F7375] font-normal leading-relaxed">
+            {t("evidenceStory.sectionSubtitle")}
           </p>
         </div>
 
-        {/* 4-Step Interactive Transformation Display */}
-        <div className="grid lg:grid-cols-12 gap-8 items-stretch">
-          {/* Left Column: Interactive Stages Navigator */}
-          <div className="lg:col-span-5 flex flex-col justify-between space-y-3">
-            <div className="space-y-3">
-              {stages.map((stage) => {
-                const isActive = activeStage === stage.id;
-                return (
-                  <button
-                    key={stage.id}
-                    type="button"
-                    onClick={() => setActiveStage(stage.id)}
-                    className={`w-full text-left p-6 rounded-2xl transition-all border ${
-                      isActive
-                        ? "bg-white border-blue-600 shadow-md ring-1 ring-blue-600/20"
-                        : "bg-white/70 border-slate-200 hover:bg-white hover:border-slate-300 text-slate-600"
-                    }`}
-                  >
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm font-mono font-bold text-blue-700">
-                        {stage.num}
-                      </span>
-                      <span className="text-xs font-mono text-slate-500 font-medium">
-                        {stage.tag}
-                      </span>
-                    </div>
-                    <h3
-                      className={`text-lg sm:text-xl font-bold mb-1.5 ${
-                        isActive ? "text-slate-950" : "text-slate-800"
-                      }`}
-                    >
-                      {stage.title}
-                    </h3>
-                    <p className="text-sm sm:text-base text-slate-600 leading-relaxed">
-                      {stage.desc}
-                    </p>
-                  </button>
-                );
-              })}
-            </div>
-
-            <div className="pt-4 text-xs font-mono text-slate-500 flex items-center gap-2">
-              <span className="text-blue-600 font-bold">→</span>
-              <span>{t.evidenceStory.interactiveNotice}</span>
-            </div>
+        {/* 4 Interactive Transformation Stages (Open Asymmetric Architecture) */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-start">
+          {/* Left Column: Stage Selector Tabs */}
+          <div className="lg:col-span-5 space-y-4">
+            {stages.map((stage) => {
+              const isActive = activeStage === stage.id;
+              return (
+                <button
+                  key={stage.id}
+                  onClick={() => setActiveStage(stage.id)}
+                  className={`w-full text-left p-6 sm:p-8 transition-all border text-[#090A0A] ${
+                    isActive
+                      ? "bg-white border-[#090A0A] shadow-sm"
+                      : "bg-transparent border-[#D7D9D8] hover:border-[#6F7375] opacity-70 hover:opacity-100"
+                  }`}
+                >
+                  <div className="flex items-baseline justify-between mb-3">
+                    <span className="text-xs font-mono font-bold tracking-widest text-[#6F7375]">
+                      {stage.num} / 04
+                    </span>
+                    <span className="text-xs font-mono tracking-wider text-[#6F7375] uppercase">
+                      {stage.tag}
+                    </span>
+                  </div>
+                  <h3 className="text-xl sm:text-2xl font-bold uppercase tracking-tight mb-2">
+                    {stage.title}
+                  </h3>
+                  <p className="text-sm sm:text-base text-[#6F7375] leading-relaxed font-normal">
+                    {stage.desc}
+                  </p>
+                </button>
+              );
+            })}
           </div>
 
-          {/* Right Column: Dynamic Stage Visualizer in Pristine Light Mode */}
-          <div className="lg:col-span-7 bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 flex flex-col justify-between relative overflow-hidden shadow-sm">
-            {/* STAGE 1: Roadside Scene */}
+          {/* Right Column: Visual Transformation Stage Canvas */}
+          <div className="lg:col-span-7 bg-white border border-[#D7D9D8] p-6 sm:p-10 min-h-[560px] flex flex-col justify-between">
+            {/* Stage 1: Roadside Ingestion */}
             {activeStage === 1 && (
-              <div className="space-y-6">
-                <div className="flex items-center justify-between border-b border-slate-200 pb-3">
-                  <div className="flex items-center gap-2 text-sm text-blue-700 font-mono font-semibold">
-                    <CameraIcon size={18} />
-                    <span>Raw Optical Evidence • 4 Angles</span>
-                  </div>
-                  <span className="text-xs font-mono text-slate-500">
-                    GPS: 43.7731° N, 11.2560° E (Florence)
-                  </span>
+              <div className="space-y-6 animate-in fade-in duration-500">
+                <div className="flex justify-between items-center text-xs font-mono tracking-wider text-[#6F7375] pb-4 border-b border-[#D7D9D8]">
+                  <span>CAMERA INGESTION &amp; GNSS FIX</span>
+                  <span>4 PHOTOS CONFIRMED</span>
                 </div>
-
-                <div className="relative aspect-[16/10] rounded-xl overflow-hidden border border-slate-200 bg-slate-100">
+                <div className="relative aspect-[16/9] w-full bg-[#171819] overflow-hidden">
                   <Image
                     src="/images/evidence-scene.jpg"
-                    alt="Florence roundabout collision scene"
+                    alt="Roadside evidence capture"
                     fill
+                    sizes="(max-width: 1024px) 100vw, 50vw"
                     className="object-cover"
-                    sizes="(max-width: 1024px) 100vw, 700px"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent" />
-                  <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between text-xs sm:text-sm text-white font-medium">
-                    <div className="bg-slate-950/80 backdrop-blur-sm px-3 py-1.5 rounded-lg border border-white/20">
-                      <span>Vehicle A: Golf VIII (GF492XP)</span>
-                    </div>
-                    <div className="bg-slate-950/80 backdrop-blur-sm px-3 py-1.5 rounded-lg border border-white/20">
-                      <span>Vehicle B: Fiat 500 (EZ719TR)</span>
-                    </div>
+                  <div className="absolute bottom-4 left-4 right-4 bg-[#090A0A]/85 backdrop-blur-sm text-white p-4 text-xs font-mono flex justify-between items-center">
+                    <span>LAT 45.4642° N, LON 9.1900° E</span>
+                    <span>TIMESTAMP: 14:32:08 UTC</span>
                   </div>
                 </div>
-
-                <div className="grid grid-cols-2 gap-4 text-sm">
-                  <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-1">
-                    <span className="text-slate-500 block font-mono text-xs uppercase font-medium">
-                      Scene Geometry
-                    </span>
-                    <span className="text-slate-900 font-bold">
-                      Dual-lane urban roundabout with radial entry
-                    </span>
+                <div className="grid grid-cols-2 gap-4 text-xs font-mono text-[#6F7375]">
+                  <div className="p-3 border border-[#D7D9D8]">
+                    <span className="block text-[#090A0A] font-bold">FRONT IMPACT ZONE</span>
+                    45° angle confirmed
                   </div>
-                  <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-1">
-                    <span className="text-slate-500 block font-mono text-xs uppercase font-medium">
-                      Integrity Hash
-                    </span>
-                    <span className="text-blue-700 font-mono text-xs font-semibold">
-                      sha256:8f4c...91b2 (IndexedDB Verified)
-                    </span>
+                  <div className="p-3 border border-[#D7D9D8]">
+                    <span className="block text-[#090A0A] font-bold">COUNTERPARTY PLATE</span>
+                    Captured &amp; OCR verified
                   </div>
                 </div>
               </div>
             )}
 
-            {/* STAGE 2: Sensor Fusion */}
+            {/* Stage 2: Demo Telemetry Fusion */}
             {activeStage === 2 && (
-              <div className="space-y-6">
-                <div className="flex items-center justify-between border-b border-slate-200 pb-3">
-                  <div className="flex items-center gap-2 text-sm text-blue-700 font-mono font-semibold">
-                    <ActivityIcon size={18} />
-                    <span>Telemetry &amp; Deceleration Correlation</span>
-                  </div>
-                  <span className="text-xs font-mono text-slate-500">
-                    Synthetic Demo Telemetry
-                  </span>
+              <div className="space-y-6 animate-in fade-in duration-500">
+                <div className="flex justify-between items-center text-xs font-mono tracking-wider text-[#6F7375] pb-4 border-b border-[#D7D9D8]">
+                  <span>10Hz CAN-BUS DEACCELERATION CURVE</span>
+                  <span className="text-[#090A0A] font-bold">DEMO TELEMETRY</span>
                 </div>
-
-                {/* Deceleration Curve Visualizer */}
-                <div className="p-5 sm:p-6 rounded-xl bg-slate-50 border border-slate-200 space-y-4">
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="font-semibold text-slate-900">
-                      Deceleration Pulse (Example CAN-Bus Stream)
-                    </span>
-                    <span className="font-mono text-rose-600 font-bold text-xs">
-                      Peak: -4.2g @ 118ms
-                    </span>
+                <div className="p-6 bg-[#F4F5F3] border border-[#D7D9D8] space-y-4">
+                  <div className="flex justify-between text-xs font-mono text-[#6F7375]">
+                    <span>BRAKING VECTOR (G-FORCE)</span>
+                    <span className="text-[#090A0A] font-bold">-0.82 G PEAK</span>
                   </div>
-
-                  {/* SVG Kinematic Curve */}
-                  <div className="h-32 w-full relative">
-                    <svg
-                      viewBox="0 0 500 120"
-                      className="w-full h-full stroke-blue-600 fill-none"
-                      preserveAspectRatio="none"
-                    >
-                      <path
-                        d="M 0,60 L 150,60 L 180,62 L 200,105 L 215,115 L 230,85 L 250,60 L 500,60"
-                        strokeWidth="3"
-                        strokeLinecap="round"
+                  <div className="h-28 w-full flex items-end gap-1.5 pt-4">
+                    {[12, 18, 22, 35, 78, 92, 85, 45, 20, 10, 5, 0].map((val, idx) => (
+                      <div
+                        key={idx}
+                        className="flex-1 bg-[#090A0A] transition-all duration-300"
+                        style={{ height: `${val}%` }}
                       />
-                      <line
-                        x1="215"
-                        y1="20"
-                        x2="215"
-                        y2="115"
-                        stroke="#e11d48"
-                        strokeWidth="1.5"
-                        strokeDasharray="4 4"
-                      />
-                    </svg>
-                    <div className="absolute top-2 left-[42%] text-xs font-mono text-rose-700 bg-white px-2 py-0.5 rounded border border-rose-200 font-semibold shadow-xs">
-                      Contact: 08:42:15.118
-                    </div>
+                    ))}
                   </div>
-
-                  <div className="grid grid-cols-3 gap-2 text-center text-xs sm:text-sm">
-                    <div className="p-2.5 bg-white rounded-lg border border-slate-200">
-                      <span className="text-slate-500 block text-xs">Pre-Impact Speed</span>
-                      <span className="text-slate-950 font-mono font-bold">22.4 km/h</span>
-                    </div>
-                    <div className="p-2.5 bg-white rounded-lg border border-slate-200">
-                      <span className="text-slate-500 block text-xs">Principal Delta-V</span>
-                      <span className="text-slate-950 font-mono font-bold">14.1 km/h</span>
-                    </div>
-                    <div className="p-2.5 bg-white rounded-lg border border-slate-200">
-                      <span className="text-slate-500 block text-xs">Pre-Tensioner</span>
-                      <span className="text-emerald-700 font-mono font-bold">Fired (Driver)</span>
-                    </div>
+                  <div className="flex justify-between text-xs font-mono text-[#6F7375] pt-2 border-t border-[#D7D9D8]">
+                    <span>T - 2.5s</span>
+                    <span>IMPACT T = 0</span>
+                    <span>T + 1.0s</span>
                   </div>
                 </div>
-
-                <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                  Deceleration signature proves low-speed lateral impact without rollover hazard, correlating directly with the front bumper plastic deformation recorded in photographic capture.
+                <p className="text-xs text-[#6F7375] font-mono leading-relaxed">
+                  * Telemetry displayed from synthetic simulation fixture for technical validation.
                 </p>
               </div>
             )}
 
-            {/* STAGE 3: Trajectory Reconstruction */}
+            {/* Stage 3: Spatial Trajectory Overhead */}
             {activeStage === 3 && (
-              <div className="space-y-6">
-                <div className="flex items-center justify-between border-b border-slate-200 pb-3">
-                  <div className="flex items-center gap-2 text-sm text-blue-700 font-mono font-semibold">
-                    <LayersIcon size={18} />
-                    <span>Kinematic Trajectory Reconstruction</span>
-                  </div>
-                  <span className="text-xs font-mono text-slate-500">
-                    Neutral Physics Model
-                  </span>
+              <div className="space-y-6 animate-in fade-in duration-500">
+                <div className="flex justify-between items-center text-xs font-mono tracking-wider text-[#6F7375] pb-4 border-b border-[#D7D9D8]">
+                  <span>OVERHEAD KINEMATIC RECONSTRUCTION</span>
+                  <span>ROADWAY CALIBRATED</span>
                 </div>
-
-                {/* Schematic Roundabout Diagram */}
-                <div className="relative aspect-[16/10] rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-center p-6 overflow-hidden">
-                  <svg viewBox="0 0 400 240" className="w-full h-full">
-                    {/* Roundabout Island */}
-                    <circle cx="180" cy="120" r="55" fill="#f1f5f9" stroke="#cbd5e1" strokeWidth="2" strokeDasharray="6 6" />
-                    <circle cx="180" cy="120" r="28" fill="#e2e8f0" stroke="#94a3b8" strokeWidth="2" />
-
-                    {/* Road lanes */}
-                    <path d="M 0,120 L 125,120" stroke="#94a3b8" strokeWidth="1.5" strokeDasharray="4 4" />
-                    <path d="M 320,60 L 225,100" stroke="#94a3b8" strokeWidth="1.5" strokeDasharray="4 4" />
-
-                    {/* Trajectory Vehicle A (Golf VIII) */}
-                    <path d="M 125,170 C 140,165 170,175 190,175" fill="none" stroke="#2563eb" strokeWidth="3" />
-                    <rect x="180" y="165" width="22" height="12" rx="3" fill="#2563eb" stroke="#1d4ed8" />
-                    <text x="175" y="195" fill="#1e3a8a" fontSize="10" fontFamily="monospace" fontWeight="600">Vehicle A (Golf)</text>
-
-                    {/* Trajectory Vehicle B (Fiat 500) */}
-                    <path d="M 270,135 L 205,160" fill="none" stroke="#d97706" strokeWidth="3" />
-                    <rect x="195" y="152" width="18" height="11" rx="3" fill="#d97706" stroke="#b45309" transform="rotate(25, 204, 157)" />
-                    <text x="215" y="145" fill="#92400e" fontSize="10" fontFamily="monospace" fontWeight="600">Vehicle B (Fiat)</text>
-
-                    {/* Point of Contact Star */}
-                    <circle cx="196" cy="165" r="4" fill="#dc2626" />
-                  </svg>
-                  <div className="absolute bottom-3 right-3 text-xs font-mono text-slate-600 bg-white px-2 py-1 rounded border border-slate-200 shadow-xs">
-                    Contact Vector: 45° Oblique Lateral
+                <div className="relative aspect-[16/9] w-full bg-[#171819] flex items-center justify-center p-8 overflow-hidden">
+                  <div className="w-full h-full border border-white/20 relative flex items-center justify-center">
+                    {/* Roadway lines */}
+                    <div className="w-full h-0.5 bg-white/40 absolute" />
+                    <div className="w-0.5 h-full bg-white/40 absolute" />
+                    {/* Vehicle A */}
+                    <div className="absolute top-1/3 left-1/3 p-2 bg-white text-[#090A0A] text-xs font-mono font-bold">
+                      VEHICLE A (GOLF VIII)
+                    </div>
+                    {/* Vehicle B */}
+                    <div className="absolute bottom-1/3 right-1/3 p-2 border border-white text-white text-xs font-mono">
+                      VEHICLE B
+                    </div>
                   </div>
                 </div>
-
-                <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 text-xs sm:text-sm text-slate-700 leading-relaxed">
-                  <span className="font-bold text-slate-950 block mb-1">Neutral Factual Statement:</span>
-                  &ldquo;Vehicle A was navigating inside the circulatory roadway. Vehicle B entered the roundabout from the right-hand ingress lane before physical contact occurred at the front-left wing.&rdquo;
+                <div className="text-xs font-mono text-[#6F7375]">
+                  Calculated conflict angle: 84° • Relative speed differential: 14 km/h
                 </div>
               </div>
             )}
 
-            {/* STAGE 4: Claim Dossier Ready for Human Review */}
+            {/* Stage 4: Structured Claim Package (Ready for Human Review) */}
             {activeStage === 4 && (
-              <div className="space-y-6">
-                <div className="flex items-center justify-between border-b border-slate-200 pb-3">
-                  <div className="flex items-center gap-2 text-sm text-emerald-700 font-mono font-semibold">
-                    <CheckCircleIcon size={18} />
-                    <span>European Claim Dossier Normalized</span>
-                  </div>
-                  <span className="text-xs font-mono text-slate-500">
-                    Dossier: CLM-2026-0841
-                  </span>
+              <div className="space-y-6 animate-in fade-in duration-500">
+                <div className="flex justify-between items-center text-xs font-mono tracking-wider text-[#6F7375] pb-4 border-b border-[#D7D9D8]">
+                  <span>EUROPEAN ACCIDENT STATEMENT (CAI BOX 12)</span>
+                  <span className="text-emerald-700 font-bold">STRUCTURED PACKAGE</span>
                 </div>
-
-                <div className="bg-slate-50 rounded-xl border border-slate-200 p-5 sm:p-6 space-y-4">
-                  <div className="flex items-center justify-between border-b border-slate-200 pb-3">
-                    <div>
-                      <span className="text-xs font-mono uppercase text-slate-500 block font-medium">
-                        Assigned Insurer
-                      </span>
-                      <span className="text-base font-bold text-slate-950">
-                        Aura Mutua Assicurazioni
-                      </span>
-                    </div>
-                    <div className="text-right">
-                      <span className="text-xs font-mono uppercase text-slate-500 block font-medium">
-                        Status
-                      </span>
-                      <span className="text-xs font-mono font-semibold text-emerald-800 bg-emerald-100/70 px-2.5 py-0.5 rounded">
-                        Claim Ready for Human Review
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4 text-xs sm:text-sm">
-                    <div>
-                      <span className="text-slate-500 block text-xs font-medium">CAI Box 12 (Vehicle A)</span>
-                      <span className="font-semibold text-slate-900">Circumstance 7</span>
-                      <span className="text-slate-600 text-xs block">Circulating in roundabout</span>
-                    </div>
-                    <div>
-                      <span className="text-slate-500 block text-xs font-medium">CAI Box 12 (Vehicle B)</span>
-                      <span className="font-semibold text-slate-900">Circumstance 6</span>
-                      <span className="text-slate-600 text-xs block">Entering from side road</span>
-                    </div>
-                  </div>
-
-                  <div className="p-3 bg-white rounded-lg border border-slate-200 flex items-center justify-between text-xs sm:text-sm">
-                    <div className="flex items-center gap-2">
-                      <ShieldCheckIcon size={18} className="text-blue-700" />
-                      <span className="text-slate-800 font-semibold">
-                        Epistemic demarcation verified
-                      </span>
-                    </div>
-                    <span className="text-slate-600 font-mono text-xs">
-                      Zero Liability Automation
+                <div className="p-6 border border-[#090A0A] bg-[#F4F5F3] space-y-4">
+                  <div className="flex items-center gap-3">
+                    <CheckCircleIcon size={20} className="text-[#090A0A]" />
+                    <span className="text-base font-bold uppercase tracking-tight text-[#090A0A]">
+                      Claim Ready for Human Adjuster Review
                     </span>
                   </div>
+                  <div className="grid grid-cols-2 gap-4 text-xs font-mono text-[#6F7375] pt-2 border-t border-[#D7D9D8]">
+                    <div>
+                      <span className="block text-[#090A0A] font-semibold">CAI CIRCUMSTANCES</span>
+                      Box 12 Circumstance 04 &amp; 08 flagged
+                    </div>
+                    <div>
+                      <span className="block text-[#090A0A] font-semibold">LEGAL SAFEGUARD</span>
+                      Zero automated liability decrees
+                    </div>
+                  </div>
                 </div>
-
-                <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                  The claim dossier is fully assembled with encrypted telemetry, tamper-evident photos, and objective kinematics — structured for claims adjuster review with zero ambiguity.
+                <p className="text-xs text-[#6F7375] font-mono leading-relaxed">
+                  Final claim dossier package ready for expert sign-off and insurance claims system handoff.
                 </p>
               </div>
             )}
 
-            {/* Bottom Controls */}
-            <div className="pt-5 border-t border-slate-200 flex items-center justify-between text-xs sm:text-sm">
-              <div className="flex items-center gap-1.5">
-                {[1, 2, 3, 4].map((s) => (
-                  <button
-                    key={s}
-                    type="button"
-                    onClick={() => setActiveStage(s as 1 | 2 | 3 | 4)}
-                    className={`min-h-[44px] min-w-[44px] rounded-lg font-mono text-sm font-bold transition-colors ${
-                      activeStage === s
-                        ? "bg-slate-950 text-white"
-                        : "bg-slate-100 text-slate-600 hover:text-slate-950 hover:bg-slate-200"
-                    }`}
-                  >
-                    {s}
-                  </button>
-                ))}
-              </div>
-
-              <button
-                type="button"
-                onClick={() =>
-                  setActiveStage((prev) => (prev < 4 ? ((prev + 1) as 1 | 2 | 3 | 4) : 1))
-                }
-                className="min-h-[44px] inline-flex items-center gap-1.5 text-blue-700 hover:text-blue-900 font-semibold px-2 py-1"
-              >
-                <span>{activeStage < 4 ? "Next stage" : "Restart from stage 1"}</span>
-                <ArrowRightIcon size={16} />
-              </button>
+            {/* Bottom Proof Bar */}
+            <div className="pt-6 border-t border-[#D7D9D8] flex items-center justify-between text-xs font-mono tracking-widest text-[#6F7375]">
+              <span>ISO 27037 PROVENANCE</span>
+              <span>VERIFIED EVIDENCE CHAIN</span>
             </div>
           </div>
         </div>

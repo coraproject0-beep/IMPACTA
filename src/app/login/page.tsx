@@ -5,9 +5,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
-import { useLanguage } from "@/context/LanguageContext";
-import { LanguageSelector } from "@/context/LanguageContext";
-import { ArrowRightIcon, ShieldCheckIcon } from "@/components/icons/Icons";
+import { useLanguage, LanguageSelector } from "@/context/LanguageContext";
+import { ArrowRightIcon } from "@/components/icons/Icons";
 
 function LoginForm() {
   const router = useRouter();
@@ -15,7 +14,7 @@ function LoginForm() {
   const redirectTarget = searchParams.get("redirect") || "/app";
 
   const { loginDriver } = useAuth();
-  const { t } = useLanguage();
+  const { language, t } = useLanguage();
 
   const [email, setEmail] = useState("matteo.bianchi@impacta-demo.eu");
   const [password, setPassword] = useState("••••••••••••");
@@ -33,166 +32,154 @@ function LoginForm() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col justify-between selection:bg-blue-100 selection:text-blue-900">
-      {/* Top Bar */}
-      <header className="px-6 py-4 flex items-center justify-between border-b border-slate-200/80 bg-white/95 backdrop-blur-md">
-        <Link href="/" className="flex items-center gap-2 group" title="Return to Public IMPACTA corporate website">
-          <div className="w-8 h-8 rounded-lg bg-slate-950 text-white flex items-center justify-center font-bold tracking-wider text-xs group-hover:bg-blue-600 transition-colors">
-            IM
-          </div>
-          <span className="text-base font-extrabold tracking-tight text-slate-950">
-            IMPACTA
+    <div className="min-h-screen bg-[#F4F5F3] text-[#090A0A] flex flex-col justify-between">
+      {/* Top Bar with Escape Route */}
+      <header className="px-6 sm:px-12 py-6 flex items-center justify-between border-b border-[#D7D9D8] bg-[#F4F5F3]">
+        <Link href="/" className="flex items-center gap-3 group" title="Return to Public IMPACTA">
+          <span className="text-xl font-black tracking-tight uppercase">IMPACTA</span>
+          <span className="text-xs font-mono uppercase tracking-widest text-[#6F7375] pl-3 border-l border-[#D7D9D8] hidden sm:inline">
+            DRIVER PORTAL
           </span>
         </Link>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-6">
           <LanguageSelector />
           <Link
             href="/"
-            className="text-sm font-semibold text-slate-600 hover:text-slate-950 transition-colors"
+            className="text-xs font-mono font-bold uppercase tracking-wider text-[#6F7375] hover:text-[#090A0A] transition-colors"
           >
-            {t.nav.backToImpacta}
+            ← {t("nav.backToImpacta")}
           </Link>
         </div>
       </header>
 
-      {/* Main Split Content */}
-      <main className="flex-1 flex items-center justify-center px-4 py-10 sm:py-16">
-        <div className="max-w-4xl w-full grid md:grid-cols-12 bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-          {/* Left Column: Visual & Context in Light Aesthetic */}
-          <div className="md:col-span-5 relative hidden md:flex flex-col justify-between bg-slate-100 p-8 border-r border-slate-200">
-            <div className="relative aspect-[4/3] rounded-xl overflow-hidden border border-slate-200 shadow-xs mb-6">
-              <Image
-                src="/images/hero-car.jpg"
-                alt="Volkswagen Golf VIII on European roadway"
-                fill
-                priority
-                className="object-cover"
-                sizes="380px"
-              />
+      {/* Full-Viewport Integrated Split (NO centered floating card) */}
+      <main className="flex-1 grid grid-cols-1 lg:grid-cols-12 w-full">
+        {/* Left Column: Full-Height Photographic Field */}
+        <div className="hidden lg:block lg:col-span-6 relative bg-[#090A0A] text-white overflow-hidden">
+          <Image
+            src="/images/hero-car.jpg"
+            alt="Driver vehicle environment"
+            fill
+            priority
+            className="object-cover opacity-60"
+            sizes="50vw"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#090A0A] via-[#090A0A]/40 to-transparent p-12 sm:p-16 flex flex-col justify-between">
+            <div className="text-xs font-mono uppercase tracking-widest text-white/50">
+              POLICYHOLDER ACCESS GATE
             </div>
-            <div className="space-y-4">
-              <div>
-                <p className="text-xs font-mono uppercase tracking-wider text-blue-700 font-bold mb-1.5">
-                  Consumer Driver Experience
-                </p>
-                <h3 className="text-2xl font-bold tracking-tight text-slate-950 leading-snug">
-                  Precision roadside assistance &amp; evidence intake.
-                </h3>
-              </div>
-
-              <div className="space-y-2 pt-4 border-t border-slate-200 text-sm text-slate-600">
-                <div className="flex items-center gap-2 font-medium text-slate-900">
-                  <ShieldCheckIcon size={18} className="text-blue-700 shrink-0" />
-                  <span>Volkswagen Golf VIII • GF492XP</span>
-                </div>
-                <div className="text-xs text-slate-500 font-mono">
-                  Policy: Aura Mutua Assicurazioni (AUR-8921-00412)
-                </div>
-              </div>
+            <div className="space-y-4 max-w-lg">
+              <h2 className="text-4xl font-bold uppercase tracking-tight text-white leading-tight">
+                {language === "it"
+                  ? "La tua sicurezza, prima e dopo l'impatto."
+                  : "Your roadside safety, secured and verified."}
+              </h2>
+              <p className="text-sm font-mono text-white/70">
+                Matteo Bianchi • Volkswagen Golf VIII (GF492XP)
+              </p>
             </div>
           </div>
+        </div>
 
-          {/* Right Column: Sign In Form */}
-          <div className="md:col-span-7 p-8 sm:p-12 flex flex-col justify-center">
-            <div className="space-y-3 mb-8">
-              <p className="text-xs font-mono font-bold uppercase tracking-wider text-blue-700">
-                Driver Authentication
-              </p>
-              <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-950 leading-tight">
-                {t.auth.driverLoginTitle}
+        {/* Right Column: Directly Integrated Form Field */}
+        <div className="lg:col-span-6 flex items-center justify-center p-8 sm:p-16 lg:p-24 bg-white border-l border-[#D7D9D8]">
+          <div className="max-w-md w-full space-y-8">
+            <div className="space-y-2">
+              <span className="text-xs font-mono uppercase tracking-widest text-[#6F7375]">
+                AUTHENTICATION
+              </span>
+              <h1 className="text-3xl sm:text-4xl font-bold uppercase tracking-tight text-[#090A0A]">
+                {t("login.driverTitle")}
               </h1>
-              <p className="text-base text-slate-600 leading-relaxed">
-                {t.auth.driverLoginSubtitle}
+              <p className="text-sm text-[#6F7375] leading-relaxed">
+                {t("login.driverSubtitle")}
               </p>
             </div>
 
-            {/* Instant Demo Account Button */}
-            <div className="mb-8">
+            {/* 1-Tap Demo Instant Sign-in */}
+            <div className="p-6 border border-[#090A0A] bg-[#F4F5F3] space-y-3">
+              <div className="flex items-center justify-between text-xs font-mono text-[#6F7375]">
+                <span>DEMO CREDENTIALS</span>
+                <span className="text-emerald-700 font-bold uppercase">READY</span>
+              </div>
+              <p className="text-xs font-mono text-[#090A0A]">
+                Sign in instantly as policyholder <strong>Matteo Bianchi</strong>.
+              </p>
               <button
                 type="button"
                 onClick={handleDemoSignIn}
-                className="w-full py-4 px-5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-base font-bold shadow-xs transition-colors flex items-center justify-center gap-2 min-h-[52px]"
+                className="w-full min-h-[48px] bg-[#090A0A] text-white text-xs font-bold uppercase tracking-wider hover:bg-[#171819] transition-colors flex items-center justify-center gap-2"
               >
-                <span>{t.auth.demoDriverButton}</span>
-                <ArrowRightIcon size={18} />
+                <span>{t("login.driverDemoAction")}</span>
+                <ArrowRightIcon size={14} />
               </button>
-              <span className="text-xs text-slate-500 text-center block mt-2.5">
-                {t.auth.demoSessionNotice}
-              </span>
-            </div>
-
-            <div className="relative flex items-center justify-center my-6">
-              <div className="border-t border-slate-200 w-full" />
-              <span className="bg-white px-3 text-xs uppercase tracking-wider text-slate-400 font-mono">
-                {t.auth.orSignInWithEmail}
-              </span>
             </div>
 
             {/* Standard Form */}
-            <form onSubmit={handleSubmit} className="space-y-5">
-              <div>
-                <label
-                  htmlFor="driver-email"
-                  className="block text-sm font-semibold text-slate-800 mb-1.5"
-                >
-                  {t.auth.emailLabel}
+            <form onSubmit={handleSubmit} className="space-y-5 pt-2">
+              <div className="space-y-2">
+                <label className="block text-xs font-mono uppercase tracking-wider text-[#6F7375]">
+                  {t("login.emailLabel")}
                 </label>
                 <input
-                  id="driver-email"
                   type="email"
+                  required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  required
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-base text-slate-900 font-medium focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all min-h-[46px]"
+                  className="w-full min-h-[50px] px-4 border border-[#D7D9D8] bg-white text-[#090A0A] text-sm focus:outline-none focus:border-[#090A0A] transition-colors"
                 />
               </div>
 
-              <div>
-                <div className="flex items-center justify-between mb-1.5">
-                  <label
-                    htmlFor="driver-password"
-                    className="block text-sm font-semibold text-slate-800"
-                  >
-                    {t.auth.passwordLabel}
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <label className="block text-xs font-mono uppercase tracking-wider text-[#6F7375]">
+                    {t("login.passwordLabel")}
                   </label>
                   <button
                     type="button"
-                    onClick={() => setForgotNotice(!forgotNotice)}
-                    className="text-xs text-blue-700 hover:underline font-medium"
+                    onClick={() => setForgotNotice(true)}
+                    className="text-xs font-mono uppercase text-[#6F7375] hover:text-[#090A0A] underline"
                   >
-                    {t.auth.forgotPasswordText}
+                    {t("login.forgotPassword")}
                   </button>
                 </div>
                 <input
-                  id="driver-password"
                   type="password"
+                  required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  required
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-base text-slate-900 font-medium focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all min-h-[46px]"
+                  className="w-full min-h-[50px] px-4 border border-[#D7D9D8] bg-white text-[#090A0A] text-sm focus:outline-none focus:border-[#090A0A] transition-colors"
                 />
               </div>
 
               {forgotNotice && (
-                <div className="p-3.5 bg-blue-50/70 border border-blue-200 rounded-xl text-xs sm:text-sm text-blue-950 space-y-1">
-                  <p className="font-semibold">{t.auth.forgotPasswordNotice}</p>
+                <div className="p-3 border border-[#D7D9D8] bg-[#F4F5F3] text-xs font-mono text-[#6F7375]">
+                  Demo mode: Use the 1-Tap Demo button above.
                 </div>
               )}
 
               <button
                 type="submit"
-                className="w-full py-3.5 px-4 bg-slate-950 hover:bg-slate-800 text-white rounded-xl text-base font-bold transition-colors min-h-[48px]"
+                className="w-full min-h-[52px] border border-[#090A0A] bg-white text-[#090A0A] text-xs font-bold uppercase tracking-wider hover:bg-[#F4F5F3] transition-colors"
               >
-                {t.auth.signInButton}
+                {t("login.submitDriver")}
               </button>
             </form>
+
+            <div className="pt-4 border-t border-[#D7D9D8] flex items-center justify-between text-xs font-mono text-[#6F7375]">
+              <span>INSURANCE ADJUSTER?</span>
+              <Link href="/console/login" className="font-bold text-[#090A0A] hover:underline uppercase">
+                Claims Console Gate →
+              </Link>
+            </div>
           </div>
         </div>
       </main>
 
-      {/* Footer */}
-      <footer className="px-6 py-5 text-center border-t border-slate-200/80 text-xs sm:text-sm text-slate-500">
-        <p>© 2026 IMPACTA Mobility • {t.footer.academicNotice}</p>
+      {/* Simple Legal Footer */}
+      <footer className="px-6 sm:px-12 py-4 border-t border-[#D7D9D8] bg-white text-xs font-mono text-[#6F7375] flex items-center justify-between">
+        <span>IMPACTA LABS MILANO</span>
+        <span>BROWSER LOCAL PERSISTENCE</span>
       </footer>
     </div>
   );
@@ -200,7 +187,7 @@ function LoginForm() {
 
 export default function LoginPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-slate-50 flex items-center justify-center text-sm text-slate-500">Loading...</div>}>
+    <Suspense fallback={<div className="min-h-screen bg-[#F4F5F3]" />}>
       <LoginForm />
     </Suspense>
   );

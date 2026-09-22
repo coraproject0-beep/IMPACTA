@@ -80,78 +80,77 @@ export default function ConsoleOverviewPage() {
         </div>
       </div>
 
-      {/* Primary KPI Metrics Strip */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
+      {/* Primary KPI Metrics Strip (Unified Open Surface with Dividers) */}
+      <div className="bg-white border border-[#D7D9D8] grid grid-cols-2 md:grid-cols-4 divide-y md:divide-y-0 md:divide-x divide-[#D7D9D8]">
         {/* Open Claims */}
-        <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-xs">
-          <div className="text-xs font-mono font-bold text-slate-400 uppercase tracking-wider">
+        <div className="p-6 space-y-2">
+          <div className="text-xs font-mono font-bold text-[#6F7375] uppercase tracking-wider">
             Open Claims
           </div>
-          <div className="mt-3 flex items-baseline justify-between">
-            <span className="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-950 font-mono">
+          <div className="flex items-baseline justify-between">
+            <span className="text-3xl sm:text-4xl font-bold tracking-tight text-[#090A0A] font-mono">
               {stats.openClaims}
             </span>
-            <span className="text-xs text-slate-500 font-medium">
+            <span className="text-xs text-[#6F7375] font-mono">
               of {stats.totalClaims} total
             </span>
           </div>
-          <div className="mt-3 text-xs text-slate-600 flex items-center gap-1.5">
-            <span className="inline-block w-2 h-2 rounded-full bg-blue-500" />
-            <span>{stats.reviewed} closed/reviewed</span>
+          <div className="text-xs text-[#6F7375] font-mono">
+            {stats.reviewed} closed/reviewed
           </div>
         </div>
 
-        {/* Awaiting AI Review */}
-        <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-xs">
-          <div className="text-xs font-mono font-bold text-slate-400 uppercase tracking-wider">
-            Awaiting AI Review
+        {/* Awaiting Review */}
+        <div className="p-6 space-y-2">
+          <div className="text-xs font-mono font-bold text-[#6F7375] uppercase tracking-wider">
+            Awaiting Review
           </div>
-          <div className="mt-3 flex items-baseline justify-between">
-            <span className="text-3xl sm:text-4xl font-extrabold tracking-tight text-amber-700 font-mono">
+          <div className="flex items-baseline justify-between">
+            <span className="text-3xl sm:text-4xl font-bold tracking-tight text-[#090A0A] font-mono">
               {stats.awaitingReview}
             </span>
-            <span className="text-xs font-semibold text-amber-700">
+            <span className="text-xs font-mono text-[#DC2626] font-semibold">
               {stats.manualReviewRequiredCount} high priority
             </span>
           </div>
-          <div className="mt-3 text-xs text-slate-600">
-            Low confidence or conflicting inputs
+          <div className="text-xs text-[#6F7375] font-mono">
+            Requires adjuster determination
           </div>
         </div>
 
         {/* CAI Drafts Ready */}
-        <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-xs">
-          <div className="text-xs font-mono font-bold text-slate-400 uppercase tracking-wider">
+        <div className="p-6 space-y-2">
+          <div className="text-xs font-mono font-bold text-[#6F7375] uppercase tracking-wider">
             CAI Drafts Ready
           </div>
-          <div className="mt-3 flex items-baseline justify-between">
-            <span className="text-3xl sm:text-4xl font-extrabold tracking-tight text-blue-700 font-mono">
+          <div className="flex items-baseline justify-between">
+            <span className="text-3xl sm:text-4xl font-bold tracking-tight text-[#090A0A] font-mono">
               {stats.caiReady}
             </span>
-            <span className="text-xs text-slate-500 font-medium">
+            <span className="text-xs text-[#6F7375] font-mono">
               {stats.caiFieldCompletionPercent}% confirmed
             </span>
           </div>
-          <div className="mt-3 text-xs text-slate-600">
-            Awaiting adjuster sign-off
+          <div className="text-xs text-[#6F7375] font-mono">
+            Ready for human sign-off
           </div>
         </div>
 
         {/* Telemetry Coverage */}
-        <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-xs">
-          <div className="text-xs font-mono font-bold text-slate-400 uppercase tracking-wider">
+        <div className="p-6 space-y-2">
+          <div className="text-xs font-mono font-bold text-[#6F7375] uppercase tracking-wider">
             Telemetry Coverage
           </div>
-          <div className="mt-3 flex items-baseline justify-between">
-            <span className="text-3xl sm:text-4xl font-extrabold tracking-tight text-emerald-700 font-mono">
+          <div className="flex items-baseline justify-between">
+            <span className="text-3xl sm:text-4xl font-bold tracking-tight text-[#090A0A] font-mono">
               {stats.telemetryCoveragePercent}%
             </span>
-            <span className="text-xs font-mono font-semibold text-emerald-700">
+            <span className="text-xs font-mono text-emerald-700 font-semibold">
               Active EDR
             </span>
           </div>
-          <div className="mt-3 text-xs text-slate-600">
-            Mean AI confidence: {stats.meanConfidence}%
+          <div className="text-xs text-[#6F7375] font-mono">
+            Mean confidence: {stats.meanConfidence}%
           </div>
         </div>
       </div>

@@ -4,146 +4,145 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { PublicShell } from "@/components/public/PublicShell";
-import { TextReveal } from "@/components/motion/TextReveal";
-import { ImageReveal } from "@/components/motion/ImageReveal";
+import { EditorialReveal } from "@/components/motion/EditorialReveal";
+import { TechnicalReveal } from "@/components/motion/TechnicalReveal";
+import { ProductReveal } from "@/components/motion/ProductReveal";
 import { useLanguage } from "@/context/LanguageContext";
-import { ArrowRightIcon } from "@/components/icons/Icons";
+import { ArrowRightIcon, CheckCircleIcon } from "@/components/icons/Icons";
 
 export default function InsurersPage() {
-  const { t } = useLanguage();
+  const { language } = useLanguage();
 
   return (
     <PublicShell>
-      {/* 1. Hero Section */}
-      <section className="py-20 sm:py-32 bg-white border-b border-slate-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
-            <div className="lg:col-span-7 space-y-6">
-              <TextReveal delayMs={0}>
-                <p className="text-xs sm:text-sm font-mono font-bold uppercase tracking-widest text-blue-700">
-                  Claims Operations &amp; SIU
-                </p>
-              </TextReveal>
-              <TextReveal delayMs={80} as="h1" className="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight text-slate-950 leading-tight">
-                Triage collision claims in minutes with verified kinematics.
-              </TextReveal>
-              <TextReveal delayMs={160} as="p" className="text-lg sm:text-xl text-slate-600 leading-relaxed max-w-xl">
-                Replace disputed paper CAI forms and contradictory statements with high-frequency connected vehicle telemetry, objective road geometry, and standard European accident circumstances.
-              </TextReveal>
-              <div className="pt-2">
-                <Link
-                  href="/console/login"
-                  className="min-h-[52px] inline-flex items-center gap-2.5 px-8 py-4 rounded-xl font-bold text-base bg-slate-950 hover:bg-blue-600 text-white shadow-xs transition-all active:scale-[0.98]"
-                >
-                  <span>Launch Claims Operations Console</span>
-                  <ArrowRightIcon size={18} />
-                </Link>
-              </div>
-            </div>
+      {/* Header Scene */}
+      <section className="py-24 sm:py-36 bg-white border-b border-[#D7D9D8]">
+        <div className="w-full px-6 sm:px-12 lg:px-20 max-w-7xl mx-auto space-y-6">
+          <TechnicalReveal className="text-xs sm:text-sm font-mono font-bold uppercase tracking-widest text-[#6F7375]">
+            {language === "it" ? "OPERAZIONI SINISTRI & LIQUIDAZIONE" : "CLAIMS OPERATIONS & SIU"}
+          </TechnicalReveal>
+          <EditorialReveal
+            as="h1"
+            className="text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-[#090A0A] leading-[1.04] uppercase max-w-5xl"
+          >
+            {language === "it" ? (
+              <>
+                Dati oggettivi.
+                <br />
+                Liquidazione rapida ed equa.
+              </>
+            ) : (
+              <>
+                Objective kinematics.
+                <br />
+                Faster, equitable claims triage.
+              </>
+            )}
+          </EditorialReveal>
+          <p className="text-lg sm:text-2xl text-[#6F7375] leading-relaxed max-w-3xl font-light">
+            {language === "it"
+              ? "Sostituisce i moduli CAI illeggibili e le dichiarazioni contraddittorie con rilievi metrici, curve di decelerazione e fascicoli strutturati secondo gli standard europei."
+              : "Replace disputed handwritten CAI forms with high-frequency connected vehicle telemetry, calibrated roadway geometry, and immutable digital audit chains."}
+          </p>
 
-            <ImageReveal delayMs={200} className="lg:col-span-5 relative rounded-2xl overflow-hidden aspect-[4/3] bg-slate-100 border border-slate-200 shadow-md">
-              <Image
-                src="/images/safety-road.jpg"
-                alt="Connected vehicle telemetry and road analysis"
-                fill
-                priority
-                className="object-cover"
-                sizes="(max-width: 1024px) 100vw, 550px"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent flex flex-col justify-end p-6 text-white">
-                <span className="text-xs font-mono uppercase tracking-wider text-emerald-300 font-bold block mb-1">
-                  Verified Calibration
-                </span>
-                <span className="text-lg font-bold">Aura Mutua Assicurazioni • Florence</span>
-                <span className="text-xs text-slate-300 font-mono">Example Telemetry Support • Zero Automated Fault</span>
-              </div>
-            </ImageReveal>
-          </div>
-        </div>
-      </section>
-
-      {/* 2. Editorial Narrative Points (Banned 3-card layout) */}
-      <section className="py-24 sm:py-36 bg-slate-50 border-b border-slate-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-3xl mb-16 space-y-4">
-            <TextReveal delayMs={0}>
-              <p className="text-xs sm:text-sm font-mono font-bold uppercase tracking-widest text-slate-700">
-                Evidentiary Rigor
-              </p>
-            </TextReveal>
-            <TextReveal delayMs={80} as="h2" className="text-3xl sm:text-5xl font-extrabold tracking-tight text-slate-950 leading-tight">
-              Enterprise tools built to empower human adjusters.
-            </TextReveal>
-            <TextReveal delayMs={140} as="p" className="text-lg sm:text-xl text-slate-600 leading-relaxed">
-              Every feature is built around the fundamental requirement that AI must assist human adjusters with verified physical records, never replace their legal decision authority.
-            </TextReveal>
-          </div>
-
-          <div className="space-y-14">
-            {/* Capability 1 */}
-            <div className="grid lg:grid-cols-12 gap-8 items-start pt-8 border-t border-slate-200">
-              <div className="lg:col-span-4">
-                <span className="text-3xl sm:text-4xl font-black font-mono text-blue-700 block mb-1">01</span>
-                <h3 className="text-2xl sm:text-3xl font-bold text-slate-950">Epistemic Demarcation</h3>
-              </div>
-              <div className="lg:col-span-8 text-base sm:text-lg text-slate-600 leading-relaxed space-y-3">
-                <p>
-                  Direct physical observations (contact dents, tire marks, debris fields) are strictly demarcated from probabilistic kinematic models and subjective driver narratives. The console never blurs what is physically verified with what is inferred.
-                </p>
-              </div>
-            </div>
-
-            {/* Capability 2 */}
-            <div className="grid lg:grid-cols-12 gap-8 items-start pt-8 border-t border-slate-200">
-              <div className="lg:col-span-4">
-                <span className="text-3xl sm:text-4xl font-black font-mono text-blue-700 block mb-1">02</span>
-                <h3 className="text-2xl sm:text-3xl font-bold text-slate-950">Example Telemetry Correlation</h3>
-              </div>
-              <div className="lg:col-span-8 text-base sm:text-lg text-slate-600 leading-relaxed space-y-3">
-                <p>
-                  Where connected-vehicle black-box or smartphone sensor streams exist, IMPACTA correlates longitudinal and lateral deceleration spikes, Delta-V estimates, and brake pedal inputs with reported contact timestamps.
-                </p>
-              </div>
-            </div>
-
-            {/* Capability 3 */}
-            <div className="grid lg:grid-cols-12 gap-8 items-start pt-8 border-t border-slate-200">
-              <div className="lg:col-span-4">
-                <span className="text-3xl sm:text-4xl font-black font-mono text-blue-700 block mb-1">03</span>
-                <h3 className="text-2xl sm:text-3xl font-bold text-slate-950">Box-Mapped CAI Workspace</h3>
-              </div>
-              <div className="lg:col-span-8 text-base sm:text-lg text-slate-600 leading-relaxed space-y-3">
-                <p>
-                  Evidence automatically populates standard European Agreed Statement fields (Boxes 1 through 15). Adjusters can inspect field-level provenance hashes, compare witness statements, and apply manual overrides with full audit logging.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 3. Final Call to Action */}
-      <section className="py-24 sm:py-32 bg-white text-center">
-        <div className="max-w-4xl mx-auto px-4 space-y-6">
-          <TextReveal delayMs={0}>
-            <p className="text-xs sm:text-sm font-mono font-bold uppercase tracking-widest text-blue-700">
-              Professional Demonstration
-            </p>
-          </TextReveal>
-          <TextReveal delayMs={80} as="h2" className="text-3xl sm:text-5xl font-extrabold tracking-tight text-slate-950 leading-tight">
-            Test the Claims Operations Console.
-          </TextReveal>
-          <TextReveal delayMs={140} as="p" className="text-lg sm:text-xl text-slate-600 max-w-xl mx-auto leading-relaxed">
-            Experience the 6-tab deep claim inspection workbench, 3D kinematic trajectory review, and immutable adjuster audit trails.
-          </TextReveal>
           <div className="pt-4">
             <Link
               href="/console/login"
-              className="min-h-[52px] inline-flex items-center gap-2.5 px-9 py-4 rounded-xl font-bold text-base bg-slate-950 hover:bg-blue-600 text-white shadow-sm transition-all"
+              className="inline-flex items-center justify-center min-h-[52px] px-8 bg-[#090A0A] text-white text-xs font-bold tracking-wider uppercase hover:bg-[#171819] transition-colors"
             >
-              <span>{t.nav.insurerAccess}</span>
-              <ArrowRightIcon size={18} />
+              {language === "it" ? "Accedi alla Console Sinistri" : "Launch Claims Console"}
             </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Real Product UI Workbench Preview */}
+      <section className="py-28 bg-[#F4F5F3] border-b border-[#D7D9D8]">
+        <div className="w-full px-6 sm:px-12 lg:px-20 max-w-7xl mx-auto space-y-12">
+          <div className="max-w-2xl space-y-2">
+            <span className="text-xs font-mono font-bold tracking-widest text-[#6F7375] uppercase">
+              INTERFACCIA PERITALE / WORKBENCH ARCHITECTURE
+            </span>
+            <h2 className="text-3xl font-bold uppercase text-[#090A0A]">
+              {language === "it" ? "Il Fascicolo Sinistro Unificato" : "Unified Claim Dossier Inspection"}
+            </h2>
+          </div>
+
+          <ProductReveal className="border border-[#D7D9D8] bg-white p-8 sm:p-12 shadow-sm space-y-8">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-6 border-b border-[#D7D9D8] gap-4">
+              <div>
+                <span className="text-xs font-mono uppercase tracking-widest text-[#6F7375]">
+                  CARRIER: AURA MUTUA ASSICURAZIONI • FIRENZE
+                </span>
+                <h3 className="text-2xl font-bold font-mono text-[#090A0A] mt-1">
+                  CLAIM #CLM-2026-0891
+                </h3>
+              </div>
+              <div className="flex items-center gap-4 text-xs font-mono">
+                <span className="text-emerald-700 font-bold uppercase">100% INGESTION COMPLETE</span>
+                <span className="text-[#6F7375]">PRIORITY: MEDIUM</span>
+              </div>
+            </div>
+
+            {/* Technical Detail Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 py-4 text-sm font-mono border-b border-[#D7D9D8]">
+              <div className="space-y-1">
+                <span className="text-xs text-[#6F7375] uppercase block">Assicurato / Policyholder</span>
+                <span className="font-bold text-[#090A0A] text-base block">Matteo Bianchi</span>
+                <span className="text-xs text-[#6F7375]">VW Golf VIII (GF492XP)</span>
+              </div>
+              <div className="space-y-1">
+                <span className="text-xs text-[#6F7375] uppercase block">Controparte / Counterparty</span>
+                <span className="font-bold text-[#090A0A] text-base block">Marco Ferri</span>
+                <span className="text-xs text-[#6F7375]">Fiat 500X (EB810PZ)</span>
+              </div>
+              <div className="space-y-1">
+                <span className="text-xs text-[#6F7375] uppercase block">Casella CAI 12 / Circumstance</span>
+                <span className="font-bold text-[#090A0A] text-base block">Box 12 — Case 04 &amp; 08</span>
+                <span className="text-xs text-[#6F7375]">Immissione da area privata</span>
+              </div>
+            </div>
+
+            {/* Metric Strip */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 text-xs font-mono text-[#6F7375]">
+              <div>
+                <span className="block text-[#6F7375]">IMPACT SPEED</span>
+                <span className="text-xl font-bold text-[#090A0A]">48.2 KM/H</span>
+              </div>
+              <div>
+                <span className="block text-[#6F7375]">DECELERATION</span>
+                <span className="text-xl font-bold text-[#090A0A]">-0.82 G</span>
+              </div>
+              <div>
+                <span className="block text-[#6F7375]">PHOTOGRAPHS</span>
+                <span className="text-xl font-bold text-[#090A0A]">4 GEOLOCATED</span>
+              </div>
+              <div>
+                <span className="block text-[#6F7375]">AUDIT LOG</span>
+                <span className="text-xl font-bold text-emerald-700">SHA-256 SIGNED</span>
+              </div>
+            </div>
+          </ProductReveal>
+        </div>
+      </section>
+
+      {/* Epistemic Demarcation Section */}
+      <section className="py-24 sm:py-36 bg-white border-b border-[#D7D9D8]">
+        <div className="w-full px-6 sm:px-12 lg:px-20 max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-baseline">
+          <div className="lg:col-span-5 space-y-4">
+            <span className="text-xs font-mono font-bold tracking-widest text-[#090A0A] uppercase">
+              RESPONSABILITÀ PERITALE / ADJUSTER AUTHORITY
+            </span>
+            <h2 className="text-3xl sm:text-4xl font-bold uppercase text-[#090A0A]">
+              {language === "it" ? "Gli algoritmi non emettono sentenze" : "Zero automated liability decrees"}
+            </h2>
+          </div>
+          <div className="lg:col-span-7 space-y-6 text-base sm:text-lg text-[#6F7375] font-light leading-relaxed">
+            <p>
+              {language === "it"
+                ? "L'ordinamento giuridico italiano ed europeo richiede che la determinazione della responsabilità sia sempre assunta da periti e liquidatori abilitati. IMPACTA fornisce dati oggettivi incontestabili ma rimette ogni decisione di concorso di colpa all'autorità umana."
+                : "European insurance regulations require that legal liability determinations be made by licensed adjusters. IMPACTA provides indisputable objective facts while leaving fault assessment exclusively to human discretion."}
+            </p>
           </div>
         </div>
       </section>

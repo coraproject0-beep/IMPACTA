@@ -13,18 +13,28 @@ const config: Config = {
         background: "var(--background)",
         foreground: "var(--foreground)",
         border: "var(--border)",
-        navy: {
-          900: "#0b1329",
-          800: "#111c38",
-          700: "#1a284e",
+        impacta: {
+          black: "#090A0A",
+          graphite: "#171819",
+          titanium: "#6F7375",
+          hairline: "#D7D9D8",
+          offwhite: "#F4F5F3",
+          white: "#FFFFFF",
         },
-        cobalt: {
-          50: "#eef4ff",
-          100: "#d9e5ff",
-          500: "#2563eb",
-          600: "#1d4ed8",
-          700: "#1e40af",
-        }
+        emergency: {
+          DEFAULT: "#DC2626",
+          50: "#FEF2F2",
+          600: "#DC2626",
+        },
+        success: {
+          DEFAULT: "#16A34A",
+          50: "#F0FDF4",
+          600: "#16A34A",
+        },
+      },
+      fontFamily: {
+        sans: ["var(--font-archivo)", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "sans-serif"],
+        mono: ["var(--font-mono)", "ui-monospace", "SFMono-Regular", "Menlo", "monospace"],
       },
     },
   },

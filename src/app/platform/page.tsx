@@ -4,173 +4,143 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { PublicShell } from "@/components/public/PublicShell";
-import { TextReveal } from "@/components/motion/TextReveal";
-import { ImageReveal } from "@/components/motion/ImageReveal";
-import { ArrowRightIcon } from "@/components/icons/Icons";
+import { EditorialReveal } from "@/components/motion/EditorialReveal";
+import { TechnicalReveal } from "@/components/motion/TechnicalReveal";
+import { FullBleedImage } from "@/components/motion/FullBleedImage";
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function PlatformPage() {
+  const { language } = useLanguage();
+
   const platformStages = [
     {
       step: "01",
-      title: "Roadside Incident Capture",
-      actor: "Policyholder / Driver",
-      description:
-        "Immediately post-collision, the driver opens the mobile PWA. The interface guides immediate physical safety (112 emergency assistance, hazard lights) and prompts standardized 4-angle evidence photography and narrative statements.",
-      highlight: "Offline-first PWA · Native camera integration · EXIF timestamping",
+      title: language === "it" ? "Rilievo Immediato Sul Posto" : "Roadside Incident Capture",
+      actor: language === "it" ? "Conducente / Assicurato" : "Driver / Policyholder",
+      description: language === "it"
+        ? "Subito dopo la collisione, la web app guida l'incolumità personale (chiamata rapida 112, giubbotto catarifrangente) e impone 4 rilievi fotografici ortogonali con metadati GNSS ed EXIF non modificabili."
+        : "Immediately post-collision, the web client prioritizes human safety (direct 112 dialer, hazard triangle) and guides the driver through 4 calibrated orthogonal evidence photos with immutable GNSS timestamps.",
+      tag: "CAPTURE • ISO 27037",
     },
     {
       step: "02",
-      title: "Multimodal Evidence Structuring",
-      actor: "Computer Vision & Telemetry Ingestion",
-      description:
-        "Visual models segment contact damage patterns, license plate OCR extracts counterparty alphanumeric codes, and onboard connected-vehicle telemetry (when CAN-bus available) cross-references physical deceleration curves with impact times.",
-      highlight: "Deterministic pipeline · Delta-V calculation · Impact angle detection",
+      title: language === "it" ? "Strutturazione Multimodale" : "Multimodal Evidence Structuring",
+      actor: language === "it" ? "Ingegneria di Estrazione Dati" : "Ingestion & Kinematics Engine",
+      description: language === "it"
+        ? "Le fotografie isolano la zona d'urto e l'OCR legge la targa della controparte. Quando disponibile, la telemetria di bordo CAN-bus a 10Hz correla le curve di decelerazione con il millisecondo esatto del contatto."
+        : "Visual analysis isolates contact damage zones while license plate OCR validates counterparty registration. Where CAN-bus telemetry exists, 10Hz deceleration vectors cross-reference physical impact timestamps.",
+      tag: "STRUCTURE • SENSOR FUSION",
     },
     {
       step: "03",
-      title: "Evidentiary Gap Surfacing",
-      actor: "Epistemic Analysis Engine",
-      description:
-        "The system explicitly highlights what is known versus what is missing. Unobserved details—such as unconfirmed counterparty insurance policies, absent traffic signal phases, or missing rear angles—are surfaced rather than guessed.",
-      highlight: "Strict Epistemic Isolation: Observed Facts vs Inferred Hypotheses",
+      title: language === "it" ? "Demarcazione Epistemica & CAI" : "Evidentiary Demarcation & CAI",
+      actor: language === "it" ? "Regole Deterministiche CAI" : "Epistemic Analysis & Box 12",
+      description: language === "it"
+        ? "Il sistema separa i fatti provati dalle ipotesi. I rilievi vengono mappati fedelmente nelle caselle della Constatazione Amichevole Europea (CAI Modulo Blu, Casella 12) senza inventare dinamiche non verificate."
+        : "Observed facts are strictly separated from hypotheses. Recorded dynamics are deterministically mapped into European Accident Statement circumstances (CAI Box 12) without unverified guesswork.",
+      tag: "DEMARCATION • CAI PROTOCOL",
     },
     {
       step: "04",
-      title: "Driver Verification & Declaration",
-      actor: "Driver / Policyholder",
-      description:
-        "The driver receives a plain-language, non-technical synthesis of what happened: 'You were travelling through the roundabout. The other vehicle entered from your right.' The driver confirms standard CAI circumstances (Box 12) and signs a solemn truthfulness declaration.",
-      highlight: "Plain-language confirmation · Completeness gauge · CAI Box 12 mapping",
-    },
-    {
-      step: "05",
-      title: "Structured Claim Dossier Generation",
-      actor: "Claims Repository",
-      description:
-        "A standardized claim dossier (`CLM-YYYY-XXXX`) is compiled in browser storage, complete with dual-party profiles, vehicle specs, optical extraction metadata, black-box graphs, and CAI draft forms.",
-      highlight: "Standard European CAI schema · IndexedDB binary blob preservation",
-    },
-    {
-      step: "06",
-      title: "Human-in-the-Loop Claims Triage",
-      actor: "Insurance Claims Specialist & SIU",
-      description:
-        "The insurance adjuster reviews the structured dossier in the Claims Operations Console. The system never determines legal liability or fault percentages. The adjuster validates or overrides facts, reviews telemetry curves, and finalizes processing.",
-      highlight: "Human decision authority · Immutable audit log · Priority triage queue",
+      title: language === "it" ? "Perizia Umana e Convalida" : "Human-in-the-Loop Claims Triage",
+      actor: language === "it" ? "Perito / Liquidatore Assicurativo" : "Forensic Adjuster / SIU",
+      description: language === "it"
+        ? "Il liquidatore riceve nella Console Sinistri un fascicolo pre-organizzato, completo di schema grafico d'urto, vettori e audit trail crittografico. Nessun algoritmo stabilisce la colpa: la decisione finale rimane esclusivamente umana."
+        : "Insurance adjusters receive a complete, calibrated dossier inside the Claims Console. The system never decrees legal fault or percentage liability. Human professionals retain sole decision authority.",
+      tag: "REVIEW • HUMAN AUTHORITY",
     },
   ];
 
   return (
     <PublicShell>
-      {/* Platform Header */}
-      <section className="py-20 sm:py-32 bg-white border-b border-slate-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-3xl space-y-6">
-            <TextReveal delayMs={0}>
-              <p className="text-xs sm:text-sm font-mono font-bold uppercase tracking-widest text-blue-700">
-                Architecture &amp; Workflow
-              </p>
-            </TextReveal>
-            <TextReveal delayMs={80} as="h1" className="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight text-slate-950 leading-tight">
-              How IMPACTA turns chaos into structured insurance truth.
-            </TextReveal>
-            <TextReveal delayMs={160} as="p" className="text-lg sm:text-xl text-slate-600 leading-relaxed">
-              A transparent, six-stage operational pipeline engineered to eliminate administrative delays, preserve evidentiary integrity, and maintain human oversight.
-            </TextReveal>
-          </div>
+      {/* Header Scene */}
+      <section className="py-24 sm:py-36 bg-white border-b border-[#D7D9D8]">
+        <div className="w-full px-6 sm:px-12 lg:px-20 max-w-7xl mx-auto space-y-6">
+          <TechnicalReveal className="text-xs sm:text-sm font-mono font-bold uppercase tracking-widest text-[#6F7375]">
+            {language === "it" ? "IL CICLO DEL SINISTRO" : "THE INTAKE & TRIAGE LIFECYCLE"}
+          </TechnicalReveal>
+          <EditorialReveal
+            as="h1"
+            className="text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-[#090A0A] leading-[1.04] uppercase max-w-5xl"
+          >
+            {language === "it" ? (
+              <>
+                Dalla collisione alla perizia.
+                <br />
+                Un processo cinematografico continuo.
+              </>
+            ) : (
+              <>
+                From impact to adjuster intake.
+                <br />
+                A continuous forensic progression.
+              </>
+            )}
+          </EditorialReveal>
+          <p className="text-lg sm:text-2xl text-[#6F7375] leading-relaxed max-w-3xl font-light">
+            {language === "it"
+              ? "Nessuna confusione cartacea, nessun ritardo di 40 giorni. Una sequenza a 4 tappe progettata con disciplina ingegneristica per automobilisti e compagnie."
+              : "Zero paper confusion, zero 42-day claim latency. A 4-stage progression engineered for roadside drivers and insurance claims teams."}
+          </p>
         </div>
       </section>
 
-      {/* Editorial Visual Hero */}
-      <section className="py-16 sm:py-24 bg-slate-50 border-b border-slate-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <ImageReveal delayMs={100} className="relative rounded-2xl overflow-hidden aspect-[21/9] bg-slate-200 border border-slate-200 shadow-sm">
-            <Image
-              src="/images/platform-evidence.jpg"
-              alt="European road and vehicle mobility context"
-              fill
-              priority
-              className="object-cover"
-              sizes="(max-width: 1280px) 100vw, 1280px"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/75 via-transparent to-transparent flex flex-col justify-end p-6 sm:p-12 text-white">
-              <span className="text-xs font-mono uppercase tracking-wider text-slate-300 font-medium">
-                End-to-End Operational Traceability
-              </span>
-              <div className="text-xl sm:text-3xl font-bold mt-1">
-                From Roadside Smartphone to Enterprise Claim Workbench
+      {/* Visual Process Film: Large Vertically Sequenced Scenes */}
+      <div className="w-full bg-[#F4F5F3]">
+        {platformStages.map((stage, idx) => (
+          <section
+            key={stage.step}
+            className="w-full border-b border-[#D7D9D8] py-28 lg:py-36"
+          >
+            <div className="w-full px-6 sm:px-12 lg:px-20 max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-baseline">
+              {/* Left Column: Giant Step Identifier */}
+              <div className="lg:col-span-4 space-y-3">
+                <span className="text-6xl sm:text-8xl lg:text-9xl font-black font-mono tracking-tighter text-[#090A0A] block leading-none">
+                  {stage.step}
+                </span>
+                <span className="text-xs font-mono tracking-widest uppercase text-[#6F7375] block">
+                  {stage.tag}
+                </span>
+                <span className="text-xs font-mono font-bold tracking-wider uppercase text-[#090A0A] block pt-2">
+                  ACTOR: {stage.actor}
+                </span>
+              </div>
+
+              {/* Right Column: Stage Description & Standards */}
+              <div className="lg:col-span-8 space-y-6">
+                <h2 className="text-3xl sm:text-5xl font-bold uppercase tracking-tight text-[#090A0A] leading-tight">
+                  {stage.title}
+                </h2>
+                <p className="text-lg sm:text-xl text-[#6F7375] font-light leading-relaxed max-w-3xl">
+                  {stage.description}
+                </p>
+                <div className="pt-4 border-t border-[#D7D9D8] flex items-center justify-between text-xs font-mono text-[#6F7375]">
+                  <span>STANDARD AUDIT CHECKPOINT</span>
+                  <span>EVIDENCE INTEGRITY SHA-256</span>
+                </div>
               </div>
             </div>
-          </ImageReveal>
-        </div>
-      </section>
+          </section>
+        ))}
+      </div>
 
-      {/* The 6-Stage Narrative Walkthrough */}
-      <section className="py-20 sm:py-32 bg-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
-          <div className="border-b border-slate-200 pb-6 space-y-2">
-            <TextReveal delayMs={0} as="h2" className="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-950">
-              The 6-Stage Intake &amp; Triage Lifecycle
-            </TextReveal>
-            <TextReveal delayMs={60} as="p" className="text-base sm:text-lg text-slate-600">
-              Every stage has a defined responsibility boundary and strict data provenance.
-            </TextReveal>
+      {/* Closing CTA */}
+      <section className="py-24 bg-white">
+        <div className="w-full px-6 sm:px-12 lg:px-20 max-w-7xl mx-auto flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+          <div>
+            <h3 className="text-2xl font-bold uppercase text-[#090A0A]">
+              {language === "it" ? "Inizia la segnalazione" : "Begin roadside report"}
+            </h3>
+            <p className="text-sm text-[#6F7375] mt-1 font-mono">
+              Experience the consumer driver workflow.
+            </p>
           </div>
-
-          <div className="space-y-14">
-            {platformStages.map((stage) => (
-              <div
-                key={stage.step}
-                className="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-8 items-start pt-8 border-t border-slate-200 first:border-0 first:pt-0"
-              >
-                {/* Step indicator */}
-                <div className="md:col-span-2">
-                  <span className="font-mono text-3xl sm:text-4xl font-black text-blue-700 block">
-                    {stage.step}
-                  </span>
-                  <span className="text-xs font-mono text-slate-500 uppercase tracking-wider block mt-1">
-                    Stage {stage.step}
-                  </span>
-                </div>
-
-                {/* Content */}
-                <div className="md:col-span-10 space-y-3">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
-                    <h3 className="text-xl sm:text-2xl font-bold text-slate-950">
-                      {stage.title}
-                    </h3>
-                    <span className="text-xs font-mono text-slate-500 font-medium">
-                      {stage.actor}
-                    </span>
-                  </div>
-                  <p className="text-base sm:text-lg text-slate-600 leading-relaxed">
-                    {stage.description}
-                  </p>
-                  <div className="pt-1 text-xs sm:text-sm font-mono text-blue-700 font-semibold">
-                    {stage.highlight}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Bottom CTAs */}
-          <div className="pt-8 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <Link
-              href="/drivers"
-              className="text-base font-bold text-blue-700 hover:text-blue-900 inline-flex items-center gap-2"
-            >
-              <span>Explore the Driver Experience</span>
-              <ArrowRightIcon size={18} />
-            </Link>
-            <Link
-              href="/insurers"
-              className="text-base font-bold text-slate-900 hover:text-blue-700 inline-flex items-center gap-2"
-            >
-              <span>Explore Claims Operations</span>
-              <ArrowRightIcon size={18} />
-            </Link>
-          </div>
+          <Link
+            href="/app/report"
+            className="inline-flex items-center justify-center min-h-[52px] px-8 bg-[#090A0A] text-white text-xs font-bold tracking-wider uppercase hover:bg-[#171819] transition-colors"
+          >
+            {language === "it" ? "Segnala un sinistro" : "Report an accident"}
+          </Link>
         </div>
       </section>
     </PublicShell>

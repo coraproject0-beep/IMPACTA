@@ -3,118 +3,148 @@
 import React from "react";
 import Link from "next/link";
 import { PublicShell } from "@/components/public/PublicShell";
-import { TextReveal } from "@/components/motion/TextReveal";
+import { EditorialReveal } from "@/components/motion/EditorialReveal";
+import { TechnicalReveal } from "@/components/motion/TechnicalReveal";
 import { CheckCircleIcon } from "@/components/icons/Icons";
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function TechnologyPage() {
+  const { language } = useLanguage();
+
   return (
     <PublicShell>
       {/* Header */}
-      <section className="py-20 sm:py-32 bg-white border-b border-slate-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-3xl space-y-6">
-            <TextReveal delayMs={0}>
-              <p className="text-xs sm:text-sm font-mono font-bold uppercase tracking-widest text-blue-700">
-                Technical Architecture &amp; Roadmap
-              </p>
-            </TextReveal>
-            <TextReveal delayMs={80} as="h1" className="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight text-slate-950 leading-tight">
-              An honest, transparent view of how IMPACTA is built.
-            </TextReveal>
-            <TextReveal delayMs={160} as="p" className="text-lg sm:text-xl text-slate-600 leading-relaxed">
-              We separate current working prototype capabilities from future enterprise carrier integrations. No exaggerated claims, no hidden cloud dependencies.
-            </TextReveal>
+      <section className="py-24 sm:py-36 bg-white border-b border-[#D7D9D8]">
+        <div className="w-full px-6 sm:px-12 lg:px-20 max-w-7xl mx-auto space-y-6">
+          <TechnicalReveal className="text-xs sm:text-sm font-mono font-bold uppercase tracking-widest text-[#6F7375]">
+            {language === "it" ? "ARCHITETTURA TECNOLOGICA" : "TECHNICAL ARCHITECTURE & SPECIFICATION"}
+          </TechnicalReveal>
+          <EditorialReveal
+            as="h1"
+            className="text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-[#090A0A] leading-[1.04] uppercase max-w-5xl"
+          >
+            {language === "it" ? (
+              <>
+                Un&apos;architettura trasparente.
+                <br />
+                Nessuna scatola nera opaca.
+              </>
+            ) : (
+              <>
+                Transparent architecture.
+                <br />
+                Zero unverified claims.
+              </>
+            )}
+          </EditorialReveal>
+          <p className="text-lg sm:text-2xl text-[#6F7375] leading-relaxed max-w-3xl font-light">
+            {language === "it"
+              ? "Separiamo con rigore la fondazione tecnica funzionante in locale dalle future integrazioni cloud e OEM. Nessuna falsa promessa di intelligenza artificiale onnisciente."
+              : "We rigorously distinguish working local-first client architecture from future enterprise cloud and OEM telemetry integrations."}
+          </p>
+        </div>
+      </section>
+
+      {/* MANDATORY HARDWARE DISCLOSURE STATEMENT */}
+      <section className="py-12 bg-[#090A0A] text-white border-b border-[#D7D9D8]">
+        <div className="w-full px-6 sm:px-12 lg:px-20 max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div className="space-y-1">
+            <span className="text-xs font-mono uppercase tracking-widest text-white/50">
+              DISCLOSURE PRODOTTO / PRODUCT DISCLOSURE
+            </span>
+            <p className="text-sm sm:text-base text-white/80 font-mono leading-relaxed max-w-3xl">
+              {language === "it"
+                ? "L'oggetto 3D «Black Box» è una metafora visiva concettuale per la fusione di prove e telemetria. IMPACTA non produce attualmente dispositivi hardware fisici."
+                : "The 3D Black Box hero is a conceptual visualization of multi-modal evidence fusion and optional telemetry. IMPACTA does not currently manufacture physical hardware devices."}
+            </p>
+          </div>
+          <div className="text-xs font-mono text-white/40 tracking-wider whitespace-nowrap">
+            ISO 27037 FORENSIC STANDARD
           </div>
         </div>
       </section>
 
-      {/* Current vs Future Architecture Comparison */}
-      <section className="py-20 sm:py-32 bg-slate-50 border-b border-slate-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
-            {/* Current Prototype Foundation */}
-            <div className="p-8 sm:p-10 bg-white rounded-2xl border border-slate-200 space-y-6 shadow-xs">
-              <div className="space-y-2">
-                <p className="text-xs font-mono uppercase tracking-wider text-emerald-700 font-bold">
-                  Phase Status: Operational Prototype
-                </p>
-                <h2 className="text-2xl font-bold text-slate-950">
-                  Current Browser-Local Architecture
+      {/* Current vs Future Architecture (Editorial Open Comparison) */}
+      <section className="py-24 sm:py-36 bg-[#F4F5F3] border-b border-[#D7D9D8]">
+        <div className="w-full px-6 sm:px-12 lg:px-20 max-w-7xl mx-auto space-y-16">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20">
+            {/* Current Architecture */}
+            <div className="space-y-8">
+              <div className="pb-6 border-b border-[#D7D9D8] space-y-2">
+                <span className="text-xs font-mono font-bold tracking-widest text-[#090A0A] uppercase">
+                  {language === "it" ? "FONDAZIONE ATTUALE" : "OPERATIONAL FOUNDATION"}
+                </span>
+                <h2 className="text-2xl sm:text-3xl font-bold uppercase text-[#090A0A]">
+                  {language === "it" ? "Architettura Browser-Local" : "Browser-Local Architecture"}
                 </h2>
-                <p className="text-base text-slate-600 leading-relaxed">
-                  Engineered to function entirely inside modern web browsers without external servers, enabling robust, zero-latency evaluation.
-                </p>
               </div>
 
-              <div className="space-y-4 text-sm text-slate-700">
-                <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-1.5">
-                  <span className="font-bold text-slate-950 text-base block">
-                    Structured Claims Ledger (localStorage)
-                  </span>
-                  <p className="text-sm text-slate-600 leading-relaxed">
-                    Claims stored under `impacta_claims_v1` with complete TypeScript schema enforcement. Cross-tab reactivity triggers instantaneous updates between Driver and Console.
+              <div className="space-y-6 text-sm text-[#6F7375]">
+                <div className="space-y-2 pb-6 border-b border-[#D7D9D8]">
+                  <h3 className="text-base font-bold text-[#090A0A] uppercase">
+                    Cross-Context Reactive State
+                  </h3>
+                  <p className="leading-relaxed">
+                    Claims repository running directly in browser storage (`localStorage` and `IndexedDB`). State synchronized instantly between the Consumer Driver workspace and the Insurance Claims Console without cloud latency.
                   </p>
                 </div>
 
-                <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-1.5">
-                  <span className="font-bold text-slate-950 text-base block">
-                    Binary Media Store (IndexedDB)
-                  </span>
-                  <p className="text-sm text-slate-600 leading-relaxed">
-                    High-resolution camera photo blobs stored in `impacta_media_db` (`evidence_blobs`), bypassing 5MB localStorage quota limits safely.
+                <div className="space-y-2 pb-6 border-b border-[#D7D9D8]">
+                  <h3 className="text-base font-bold text-[#090A0A] uppercase">
+                    Photographic &amp; GPS Ingestion
+                  </h3>
+                  <p className="leading-relaxed">
+                    Camera captures compressed and indexed in IndexedDB blobs with embedded GNSS coordinates, timestamp verification, and multi-angle orientation flags.
                   </p>
                 </div>
 
-                <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-1.5">
-                  <span className="font-bold text-slate-950 text-base block">
-                    Deterministic Demonstration Engine
-                  </span>
-                  <p className="text-sm text-slate-600 leading-relaxed">
-                    Canonical Florence roundabout collision scenario features deterministic 5-stage transformation sequence. Real user uploads are transparently flagged with disconnected AI disclaimers.
+                <div className="space-y-2 pb-6 border-b border-[#D7D9D8]">
+                  <h3 className="text-base font-bold text-[#090A0A] uppercase">
+                    CAI Standard Box 12 Rule Engine
+                  </h3>
+                  <p className="leading-relaxed">
+                    Deterministic mapping from selected accident dynamics directly into European Accident Statement (Constat Amiable) circumstances without probabilistic AI hallucination.
                   </p>
                 </div>
               </div>
             </div>
 
-            {/* Future Production Target */}
-            <div className="p-8 sm:p-10 bg-white rounded-2xl border border-slate-200 space-y-6 shadow-xs">
-              <div className="space-y-2">
-                <p className="text-xs font-mono uppercase tracking-wider text-slate-600 font-bold">
-                  Phase Status: Production Target
-                </p>
-                <h2 className="text-2xl font-bold text-slate-950">
-                  Future Enterprise Integration
+            {/* Target Enterprise Cloud Architecture */}
+            <div className="space-y-8">
+              <div className="pb-6 border-b border-[#D7D9D8] space-y-2">
+                <span className="text-xs font-mono font-bold tracking-widest text-[#6F7375] uppercase">
+                  {language === "it" ? "ROADMAP AZIENDALE" : "ENTERPRISE ROADMAP"}
+                </span>
+                <h2 className="text-2xl sm:text-3xl font-bold uppercase text-[#090A0A]">
+                  {language === "it" ? "Integrazione Carrier &amp; OEM" : "Carrier &amp; OEM Telemetry Target"}
                 </h2>
-                <p className="text-base text-slate-600 leading-relaxed">
-                  The planned enterprise deployment roadmap for tier-1 European insurance carriers and connected mobility fleets.
-                </p>
               </div>
 
-              <div className="space-y-4 text-sm text-slate-700">
-                <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-1.5">
-                  <span className="font-bold text-slate-950 text-base block">
-                    Edge &amp; Cloud Vision Pipelines
-                  </span>
-                  <p className="text-sm text-slate-600 leading-relaxed">
-                    On-device damage segmentation models paired with secure sovereign cloud inference for optical character recognition, VIN cross-checks, and anti-fraud tamper detection.
+              <div className="space-y-6 text-sm text-[#6F7375]">
+                <div className="space-y-2 pb-6 border-b border-[#D7D9D8]">
+                  <h3 className="text-base font-bold text-[#090A0A] uppercase">
+                    OEM Connected Vehicle Feeds
+                  </h3>
+                  <p className="leading-relaxed">
+                    Secure ingest of 10–20Hz CAN-bus telemetry (longitudinal/lateral deceleration vectors, brake pedal pressure, ABS engagement, steering angle) directly from automotive telematics APIs.
                   </p>
                 </div>
 
-                <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-1.5">
-                  <span className="font-bold text-slate-950 text-base block">
-                    OEM &amp; EDR Telemetry Ingestion
-                  </span>
-                  <p className="text-sm text-slate-600 leading-relaxed">
-                    Secure APIs connecting connected-vehicle telematics (CAN-bus, EDR protocols, crash sensors) with sub-second sample rates directly into claims dossiers.
+                <div className="space-y-2 pb-6 border-b border-[#D7D9D8]">
+                  <h3 className="text-base font-bold text-[#090A0A] uppercase">
+                    Core Carrier Core Claims Sync
+                  </h3>
+                  <p className="leading-relaxed">
+                    Bi-directional integration with Guidewire, Duck Creek, and SAP Insurance platforms via authenticated webhook streams and signed JSON dossiers.
                   </p>
                 </div>
 
-                <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-1.5">
-                  <span className="font-bold text-slate-950 text-base block">
-                    Carrier Core System Integrations
-                  </span>
-                  <p className="text-sm text-slate-600 leading-relaxed">
-                    RESTful API webhooks connecting directly into Guidewire, Duck Creek, and ANIA/IVASS regulatory compliance reporting structures.
+                <div className="space-y-2 pb-6 border-b border-[#D7D9D8]">
+                  <h3 className="text-base font-bold text-[#090A0A] uppercase">
+                    Cryptographic Chain of Custody
+                  </h3>
+                  <p className="leading-relaxed">
+                    Digital signature timestamping on raw evidence packets to guarantee tamper-proof admissibility in Italian and European legal jurisdictions.
                   </p>
                 </div>
               </div>
@@ -123,43 +153,23 @@ export default function TechnologyPage() {
         </div>
       </section>
 
-      {/* Technical Integrity Standards */}
-      <section className="py-20 sm:py-32 bg-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
-          <div className="space-y-3">
-            <TextReveal delayMs={0} as="h2" className="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-950">
-              Technical Integrity Standards
-            </TextReveal>
-            <TextReveal delayMs={60} as="p" className="text-base sm:text-lg text-slate-600 leading-relaxed">
-              We hold our technical architecture to strict academic and operational standards:
-            </TextReveal>
+      {/* CTA Strip */}
+      <section className="py-20 bg-white">
+        <div className="w-full px-6 sm:px-12 lg:px-20 max-w-7xl mx-auto flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+          <div>
+            <h3 className="text-2xl font-bold uppercase text-[#090A0A]">
+              {language === "it" ? "Esamina il fascicolo sinistro" : "Inspect structured claims data"}
+            </h3>
+            <p className="text-sm text-[#6F7375] mt-1 font-mono">
+              Access the operational claims workbench with pre-loaded forensic fixtures.
+            </p>
           </div>
-
-          <div className="space-y-5 text-sm text-slate-700">
-            <div className="flex items-start gap-4 p-5 rounded-xl bg-slate-50 border border-slate-200">
-              <CheckCircleIcon size={22} className="text-emerald-700 flex-shrink-0 mt-0.5" />
-              <div className="space-y-1">
-                <span className="font-bold text-slate-950 text-base block">Data Minimization Principle</span>
-                <p className="text-slate-600 leading-relaxed">Only evidentiary items directly relevant to the crash (scene overview, vehicle contact damage, counterparty registration) are recorded. No background behavioral tracking or continuous GPS surveillance.</p>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-4 p-5 rounded-xl bg-slate-50 border border-slate-200">
-              <CheckCircleIcon size={22} className="text-emerald-700 flex-shrink-0 mt-0.5" />
-              <div className="space-y-1">
-                <span className="font-bold text-slate-950 text-base block">Zero Cloud Leaks in Prototype</span>
-                <p className="text-slate-600 leading-relaxed">Your camera uploads and driver inputs do not leave this device during this prototype run. All data resides strictly inside browser memory and can be flushed with one tap in Profile settings.</p>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-4 p-5 rounded-xl bg-slate-50 border border-slate-200">
-              <CheckCircleIcon size={22} className="text-emerald-700 flex-shrink-0 mt-0.5" />
-              <div className="space-y-1">
-                <span className="font-bold text-slate-950 text-base block">Open Inspection</span>
-                <p className="text-slate-600 leading-relaxed">All schemas, mappers, and repository files are standard TypeScript and open to inspection in the project repository.</p>
-              </div>
-            </div>
-          </div>
+          <Link
+            href="/console/claims"
+            className="inline-flex items-center justify-center min-h-[52px] px-8 bg-[#090A0A] text-white text-xs font-bold tracking-wider uppercase hover:bg-[#171819] transition-colors"
+          >
+            {language === "it" ? "Accedi alla Console" : "Open Claims Console"}
+          </Link>
         </div>
       </section>
     </PublicShell>

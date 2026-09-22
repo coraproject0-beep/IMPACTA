@@ -4,155 +4,112 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { PublicShell } from "@/components/public/PublicShell";
-import { TextReveal } from "@/components/motion/TextReveal";
-import { ImageReveal } from "@/components/motion/ImageReveal";
+import { EditorialReveal } from "@/components/motion/EditorialReveal";
+import { TechnicalReveal } from "@/components/motion/TechnicalReveal";
+import { FullBleedImage } from "@/components/motion/FullBleedImage";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAuth } from "@/context/AuthContext";
-import { ArrowRightIcon } from "@/components/icons/Icons";
+import { ArrowRightIcon, CheckCircleIcon } from "@/components/icons/Icons";
 
 export default function DriversPage() {
-  const { t } = useLanguage();
+  const { language, t } = useLanguage();
   const { isDriverAuthenticated } = useAuth();
   const reportLink = isDriverAuthenticated ? "/app/report" : "/login?redirect=/app/report";
 
   return (
     <PublicShell>
-      {/* 1. Hero Section */}
-      <section className="py-20 sm:py-32 bg-white border-b border-slate-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
-            <div className="lg:col-span-7 space-y-6">
-              <TextReveal delayMs={0}>
-                <p className="text-xs sm:text-sm font-mono font-bold uppercase tracking-widest text-blue-700">
-                  Driver PWA Experience
-                </p>
-              </TextReveal>
-              <TextReveal delayMs={80} as="h1" className="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight text-slate-950 leading-tight">
-                Calm guidance at the roadside when you need it most.
-              </TextReveal>
-              <TextReveal delayMs={160} as="p" className="text-lg sm:text-xl text-slate-600 leading-relaxed max-w-xl">
-                Accidents are disorienting and stressful. IMPACTA Driver replaces intimidating paper CAI forms and bureaucratic portals with an intuitive assistant that prioritizes your physical safety, guides clear photo capture, and files your claim locally.
-              </TextReveal>
-              <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
-                <Link
-                  href={reportLink}
-                  className="min-h-[52px] inline-flex items-center justify-center gap-2.5 px-8 py-4 rounded-xl font-bold text-base bg-blue-600 hover:bg-blue-700 text-white shadow-xs transition-all active:scale-[0.98]"
-                >
-                  <span>{t.nav.reportAccident}</span>
-                  <ArrowRightIcon size={18} />
-                </Link>
-                <Link
-                  href="/app"
-                  className="min-h-[52px] inline-flex items-center justify-center gap-2 px-7 py-4 rounded-xl font-semibold text-base bg-slate-100 hover:bg-slate-200 text-slate-800 transition-colors border border-slate-200"
-                >
-                  <span>Open Driver Personal Area</span>
-                </Link>
-              </div>
-            </div>
+      {/* Hero Header */}
+      <section className="py-24 sm:py-36 bg-white border-b border-[#D7D9D8]">
+        <div className="w-full px-6 sm:px-12 lg:px-20 max-w-7xl mx-auto space-y-6">
+          <TechnicalReveal className="text-xs sm:text-sm font-mono font-bold uppercase tracking-widest text-[#6F7375]">
+            {language === "it" ? "ESPERIENZA CONDUCENTE" : "DRIVER ROADSIDE PROTOCOL"}
+          </TechnicalReveal>
+          <EditorialReveal
+            as="h1"
+            className="text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-[#090A0A] leading-[1.04] uppercase max-w-5xl"
+          >
+            {language === "it" ? (
+              <>
+                Nessuna burocrazia.
+                <br />
+                Solo chiarezza sul ciglio della strada.
+              </>
+            ) : (
+              <>
+                Zero paperwork panic.
+                <br />
+                Calm guidance at the roadside.
+              </>
+            )}
+          </EditorialReveal>
+          <p className="text-lg sm:text-2xl text-[#6F7375] leading-relaxed max-w-3xl font-light">
+            {language === "it"
+              ? "Gli incidenti provocano disorientamento. IMPACTA sostituisce i moduli CAI cartacei e i call center con una sequenza guidata che protegge prima la vostra incolumità fisica e poi le vostre ragioni assicurative."
+              : "Road accidents are traumatic and disorienting. IMPACTA replaces paper forms with an empathetic intake assistant that secures your safety first, then captures your photographic evidence."}
+          </p>
 
-            <ImageReveal delayMs={200} className="lg:col-span-5 relative rounded-2xl overflow-hidden aspect-[4/3] bg-slate-100 border border-slate-200 shadow-md">
-              <Image
-                src="/images/hero-car.jpg"
-                alt="Insured European hatchback vehicle"
-                fill
-                priority
-                className="object-cover"
-                sizes="(max-width: 1024px) 100vw, 550px"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent flex flex-col justify-end p-6 text-white">
-                <span className="text-xs font-mono uppercase tracking-wider text-blue-300 font-bold block mb-1">
-                  Insured Driver Context
-                </span>
-                <span className="text-lg font-bold">Matteo Bianchi • Volkswagen Golf VIII</span>
-                <span className="text-xs text-slate-300 font-mono">Plate GF492XP • Aura Mutua Assicurazioni</span>
-              </div>
-            </ImageReveal>
-          </div>
-        </div>
-      </section>
-
-      {/* 2. Editorial Narrative Points (Banned 3-card layout) */}
-      <section className="py-24 sm:py-36 bg-slate-50 border-b border-slate-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-3xl mb-16 space-y-4">
-            <TextReveal delayMs={0}>
-              <p className="text-xs sm:text-sm font-mono font-bold uppercase tracking-widest text-slate-700">
-                Human-First Design
-              </p>
-            </TextReveal>
-            <TextReveal delayMs={80} as="h2" className="text-3xl sm:text-5xl font-extrabold tracking-tight text-slate-950 leading-tight">
-              Engineered specifically for post-collision stress.
-            </TextReveal>
-            <TextReveal delayMs={140} as="p" className="text-lg sm:text-xl text-slate-600 leading-relaxed">
-              Traditional insurance apps overwhelm policyholders with 40 complex questions all at once. IMPACTA Driver breaks down the roadside task into four calm, progressive phases.
-            </TextReveal>
-          </div>
-
-          <div className="space-y-14">
-            {/* Stage 1 */}
-            <div className="grid lg:grid-cols-12 gap-8 items-start pt-8 border-t border-slate-200">
-              <div className="lg:col-span-4">
-                <span className="text-3xl sm:text-4xl font-black font-mono text-blue-700 block mb-1">01</span>
-                <h3 className="text-2xl sm:text-3xl font-bold text-slate-950">Safety &amp; Emergency First</h3>
-              </div>
-              <div className="lg:col-span-8 text-base sm:text-lg text-slate-600 leading-relaxed space-y-3">
-                <p>
-                  Before collecting any damage photos or vehicle details, the app confirms you and your passengers are safe, verifies reflective vest and hazard visibility, and provides a 1-tap dialer for the Single European Emergency Number 112.
-                </p>
-              </div>
-            </div>
-
-            {/* Stage 2 */}
-            <div className="grid lg:grid-cols-12 gap-8 items-start pt-8 border-t border-slate-200">
-              <div className="lg:col-span-4">
-                <span className="text-3xl sm:text-4xl font-black font-mono text-blue-700 block mb-1">02</span>
-                <h3 className="text-2xl sm:text-3xl font-bold text-slate-950">Visual 4-Angle Photo Guide</h3>
-              </div>
-              <div className="lg:col-span-8 text-base sm:text-lg text-slate-600 leading-relaxed space-y-3">
-                <p>
-                  Clear framing guidelines show you exactly where to stand: wide scene overview, contact damage on your vehicle, other driver&apos;s plate, and road signage. Native camera integration uses your phone&apos;s high-res optics with zero compression artifacts.
-                </p>
-              </div>
-            </div>
-
-            {/* Stage 3 */}
-            <div className="grid lg:grid-cols-12 gap-8 items-start pt-8 border-t border-slate-200">
-              <div className="lg:col-span-4">
-                <span className="text-3xl sm:text-4xl font-black font-mono text-blue-700 block mb-1">03</span>
-                <h3 className="text-2xl sm:text-3xl font-bold text-slate-950">Plain-Language Review</h3>
-              </div>
-              <div className="lg:col-span-8 text-base sm:text-lg text-slate-600 leading-relaxed space-y-3">
-                <p>
-                  No legal jargon or technical kinematic vectors. You see a clear, neutral summary of what happened (&ldquo;You were traveling inside the roundabout. The other vehicle entered from your right&rdquo;) before signing your truthfulness declaration.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 3. Full-Width Offline-First Assurance */}
-      <section className="py-24 sm:py-32 bg-white border-b border-slate-200">
-        <div className="max-w-4xl mx-auto px-4 text-center space-y-6">
-          <TextReveal delayMs={0}>
-            <p className="text-xs sm:text-sm font-mono font-bold uppercase tracking-widest text-emerald-800">
-              Resilient Edge Architecture
-            </p>
-          </TextReveal>
-          <TextReveal delayMs={80} as="h2" className="text-3xl sm:text-5xl font-extrabold tracking-tight text-slate-950 leading-tight">
-            Never worry about cellular dead zones.
-          </TextReveal>
-          <TextReveal delayMs={140} as="p" className="text-lg sm:text-xl text-slate-600 max-w-2xl mx-auto leading-relaxed">
-            All incident details and high-resolution camera photos are preserved locally in your browser&apos;s IndexedDB and localStorage. Even with zero reception on a rural highway, your inputs and draft remain completely safe.
-          </TextReveal>
-          <div className="pt-4">
+          <div className="pt-4 flex flex-wrap items-center gap-4">
             <Link
               href={reportLink}
-              className="min-h-[52px] inline-flex items-center gap-2.5 px-9 py-4 rounded-xl font-bold text-base bg-slate-950 hover:bg-blue-600 text-white shadow-sm transition-all"
+              className="inline-flex items-center justify-center min-h-[52px] px-8 bg-[#090A0A] text-white text-xs font-bold tracking-wider uppercase hover:bg-[#171819] transition-colors"
             >
-              <span>{t.nav.reportAccident}</span>
-              <ArrowRightIcon size={18} />
+              {t("nav.reportAccident")}
             </Link>
+            <Link
+              href="/app"
+              className="inline-flex items-center justify-center min-h-[52px] px-8 border border-[#D7D9D8] text-[#090A0A] text-xs font-semibold tracking-wider uppercase hover:border-[#090A0A] transition-colors"
+            >
+              {language === "it" ? "Accedi all'Area Personale" : "Open Driver Personal Area"}
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Photography Section: Roadside Guidance (Full Bleed) */}
+      <section className="relative w-full bg-[#090A0A] text-white">
+        <FullBleedImage
+          src="/images/hero-car.jpg"
+          alt="Driver vehicle inspection"
+          overlayClassName="bg-gradient-to-t from-[#090A0A] via-[#090A0A]/50 to-transparent"
+        >
+          <div className="max-w-4xl space-y-6">
+            <span className="text-xs font-mono uppercase tracking-widest text-white/50">
+              {language === "it" ? "FOTOGRAMMI ORTOGONALI" : "CALIBRATED OPTICAL CAPTURE"}
+            </span>
+            <h2 className="text-3xl sm:text-5xl lg:text-6xl font-bold uppercase tracking-tight text-white leading-tight">
+              {language === "it" ? "4 scatti guidati dal mirino" : "4 Guided Framing Angles"}
+            </h2>
+            <p className="text-base sm:text-xl text-white/70 font-light leading-relaxed max-w-2xl">
+              {language === "it"
+                ? "Il mirino a schermo guida la distanza e l'inclinazione per inquadrare entrambi i veicoli, la targa della controparte e la segnaletica stradale circostante."
+                : "Dynamic on-screen framing guides distance and perspective to capture contact zones, counterparty license plates, and surrounding roadway markings."}
+            </p>
+          </div>
+        </FullBleedImage>
+      </section>
+
+      {/* Narrative Section: Human Safety First */}
+      <section className="py-24 sm:py-36 bg-[#F4F5F3] border-b border-[#D7D9D8]">
+        <div className="w-full px-6 sm:px-12 lg:px-20 max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-baseline">
+          <div className="lg:col-span-5 space-y-4">
+            <span className="text-xs font-mono font-bold tracking-widest text-[#090A0A] uppercase">
+              {language === "it" ? "PROTOCOLLO DIRETTO 112" : "EMERGENCY 112 FIRST"}
+            </span>
+            <h2 className="text-3xl sm:text-4xl font-bold uppercase text-[#090A0A]">
+              {language === "it" ? "La salute prima delle perizie" : "Human safety precedes data intake"}
+            </h2>
+          </div>
+          <div className="lg:col-span-7 space-y-6 text-base sm:text-lg text-[#6F7375] font-light leading-relaxed">
+            <p>
+              {language === "it"
+                ? "Il primo passo del sistema verifica immediatamente se ci sono feriti o se qualcuno è intrappolato. In caso di pericolo, il tasto rosso mette istantaneamente in comunicazione con il Numero Unico Europeo 112 senza costringere a compilare moduli."
+                : "The first step of our protocol explicitly evaluates physical distress. In the event of injuries, a dedicated 1-tap dialer escalates directly to European Emergency 112 without forcing any questionnaire completion."}
+            </p>
+            <p>
+              {language === "it"
+                ? "Solo una volta che tutti gli occupanti si trovano in un luogo sicuro fuori dalla carreggiata, l'interfaccia sblocca la registrazione dei dati."
+                : "Only once all vehicle occupants are confirmed safe in a secure refuge area does the interface unlock photographic intake."}
+            </p>
           </div>
         </div>
       </section>

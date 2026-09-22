@@ -1,10 +1,27 @@
-# IMPACTA Photography Asset Licensing & Attribution Ledger
+# IMPACTA Asset Licensing, Typography & 3D Attribution Ledger
 
 All photographic assets utilized across the **IMPACTA Public Website** and **Driver Experience** are stored locally in `public/images/`. No hotlinking of third-party imagery is performed at runtime.
 
 ---
 
-## Asset Registry
+## 1. Typography Registry
+
+| Typeface | Source / Provider | License | Rationale for IMPACTA Art Direction |
+| :--- | :--- | :--- | :--- |
+| **Archivo** | Omnibus-Type / Google Fonts | SIL Open Font License 1.1 | Open industrial-geometric neo-grotesk engineered for technical display and high-legibility automotive text. Excellent native support for Italian diacritics (`à`, `è`, `é`, `ì`, `ò`, `ù`) and wide display tracking without letter crowding. |
+| **JetBrains Mono** | JetBrains / Google Fonts | SIL Open Font License 1.1 | High-precision monospace font designed for technical telemetry, CAN-bus logs, sensor timestamps, and tabular claims metadata. |
+
+---
+
+## 2. 3D Procedural Assets & Hardware Disclosure
+
+| Asset Component | Implementation Type | Provenance & Tech | Conceptual Rationale & Disclosure |
+| :--- | :--- | :--- | :--- |
+| **The Black Box (Hero 3D)** | Client-side Procedural Mesh (`three.js`) | Three.js (MIT License, mrdoob) | **Conceptual Metaphor Disclosure:** The Black Box is a conceptual visual metaphor for the fusion of roadside photos, documents, incident context, and optional telemetry into a structured claim dossier. **IMPACTA does not manufacture physical hardware devices.** Geometry is generated 100% procedurally (chamfered box, anodized satin plates, hex fasteners, floating evidence planes) with zero external 3D model downloads or third-party proprietary geometry. |
+
+---
+
+## 3. Photographic Asset Registry
 
 | File Name | Source URL | Provider / Source | Author / Photographer | License & Terms | Date Accessed | Where Used in IMPACTA |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -17,7 +34,7 @@ All photographic assets utilized across the **IMPACTA Public Website** and **Dri
 
 ---
 
-## License Terms Summary
+## 4. License Terms Summary
 
 All images are covered by the **Unsplash License**:
 - Free to download and use for both commercial and non-commercial purposes.
