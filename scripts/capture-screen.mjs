@@ -105,18 +105,18 @@ async function capture() {
       await sendCommand("Runtime.evaluate", {
         expression: `
           (function() {
-            // Find and click the 112 emergency accordion trigger or button
             const buttons = Array.from(document.querySelectorAll('button'));
-            const alertBtn = buttons.find(b => b.textContent && (b.textContent.includes('112') || b.textContent.includes('soccorsi')));
+            const alertBtn = buttons.find(b => b.textContent && (b.textContent.includes('112') || b.textContent.includes('soccorsi') || b.textContent.includes('aiuto')));
             if (alertBtn) alertBtn.click();
             setTimeout(() => {
-              const startDemoBtn = Array.from(document.querySelectorAll('button')).find(b => b.textContent && b.textContent.includes('112'));
+              const buttons2 = Array.from(document.querySelectorAll('button'));
+              const startDemoBtn = buttons2.find(b => b.textContent && (b.textContent.includes('simulazione') || b.textContent.includes('Demo') || b.textContent.includes('112')));
               if (startDemoBtn) startDemoBtn.click();
-            }, 300);
+            }, 500);
           })()
         `,
       });
-      await wait(1500);
+      await wait(2500);
     } else if (action === "it") {
       await sendCommand("Runtime.evaluate", {
         expression: `
@@ -126,6 +126,20 @@ async function capture() {
             const itBtn = buttons.find(b => b.textContent && b.textContent.trim() === 'IT');
             if (itBtn) itBtn.click();
             return 'SWITCHED_TO_IT';
+          })()
+        `,
+      });
+      await wait(1500);
+    } else if (action === "scroll-to-fragments") {
+      await sendCommand("Runtime.evaluate", {
+        expression: `
+          (function() {
+            const el = document.getElementById('fragments');
+            if (el) {
+              el.scrollIntoView();
+            } else {
+              window.scrollTo(0, 850);
+            }
           })()
         `,
       });

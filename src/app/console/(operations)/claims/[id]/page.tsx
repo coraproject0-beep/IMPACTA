@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useClaims } from "@/context/ClaimsContext";
 import { useLanguage } from "@/context/LanguageContext";
 import { exportClaimAsJson } from "@/lib/exportUtils";
+import { formatDateTime } from "@/lib/dateUtils";
 import { ArrowRightIcon } from "@/components/icons/Icons";
 
 // Import Tabs
@@ -96,7 +97,7 @@ export default function ConsoleClaimDetailPage() {
           {claimId ? claimId.toUpperCase() : claim.id}
         </h1>
         <p className="text-xs sm:text-sm text-[#666666]">
-          25 Sep 2026 · 08:42 &nbsp;|&nbsp; Milano, Via Lorenteggio
+          {formatDateTime(claim.incidentDate || "2026-09-25T08:42:00Z", language)} &nbsp;|&nbsp; {claim.incident?.location?.city || "Milano"}, {claim.incident?.location?.street || "Via Lorenteggio"}
         </p>
       </div>
 
@@ -110,7 +111,7 @@ export default function ConsoleClaimDetailPage() {
         </p>
       </div>
 
-      {/* 4. Tab Navigation Strip matching reference */}
+      {/* 4. Tab Navigation Strip with spatial motion indicator */}
       <div className="border-b border-[#E5E5E3]">
         <nav className="flex space-x-8 sm:space-x-10 overflow-x-auto" aria-label="Claim detail tabs">
           {tabs.map((tab) => {
@@ -120,13 +121,16 @@ export default function ConsoleClaimDetailPage() {
                 key={tab.id}
                 type="button"
                 onClick={() => setActiveTab(tab.id)}
-                className={`py-3 text-xs sm:text-sm font-semibold transition-colors border-b-2 whitespace-nowrap ${
+                className={`relative py-3 text-xs sm:text-sm font-semibold transition-colors duration-200 whitespace-nowrap ${
                   isActive
-                    ? "border-[#0E0F10] text-[#0E0F10]"
-                    : "border-transparent text-[#666666] hover:text-[#0E0F10]"
+                    ? "text-[#0E0F10]"
+                    : "text-[#666666] hover:text-[#0E0F10]"
                 }`}
               >
-                {tab.label}
+                <span>{tab.label}</span>
+                {isActive && (
+                  <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#0E0F10] rounded-full transition-all duration-200" />
+                )}
               </button>
             );
           })}
@@ -135,8 +139,8 @@ export default function ConsoleClaimDetailPage() {
 
       {/* 5. Two-Column Operational Layout matching console-claim-detail-reference.png */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-start">
-        {/* Left Column: Active Tab Content (lg:col-span-8) */}
-        <div className="lg:col-span-8">
+        {/* Left Column: Active Tab Content (lg:col-span-8) with smooth entrance */}
+        <div key={activeTab} className="lg:col-span-8 transition-opacity duration-200 ease-out animate-fade-in">
           {activeTab === "overview" && <OverviewTab claim={claim} />}
           {activeTab === "evidence" && <EvidenceTab claim={claim} />}
           {activeTab === "reconstruction" && <AIReconstructionTab claim={claim} />}

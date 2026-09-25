@@ -158,12 +158,12 @@ export default function ConsoleReviewQueuePage() {
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse text-xs">
               <thead>
-                <tr className="border-b border-[#E5E5E3] bg-[#F7F7F6] text-[11px] font-mono font-medium text-[#666666] uppercase">
-                  <th className="py-3 px-5">Severity</th>
-                  <th className="py-3 px-5">Claim ID</th>
-                  <th className="py-3 px-5">{isIt ? "Motivo Escalation" : "Category & Reason"}</th>
-                  <th className="py-3 px-5 text-center">{isIt ? "Confidenza" : "Certainty"}</th>
-                  <th className="py-3 px-5">{isIt ? "Tempo" : "Age"}</th>
+                <tr className="border-b border-[#E5E5E3] bg-[#F7F7F6] text-[11px] font-medium text-[#555555]">
+                  <th className="py-3 px-5">{isIt ? "Gravità" : "Severity"}</th>
+                  <th className="py-3 px-5">{isIt ? "Identificativo" : "Claim ID"}</th>
+                  <th className="py-3 px-5">{isIt ? "Motivo revisione" : "Category & Reason"}</th>
+                  <th className="py-3 px-5 text-center">{isIt ? "Accuratezza" : "Certainty"}</th>
+                  <th className="py-3 px-5">{isIt ? "Ricevuto" : "Age"}</th>
                   <th className="py-3 px-5 text-right">{isIt ? "Azioni" : "Actions"}</th>
                 </tr>
               </thead>
@@ -218,7 +218,7 @@ export default function ConsoleReviewQueuePage() {
 
                     {/* Age */}
                     <td className="py-3.5 px-5 font-mono text-[#666666] text-xs whitespace-nowrap">
-                      {formatRelativeTime(claim.createdAt)}
+                      {formatRelativeTime(claim.createdAt, language)}
                     </td>
 
                     {/* Actions */}

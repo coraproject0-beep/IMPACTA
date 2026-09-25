@@ -43,8 +43,8 @@ export default function ConsoleLoginPage() {
       <main className="flex-1 flex items-center justify-center p-6 sm:p-12">
         <div className="max-w-2xl w-full bg-white border border-[#E5E5E3] rounded-2xl p-8 sm:p-14 space-y-8">
           <div className="space-y-2 pb-6 border-b border-[#E5E5E3]">
-            <span className="text-xs font-semibold uppercase tracking-wider text-[#666666]">
-              AURA MUTUA ASSICURAZIONI · CLAIMS CONSOLE
+            <span className="text-xs font-medium text-[#555555]">
+              {isIt ? "Aura Mutua Assicurazioni / Portale Sinistri" : "Aura Mutua Assicurazioni / Claims Portal"}
             </span>
             <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-[#0E0F10]">
               {t("auth.insurerLoginTitle")}
@@ -57,12 +57,16 @@ export default function ConsoleLoginPage() {
           {/* Operator Demo Sign-In Card */}
           <div className="p-6 border border-[#E5E5E3] bg-[#F7F7F6] rounded-xl space-y-4">
             <div className="flex items-center justify-between text-xs text-[#666666]">
-              <span className="font-semibold uppercase tracking-wider">{isIt ? "Sessione dimostrativa attiva" : "Active Demo Session"}</span>
-              <span className="text-emerald-700 font-bold uppercase">{isIt ? "Autorizzata" : "Authorized"}</span>
+              <span className="font-medium text-[#555555]">{isIt ? "Sessione dimostrativa" : "Demo Session"}</span>
+              <span className="text-emerald-700 font-semibold">{isIt ? "Attiva" : "Active"}</span>
             </div>
             <div className="space-y-1 text-sm">
-              <div className="text-[#0E0F10] font-bold">Elena Rostagno — Senior Forensic Adjuster</div>
-              <div className="text-xs text-[#666666]">Aura Mutua Assicurazioni • Divisione Sinistri Complessi</div>
+              <div className="text-[#0E0F10] font-bold">
+                {isIt ? "Elena Rostagno — Liquidatore Sinistri" : "Elena Rostagno — Claims Adjuster"}
+              </div>
+              <div className="text-xs text-[#666666]">
+                {isIt ? "Aura Mutua Assicurazioni / Gestione Sinistri" : "Aura Mutua Assicurazioni / Claims Desk"}
+              </div>
             </div>
             <button
               type="button"

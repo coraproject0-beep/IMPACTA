@@ -15,8 +15,8 @@ export default function SafetyPage() {
       {/* Header */}
       <section className="py-24 sm:py-36 bg-white border-b border-[#E5E5E3]">
         <div className="w-full px-6 sm:px-12 lg:px-20 max-w-7xl mx-auto space-y-6">
-          <TechnicalReveal className="text-xs sm:text-sm font-semibold uppercase tracking-wider text-[#DC2626]">
-            {isIt ? "SICUREZZA, ETICA & GOVERNANCE" : "SAFETY, ETHICS & GOVERNANCE"}
+          <TechnicalReveal className="text-xs sm:text-sm font-medium text-[#DC2626]">
+            {isIt ? "Sicurezza, etica e governo del dato" : "Safety, ethics & evidentiary governance"}
           </TechnicalReveal>
           <EditorialReveal
             as="h1"
@@ -49,8 +49,8 @@ export default function SafetyPage() {
         <div className="w-full px-6 sm:px-12 lg:px-20 max-w-7xl mx-auto space-y-16">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12 text-sm">
             <div className="space-y-3 pb-6 border-b border-[#E5E5E3] md:border-b-0 md:border-r md:pr-8">
-              <span className="text-xs text-[#DC2626] font-semibold uppercase tracking-wider block">
-                EMERGENCY ESCALATION
+              <span className="text-xs text-[#DC2626] font-medium block">
+                {isIt ? "Priorità di soccorso" : "Emergency escalation"}
               </span>
               <h3 className="text-xl font-bold uppercase text-[#0E0F10]">
                 {isIt ? "Chiamata Rapida 112" : "112 Direct Access"}
@@ -63,8 +63,8 @@ export default function SafetyPage() {
             </div>
 
             <div className="space-y-3 pb-6 border-b border-[#E5E5E3] md:border-b-0 md:border-r md:pr-8">
-              <span className="text-xs text-[#0E0F10] font-semibold uppercase tracking-wider block">
-                ROADWAY REFUGING
+              <span className="text-xs text-[#555555] font-medium block">
+                {isIt ? "Protezione attiva" : "Roadway refuging"}
               </span>
               <h3 className="text-xl font-bold uppercase text-[#0E0F10]">
                 {isIt ? "Incolumità Fuori Carreggiata" : "Safe Refuge Protocol"}
@@ -77,8 +77,8 @@ export default function SafetyPage() {
             </div>
 
             <div className="space-y-3">
-              <span className="text-xs text-[#0E0F10] font-semibold uppercase tracking-wider block">
-                HUMAN GOVERNANCE
+              <span className="text-xs text-[#555555] font-medium block">
+                {isIt ? "Supervisione peritale" : "Human governance"}
               </span>
               <h3 className="text-xl font-bold uppercase text-[#0E0F10]">
                 {isIt ? "Nessuna Sentenza Automatica" : "Zero Automated Decrees"}

@@ -6,6 +6,7 @@ import Image from "next/image";
 import { useClaims } from "@/context/ClaimsContext";
 import { useLanguage } from "@/context/LanguageContext";
 import { ChevronRightIcon, ArrowRightIcon } from "@/components/icons/Icons";
+import { formatDateTime, formatRelativeTime, getStatusLabel } from "@/lib/dateUtils";
 
 export default function ConsoleOverviewPage() {
   const { claims, stats, isLoading } = useClaims();
@@ -20,100 +21,100 @@ export default function ConsoleOverviewPage() {
     );
   }
 
-  // Priority queue claims matching console-overview-reference.png
+  // Priority queue claims matching console-overview-reference.png with dynamic locale-aware dates
   const priorityQueueRows = [
     {
       id: "IMP-260925-014",
-      incident: "25 Sep 2026 · 08:42",
+      incident: formatDateTime("2026-09-25T08:42:00Z", language),
       location: "Milano",
       evidence: isIt ? "6 file" : "6 files",
       attention: isIt ? "Richiesta conferma conducente" : "Missing driver confirmation",
       attentionClass: "text-rose-600 font-medium",
-      updated: isIt ? "8 min fa" : "8 min ago",
+      updated: formatRelativeTime("2026-09-25T11:52:00Z", language),
       href: "/console/claims/IMP-260925-014",
     },
     {
       id: "IMP-260925-011",
-      incident: "25 Sep 2026 · 07:58",
+      incident: formatDateTime("2026-09-25T07:58:00Z", language),
       location: "Torino",
       evidence: isIt ? "9 file" : "9 files",
       attention: isIt ? "Bassa corrispondenza veicolo" : "Low-confidence vehicle match",
       attentionClass: "text-amber-600 font-medium",
-      updated: isIt ? "22 min fa" : "22 min ago",
+      updated: formatRelativeTime("2026-09-25T11:38:00Z", language),
       href: "/console/claims/IMP-260925-011",
     },
     {
       id: "IMP-260924-037",
-      incident: "24 Sep 2026 · 18:21",
+      incident: formatDateTime("2026-09-24T18:21:00Z", language),
       location: "Bologna",
       evidence: isIt ? "4 file" : "4 files",
       attention: isIt ? "Fotografie mancanti" : "Missing photos",
       attentionClass: "text-amber-600 font-medium",
-      updated: isIt ? "41 min fa" : "41 min ago",
+      updated: formatRelativeTime("2026-09-25T11:19:00Z", language),
       href: "/console/claims/IMP-260924-037",
     },
     {
       id: "IMP-260924-028",
-      incident: "24 Sep 2026 · 16:05",
+      incident: formatDateTime("2026-09-24T16:05:00Z", language),
       location: "Firenze",
       evidence: isIt ? "7 file" : "7 files",
       attention: isIt ? "Conferma conducente necessaria" : "Driver confirmation required",
       attentionClass: "text-amber-600 font-medium",
-      updated: isIt ? "1 ora fa" : "1 hour ago",
+      updated: formatRelativeTime("2026-09-25T11:00:00Z", language),
       href: "/console/claims/IMP-260924-028",
     },
     {
       id: "IMP-260924-021",
-      incident: "24 Sep 2026 · 14:33",
+      incident: formatDateTime("2026-09-24T14:33:00Z", language),
       location: "Roma",
       evidence: isIt ? "5 file" : "5 files",
       attention: isIt ? "Dati veicolo discordanti" : "Inconsistent vehicle data",
       attentionClass: "text-amber-600 font-medium",
-      updated: isIt ? "2 ore fa" : "2 hours ago",
+      updated: formatRelativeTime("2026-09-25T10:00:00Z", language),
       href: "/console/claims/IMP-260924-021",
     },
   ];
 
-  // Recent claims matching console-overview-reference.png
+  // Recent claims matching console-overview-reference.png with dynamic locale-aware dates
   const recentClaimsRows = [
     {
       id: "IMP-260924-020",
-      incident: "24 Sep 2026 · 12:11",
+      incident: formatDateTime("2026-09-24T12:11:00Z", language),
       driver: "Marco Bianchi",
       status: isIt ? "Pronto per perizia" : "Ready for review",
-      updated: isIt ? "3 ore fa" : "3 hours ago",
+      updated: formatRelativeTime("2026-09-25T09:00:00Z", language),
       href: "/console/claims/IMP-260924-020",
     },
     {
       id: "IMP-260923-018",
-      incident: "23 Sep 2026 · 19:04",
+      incident: formatDateTime("2026-09-23T19:04:00Z", language),
       driver: "Giulia Rossi",
       status: isIt ? "In revisione" : "Under review",
-      updated: isIt ? "5 ore fa" : "5 hours ago",
+      updated: formatRelativeTime("2026-09-25T07:00:00Z", language),
       href: "/console/claims/IMP-260923-018",
     },
     {
       id: "IMP-260923-016",
-      incident: "23 Sep 2026 · 15:22",
+      incident: formatDateTime("2026-09-23T15:22:00Z", language),
       driver: "Luca Ferrari",
       status: isIt ? "Prove complete" : "Evidence complete",
-      updated: isIt ? "1 giorno fa" : "1 day ago",
+      updated: formatRelativeTime("2026-09-24T12:00:00Z", language),
       href: "/console/claims/IMP-260923-016",
     },
     {
       id: "IMP-260923-012",
-      incident: "23 Sep 2026 · 11:17",
+      incident: formatDateTime("2026-09-23T11:17:00Z", language),
       driver: "Sara Conti",
       status: isIt ? "Chiuso" : "Closed",
-      updated: isIt ? "2 giorni fa" : "2 days ago",
+      updated: formatRelativeTime("2026-09-23T12:00:00Z", language),
       href: "/console/claims/IMP-260923-012",
     },
     {
       id: "IMP-260922-009",
-      incident: "22 Sep 2026 · 09:48",
+      incident: formatDateTime("2026-09-22T09:48:00Z", language),
       driver: "Davide Moretti",
       status: isIt ? "In revisione" : "Under review",
-      updated: isIt ? "2 giorni fa" : "2 days ago",
+      updated: formatRelativeTime("2026-09-23T09:00:00Z", language),
       href: "/console/claims/IMP-260922-009",
     },
   ];
@@ -339,7 +340,7 @@ export default function ConsoleOverviewPage() {
 
             {/* Next Claim Header & Direct Action */}
             <div className="space-y-1.5 pb-4 border-b border-[#E5E5E3]">
-              <div className="text-[11px] font-semibold uppercase tracking-wider text-[#666666]">
+              <div className="text-xs font-medium text-[#555555]">
                 {t("consoleOverview.nextClaimKicker")}
               </div>
               <div className="flex items-center justify-between">
@@ -358,7 +359,7 @@ export default function ConsoleOverviewPage() {
 
             {/* Operational Attention Badge */}
             <div className="space-y-1.5">
-              <div className="text-[11px] uppercase tracking-wider text-[#666666]">
+              <div className="text-xs font-medium text-[#555555]">
                 {t("consoleOverview.attention")}
               </div>
               <div className="text-sm font-semibold text-rose-600">

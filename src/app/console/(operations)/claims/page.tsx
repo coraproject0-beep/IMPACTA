@@ -12,6 +12,7 @@ import {
 } from "@/components/icons/Icons";
 import {
   formatDate,
+  formatTime,
   getStatusBadgeClass,
   getStatusLabel,
   getConfidenceBadgeClass,
@@ -272,14 +273,14 @@ export default function ConsoleClaimsPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse text-xs">
               <thead>
-                <tr className="border-b border-[#E5E5E3] bg-[#F7F7F6] text-[11px] font-mono font-medium text-[#666666] uppercase">
-                  <th className="py-3 px-5">Claim ID</th>
+                <tr className="border-b border-[#E5E5E3] bg-[#F7F7F6] text-[11px] font-medium text-[#555555]">
+                  <th className="py-3 px-5">{isIt ? "Identificativo" : "Claim ID"}</th>
                   <th className="py-3 px-5">{isIt ? "Data / Ora" : "Incident Date"}</th>
                   <th className="py-3 px-5">{isIt ? "Assicurato" : "Policyholder"}</th>
                   <th className="py-3 px-5">{isIt ? "Luogo" : "Location"}</th>
                   <th className="py-3 px-5">{isIt ? "Veicoli" : "Vehicles"}</th>
                   <th className="py-3 px-5">{isIt ? "Stato" : "Status"}</th>
-                  <th className="py-3 px-5 text-center">{isIt ? "Confidenza" : "Certainty"}</th>
+                  <th className="py-3 px-5 text-center">{isIt ? "Accuratezza" : "Certainty"}</th>
                   <th className="py-3 px-5 text-center">{isIt ? "Prove" : "Evidence"}</th>
                   <th className="py-3 px-5 text-center">{isIt ? "Telemetria" : "Telemetry"}</th>
                 </tr>
@@ -298,12 +299,9 @@ export default function ConsoleClaimsPage() {
 
                     {/* Date */}
                     <td className="py-3.5 px-5 text-[#0E0F10] whitespace-nowrap">
-                      <div className="font-medium">{formatDate(claim.incidentDate)}</div>
+                      <div className="font-medium">{formatDate(claim.incidentDate, language)}</div>
                       <div className="text-[11px] text-[#666666] font-mono">
-                        {new Date(claim.incidentDate).toLocaleTimeString("it-IT", {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })}
+                        {formatTime(claim.incidentDate, language)}
                       </div>
                     </td>
 
@@ -333,11 +331,11 @@ export default function ConsoleClaimsPage() {
                     {/* Status */}
                     <td className="py-3.5 px-5 whitespace-nowrap">
                       <span
-                        className={`inline-block text-[11px] font-mono px-2 py-0.5 rounded ${getStatusBadgeClass(
+                        className={`inline-block text-[11px] font-medium px-2 py-0.5 rounded ${getStatusBadgeClass(
                           claim.status
                         )}`}
                       >
-                        {getStatusLabel(claim.status)}
+                        {getStatusLabel(claim.status, language)}
                       </span>
                     </td>
 

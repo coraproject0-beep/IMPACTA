@@ -93,7 +93,7 @@ export default function DriverReportsPage() {
                     {claim.id}
                   </td>
                   <td className="py-4 px-4 font-mono text-[#0E0F10] whitespace-nowrap">
-                    {formatDate(claim.incidentDate)}
+                    {formatDate(claim.incidentDate, language)}
                   </td>
                   <td className="py-4 px-4 text-[#0E0F10]">
                     {claim.incident?.location?.city || "Milano"}
@@ -103,7 +103,7 @@ export default function DriverReportsPage() {
                   </td>
                   <td className="py-4 px-4">
                     <span className="font-medium text-[#0E0F10]">
-                      {getStatusLabel(claim.status)}
+                      {getStatusLabel(claim.status, language)}
                     </span>
                   </td>
                   <td className="py-4 pr-4 text-right">
@@ -146,11 +146,11 @@ export default function DriverReportsPage() {
               <div className="border border-[#E5E5E3] rounded-xl p-4 bg-[#F7F7F6] divide-y divide-[#E5E5E3] text-xs">
                 <div className="pb-2.5 flex justify-between">
                   <span className="text-[#555555]">{isIt ? "Stato:" : "Status:"}</span>
-                  <span className="font-semibold text-[#0E0F10]">{getStatusLabel(selectedClaim.status)}</span>
+                  <span className="font-semibold text-[#0E0F10]">{getStatusLabel(selectedClaim.status, language)}</span>
                 </div>
                 <div className="py-2.5 flex justify-between">
                   <span className="text-[#555555]">{isIt ? "Data rilevamento:" : "Recorded date:"}</span>
-                  <span className="font-mono text-[#0E0F10]">{formatDate(selectedClaim.incidentDate)}</span>
+                  <span className="font-mono text-[#0E0F10]">{formatDate(selectedClaim.incidentDate, language)}</span>
                 </div>
                 <div className="pt-2.5 flex justify-between">
                   <span className="text-[#555555]">{isIt ? "Targa veicolo:" : "License plate:"}</span>

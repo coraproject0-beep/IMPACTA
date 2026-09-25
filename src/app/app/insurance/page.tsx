@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useLanguage } from "@/context/LanguageContext";
 import { CheckCircleIcon, ChevronRightIcon, PhoneIcon } from "@/components/icons/Icons";
 import { Emergency112DemoModal } from "@/features/driver/components/Emergency112DemoModal";
+import { formatDate } from "@/lib/dateUtils";
 
 export default function DriverInsurancePage() {
   const { t, language } = useLanguage();
@@ -60,7 +61,7 @@ export default function DriverInsurancePage() {
 
               <div className="py-3.5 flex items-center justify-between">
                 <span className="text-[#555555] font-medium">{isIt ? "Periodo di validità" : "Validity term"}</span>
-                <span className="font-mono text-[#0E0F10]">01 Apr 2026 — 31 Mar 2027</span>
+                <span className="font-mono text-[#0E0F10]">{formatDate("2026-04-01", language)} — {formatDate("2027-03-31", language)}</span>
               </div>
 
               <div className="py-3.5 flex items-center justify-between">
@@ -171,7 +172,7 @@ export default function DriverInsurancePage() {
             >
               <div>
                 <div className="text-base font-bold text-[#0E0F10]">Audi A3</div>
-                <div className="font-mono text-xs text-[#555555] mt-0.5">AB 123 CD • Sportback</div>
+                <div className="font-mono text-xs text-[#555555] mt-0.5">AB 123 CD / Sportback</div>
               </div>
               <ChevronRightIcon size={16} className="text-[#888888] group-hover:text-[#0E0F10] transition-colors" />
             </Link>

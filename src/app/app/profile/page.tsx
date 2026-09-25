@@ -57,7 +57,7 @@ export default function DriverProfilePage() {
             Luca Rossi
           </h1>
           <p className="text-sm text-[#555555] font-normal mt-1">
-            {isIt ? "Profilo assicurato attivo • Generali Italia" : "Active policyholder • Generali Italia"}
+            {isIt ? "Profilo assicurato attivo / Generali Italia" : "Active policyholder / Generali Italia"}
           </p>
         </div>
 
@@ -148,7 +148,7 @@ export default function DriverProfilePage() {
                 </div>
                 <div>
                   <div className="text-lg font-bold text-[#0E0F10]">Audi A3</div>
-                  <div className="font-mono text-xs text-[#555555] mt-0.5">AB 123 CD • 2024</div>
+                  <div className="font-mono text-xs text-[#555555] mt-0.5">AB 123 CD (2024)</div>
                 </div>
               </Link>
 
@@ -165,7 +165,7 @@ export default function DriverProfilePage() {
                 <div>
                   <div className="text-lg font-bold text-[#0E0F10]">Generali Italia</div>
                   <div className="font-mono text-xs text-emerald-700 font-medium mt-0.5">
-                    GEN-2026-9812 • {isIt ? "Attiva" : "Active"}
+                    GEN-2026-9812 / {isIt ? "Attiva" : "Active"}
                   </div>
                 </div>
               </Link>

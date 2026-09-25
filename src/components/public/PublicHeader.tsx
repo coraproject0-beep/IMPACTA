@@ -37,12 +37,12 @@ export function PublicHeader() {
             : "bg-[#F7F7F6]/95 backdrop-blur-md text-[#0E0F10] border-b border-[#E5E5E3]"
         }`}
       >
-        <div className="w-full px-8 sm:px-12 lg:px-20 h-24 lg:h-28 flex items-center justify-between">
+        <div className="w-full px-8 sm:px-12 lg:px-20 h-20 lg:h-[76px] flex items-center justify-between">
           {/* Left: Brand Wordmark */}
           <div className="flex items-center">
             <Link
               href="/"
-              className="text-xl lg:text-2xl font-bold tracking-[0.06em] uppercase focus:outline-none"
+              className="text-lg lg:text-xl font-bold tracking-[0.08em] uppercase focus:outline-none"
               title="IMPACTA Home"
             >
               IMPACTA

@@ -8,6 +8,7 @@ import { useLanguage } from "@/context/LanguageContext";
 import { useClaims } from "@/context/ClaimsContext";
 import { useDriverDraft } from "@/context/DriverDraftContext";
 import { ArrowRightIcon } from "@/components/icons/Icons";
+import { formatDate } from "@/lib/dateUtils";
 
 export default function DriverHomePage() {
   const router = useRouter();
@@ -111,7 +112,7 @@ export default function DriverHomePage() {
                 {isIt ? "Rapporto recente" : "Recent report"}
               </span>
               <div className="text-xl font-bold text-[#0E0F10]">
-                24 Sep 2026
+                {formatDate("2026-09-24", language)}
               </div>
               <div className="text-sm text-[#666666]">
                 Milano, Via della Moscova
@@ -178,7 +179,7 @@ export default function DriverHomePage() {
                 {isIt ? "Rapporto recente" : "Recent report"}
               </span>
               <div className="text-lg sm:text-xl font-bold text-[#0E0F10]">
-                24 Sep 2026
+                {formatDate("2026-09-24", language)}
               </div>
               <div className="text-sm text-[#666666]">
                 Milano, Via della Moscova

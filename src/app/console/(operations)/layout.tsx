@@ -27,9 +27,9 @@ export default function OperationsLayout({
   // Wait for initial mount before checking auth to avoid hydration flicker
   if (!mounted) {
     return (
-      <div className="min-h-screen bg-[#F4F5F3] flex items-center justify-center">
-        <span className="text-xs font-mono uppercase tracking-widest text-[#6F7375]">
-          INITIALIZING WORKBENCH...
+      <div className="min-h-screen bg-[#F7F7F6] flex items-center justify-center">
+        <span className="text-xs text-[#555555]">
+          Caricamento...
         </span>
       </div>
     );
@@ -37,9 +37,9 @@ export default function OperationsLayout({
 
   if (!isInsurerAuthenticated) {
     return (
-      <div className="min-h-screen bg-[#090A0A] flex items-center justify-center">
-        <span className="text-xs font-mono uppercase tracking-widest text-white/60">
-          REDIRECTING TO CARRIER GATE...
+      <div className="min-h-screen bg-[#0E0F10] flex items-center justify-center">
+        <span className="text-xs text-white/60">
+          Accesso in corso...
         </span>
       </div>
     );

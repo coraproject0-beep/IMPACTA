@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useLanguage } from "@/context/LanguageContext";
 import { CheckCircleIcon, ChevronRightIcon } from "@/components/icons/Icons";
+import { formatMonthYear } from "@/lib/dateUtils";
 
 export default function DriverVehiclePage() {
   const { t, language } = useLanguage();
@@ -60,7 +61,7 @@ export default function DriverVehiclePage() {
                     {isIt ? "Scadenza revisione" : "Inspection due"}
                   </span>
                   <div className="text-sm font-mono font-semibold mt-0.5">
-                    Ottobre 2027
+                    {formatMonthYear("2027-10-01", language)}
                   </div>
                 </div>
               </div>
@@ -130,14 +131,18 @@ export default function DriverVehiclePage() {
 
             <div className="border border-[#E5E5E3] rounded-xl bg-white p-5 space-y-4 text-xs">
               <div>
-                <span className="text-[#555555] block font-medium">Numero di telaio (VIN)</span>
+                <span className="text-[#555555] block font-medium">
+                  {isIt ? "Numero di telaio (VIN)" : "Chassis number (VIN)"}
+                </span>
                 <span className="font-mono font-bold text-[#0E0F10] text-sm block mt-0.5">
                   WAUZZZGY5PA089214
                 </span>
               </div>
 
               <div className="border-t border-[#E5E5E3] pt-3">
-                <span className="text-[#555555] block font-medium">Motorizzazione</span>
+                <span className="text-[#555555] block font-medium">
+                  {isIt ? "Motorizzazione" : "Powertrain"}
+                </span>
                 <span className="text-[#0E0F10] font-medium block mt-0.5">
                   35 TFSI 1.5 l Mild Hybrid (110 kW / 150 CV)
                 </span>
@@ -146,7 +151,9 @@ export default function DriverVehiclePage() {
               <div className="border-t border-[#E5E5E3] pt-3">
                 <span className="text-[#555555] block font-medium">{isIt ? "Dispositivi di bordo" : "On-board devices"}</span>
                 <span className="text-[#0E0F10] block mt-0.5">
-                  Sensori telemetrici e accelerometro certificati IMPACTA
+                  {isIt
+                    ? "Sensori telemetrici e accelerometro certificati IMPACTA"
+                    : "IMPACTA certified telemetry sensors and accelerometer"}
                 </span>
               </div>
             </div>

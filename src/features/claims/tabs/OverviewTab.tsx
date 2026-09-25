@@ -4,6 +4,7 @@ import React from "react";
 import Image from "next/image";
 import { Claim } from "@/types";
 import { useLanguage } from "@/context/LanguageContext";
+import { formatDateTime } from "@/lib/dateUtils";
 
 interface OverviewTabProps {
   claim: Claim;
@@ -26,7 +27,7 @@ export function OverviewTab({ claim }: OverviewTabProps) {
             <div className="flex items-center justify-between sm:pr-8">
               <span className="text-[#666666]">{isIt ? "Data" : "Date"}</span>
               <span className="font-mono font-medium text-[#0E0F10]">
-                25 Sep 2026 · 08:42
+                {formatDateTime(claim.incidentDate || "2026-09-25T08:42:00Z", language)}
               </span>
             </div>
             <div className="flex items-center justify-between sm:pl-8 sm:border-l sm:border-[#E5E5E3]">
@@ -162,7 +163,7 @@ export function OverviewTab({ claim }: OverviewTabProps) {
 
         <p className="text-xs text-[#666666] pt-1">
           {isIt
-            ? "6 fotografie • Dichiarazione conducente • Dati veicolo • Coordinate GNSS"
+            ? "6 fotografie | Dichiarazione conducente | Dati veicolo | Coordinate GNSS"
             : "6 photos | Driver statement | Vehicle information | Location data"}
         </p>
       </div>

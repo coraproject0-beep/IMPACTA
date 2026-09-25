@@ -4,64 +4,14 @@ export function cn(...classes: (string | boolean | undefined | null)[]): string 
   return classes.filter(Boolean).join(" ");
 }
 
-export function formatDateTime(isoString: string): string {
-  try {
-    const d = new Date(isoString);
-    return new Intl.DateTimeFormat("it-IT", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    }).format(d);
-  } catch {
-    return isoString;
-  }
-}
-
-export function formatDate(isoString: string): string {
-  try {
-    const d = new Date(isoString);
-    return new Intl.DateTimeFormat("it-IT", {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-    }).format(d);
-  } catch {
-    return isoString;
-  }
-}
-
-export function formatRelativeTime(isoString: string): string {
-  try {
-    const d = new Date(isoString).getTime();
-    const now = new Date("2026-09-15T12:00:00Z").getTime(); // Anchor to synthetic timeframe
-    const diffHours = Math.round((now - d) / (1000 * 60 * 60));
-    if (diffHours < 1) return "Just now";
-    if (diffHours < 24) return `${diffHours}h ago`;
-    const diffDays = Math.round(diffHours / 24);
-    return `${diffDays}d ago`;
-  } catch {
-    return isoString;
-  }
-}
-
-export function getStatusLabel(status: ClaimStatus): string {
-  switch (status) {
-    case "NEW":
-      return "New Ingest";
-    case "IN_REVIEW":
-      return "In Review";
-    case "CAI_READY":
-      return "CAI Ready";
-    case "REVIEWED":
-      return "Reviewed";
-    case "CLOSED":
-      return "Closed";
-    default:
-      return status;
-  }
-}
+export {
+  formatDate,
+  formatMonthYear,
+  formatDateTime,
+  formatTime,
+  formatRelativeTime,
+  getStatusLabel,
+} from "./dateUtils";
 
 export function getStatusBadgeClass(status: ClaimStatus): string {
   switch (status) {
