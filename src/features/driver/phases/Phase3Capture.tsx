@@ -28,7 +28,8 @@ export function Phase3Capture({
   onRemoveEvidence,
   onNext,
 }: Phase3CaptureProps) {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+  const isIt = language === "it";
   const [counterpartyPlate, setCounterpartyPlate] = useState(draft.counterparty.plate || "");
   const [counterpartyName, setCounterpartyName] = useState(draft.counterparty.driverName || "");
   const [counterpartyPhone, setCounterpartyPhone] = useState(draft.counterparty.phone || "");
@@ -113,7 +114,7 @@ export function Phase3Capture({
   };
 
   return (
-    <div className="space-y-8 py-2 max-w-2xl selection:bg-blue-100 selection:text-blue-900">
+    <div className="space-y-10 py-2 max-w-xl mx-auto selection:bg-[#090A0A] selection:text-white">
       {/* Hidden File Input for Native Camera and File Upload */}
       <input
         type="file"
@@ -126,31 +127,33 @@ export function Phase3Capture({
       />
 
       {/* Step Header */}
-      <div className="space-y-4">
-        <p className="text-xs sm:text-sm font-mono font-bold uppercase tracking-widest text-blue-700">
+      <div className="space-y-3 pb-6 border-b border-[#D7D9D8]">
+        <p className="text-xs font-semibold uppercase tracking-widest text-[#6F7375]">
           {t.wizard.phase3Title}
         </p>
-        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-950 leading-tight">
-          Capture photos &amp; incident details
+        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black uppercase tracking-tight text-[#090A0A] leading-[1.05]">
+          {isIt ? "Rilievi e Controparte" : "Capture photos & details"}
         </h1>
-        <p className="text-base sm:text-xl text-slate-600 leading-relaxed">
-          Follow the 4-angle guidance to document the road scene, bumper contact points, and counterparty credentials.
+        <p className="text-base sm:text-lg text-[#6F7375] font-normal leading-relaxed pt-1">
+          {isIt
+            ? "Segui la guida a 4 inquadrature per documentare la carreggiata, i punti di collisione e le generalità dell'altro veicolo."
+            : "Follow the 4-angle guidance to document the road scene, bumper contact points, and counterparty credentials."}
         </p>
       </div>
 
-      {/* 4-Slot Photo Guide */}
-      <div className="space-y-5">
-        <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-          <h2 className="text-lg sm:text-xl font-bold text-slate-950 flex items-center gap-2.5">
-            <CameraIcon size={22} className="text-blue-600" />
+      {/* 1. 4-Slot Photo Guide */}
+      <div className="space-y-4 pb-8 border-b border-[#D7D9D8]">
+        <div className="flex items-center justify-between">
+          <h2 className="text-sm font-bold uppercase tracking-wider text-[#090A0A] flex items-center gap-2">
+            <CameraIcon size={16} />
             <span>{t.wizard.phase3PhotoGuide}</span>
           </h2>
-          <span className="text-xs sm:text-sm font-mono font-semibold text-slate-500">
-            {draft.evidenceItems.length} photos saved
+          <span className="text-xs font-mono font-semibold text-[#6F7375]">
+            {draft.evidenceItems.length} / 4 {isIt ? "foto salvate" : "photos saved"}
           </span>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {photoSlots.map((slot) => {
             const existingItem = draft.evidenceItems.find((i) => i.category === slot.category);
             const isUploading = uploadingSlot === slot.key;
@@ -158,27 +161,27 @@ export function Phase3Capture({
             return (
               <div
                 key={slot.key}
-                className="bg-white rounded-3xl border border-slate-200 p-5 sm:p-6 flex flex-col justify-between space-y-4 shadow-xs"
+                className="border border-[#D7D9D8] bg-white p-4 flex flex-col justify-between space-y-3"
               >
                 <div>
-                  <div className="flex items-center justify-between mb-1.5">
-                    <span className="text-base font-bold text-slate-950 block">
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-xs font-bold uppercase tracking-wider text-[#090A0A] block">
                       {slot.titleKey}
                     </span>
                     {existingItem && (
-                      <span className="text-xs font-mono font-bold text-emerald-600 flex items-center gap-1.5">
-                        <CheckCircleIcon size={14} />
-                        <span>Saved</span>
+                      <span className="text-[11px] font-semibold text-emerald-700 flex items-center gap-1 uppercase">
+                        <CheckCircleIcon size={12} />
+                        <span>{isIt ? "Salvata" : "Saved"}</span>
                       </span>
                     )}
                   </div>
-                  <p className="text-sm text-slate-600 leading-relaxed">
+                  <p className="text-xs text-[#6F7375] leading-relaxed">
                     {slot.descKey}
                   </p>
                 </div>
 
                 {existingItem ? (
-                  <div className="relative aspect-video rounded-2xl overflow-hidden bg-slate-900 border border-slate-200 group">
+                  <div className="relative aspect-video overflow-hidden bg-[#090A0A] border border-[#D7D9D8] group">
                     <Image
                       src={existingItem.previewUrl}
                       alt={existingItem.categoryLabel}
@@ -189,10 +192,10 @@ export function Phase3Capture({
                     <button
                       type="button"
                       onClick={() => onRemoveEvidence(existingItem.id)}
-                      className="absolute top-2 right-2 p-2 rounded-full bg-black/70 hover:bg-rose-600 text-white transition-colors"
-                      title="Delete and retake"
+                      className="absolute top-2 right-2 p-1.5 bg-[#090A0A]/80 hover:bg-rose-600 text-white transition-colors"
+                      title={isIt ? "Rimuovi e riscatta" : "Delete and retake"}
                     >
-                      <CloseIcon size={16} />
+                      <CloseIcon size={14} />
                     </button>
                   </div>
                 ) : (
@@ -200,10 +203,10 @@ export function Phase3Capture({
                     type="button"
                     onClick={() => handleTriggerUpload(slot)}
                     disabled={isUploading}
-                    className="min-h-[52px] w-full py-3.5 px-4 rounded-2xl border-2 border-dashed border-slate-300 hover:border-blue-500 hover:bg-blue-50/40 text-slate-700 font-bold text-sm transition-colors flex items-center justify-center gap-2.5"
+                    className="min-h-[46px] w-full py-2.5 px-3 border border-dashed border-[#D7D9D8] hover:border-[#090A0A] hover:bg-[#F4F5F3] text-[#090A0A] font-semibold text-xs uppercase tracking-wider transition-colors flex items-center justify-center gap-2"
                   >
-                    <CameraIcon size={20} className="text-blue-600" />
-                    <span>{isUploading ? "Uploading..." : t.wizard.phase3TakeOrUpload}</span>
+                    <CameraIcon size={16} />
+                    <span>{isUploading ? (isIt ? "Caricamento..." : "Uploading...") : t.wizard.phase3TakeOrUpload}</span>
                   </button>
                 )}
               </div>
@@ -212,58 +215,58 @@ export function Phase3Capture({
         </div>
       </div>
 
-      {/* Counterparty Information */}
-      <div className="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 space-y-5 shadow-xs">
-        <h2 className="text-lg sm:text-xl font-bold text-slate-950 block">
+      {/* 2. Counterparty Information */}
+      <div className="space-y-4 pb-8 border-b border-[#D7D9D8]">
+        <h2 className="text-sm font-bold uppercase tracking-wider text-[#090A0A] block">
           {t.wizard.phase3CounterpartyDetails}
         </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-          <div className="space-y-1.5">
-            <span className="text-slate-700 font-semibold text-sm sm:text-base">{t.wizard.phase3CounterpartyPlate}</span>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="space-y-1">
+            <span className="text-xs text-[#6F7375] uppercase tracking-wider">{t.wizard.phase3CounterpartyPlate}</span>
             <input
               type="text"
               value={counterpartyPlate}
               onChange={(e) => setCounterpartyPlate(e.target.value)}
               placeholder="e.g. EZ719TR"
-              className="w-full min-h-[52px] px-4 py-3.5 rounded-xl border border-slate-200 bg-slate-50/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-600 text-slate-900 font-mono uppercase text-base"
+              className="w-full min-h-[50px] px-4 py-3 border border-[#D7D9D8] bg-white focus:border-[#090A0A] focus:outline-none text-[#090A0A] font-mono uppercase text-sm"
             />
           </div>
-          <div className="space-y-1.5">
-            <span className="text-slate-700 font-semibold text-sm sm:text-base">{t.wizard.phase3CounterpartyName}</span>
+          <div className="space-y-1">
+            <span className="text-xs text-[#6F7375] uppercase tracking-wider">{t.wizard.phase3CounterpartyName}</span>
             <input
               type="text"
               value={counterpartyName}
               onChange={(e) => setCounterpartyName(e.target.value)}
               placeholder="e.g. Marco Rossi"
-              className="w-full min-h-[52px] px-4 py-3.5 rounded-xl border border-slate-200 bg-slate-50/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-600 text-slate-900 text-base"
+              className="w-full min-h-[50px] px-4 py-3 border border-[#D7D9D8] bg-white focus:border-[#090A0A] focus:outline-none text-[#090A0A] font-medium text-sm"
             />
           </div>
-          <div className="space-y-1.5">
-            <span className="text-slate-700 font-semibold text-sm sm:text-base">{t.wizard.phase3CounterpartyPhone}</span>
+          <div className="space-y-1">
+            <span className="text-xs text-[#6F7375] uppercase tracking-wider">{t.wizard.phase3CounterpartyPhone}</span>
             <input
               type="tel"
               value={counterpartyPhone}
               onChange={(e) => setCounterpartyPhone(e.target.value)}
               placeholder="+39 340 123 4567"
-              className="w-full min-h-[52px] px-4 py-3.5 rounded-xl border border-slate-200 bg-slate-50/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-600 text-slate-900 text-base"
+              className="w-full min-h-[50px] px-4 py-3 border border-[#D7D9D8] bg-white focus:border-[#090A0A] focus:outline-none text-[#090A0A] font-mono text-sm"
             />
           </div>
-          <div className="space-y-1.5">
-            <span className="text-slate-700 font-semibold text-sm sm:text-base">{t.wizard.phase3CounterpartyInsurer}</span>
+          <div className="space-y-1">
+            <span className="text-xs text-[#6F7375] uppercase tracking-wider">{t.wizard.phase3CounterpartyInsurer}</span>
             <input
               type="text"
               value={counterpartyInsurer}
               onChange={(e) => setCounterpartyInsurer(e.target.value)}
               placeholder="e.g. Generali Italia"
-              className="w-full min-h-[52px] px-4 py-3.5 rounded-xl border border-slate-200 bg-slate-50/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-600 text-slate-900 text-base"
+              className="w-full min-h-[50px] px-4 py-3 border border-[#D7D9D8] bg-white focus:border-[#090A0A] focus:outline-none text-[#090A0A] font-medium text-sm"
             />
           </div>
         </div>
       </div>
 
-      {/* Driver Statement Narrative */}
-      <div className="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 space-y-4 shadow-xs">
-        <label className="text-lg sm:text-xl font-bold text-slate-950 block">
+      {/* 3. Driver Statement Narrative */}
+      <div className="space-y-3 pb-8">
+        <label className="text-sm font-bold uppercase tracking-wider text-[#090A0A] block">
           {t.wizard.phase3StatementTitle}
         </label>
         <textarea
@@ -271,7 +274,7 @@ export function Phase3Capture({
           value={statement}
           onChange={(e) => setStatement(e.target.value)}
           placeholder={t.wizard.phase3StatementPlaceholder}
-          className="w-full p-4 rounded-xl border border-slate-200 bg-slate-50/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-600 text-base text-slate-900 resize-y leading-relaxed"
+          className="w-full p-4 border border-[#D7D9D8] bg-white focus:border-[#090A0A] focus:outline-none text-sm text-[#090A0A] resize-y leading-relaxed font-sans"
         />
       </div>
 
@@ -280,10 +283,10 @@ export function Phase3Capture({
         <button
           type="button"
           onClick={handleContinue}
-          className="min-h-[56px] w-full py-4 px-6 rounded-2xl font-bold text-base sm:text-lg bg-blue-600 hover:bg-blue-700 text-white shadow-xs flex items-center justify-center gap-3 transition-all active:scale-[0.98]"
+          className="min-h-[56px] w-full py-4 px-6 font-bold text-sm uppercase tracking-wider bg-[#090A0A] hover:bg-[#171819] text-white flex items-center justify-between transition-colors"
         >
           <span>{t.wizard.phase3Next}</span>
-          <ArrowRightIcon size={20} />
+          <ArrowRightIcon size={18} />
         </button>
       </div>
     </div>

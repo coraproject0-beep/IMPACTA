@@ -1,73 +1,78 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 
 interface HeroMediaProps {
   videoSrc?: string;
-  posterSrc: string;
+  posterSrc?: string;
+  fallbackImageSrc: string;
   alt: string;
-  priority?: boolean;
   className?: string;
 }
 
 export function HeroMedia({
-  videoSrc,
-  posterSrc,
+  videoSrc = "/media/impacta-hero.mp4",
+  posterSrc = "/images/road-context.jpg",
+  fallbackImageSrc = "/images/road-context.jpg",
   alt,
-  priority = true,
   className = "",
 }: HeroMediaProps) {
-  const [videoAvailable, setVideoAvailable] = useState(false);
-  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+  const [videoAvailable, setVideoAvailable] = useState<boolean>(false);
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState<boolean>(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
-    // Check user preference for reduced motion
+    // Respect prefers-reduced-motion
     const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
     setPrefersReducedMotion(mediaQuery.matches);
 
-    const listener = (e: MediaQueryListEvent) => setPrefersReducedMotion(e.matches);
-    mediaQuery.addEventListener("change", listener);
+    const handleMotionChange = (e: MediaQueryListEvent) => {
+      setPrefersReducedMotion(e.matches);
+    };
 
-    return () => mediaQuery.removeEventListener("change", listener);
-  }, []);
+    mediaQuery.addEventListener("change", handleMotionChange);
+
+    // Check if video exists and can be played
+    if (videoSrc && !mediaQuery.matches) {
+      const testVideo = document.createElement("video");
+      testVideo.src = videoSrc;
+      testVideo.oncanplay = () => setVideoAvailable(true);
+      testVideo.onerror = () => setVideoAvailable(false);
+    }
+
+    return () => {
+      mediaQuery.removeEventListener("change", handleMotionChange);
+    };
+  }, [videoSrc]);
 
   return (
-    <div
-      className={`relative w-full overflow-hidden bg-slate-100 ${className}`}
-      role="region"
-      aria-label={alt}
-    >
-      {/* Video layer if configured and user does not prefer reduced motion */}
-      {videoSrc && !prefersReducedMotion && (
+    <div className={`relative w-full h-full overflow-hidden ${className}`}>
+      {videoAvailable && !prefersReducedMotion ? (
         <video
+          ref={videoRef}
           src={videoSrc}
           poster={posterSrc}
           autoPlay
           muted
           loop
           playsInline
-          onCanPlay={() => setVideoAvailable(true)}
-          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${
-            videoAvailable ? "opacity-100" : "opacity-0"
-          }`}
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+      ) : (
+        <Image
+          src={fallbackImageSrc}
+          alt={alt}
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover"
         />
       )}
 
-      {/* Cinematic Daylight Photography */}
-      <Image
-        src={posterSrc}
-        alt={alt}
-        fill
-        priority={priority}
-        className={`object-cover transition-transform duration-[4000ms] ease-out ${
-          !prefersReducedMotion ? "scale-105 hover:scale-100" : "scale-100"
-        } ${videoAvailable ? "opacity-0" : "opacity-100"}`}
-        sizes="(max-width: 1024px) 100vw, 1400px"
-      />
-
-      {/* Crisp daylight gradient overlay for depth */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none" />
+      {/* Cinematic subtle contrast gradient for flawless typography legibility */}
+      <div className="absolute inset-0 bg-gradient-to-t from-[#090A0A] via-[#090A0A]/60 to-transparent" />
+      <div className="absolute inset-0 bg-[#090A0A]/30" />
     </div>
   );
 }

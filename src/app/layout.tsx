@@ -1,14 +1,15 @@
 import type { Metadata } from "next";
-import { Archivo, JetBrains_Mono } from "next/font/google";
+import { Instrument_Sans, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 
-const archivo = Archivo({
-  subsets: ["latin"],
+const instrumentSans = Instrument_Sans({
+  subsets: ["latin", "latin-ext"],
   display: "swap",
-  variable: "--font-archivo",
+  variable: "--font-instrument-sans",
 });
 
-const jetbrainsMono = JetBrains_Mono({
+const ibmPlexMono = IBM_Plex_Mono({
+  weight: ["400", "500", "600"],
   subsets: ["latin"],
   display: "swap",
   variable: "--font-mono",
@@ -28,7 +29,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${archivo.variable} ${jetbrainsMono.variable}`}>
+    <html lang="en" className={`${instrumentSans.variable} ${ibmPlexMono.variable}`}>
       <body className="min-h-screen bg-[#F4F5F3] text-[#090A0A] font-sans antialiased selection:bg-[#090A0A] selection:text-white">
         {children}
       </body>

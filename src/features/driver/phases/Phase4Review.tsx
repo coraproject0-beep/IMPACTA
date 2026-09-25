@@ -24,7 +24,8 @@ export function Phase4Review({
   onSubmit,
   onEditSection,
 }: Phase4ReviewProps) {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+  const isIt = language === "it";
   const [reconstructionMatches, setReconstructionMatches] = useState(
     draft.reconstructionConfirmed ?? true
   );
@@ -64,146 +65,162 @@ export function Phase4Review({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-8 py-2 max-w-2xl selection:bg-blue-100 selection:text-blue-900">
+    <form onSubmit={handleSubmit} className="space-y-10 py-2 max-w-xl mx-auto selection:bg-[#090A0A] selection:text-white">
       {/* Phase Header */}
-      <div className="space-y-4">
-        <p className="text-xs sm:text-sm font-mono font-bold uppercase tracking-widest text-blue-700">
+      <div className="space-y-3 pb-6 border-b border-[#D7D9D8]">
+        <p className="text-xs font-semibold uppercase tracking-widest text-[#6F7375]">
           {t.wizard.phase4Title}
         </p>
-        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-950 leading-tight">
-          Does this report look accurate?
+        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black uppercase tracking-tight text-[#090A0A] leading-[1.05]">
+          {isIt ? "Riepilogo e Dichiarazione" : "Review & Declaration"}
         </h1>
-        <p className="text-base sm:text-xl text-slate-600 leading-relaxed">
-          Review the factual summary and verified accident circumstances before saving your report.
+        <p className="text-base sm:text-lg text-[#6F7375] font-normal leading-relaxed pt-1">
+          {isIt
+            ? "Verifica la sintesi dei fatti e le circostanze accertate prima di confermare e salvare il fascicolo."
+            : "Review the factual summary and verified accident circumstances before saving your report."}
         </p>
       </div>
 
       {/* 1. Neutral Reconstruction Summary */}
-      <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 space-y-5 shadow-xs">
-        <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-          <div className="flex items-center gap-2.5">
-            <ShieldCheckIcon size={22} className="text-blue-600" />
-            <span className="text-lg sm:text-xl font-bold text-slate-950">
+      <div className="space-y-4 pb-8 border-b border-[#D7D9D8]">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <ShieldCheckIcon size={18} className="text-[#090A0A]" />
+            <span className="text-sm font-bold uppercase tracking-wider text-[#090A0A]">
               {t.wizard.phase4ReconstructionTitle}
             </span>
           </div>
-          <span className="text-xs sm:text-sm font-mono font-medium text-slate-500">
-            Physical Record
+          <span className="text-xs text-[#6F7375] uppercase tracking-wider">
+            {isIt ? "Rilievo Fisico" : "Physical Record"}
           </span>
         </div>
 
-        <div className="p-5 sm:p-6 bg-blue-50/60 rounded-2xl border border-blue-100 text-base sm:text-lg text-slate-800 leading-relaxed">
-          <p className="font-medium">
+        <div className="p-4 bg-[#F4F5F3] border border-[#D7D9D8] text-sm text-[#090A0A] leading-relaxed">
+          <p className="font-normal italic">
             &ldquo;{t.wizard.phase4ReconstructionNeutral}&rdquo;
           </p>
         </div>
 
-        <div className="flex flex-col sm:flex-row gap-3 pt-1">
+        <div className="flex flex-col sm:flex-row gap-2 pt-1">
           <button
             type="button"
             onClick={() => {
               setReconstructionMatches(true);
               onUpdate({ reconstructionConfirmed: true });
             }}
-            className={`min-h-[48px] flex-1 py-3 px-5 rounded-xl text-sm font-bold border transition-colors flex items-center justify-center gap-2 ${
+            className={`min-h-[46px] flex-1 py-2 px-4 text-xs font-semibold uppercase tracking-wider border transition-colors flex items-center justify-center gap-2 ${
               reconstructionMatches
-                ? "bg-slate-950 text-white border-slate-950"
-                : "bg-white text-slate-700 border-slate-200 hover:bg-slate-50"
+                ? "bg-[#090A0A] text-white border-[#090A0A]"
+                : "bg-white text-[#6F7375] border-[#D7D9D8] hover:border-[#090A0A] hover:text-[#090A0A]"
             }`}
           >
-            <CheckCircleIcon size={18} />
+            <CheckCircleIcon size={15} />
             <span>{t.wizard.phase4ReconstructionMatches}</span>
           </button>
           <button
             type="button"
             onClick={() => onEditSection("accident")}
-            className="min-h-[48px] py-3 px-5 rounded-xl text-sm font-semibold bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 transition-colors flex items-center justify-center gap-2"
+            className="min-h-[46px] py-2 px-4 text-xs font-semibold uppercase tracking-wider bg-white border border-[#D7D9D8] hover:border-[#090A0A] text-[#090A0A] transition-colors flex items-center justify-center gap-2"
           >
-            <EditIcon size={16} />
+            <EditIcon size={15} />
             <span>{t.wizard.phase4ReconstructionEdit}</span>
           </button>
         </div>
       </div>
 
       {/* 2. Vehicles & Evidence Summary */}
-      <div className="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 space-y-5 shadow-xs">
-        <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-          <span className="text-lg sm:text-xl font-bold text-slate-950">Parties &amp; Evidence</span>
+      <div className="space-y-4 pb-8 border-b border-[#D7D9D8]">
+        <div className="flex items-center justify-between">
+          <span className="text-sm font-bold uppercase tracking-wider text-[#090A0A]">
+            {isIt ? "Veicoli e Prove" : "Parties & Evidence"}
+          </span>
           <button
             type="button"
             onClick={() => onEditSection("capture")}
-            className="text-sm font-bold text-blue-700 hover:underline flex items-center gap-1.5"
+            className="text-xs font-semibold text-[#090A0A] hover:underline uppercase tracking-wider flex items-center gap-1"
           >
-            <EditIcon size={15} />
-            <span>Edit Details</span>
+            <EditIcon size={14} />
+            <span>{isIt ? "Modifica" : "Edit Details"}</span>
           </button>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 text-sm sm:text-base">
-          <div>
-            <span className="text-slate-500 block text-xs uppercase font-mono font-semibold">Your Vehicle</span>
-            <span className="font-bold text-slate-950 text-base sm:text-lg block mt-0.5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+          <div className="space-y-1">
+            <span className="text-[#6F7375] uppercase tracking-wider block">
+              {isIt ? "Il tuo veicolo" : "Your Vehicle"}
+            </span>
+            <span className="font-bold text-[#090A0A] text-sm block">
               {SYNTHETIC_DRIVER_PROFILE.vehicle.make} {SYNTHETIC_DRIVER_PROFILE.vehicle.model}
             </span>
-            <span className="text-slate-600 font-mono text-xs sm:text-sm block">
-              {SYNTHETIC_DRIVER_PROFILE.vehicle.plate} • Matteo Bianchi
+            <span className="font-mono text-[#6F7375] block">
+              {SYNTHETIC_DRIVER_PROFILE.vehicle.plate} • {SYNTHETIC_DRIVER_PROFILE.fullName}
             </span>
           </div>
 
-          <div>
-            <span className="text-slate-500 block text-xs uppercase font-mono font-semibold">Counterparty</span>
-            <span className="font-bold text-slate-950 text-base sm:text-lg block mt-0.5">
-              {draft.counterparty.driverName || "Counterparty"}
+          <div className="space-y-1">
+            <span className="text-[#6F7375] uppercase tracking-wider block">
+              {isIt ? "Controparte" : "Counterparty"}
             </span>
-            <span className="text-slate-600 font-mono text-xs sm:text-sm block">
-              {draft.counterparty.plate || "Pending Plate"} • {draft.counterparty.insurer || "Pending Carrier"}
+            <span className="font-bold text-[#090A0A] text-sm block">
+              {draft.counterparty.driverName || (isIt ? "Controparte" : "Counterparty")}
+            </span>
+            <span className="font-mono text-[#6F7375] block">
+              {draft.counterparty.plate || (isIt ? "Targa assente" : "Pending Plate")} • {draft.counterparty.insurer || (isIt ? "Compagnia assente" : "Pending Carrier")}
             </span>
           </div>
 
-          <div>
-            <span className="text-slate-500 block text-xs uppercase font-mono font-semibold">Incident Location</span>
-            <span className="font-semibold text-slate-900 block mt-0.5">
+          <div className="space-y-1">
+            <span className="text-[#6F7375] uppercase tracking-wider block">
+              {isIt ? "Luogo sinistro" : "Incident Location"}
+            </span>
+            <span className="font-medium text-[#090A0A] block">
               {draft.location.street || "Piazza San Giovanni"}, {draft.location.city || "Firenze"}
             </span>
           </div>
 
-          <div>
-            <span className="text-slate-500 block text-xs uppercase font-mono font-semibold">Preserved Evidence</span>
-            <span className="font-semibold text-emerald-700 block mt-0.5">
-              {draft.evidenceItems.length} photos / documents
+          <div className="space-y-1">
+            <span className="text-[#6F7375] uppercase tracking-wider block">
+              {isIt ? "Prove fotografiche" : "Preserved Evidence"}
+            </span>
+            <span className="font-medium text-emerald-700 block">
+              {draft.evidenceItems.length} {isIt ? "foto archiviate" : "photos / documents"}
             </span>
           </div>
         </div>
       </div>
 
       {/* 3. CAI Box 12 European Circumstances */}
-      <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 space-y-4 shadow-xs">
-        <h2 className="text-lg sm:text-xl font-bold text-slate-950 block">
+      <div className="space-y-3 pb-8 border-b border-[#D7D9D8]">
+        <h2 className="text-sm font-bold uppercase tracking-wider text-[#090A0A] block">
           {t.wizard.phase4CircumstancesTitle}
         </h2>
-        <div className="space-y-3">
-          <label className="flex items-start gap-3.5 p-4 rounded-2xl bg-slate-50/80 border border-slate-200 cursor-pointer hover:bg-blue-50/30 transition-colors">
+        <div className="space-y-2">
+          <label className="flex items-start gap-3 p-3.5 border border-[#D7D9D8] hover:border-[#090A0A] bg-white cursor-pointer transition-colors">
             <input
               type="checkbox"
               checked={confirmedCircumstanceA}
               onChange={toggleCircumstanceA}
-              className="mt-1 h-5 w-5 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+              className="mt-0.5 h-4 w-4 accent-[#090A0A]"
             />
-            <div className="text-sm sm:text-base text-slate-700 leading-relaxed">
-              <span className="font-bold text-slate-950 block mb-0.5">Your Vehicle (Golf VIII):</span>
+            <div className="text-xs text-[#090A0A] leading-relaxed">
+              <span className="font-bold block uppercase tracking-wider mb-0.5">
+                {isIt ? "Veicolo A (Golf VIII):" : "Your Vehicle (Golf VIII):"}
+              </span>
               {t.wizard.phase4Circumstance7}
             </div>
           </label>
 
-          <label className="flex items-start gap-3.5 p-4 rounded-2xl bg-slate-50/80 border border-slate-200 cursor-pointer hover:bg-blue-50/30 transition-colors">
+          <label className="flex items-start gap-3 p-3.5 border border-[#D7D9D8] hover:border-[#090A0A] bg-white cursor-pointer transition-colors">
             <input
               type="checkbox"
               checked={confirmedCircumstanceB}
               onChange={toggleCircumstanceB}
-              className="mt-1 h-5 w-5 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+              className="mt-0.5 h-4 w-4 accent-[#090A0A]"
             />
-            <div className="text-sm sm:text-base text-slate-700 leading-relaxed">
-              <span className="font-bold text-slate-950 block mb-0.5">Counterparty Vehicle:</span>
+            <div className="text-xs text-[#090A0A] leading-relaxed">
+              <span className="font-bold block uppercase tracking-wider mb-0.5">
+                {isIt ? "Veicolo B (Controparte):" : "Counterparty Vehicle:"}
+              </span>
               {t.wizard.phase4Circumstance6}
             </div>
           </label>
@@ -211,20 +228,20 @@ export function Phase4Review({
       </div>
 
       {/* 4. Solemn Truthfulness Declaration */}
-      <div className="p-6 sm:p-7 rounded-3xl bg-slate-100/90 border border-slate-200 space-y-3">
-        <label className="flex items-start gap-3.5 cursor-pointer">
+      <div className="p-4 bg-[#F4F5F3] border border-[#D7D9D8] space-y-2">
+        <label className="flex items-start gap-3 cursor-pointer">
           <input
             type="checkbox"
             required
             checked={hasConfirmedDeclaration}
             onChange={(e) => setHasConfirmedDeclaration(e.target.checked)}
-            className="mt-1 h-5 w-5 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+            className="mt-0.5 h-4 w-4 accent-[#090A0A]"
           />
-          <div className="text-sm sm:text-base text-slate-700 leading-relaxed">
-            <span className="font-bold text-slate-950 block mb-1">
+          <div className="text-xs text-[#090A0A] leading-relaxed">
+            <span className="font-bold uppercase tracking-wider block mb-1">
               {t.wizard.phase4DeclarationTitle}
             </span>
-            <p className="text-slate-600">{t.wizard.phase4DeclarationText}</p>
+            <p className="text-[#6F7375] font-normal">{t.wizard.phase4DeclarationText}</p>
           </div>
         </label>
       </div>
@@ -234,14 +251,14 @@ export function Phase4Review({
         <button
           type="submit"
           disabled={!hasConfirmedDeclaration || isSubmitting}
-          className={`min-h-[56px] w-full py-4 px-6 rounded-2xl font-bold text-base sm:text-lg flex items-center justify-center gap-3 transition-all shadow-xs active:scale-[0.98] ${
+          className={`min-h-[56px] w-full py-4 px-6 font-bold text-sm uppercase tracking-wider flex items-center justify-between transition-colors ${
             hasConfirmedDeclaration && !isSubmitting
-              ? "bg-slate-950 hover:bg-blue-600 text-white"
-              : "bg-slate-200 text-slate-400 cursor-not-allowed"
+              ? "bg-[#090A0A] hover:bg-[#171819] text-white"
+              : "bg-[#D7D9D8] text-[#6F7375] cursor-not-allowed"
           }`}
         >
-          <span>{isSubmitting ? "Generating Dossier..." : t.wizard.phase4SubmitReport}</span>
-          <ArrowRightIcon size={20} />
+          <span>{isSubmitting ? (isIt ? "Generazione Dossier..." : "Generating Dossier...") : t.wizard.phase4SubmitReport}</span>
+          <ArrowRightIcon size={18} />
         </button>
       </div>
     </form>

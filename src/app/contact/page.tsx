@@ -1,15 +1,15 @@
 "use client";
 
 import React, { useState } from "react";
-import Link from "next/link";
 import { PublicShell } from "@/components/public/PublicShell";
 import { EditorialReveal } from "@/components/motion/EditorialReveal";
 import { TechnicalReveal } from "@/components/motion/TechnicalReveal";
-import { CheckCircleIcon, ArrowRightIcon } from "@/components/icons/Icons";
+import { CheckCircleIcon } from "@/components/icons/Icons";
 import { useLanguage } from "@/context/LanguageContext";
 
 export default function ContactPage() {
   const { language } = useLanguage();
+  const isIt = language === "it";
   const [submitted, setSubmitted] = useState(false);
   const [formState, setFormState] = useState({
     name: "",
@@ -29,14 +29,14 @@ export default function ContactPage() {
       {/* Header */}
       <section className="py-24 sm:py-36 bg-white border-b border-[#D7D9D8]">
         <div className="w-full px-6 sm:px-12 lg:px-20 max-w-7xl mx-auto space-y-6">
-          <TechnicalReveal className="text-xs sm:text-sm font-mono font-bold uppercase tracking-widest text-[#6F7375]">
-            {language === "it" ? "CONTATTI & COLLABORAZIONI" : "CONTACT & EVALUATION"}
+          <TechnicalReveal className="text-xs sm:text-sm font-semibold uppercase tracking-widest text-[#6F7375]">
+            {isIt ? "CONTATTI & COLLABORAZIONI" : "CONTACT & EVALUATION"}
           </TechnicalReveal>
           <EditorialReveal
             as="h1"
             className="text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-[#090A0A] leading-[1.04] uppercase max-w-5xl"
           >
-            {language === "it" ? (
+            {isIt ? (
               <>
                 Entra in contatto con
                 <br />
@@ -51,7 +51,7 @@ export default function ContactPage() {
             )}
           </EditorialReveal>
           <p className="text-lg sm:text-2xl text-[#6F7375] leading-relaxed max-w-3xl font-light">
-            {language === "it"
+            {isIt
               ? "Siamo aperti al confronto con periti assicurativi, compagnie, centri di ricerca sulla mobilità e ingegneri forensi."
               : "We welcome academic collaboration, design critique, and inquiries from insurance carriers and forensic researchers."}
           </p>
@@ -65,11 +65,11 @@ export default function ContactPage() {
             {/* Form */}
             <div className="lg:col-span-7 bg-white border border-[#D7D9D8] p-8 sm:p-14 space-y-8">
               <div className="space-y-1">
-                <span className="text-xs font-mono uppercase tracking-widest text-[#6F7375]">
-                  {language === "it" ? "MODULO DI CONTATTO" : "DIRECT INQUIRY FORM"}
+                <span className="text-xs font-semibold uppercase tracking-widest text-[#6F7375]">
+                  {isIt ? "MODULO DI CONTATTO" : "DIRECT INQUIRY FORM"}
                 </span>
                 <h2 className="text-2xl font-bold uppercase text-[#090A0A]">
-                  {language === "it" ? "Invia un messaggio" : "Send a message"}
+                  {isIt ? "Invia un messaggio" : "Send a message"}
                 </h2>
               </div>
 
@@ -78,11 +78,11 @@ export default function ContactPage() {
                   <div className="flex items-center gap-3">
                     <CheckCircleIcon size={22} className="text-[#090A0A]" />
                     <span className="text-lg font-bold uppercase text-[#090A0A]">
-                      {language === "it" ? "Messaggio Inviato con Successo" : "Message Sent Successfully"}
+                      {isIt ? "Messaggio Inviato con Successo" : "Message Sent Successfully"}
                     </span>
                   </div>
-                  <p className="text-sm font-mono text-[#6F7375] leading-relaxed">
-                    {language === "it"
+                  <p className="text-sm text-[#6F7375] font-light leading-relaxed">
+                    {isIt
                       ? "Grazie per aver contattato IMPACTA Labs. Risponderemo al più presto."
                       : "Thank you for contacting IMPACTA Labs. We will review your inquiry shortly."}
                   </p>
@@ -91,16 +91,16 @@ export default function ContactPage() {
                       setSubmitted(false);
                       setFormState({ name: "", email: "", organization: "", subject: "Academic Inquiry", message: "" });
                     }}
-                    className="text-xs font-mono font-bold uppercase tracking-wider text-[#090A0A] underline pt-2"
+                    className="text-xs font-bold uppercase tracking-wider text-[#090A0A] underline pt-2"
                   >
-                    {language === "it" ? "Invia un altro messaggio" : "Send another message"}
+                    {isIt ? "Invia un altro messaggio" : "Send another message"}
                   </button>
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-6">
-                  <div className="space-y-2">
-                    <label className="block text-xs font-mono uppercase tracking-wider text-[#6F7375]">
-                      {language === "it" ? "Nome e Cognome *" : "Full Name *"}
+                  <div className="space-y-1.5">
+                    <label className="block text-xs font-semibold uppercase tracking-wider text-[#6F7375]">
+                      {isIt ? "Nome e Cognome *" : "Full Name *"}
                     </label>
                     <input
                       type="text"
@@ -113,9 +113,9 @@ export default function ContactPage() {
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                    <div className="space-y-2">
-                      <label className="block text-xs font-mono uppercase tracking-wider text-[#6F7375]">
-                        {language === "it" ? "Indirizzo Email *" : "Work Email *"}
+                    <div className="space-y-1.5">
+                      <label className="block text-xs font-semibold uppercase tracking-wider text-[#6F7375]">
+                        {isIt ? "Indirizzo Email *" : "Work Email *"}
                       </label>
                       <input
                         type="email"
@@ -126,9 +126,9 @@ export default function ContactPage() {
                         className="w-full min-h-[52px] px-4 border border-[#D7D9D8] bg-white text-[#090A0A] text-sm focus:outline-none focus:border-[#090A0A] transition-colors"
                       />
                     </div>
-                    <div className="space-y-2">
-                      <label className="block text-xs font-mono uppercase tracking-wider text-[#6F7375]">
-                        {language === "it" ? "Organizzazione" : "Organization"}
+                    <div className="space-y-1.5">
+                      <label className="block text-xs font-semibold uppercase tracking-wider text-[#6F7375]">
+                        {isIt ? "Organizzazione" : "Organization"}
                       </label>
                       <input
                         type="text"
@@ -140,17 +140,17 @@ export default function ContactPage() {
                     </div>
                   </div>
 
-                  <div className="space-y-2">
-                    <label className="block text-xs font-mono uppercase tracking-wider text-[#6F7375]">
-                      {language === "it" ? "Messaggio *" : "Message *"}
+                  <div className="space-y-1.5">
+                    <label className="block text-xs font-semibold uppercase tracking-wider text-[#6F7375]">
+                      {isIt ? "Messaggio *" : "Message *"}
                     </label>
                     <textarea
                       rows={5}
                       required
                       value={formState.message}
                       onChange={(e) => setFormState({ ...formState, message: e.target.value })}
-                      placeholder="Describe your inquiry, research area, or carrier evaluation..."
-                      className="w-full p-4 border border-[#D7D9D8] bg-white text-[#090A0A] text-sm focus:outline-none focus:border-[#090A0A] transition-colors"
+                      placeholder={isIt ? "Descrivi la tua richiesta, ambito di ricerca o valutazione..." : "Describe your inquiry, research area, or carrier evaluation..."}
+                      className="w-full p-4 border border-[#D7D9D8] bg-white text-[#090A0A] text-sm focus:outline-none focus:border-[#090A0A] transition-colors font-sans"
                     />
                   </div>
 
@@ -158,39 +158,39 @@ export default function ContactPage() {
                     type="submit"
                     className="w-full min-h-[56px] bg-[#090A0A] text-white text-xs font-bold tracking-wider uppercase hover:bg-[#171819] transition-colors"
                   >
-                    {language === "it" ? "Invia Richiesta" : "Submit Inquiry"}
+                    {isIt ? "Invia Richiesta" : "Submit Inquiry"}
                   </button>
                 </form>
               )}
             </div>
 
-            {/* Right: Laboratory / Research Headquarters Details */}
-            <div className="lg:col-span-5 space-y-10 text-sm font-mono">
+            {/* Right: Laboratory Details */}
+            <div className="lg:col-span-5 space-y-10 text-sm">
               <div className="space-y-3 pb-8 border-b border-[#D7D9D8]">
-                <span className="text-xs text-[#6F7375] uppercase tracking-widest block">
+                <span className="text-xs text-[#6F7375] uppercase tracking-widest font-semibold block">
                   LABORATORY HEADQUARTERS
                 </span>
                 <h3 className="text-xl font-bold uppercase text-[#090A0A]">
                   IMPACTA Mobility Intelligence
                 </h3>
-                <p className="text-[#6F7375] font-sans text-base leading-relaxed">
+                <p className="text-[#6F7375] font-light text-base leading-relaxed">
                   Corso Magenta 85<br />
                   20123 Milano (MI) • Italy
                 </p>
               </div>
 
               <div className="space-y-3 pb-8 border-b border-[#D7D9D8]">
-                <span className="text-xs text-[#6F7375] uppercase tracking-widest block">
+                <span className="text-xs text-[#6F7375] uppercase tracking-widest font-semibold block">
                   DIRECT CHANNELS
                 </span>
                 <div className="space-y-1 text-sm text-[#090A0A]">
-                  <div>Research: research@impacta.mobility.eu</div>
-                  <div>Carrier Pilot: claims@impacta.mobility.eu</div>
+                  <div>Research: <span className="font-mono text-xs">research@impacta.mobility.eu</span></div>
+                  <div>Carrier Pilot: <span className="font-mono text-xs">claims@impacta.mobility.eu</span></div>
                 </div>
               </div>
 
-              <div className="space-y-2 text-xs text-[#6F7375] leading-relaxed">
-                <span>GOVERNANCE NOTE</span>
+              <div className="space-y-2 text-xs text-[#6F7375] leading-relaxed font-light">
+                <span className="font-semibold uppercase tracking-wider block text-[#090A0A]">GOVERNANCE NOTE</span>
                 <p>
                   Academic evaluation prototype. Inquiries handled under GDPR Art. 6(1)(f) legitimate interest for academic and scientific validation.
                 </p>

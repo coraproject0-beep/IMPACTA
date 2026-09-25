@@ -8,8 +8,8 @@ All photographic assets utilized across the **IMPACTA Public Website** and **Dri
 
 | Typeface | Source / Provider | License | Rationale for IMPACTA Art Direction |
 | :--- | :--- | :--- | :--- |
-| **Archivo** | Omnibus-Type / Google Fonts | SIL Open Font License 1.1 | Open industrial-geometric neo-grotesk engineered for technical display and high-legibility automotive text. Excellent native support for Italian diacritics (`à`, `è`, `é`, `ì`, `ò`, `ù`) and wide display tracking without letter crowding. |
-| **JetBrains Mono** | JetBrains / Google Fonts | SIL Open Font License 1.1 | High-precision monospace font designed for technical telemetry, CAN-bus logs, sensor timestamps, and tabular claims metadata. |
+| **Instrument Sans** | Rodrigo Fuenzalida, Jordan Engel / Google Fonts | SIL Open Font License 1.1 | Contemporary geometric grotesque engineered with pristine legibility, balanced apertures, and superior Italian diacritics support. Serves as the single primary typeface across Public, Driver, and Console. |
+| **IBM Plex Mono** | Mike Abbink / Google Fonts | SIL Open Font License 1.1 | Technical monospace font reserved exclusively for real empirical data: claim IDs, vehicle plates, timestamps, and sensor telemetry. Banned from UI navigation, kickers, and prose. |
 
 ---
 

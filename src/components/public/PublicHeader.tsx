@@ -58,7 +58,7 @@ export function PublicHeader() {
                 IMPACTA
               </span>
               <span
-                className={`hidden xl:inline text-xs font-mono tracking-widest uppercase pl-3 border-l ${
+                className={`hidden xl:inline text-xs font-medium tracking-widest uppercase pl-3 border-l ${
                   isTransparentDark ? "border-white/30 text-white/50" : "border-[#D7D9D8] text-[#6F7375]"
                 }`}
               >

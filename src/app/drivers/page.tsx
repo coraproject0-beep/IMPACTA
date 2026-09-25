@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { PublicShell } from "@/components/public/PublicShell";
 import { EditorialReveal } from "@/components/motion/EditorialReveal";
@@ -9,7 +8,6 @@ import { TechnicalReveal } from "@/components/motion/TechnicalReveal";
 import { FullBleedImage } from "@/components/motion/FullBleedImage";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAuth } from "@/context/AuthContext";
-import { ArrowRightIcon, CheckCircleIcon } from "@/components/icons/Icons";
 
 export default function DriversPage() {
   const { language, t } = useLanguage();
@@ -21,7 +19,7 @@ export default function DriversPage() {
       {/* Hero Header */}
       <section className="py-24 sm:py-36 bg-white border-b border-[#D7D9D8]">
         <div className="w-full px-6 sm:px-12 lg:px-20 max-w-7xl mx-auto space-y-6">
-          <TechnicalReveal className="text-xs sm:text-sm font-mono font-bold uppercase tracking-widest text-[#6F7375]">
+          <TechnicalReveal className="text-xs sm:text-sm font-semibold uppercase tracking-widest text-[#6F7375]">
             {language === "it" ? "ESPERIENZA CONDUCENTE" : "DRIVER ROADSIDE PROTOCOL"}
           </TechnicalReveal>
           <EditorialReveal
@@ -73,7 +71,7 @@ export default function DriversPage() {
           overlayClassName="bg-gradient-to-t from-[#090A0A] via-[#090A0A]/50 to-transparent"
         >
           <div className="max-w-4xl space-y-6">
-            <span className="text-xs font-mono uppercase tracking-widest text-white/50">
+            <span className="text-xs font-semibold uppercase tracking-widest text-white/60">
               {language === "it" ? "FOTOGRAMMI ORTOGONALI" : "CALIBRATED OPTICAL CAPTURE"}
             </span>
             <h2 className="text-3xl sm:text-5xl lg:text-6xl font-bold uppercase tracking-tight text-white leading-tight">
@@ -92,7 +90,7 @@ export default function DriversPage() {
       <section className="py-24 sm:py-36 bg-[#F4F5F3] border-b border-[#D7D9D8]">
         <div className="w-full px-6 sm:px-12 lg:px-20 max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-baseline">
           <div className="lg:col-span-5 space-y-4">
-            <span className="text-xs font-mono font-bold tracking-widest text-[#090A0A] uppercase">
+            <span className="text-xs font-semibold tracking-widest text-[#090A0A] uppercase">
               {language === "it" ? "PROTOCOLLO DIRETTO 112" : "EMERGENCY 112 FIRST"}
             </span>
             <h2 className="text-3xl sm:text-4xl font-bold uppercase text-[#090A0A]">

@@ -9,7 +9,7 @@ const BlackBoxHeroClient = dynamic(() => import("./BlackBoxHero"), {
   loading: () => (
     <div className="relative w-full h-screen bg-[#090A0A] text-white flex items-center justify-center">
       <div className="max-w-4xl px-6 sm:px-12 w-full space-y-6">
-        <div className="text-xs font-mono tracking-widest text-white/40 uppercase">
+        <div className="text-xs font-semibold tracking-widest text-white/40 uppercase">
           IMPACTA • EVIDENCE FUSION
         </div>
         <h1 className="text-5xl sm:text-7xl font-bold tracking-tight uppercase leading-[0.98]">

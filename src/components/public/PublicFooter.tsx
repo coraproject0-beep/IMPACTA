@@ -21,14 +21,14 @@ export function PublicFooter() {
             <p className="text-white/70 text-base lg:text-lg max-w-md leading-relaxed font-light">
               {t("footer.tagline")}
             </p>
-            <div className="pt-2 text-xs font-mono tracking-widest text-white/40 uppercase">
+            <div className="pt-2 text-xs font-medium tracking-widest text-white/40 uppercase">
               {t("footer.academicNotice")}
             </div>
           </div>
 
           {/* Column 1: System */}
           <div className="md:col-span-2 space-y-4">
-            <h4 className="text-xs font-mono uppercase tracking-widest text-white/40">
+            <h4 className="text-xs font-semibold uppercase tracking-widest text-white/40">
               {t("footer.productHeading")}
             </h4>
             <ul className="space-y-3 text-sm font-medium tracking-wide">
@@ -57,7 +57,7 @@ export function PublicFooter() {
 
           {/* Column 2: Governance & Safety */}
           <div className="md:col-span-2 space-y-4">
-            <h4 className="text-xs font-mono uppercase tracking-widest text-white/40">
+            <h4 className="text-xs font-semibold uppercase tracking-widest text-white/40">
               {t("footer.governanceHeading")}
             </h4>
             <ul className="space-y-3 text-sm font-medium tracking-wide">
@@ -86,7 +86,7 @@ export function PublicFooter() {
 
           {/* Column 3: Access Portals */}
           <div className="md:col-span-3 space-y-4">
-            <h4 className="text-xs font-mono uppercase tracking-widest text-white/40">
+            <h4 className="text-xs font-semibold uppercase tracking-widest text-white/40">
               {t("footer.surfacesHeading")}
             </h4>
             <ul className="space-y-3 text-sm font-medium tracking-wide">
@@ -110,7 +110,7 @@ export function PublicFooter() {
         </div>
 
         {/* Bottom Bar: Copyright & Standards */}
-        <div className="pt-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-xs font-mono tracking-wider text-white/40">
+        <div className="pt-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-xs font-medium tracking-wider text-white/40 uppercase">
           <div>
             &copy; {new Date().getFullYear()} IMPACTA MOBILITY INTELLIGENCE. ALL RIGHTS RESERVED.
           </div>
