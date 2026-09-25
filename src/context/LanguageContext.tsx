@@ -108,7 +108,7 @@ export function LanguageSelector({ className = "" }: { className?: string }) {
         className={`px-2 py-1 transition-colors ${
           locale === "en"
             ? "bg-[#0E0F10] text-white font-bold rounded"
-            : "text-[#666666] hover:text-[#0E0F10]"
+            : "text-[#555555] font-medium hover:text-[#0E0F10]"
         }`}
       >
         EN
@@ -120,7 +120,7 @@ export function LanguageSelector({ className = "" }: { className?: string }) {
         className={`px-2 py-1 transition-colors ${
           locale === "it"
             ? "bg-[#0E0F10] text-white font-bold rounded"
-            : "text-[#666666] hover:text-[#0E0F10]"
+            : "text-[#555555] font-medium hover:text-[#0E0F10]"
         }`}
       >
         IT

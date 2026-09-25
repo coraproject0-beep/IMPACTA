@@ -117,6 +117,19 @@ async function capture() {
         `,
       });
       await wait(1500);
+    } else if (action === "it") {
+      await sendCommand("Runtime.evaluate", {
+        expression: `
+          (function() {
+            localStorage.setItem('impacta_locale', 'it');
+            const buttons = Array.from(document.querySelectorAll('button'));
+            const itBtn = buttons.find(b => b.textContent && b.textContent.trim() === 'IT');
+            if (itBtn) itBtn.click();
+            return 'SWITCHED_TO_IT';
+          })()
+        `,
+      });
+      await wait(1500);
     } else if (action === "toggle-console-lang") {
       await sendCommand("Runtime.evaluate", {
         expression: `

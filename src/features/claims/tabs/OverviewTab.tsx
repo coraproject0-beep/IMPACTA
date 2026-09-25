@@ -77,7 +77,7 @@ export function OverviewTab({ claim }: OverviewTabProps) {
           {/* Vehicle A */}
           <div className="flex items-center justify-between p-4 border border-[#E5E5E3] rounded-xl bg-white gap-4">
             <div className="space-y-1">
-              <span className="text-[11px] font-semibold uppercase tracking-wider text-[#666666]">
+              <span className="text-xs font-semibold text-[#555555]">
                 {t("consoleClaimDetail.vehicleA")}
               </span>
               <div className="text-base font-bold text-[#0E0F10]">
@@ -101,7 +101,7 @@ export function OverviewTab({ claim }: OverviewTabProps) {
           {/* Vehicle B */}
           <div className="flex items-center justify-between p-4 border border-[#E5E5E3] rounded-xl bg-white gap-4">
             <div className="space-y-1">
-              <span className="text-[11px] font-semibold uppercase tracking-wider text-[#666666]">
+              <span className="text-xs font-semibold text-[#555555]">
                 {t("consoleClaimDetail.vehicleB")}
               </span>
               <div className="text-base font-bold text-[#0E0F10]">

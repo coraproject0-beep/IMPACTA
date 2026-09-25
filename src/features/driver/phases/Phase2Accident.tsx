@@ -64,7 +64,7 @@ export function Phase2Accident({ draft, onUpdate, onNext }: Phase2AccidentProps)
 
           {/* Date and Time */}
           <div className="space-y-2.5 pt-2">
-            <span className="text-xs font-semibold uppercase tracking-wider text-[#666666] block">
+            <span className="text-xs font-semibold text-[#555555] block">
               {t("wizard.phase2DateTime")}
             </span>
             <div className="grid grid-cols-2 gap-3">
@@ -85,7 +85,7 @@ export function Phase2Accident({ draft, onUpdate, onNext }: Phase2AccidentProps)
 
           {/* Vehicles Count */}
           <div className="space-y-2.5 pt-2">
-            <span className="text-xs font-semibold uppercase tracking-wider text-[#666666] block">
+            <span className="text-xs font-semibold text-[#555555] block">
               {t("wizard.phase2VehiclesInvolved")}
             </span>
             <div className="grid grid-cols-3 gap-3">
@@ -112,7 +112,7 @@ export function Phase2Accident({ draft, onUpdate, onNext }: Phase2AccidentProps)
           {/* Location Inputs */}
           <div className="space-y-3.5">
             <div className="flex items-center justify-between">
-              <label className="text-xs font-semibold uppercase tracking-wider text-[#666666] flex items-center gap-1.5">
+              <label className="text-xs font-semibold text-[#555555] flex items-center gap-1.5">
                 <MapPinIcon size={14} />
                 <span>{isIt ? "Luogo dell'impatto" : "Collision location"}</span>
               </label>
@@ -145,7 +145,7 @@ export function Phase2Accident({ draft, onUpdate, onNext }: Phase2AccidentProps)
 
           {/* Injury Check */}
           <div className="space-y-2.5 pt-2">
-            <span className="text-xs font-semibold uppercase tracking-wider text-[#666666] block">
+            <span className="text-xs font-semibold text-[#555555] block">
               {t("wizard.phase2Injuries")}
             </span>
             <div className="grid grid-cols-2 gap-3">

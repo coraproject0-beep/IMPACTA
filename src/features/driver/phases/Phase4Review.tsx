@@ -55,7 +55,7 @@ export function Phase4Review({
           {/* Incident Summary Card */}
           <div className="p-5 rounded-2xl border border-[#E5E5E3] bg-white space-y-4 shadow-xs">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold uppercase tracking-wider text-[#666666]">
+              <span className="text-xs font-semibold text-[#555555]">
                 {isIt ? "Dettagli incidente" : "Incident details"}
               </span>
               <button
@@ -87,7 +87,7 @@ export function Phase4Review({
         <div className="lg:col-span-7 space-y-6">
           {/* Personal Statement Area */}
           <div className="space-y-2.5">
-            <label className="text-xs font-semibold uppercase tracking-wider text-[#666666] block">
+            <label className="text-xs font-semibold text-[#555555] block">
               {isIt ? "La tua dichiarazione sull'accaduto" : "Your statement"}
             </label>
             <textarea

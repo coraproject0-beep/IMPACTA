@@ -74,14 +74,14 @@ export default function ConsoleLoginPage() {
             </button>
           </div>
 
-          <div className="space-y-3 pt-2 text-xs text-[#666666]">
+          <div className="space-y-3 pt-2 text-xs text-[#555555]">
             <div className="flex justify-between border-b border-[#E5E5E3] pb-2">
-              <span>SECURITY PROTOCOL</span>
-              <span className="text-[#0E0F10] font-medium">LOCAL FORENSIC WORKBENCH</span>
+              <span>{isIt ? "Ambiente operativo" : "Environment"}</span>
+              <span className="text-[#0E0F10] font-medium">{isIt ? "Console liquidazione sinistri" : "Claims desk"}</span>
             </div>
             <div className="flex justify-between border-b border-[#E5E5E3] pb-2">
-              <span>LOCAL AUDIT TRAIL</span>
-              <span className="text-[#0E0F10] font-medium">ENABLED (IndexedDB)</span>
+              <span>{isIt ? "Archivio locale" : "Local storage"}</span>
+              <span className="text-[#0E0F10] font-medium">{isIt ? "Attivo nel browser" : "Active in browser"}</span>
             </div>
           </div>
 

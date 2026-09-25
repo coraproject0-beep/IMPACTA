@@ -84,20 +84,46 @@ export function PublicHeader() {
               type="button"
               onClick={() => setLocale(locale === "en" ? "it" : "en")}
               className={`text-xs sm:text-sm tracking-wider font-mono uppercase transition-colors ${
-                isDarkHero ? "text-white/80 hover:text-white" : "text-[#666666] hover:text-[#0E0F10]"
+                isDarkHero ? "text-white/80 hover:text-white" : "text-[#444444] hover:text-[#0E0F10]"
               }`}
               title="Toggle language English / Italiano"
             >
-              <span className={locale === "en" ? "font-bold text-white" : "opacity-40"}>EN</span>
-              <span className="opacity-40 mx-1">/</span>
-              <span className={locale === "it" ? "font-bold text-white" : "opacity-40"}>IT</span>
+              <span
+                className={
+                  locale === "en"
+                    ? isDarkHero
+                      ? "font-bold text-white"
+                      : "font-bold text-[#0E0F10]"
+                    : isDarkHero
+                    ? "opacity-50 text-white"
+                    : "opacity-50 text-[#555555]"
+                }
+              >
+                EN
+              </span>
+              <span className={`mx-1 ${isDarkHero ? "opacity-40 text-white" : "opacity-40 text-[#0E0F10]"}`}>
+                /
+              </span>
+              <span
+                className={
+                  locale === "it"
+                    ? isDarkHero
+                      ? "font-bold text-white"
+                      : "font-bold text-[#0E0F10]"
+                    : isDarkHero
+                    ? "opacity-50 text-white"
+                    : "opacity-50 text-[#555555]"
+                }
+              >
+                IT
+              </span>
             </button>
 
             {/* Sign in */}
             <Link
               href="/login"
               className={`text-xs sm:text-sm font-normal tracking-normal transition-colors ${
-                isDarkHero ? "text-white/90 hover:text-white" : "text-[#666666] hover:text-[#0E0F10]"
+                isDarkHero ? "text-white/90 hover:text-white" : "text-[#555555] hover:text-[#0E0F10]"
               }`}
             >
               {t("nav.signIn")}
@@ -107,7 +133,7 @@ export function PublicHeader() {
             <Link
               href={reportLink}
               className={`text-xs sm:text-sm font-medium tracking-normal transition-colors ${
-                isDarkHero ? "text-white hover:text-white/80" : "text-[#0E0F10] hover:text-[#666666]"
+                isDarkHero ? "text-white hover:text-white/80" : "text-[#0E0F10] hover:text-[#555555]"
               }`}
             >
               {t("nav.reportAccident")}
@@ -119,11 +145,39 @@ export function PublicHeader() {
             <button
               type="button"
               onClick={() => setLocale(locale === "en" ? "it" : "en")}
-              className="text-xs font-mono tracking-wider uppercase"
+              className={`text-xs font-mono tracking-wider uppercase ${
+                isDarkHero ? "text-white" : "text-[#0E0F10]"
+              }`}
             >
-              <span className={locale === "en" ? "font-bold" : "opacity-40"}>EN</span>
-              <span className="opacity-40 mx-0.5">/</span>
-              <span className={locale === "it" ? "font-bold" : "opacity-40"}>IT</span>
+              <span
+                className={
+                  locale === "en"
+                    ? isDarkHero
+                      ? "font-bold text-white"
+                      : "font-bold text-[#0E0F10]"
+                    : isDarkHero
+                    ? "opacity-50 text-white"
+                    : "opacity-50 text-[#555555]"
+                }
+              >
+                EN
+              </span>
+              <span className={`mx-0.5 ${isDarkHero ? "opacity-40 text-white" : "opacity-40 text-[#0E0F10]"}`}>
+                /
+              </span>
+              <span
+                className={
+                  locale === "it"
+                    ? isDarkHero
+                      ? "font-bold text-white"
+                      : "font-bold text-[#0E0F10]"
+                    : isDarkHero
+                    ? "opacity-50 text-white"
+                    : "opacity-50 text-[#555555]"
+                }
+              >
+                IT
+              </span>
             </button>
 
             <button

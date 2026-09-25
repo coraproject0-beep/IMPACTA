@@ -34,7 +34,7 @@ function DriverLayoutContent({ children }: { children: React.ReactNode }) {
       {/* Top Brand & Navigation Header (hidden during report) */}
       {!isReporting && (
         <header className="sticky top-0 z-30 bg-[#F7F7F6]/95 backdrop-blur-md border-b border-[#E5E5E3] px-6 py-4 select-none">
-          <div className="max-w-4xl mx-auto flex items-center justify-between gap-4">
+          <div className="max-w-md md:max-w-3xl lg:max-w-6xl xl:max-w-7xl mx-auto flex items-center justify-between gap-4">
             {/* Left: Brand Logo explicitly linking to PUBLIC HOME (/) */}
             <div className="flex items-center gap-4">
               <Link
@@ -50,9 +50,10 @@ function DriverLayoutContent({ children }: { children: React.ReactNode }) {
               {/* Explicit Back to Public action */}
               <Link
                 href="/"
-                className="hidden lg:inline-flex text-xs font-medium text-[#666666] hover:text-[#0E0F10] transition-colors"
+                className="hidden lg:inline-flex items-center gap-1.5 text-xs font-medium text-[#666666] hover:text-[#0E0F10] transition-colors"
               >
-                ← {t("nav.backToImpacta")}
+                <span>←</span>
+                <span>{t("nav.backToImpacta")}</span>
               </Link>
             </div>
 

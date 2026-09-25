@@ -107,7 +107,7 @@ export default function DriverHomePage() {
           <div className="hidden lg:block pt-4 space-y-4">
             <div className="border-t border-[#E5E5E3]" />
             <div className="space-y-2">
-              <span className="text-xs text-[#666666] font-normal block tracking-wider uppercase">
+              <span className="text-xs text-[#555555] font-medium block">
                 {isIt ? "Rapporto recente" : "Recent report"}
               </span>
               <div className="text-xl font-bold text-[#0E0F10]">
@@ -142,7 +142,7 @@ export default function DriverHomePage() {
             </div>
 
             <div className="space-y-1">
-              <span className="text-xs text-[#666666] font-normal block tracking-wider uppercase">
+              <span className="text-xs text-[#555555] font-medium block">
                 {isIt ? "Il tuo veicolo" : "Your vehicle"}
               </span>
               <div className="text-lg sm:text-xl font-bold text-[#0E0F10]">
@@ -159,7 +159,7 @@ export default function DriverHomePage() {
 
           {/* 4. Insurance Section matching driver-home-reference.png */}
           <section className="space-y-1">
-            <span className="text-xs text-[#666666] font-normal block tracking-wider uppercase">
+            <span className="text-xs text-[#555555] font-medium block">
               {isIt ? "Assicurazione" : "Insurance"}
             </span>
             <div className="text-lg sm:text-xl font-bold text-[#0E0F10]">
@@ -174,7 +174,7 @@ export default function DriverHomePage() {
           <div className="lg:hidden">
             <div className="border-t border-[#E5E5E3] my-8" />
             <section className="space-y-1 pb-6">
-              <span className="text-xs text-[#666666] font-normal block tracking-wider uppercase">
+              <span className="text-xs text-[#555555] font-medium block">
                 {isIt ? "Rapporto recente" : "Recent report"}
               </span>
               <div className="text-lg sm:text-xl font-bold text-[#0E0F10]">

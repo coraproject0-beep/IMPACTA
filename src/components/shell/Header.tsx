@@ -219,7 +219,7 @@ export function Header({ onOpenMobile }: HeaderProps) {
             type="button"
             onClick={() => setLocale("en")}
             className={`px-2 py-1 transition-colors ${
-              language === "en" ? "bg-[#0E0F10] text-white" : "text-[#666666] hover:text-[#0E0F10]"
+              language === "en" ? "bg-[#0E0F10] text-white font-bold" : "text-[#555555] font-medium hover:text-[#0E0F10]"
             }`}
           >
             EN
@@ -228,7 +228,7 @@ export function Header({ onOpenMobile }: HeaderProps) {
             type="button"
             onClick={() => setLocale("it")}
             className={`px-2 py-1 transition-colors ${
-              language === "it" ? "bg-[#0E0F10] text-white" : "text-[#666666] hover:text-[#0E0F10]"
+              language === "it" ? "bg-[#0E0F10] text-white font-bold" : "text-[#555555] font-medium hover:text-[#0E0F10]"
             }`}
           >
             IT

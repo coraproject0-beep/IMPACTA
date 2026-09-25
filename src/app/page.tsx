@@ -25,28 +25,32 @@ function HomeContent() {
   return (
     <>
       {/* 1. MEDIA-FIRST SIGNATURE HERO (100svh Cover matching public-brand-reference.png) */}
-      <section className="relative w-full min-h-[100svh] flex flex-col justify-center text-white bg-[#0E0F10] overflow-hidden">
+      <section className="relative w-full min-h-[100svh] flex flex-col justify-start text-white bg-[#0E0F10] overflow-hidden pt-32 sm:pt-36 lg:pt-40 xl:pt-44 pb-16">
         {/* Full-Viewport Native Video Element */}
         <HeroMedia videoSrc="/media/impacta-hero.mp4" />
 
-        {/* Directional contrast vignette: covers only the left 55% behind text, leaving the car on the right 100% visible and vivid */}
-        <div className="absolute inset-y-0 left-0 w-full sm:w-3/5 lg:w-1/2 bg-gradient-to-r from-[#0E0F10]/90 via-[#0E0F10]/50 to-transparent pointer-events-none z-0" />
+        {/* Directional contrast vignette: covers the text area behind text, leaving the car on the right 100% visible and vivid */}
+        <div className="absolute inset-y-0 left-0 w-full sm:w-[65%] lg:w-[55%] bg-gradient-to-r from-[#0E0F10]/95 via-[#0E0F10]/60 to-transparent pointer-events-none z-0" />
 
         {/* Hero Content Container positioned in negative space */}
-        <div className="relative z-10 w-full px-8 sm:px-12 lg:px-20 pt-28 pb-16">
-          <div className="max-w-xl lg:max-w-2xl space-y-6 sm:space-y-8">
-            <h1 className="text-5xl sm:text-7xl lg:text-8xl xl:text-[6.5rem] font-bold tracking-[-0.03em] uppercase leading-[0.93] text-white">
+        <div className="relative z-10 w-full px-6 sm:px-12 lg:px-20 my-auto">
+          <div className={`space-y-6 sm:space-y-8 ${isIt ? "max-w-xl sm:max-w-2xl lg:max-w-3xl xl:max-w-4xl" : "max-w-xl lg:max-w-2xl"}`}>
+            <h1
+              className={`font-bold tracking-[-0.03em] uppercase leading-[0.93] text-white ${
+                isIt
+                  ? "text-[2.65rem] sm:text-6xl md:text-7xl lg:text-[4.5rem] xl:text-[5.5rem] 2xl:text-[6.25rem]"
+                  : "text-5xl sm:text-7xl lg:text-8xl xl:text-[6.5rem]"
+              }`}
+            >
               {isIt ? (
                 <>
-                  DALL&apos;IMPATTO
-                  <br />
-                  ALLA CHIAREZZA.
+                  <span className="block">DALL&apos;IMPATTO</span>
+                  <span className="block whitespace-nowrap">ALLA CHIAREZZA.</span>
                 </>
               ) : (
                 <>
-                  FROM IMPACT
-                  <br />
-                  TO CLARITY.
+                  <span className="block">FROM IMPACT</span>
+                  <span className="block whitespace-nowrap">TO CLARITY.</span>
                 </>
               )}
             </h1>

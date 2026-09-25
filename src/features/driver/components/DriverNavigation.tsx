@@ -74,22 +74,20 @@ export function DriverNavigation({ variant = "all" }: DriverNavigationProps) {
       {(variant === "all" || variant === "desktop") && (
         <nav
           aria-label="Consumer Desktop Navigation"
-          className="hidden md:flex items-center gap-1"
+          className="hidden md:flex items-center gap-6 lg:gap-8"
         >
           {desktopNavItems.map((item) => {
             const isActive = pathname === item.href;
-            const Icon = item.icon;
             return (
               <Link
                 key={item.href}
                 href={item.href}
-                className={`flex items-center gap-2 px-3.5 py-2 text-xs font-medium transition-colors ${
+                className={`py-2 text-xs lg:text-sm font-medium transition-colors ${
                   isActive
                     ? "text-[#0E0F10] font-bold border-b-2 border-[#0E0F10]"
-                    : "text-[#666666] hover:text-[#0E0F10]"
+                    : "text-[#555555] hover:text-[#0E0F10]"
                 }`}
               >
-                <Icon size={16} className={isActive ? "text-[#0E0F10]" : "text-[#666666]"} />
                 <span>{item.label}</span>
               </Link>
             );

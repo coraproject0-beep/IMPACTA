@@ -2,8 +2,9 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { useLanguage } from "@/context/LanguageContext";
-import { CarIcon, CheckCircleIcon } from "@/components/icons/Icons";
+import { CheckCircleIcon, ChevronRightIcon } from "@/components/icons/Icons";
 
 export default function DriverVehiclePage() {
   const { t, language } = useLanguage();
@@ -11,106 +12,145 @@ export default function DriverVehiclePage() {
   const [showTechnicalDetails, setShowTechnicalDetails] = useState(false);
 
   return (
-    <div className="space-y-7 max-w-md mx-auto py-2 selection:bg-[#0E0F10] selection:text-white">
-      {/* Header */}
-      <div className="space-y-1.5 pb-4 border-b border-[#E5E5E3]">
-        <h1 className="text-3xl sm:text-4xl font-semibold tracking-tight text-[#0E0F10]">
-          Audi A3
-        </h1>
-        <p className="text-sm text-[#666666]">
-          {isIt
-            ? "Veicolo assicurato registrato nel tuo profilo IMPACTA."
-            : "Insured vehicle registered under your active IMPACTA profile."}
-        </p>
+    <div className="w-full max-w-7xl mx-auto py-2 sm:py-4 space-y-8 selection:bg-[#0E0F10] selection:text-white">
+      {/* 1. Header */}
+      <div className="flex flex-col sm:flex-row sm:items-baseline justify-between pb-6 border-b border-[#E5E5E3] gap-4">
+        <div>
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-[#0E0F10]">
+            Audi A3
+          </h1>
+          <p className="text-sm text-[#555555] font-normal mt-1">
+            {isIt
+              ? "Veicolo assicurato registrato nel tuo profilo IMPACTA."
+              : "Insured vehicle registered under your active IMPACTA profile."}
+          </p>
+        </div>
+
+        <div className="flex items-center gap-2 text-xs font-semibold text-emerald-800">
+          <CheckCircleIcon size={16} className="text-emerald-700" />
+          <span>{isIt ? "Copertura regolare" : "Active coverage"}</span>
+        </div>
       </div>
 
-      {/* Hero Vehicle Image */}
-      <div className="relative rounded-2xl overflow-hidden aspect-[16/9] bg-neutral-200 border border-[#E5E5E3]">
-        <Image
-          src="/images/hero-car.jpg"
-          alt="Audi A3 context"
-          fill
-          priority
-          className="object-cover"
-          sizes="(max-width: 640px) 100vw, 448px"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0E0F10]/80 via-transparent to-transparent flex flex-col justify-end p-5 text-white">
-          <div className="flex items-center justify-between">
+      {/* 2. Responsive 12-Column Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start">
+        {/* LEFT COLUMN: Large Cinematic Vehicle Photo (lg:col-span-7) */}
+        <div className="lg:col-span-7 space-y-4">
+          <div className="relative rounded-2xl overflow-hidden aspect-[16/10] bg-neutral-200 border border-[#E5E5E3]">
+            <Image
+              src="/images/hero-car.jpg"
+              alt="Audi A3 context"
+              fill
+              priority
+              className="object-cover"
+              sizes="(max-width: 1024px) 100vw, 750px"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#0E0F10]/80 via-transparent to-transparent flex flex-col justify-end p-6 text-white">
+              <div className="flex items-end justify-between">
+                <div>
+                  <span className="text-xs text-white/70 block font-medium">
+                    {isIt ? "Targa di immatricolazione" : "License plate"}
+                  </span>
+                  <div className="text-2xl sm:text-3xl font-mono font-bold tracking-wider mt-0.5">
+                    AB 123 CD
+                  </div>
+                </div>
+                <div className="text-right">
+                  <span className="text-xs text-white/70 block font-medium">
+                    {isIt ? "Scadenza revisione" : "Inspection due"}
+                  </span>
+                  <div className="text-sm font-mono font-semibold mt-0.5">
+                    Ottobre 2027
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="p-4 border border-[#E5E5E3] rounded-xl bg-white flex items-center justify-between">
             <div>
-              <span className="text-xs text-white/70 block">
-                {isIt ? "Targa" : "Plate"}
-              </span>
-              <div className="text-2xl font-mono font-bold tracking-wider">
-                AB 123 CD
+              <div className="text-xs font-semibold text-[#0E0F10]">
+                {isIt ? "Polizza assicurativa collegata" : "Linked insurance policy"}
+              </div>
+              <div className="text-[11px] text-[#555555]">
+                Generali Italia • GEN-2026-9812
               </div>
             </div>
-            <span className="font-medium text-xs text-emerald-300 flex items-center gap-1.5">
-              <CheckCircleIcon size={16} />
-              <span>{isIt ? "Assicurata" : "Insured"}</span>
-            </span>
+            <Link
+              href="/app/insurance"
+              className="text-xs font-semibold text-[#0E0F10] hover:text-[#555555] inline-flex items-center gap-1 transition-colors"
+            >
+              <span>{isIt ? "Visualizza polizza" : "View policy"}</span>
+              <ChevronRightIcon size={14} />
+            </Link>
           </div>
         </div>
-      </div>
 
-      {/* Primary Vehicle Specs */}
-      <div className="bg-white rounded-2xl border border-[#E5E5E3] p-5 space-y-4">
-        <div className="flex items-center justify-between pb-3 border-b border-[#E5E5E3]">
-          <div className="flex items-center gap-2.5">
-            <CarIcon size={20} className="text-[#0E0F10]" />
-            <h2 className="text-sm font-semibold text-[#0E0F10]">
-              {isIt ? "Specifiche veicolo" : "Vehicle specifications"}
+        {/* RIGHT COLUMN: Technical Specs & Identification (lg:col-span-5) */}
+        <div className="lg:col-span-5 space-y-8">
+          {/* Specifications */}
+          <div className="space-y-4">
+            <h2 className="text-base font-bold text-[#0E0F10] tracking-tight">
+              {isIt ? "Specifiche del veicolo" : "Vehicle specifications"}
             </h2>
-          </div>
-          <span className="text-xs text-emerald-700 font-medium">
-            {isIt ? "Revisione regolare" : "Inspection valid"}
-          </span>
-        </div>
 
-        <div className="grid grid-cols-2 gap-4 text-xs">
-          <div>
-            <span className="text-[#666666] block">{isIt ? "Targa" : "Plate"}</span>
-            <span className="font-mono font-bold text-sm text-[#0E0F10] block mt-0.5">AB 123 CD</span>
-          </div>
-
-          <div>
-            <span className="text-[#666666] block">{isIt ? "Anno" : "Year"}</span>
-            <span className="font-semibold text-sm text-[#0E0F10] block mt-0.5">2023</span>
-          </div>
-
-          <div>
-            <span className="text-[#666666] block">{isIt ? "Colore" : "Color"}</span>
-            <span className="font-medium text-sm text-[#0E0F10] block mt-0.5">Manhattan Gray Metallic</span>
-          </div>
-
-          <div>
-            <span className="text-[#666666] block">{isIt ? "Stato" : "Status"}</span>
-            <span className="font-medium text-sm text-[#0E0F10] block mt-0.5">{isIt ? "Attivo e circolante" : "Active & roadworthy"}</span>
-          </div>
-        </div>
-
-        {/* Technical Details */}
-        <div className="pt-3 border-t border-[#E5E5E3]">
-          <button
-            type="button"
-            onClick={() => setShowTechnicalDetails(!showTechnicalDetails)}
-            className="w-full flex items-center justify-between py-1 text-xs font-medium text-[#0E0F10] hover:text-[#666666]"
-          >
-            <span>{isIt ? "Dettagli telaio e identificazione" : "Technical identification"}</span>
-            <span>{showTechnicalDetails ? "−" : "+"}</span>
-          </button>
-
-          {showTechnicalDetails && (
-            <div className="mt-3 p-3 rounded-xl bg-[#F7F7F6] space-y-2 text-xs">
-              <div>
-                <span className="text-[#666666] block">Numero di telaio (VIN)</span>
-                <span className="font-mono font-bold text-[#0E0F10] text-[11px]">WAUZZZGY5PA089214</span>
+            <div className="border-t border-[#E5E5E3] divide-y divide-[#E5E5E3] text-xs">
+              <div className="py-3.5 flex items-center justify-between">
+                <span className="text-[#555555] font-medium">{isIt ? "Marca e modello" : "Make & model"}</span>
+                <span className="font-semibold text-[#0E0F10]">Audi A3 Sportback</span>
               </div>
-              <div>
-                <span className="text-[#666666] block">Motorizzazione</span>
-                <span className="font-medium text-[#0E0F10]">35 TFSI 1.5 l Mild Hybrid (110 kW / 150 CV)</span>
+
+              <div className="py-3.5 flex items-center justify-between">
+                <span className="text-[#555555] font-medium">{isIt ? "Targa" : "Plate"}</span>
+                <span className="font-mono font-semibold text-[#0E0F10]">AB 123 CD</span>
+              </div>
+
+              <div className="py-3.5 flex items-center justify-between">
+                <span className="text-[#555555] font-medium">{isIt ? "Anno immatricolazione" : "Registration year"}</span>
+                <span className="text-[#0E0F10]">2023</span>
+              </div>
+
+              <div className="py-3.5 flex items-center justify-between">
+                <span className="text-[#555555] font-medium">{isIt ? "Colore carrozzeria" : "Exterior color"}</span>
+                <span className="text-[#0E0F10]">Manhattan Gray Metallic</span>
+              </div>
+
+              <div className="py-3.5 flex items-center justify-between">
+                <span className="text-[#555555] font-medium">{isIt ? "Stato circolazione" : "Road status"}</span>
+                <span className="text-emerald-800 font-semibold">{isIt ? "Attivo e circolante" : "Active & roadworthy"}</span>
               </div>
             </div>
-          )}
+          </div>
+
+          {/* Identification & Chassis */}
+          <div className="space-y-4 pt-2">
+            <h2 className="text-base font-bold text-[#0E0F10] tracking-tight">
+              {isIt ? "Dati di identificazione tecnica" : "Technical identification"}
+            </h2>
+
+            <div className="border border-[#E5E5E3] rounded-xl bg-white p-5 space-y-4 text-xs">
+              <div>
+                <span className="text-[#555555] block font-medium">Numero di telaio (VIN)</span>
+                <span className="font-mono font-bold text-[#0E0F10] text-sm block mt-0.5">
+                  WAUZZZGY5PA089214
+                </span>
+              </div>
+
+              <div className="border-t border-[#E5E5E3] pt-3">
+                <span className="text-[#555555] block font-medium">Motorizzazione</span>
+                <span className="text-[#0E0F10] font-medium block mt-0.5">
+                  35 TFSI 1.5 l Mild Hybrid (110 kW / 150 CV)
+                </span>
+              </div>
+
+              <div className="border-t border-[#E5E5E3] pt-3">
+                <span className="text-[#555555] block font-medium">{isIt ? "Dispositivi di bordo" : "On-board devices"}</span>
+                <span className="text-[#0E0F10] block mt-0.5">
+                  Sensori telemetrici e accelerometro certificati IMPACTA
+                </span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

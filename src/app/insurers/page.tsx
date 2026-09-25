@@ -59,10 +59,10 @@ export default function InsurersPage() {
       <section className="py-28 bg-[#F7F7F6] border-b border-[#E5E5E3]">
         <div className="w-full px-6 sm:px-12 lg:px-20 max-w-7xl mx-auto space-y-12">
           <div className="max-w-2xl space-y-2">
-            <span className="text-xs font-semibold tracking-wider text-[#666666] uppercase">
-              {isIt ? "INTERFACCIA PERITALE" : "WORKBENCH ARCHITECTURE"}
+            <span className="text-xs font-semibold text-[#555555]">
+              {isIt ? "Area peritale" : "Claims operations"}
             </span>
-            <h2 className="text-3xl font-bold uppercase text-[#0E0F10]">
+            <h2 className="text-3xl font-bold tracking-tight text-[#0E0F10]">
               {isIt ? "Il Fascicolo Sinistro Unificato" : "Unified Claim Dossier Inspection"}
             </h2>
           </div>
@@ -70,33 +70,33 @@ export default function InsurersPage() {
           <ProductReveal className="border border-[#E5E5E3] bg-white rounded-xl p-8 sm:p-12 space-y-8">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-6 border-b border-[#E5E5E3] gap-4">
               <div>
-                <span className="text-xs uppercase tracking-wider text-[#666666] font-semibold">
-                  CARRIER: AURA MUTUA ASSICURAZIONI • FIRENZE
+                <span className="text-xs text-[#555555] font-medium">
+                  Aura Mutua Assicurazioni • Firenze
                 </span>
                 <h3 className="text-2xl font-bold font-mono text-[#0E0F10] mt-1">
-                  CLAIM #CLM-2026-0891
+                  CLM-2026-0891
                 </h3>
               </div>
-              <div className="flex items-center gap-4 text-xs font-mono">
-                <span className="text-emerald-700 font-bold uppercase">{isIt ? "ACQUISIZIONE COMPLETA 100%" : "100% INGESTION COMPLETE"}</span>
-                <span className="text-[#666666] uppercase font-semibold">{isIt ? "PRIORITÀ: MEDIA" : "PRIORITY: MEDIUM"}</span>
+              <div className="flex items-center gap-4 text-xs">
+                <span className="text-emerald-800 font-semibold">{isIt ? "Dossier completo" : "Complete file"}</span>
+                <span className="text-[#555555] font-medium">{isIt ? "In attesa revisione" : "Ready for review"}</span>
               </div>
             </div>
 
             {/* Technical Detail Grid */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 py-4 text-sm border-b border-[#E5E5E3]">
               <div className="space-y-1">
-                <span className="text-xs text-[#666666] uppercase tracking-wider font-semibold block">{isIt ? "Assicurato" : "Policyholder"}</span>
+                <span className="text-xs text-[#555555] font-medium block">{isIt ? "Assicurato" : "Policyholder"}</span>
                 <span className="font-bold text-[#0E0F10] text-base block">Matteo Bianchi</span>
                 <span className="text-xs text-[#666666] font-mono">VW Golf VIII (GF492XP)</span>
               </div>
               <div className="space-y-1">
-                <span className="text-xs text-[#666666] uppercase tracking-wider font-semibold block">{isIt ? "Controparte" : "Counterparty"}</span>
+                <span className="text-xs text-[#555555] font-medium block">{isIt ? "Controparte" : "Counterparty"}</span>
                 <span className="font-bold text-[#0E0F10] text-base block">Marco Ferri</span>
                 <span className="text-xs text-[#666666] font-mono">Fiat 500X (EB810PZ)</span>
               </div>
               <div className="space-y-1">
-                <span className="text-xs text-[#666666] uppercase tracking-wider font-semibold block">{isIt ? "Casella CAI 12" : "CAI Circumstance"}</span>
+                <span className="text-xs text-[#555555] font-medium block">{isIt ? "Circostanza CAI" : "CAI circumstance"}</span>
                 <span className="font-bold text-[#0E0F10] text-base block">Box 12 — Case 04 &amp; 08</span>
                 <span className="text-xs text-[#666666]">{isIt ? "Immissione da area privata" : "Entering from private lot"}</span>
               </div>
@@ -105,20 +105,20 @@ export default function InsurersPage() {
             {/* Metric Strip */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 text-xs text-[#666666]">
               <div>
-                <span className="block text-[#666666] uppercase tracking-wider font-semibold">{isIt ? "VELOCITÀ IMPATTO" : "IMPACT SPEED"}</span>
-                <span className="text-xl font-bold font-mono text-[#0E0F10]">48.2 KM/H</span>
+                <span className="block text-[#555555] font-medium">{isIt ? "Velocità rilevata" : "Impact speed"}</span>
+                <span className="text-xl font-bold font-mono text-[#0E0F10]">48.2 km/h</span>
               </div>
               <div>
-                <span className="block text-[#666666] uppercase tracking-wider font-semibold">{isIt ? "DECELERAZIONE" : "DECELERATION"}</span>
+                <span className="block text-[#555555] font-medium">{isIt ? "Decelerazione" : "Deceleration"}</span>
                 <span className="text-xl font-bold font-mono text-[#0E0F10]">-0.82 G</span>
               </div>
               <div>
-                <span className="block text-[#666666] uppercase tracking-wider font-semibold">{isIt ? "FOTOGRAFIE" : "PHOTOGRAPHS"}</span>
-                <span className="text-xl font-bold font-mono text-[#0E0F10]">4 GEOLOCATED</span>
+                <span className="block text-[#555555] font-medium">{isIt ? "Fotografie" : "Photographs"}</span>
+                <span className="text-xl font-bold text-[#0E0F10]">4 geolocalizzate</span>
               </div>
               <div>
-                <span className="block text-[#666666] uppercase tracking-wider font-semibold">{isIt ? "AUDIT LOG" : "AUDIT LOG"}</span>
-                <span className="text-xl font-bold font-mono text-emerald-700">SHA-256 SIGNED</span>
+                <span className="block text-[#555555] font-medium">{isIt ? "Integrità dati" : "Data integrity"}</span>
+                <span className="text-xl font-bold text-emerald-800 font-semibold">{isIt ? "Certificata" : "Verified"}</span>
               </div>
             </div>
           </ProductReveal>
@@ -129,8 +129,8 @@ export default function InsurersPage() {
       <section className="py-24 sm:py-36 bg-white border-b border-[#E5E5E3]">
         <div className="w-full px-6 sm:px-12 lg:px-20 max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-baseline">
           <div className="lg:col-span-5 space-y-4">
-            <span className="text-xs font-semibold tracking-wider text-[#0E0F10] uppercase">
-              {isIt ? "RESPONSABILITÀ PERITALE" : "ADJUSTER AUTHORITY"}
+            <span className="text-xs font-semibold text-[#555555]">
+              {isIt ? "Responsabilità peritale" : "Adjuster authority"}
             </span>
             <h2 className="text-3xl sm:text-4xl font-bold uppercase text-[#0E0F10]">
               {isIt ? "Gli algoritmi non emettono sentenze" : "Zero automated liability decrees"}
