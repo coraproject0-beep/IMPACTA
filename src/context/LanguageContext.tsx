@@ -99,16 +99,16 @@ export function LanguageSelector({ className = "" }: { className?: string }) {
     <div
       role="group"
       aria-label="Language selector"
-      className={`inline-flex items-center rounded-none border border-[#D7D9D8] bg-transparent p-0.5 text-xs font-mono select-none ${className}`}
+      className={`inline-flex items-center rounded-md border border-[#E5E5E3] bg-white p-0.5 text-xs font-mono select-none ${className}`}
     >
       <button
         type="button"
         onClick={() => setLocale("en")}
         aria-pressed={locale === "en"}
-        className={`px-2.5 py-1 transition-colors min-h-[32px] ${
+        className={`px-2 py-1 transition-colors ${
           locale === "en"
-            ? "bg-[#090A0A] text-white font-bold"
-            : "text-[#6F7375] hover:text-[#090A0A]"
+            ? "bg-[#0E0F10] text-white font-bold rounded"
+            : "text-[#666666] hover:text-[#0E0F10]"
         }`}
       >
         EN
@@ -117,10 +117,10 @@ export function LanguageSelector({ className = "" }: { className?: string }) {
         type="button"
         onClick={() => setLocale("it")}
         aria-pressed={locale === "it"}
-        className={`px-2.5 py-1 transition-colors min-h-[32px] ${
+        className={`px-2 py-1 transition-colors ${
           locale === "it"
-            ? "bg-[#090A0A] text-white font-bold"
-            : "text-[#6F7375] hover:text-[#090A0A]"
+            ? "bg-[#0E0F10] text-white font-bold rounded"
+            : "text-[#666666] hover:text-[#0E0F10]"
         }`}
       >
         IT

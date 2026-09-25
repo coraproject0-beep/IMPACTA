@@ -4,25 +4,22 @@ import React, { useState, useMemo } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useClaims } from "@/context/ClaimsContext";
+import { useLanguage } from "@/context/LanguageContext";
 import {
   AlertTriangleIcon,
   CheckCircleIcon,
-  UserIcon,
   ChevronRightIcon,
-  FilterIcon,
 } from "@/components/icons/Icons";
 import {
-  formatDate,
   formatRelativeTime,
   getConfidenceBadgeClass,
-  getStatusBadgeClass,
-  getStatusLabel,
 } from "@/lib/utils";
-import { ReviewCategory } from "@/types";
 
 export default function ConsoleReviewQueuePage() {
   const router = useRouter();
   const { claims, currentReviewer, assignReviewer, updateStatus, isLoading } = useClaims();
+  const { language } = useLanguage();
+  const isIt = language === "it";
 
   const [categoryFilter, setCategoryFilter] = useState<string>("ALL");
   const [actionNotice, setActionNotice] = useState<string | null>(null);
@@ -50,19 +47,31 @@ export default function ConsoleReviewQueuePage() {
   const handleAssignToMe = async (claimId: string, e: React.MouseEvent) => {
     e.stopPropagation();
     await assignReviewer(claimId, currentReviewer.id);
-    setActionNotice(`Claim ${claimId} assigned to you (${currentReviewer.name})`);
+    setActionNotice(
+      isIt
+        ? `Sinistro ${claimId} assegnato a te (${currentReviewer.name})`
+        : `Claim ${claimId} assigned to you (${currentReviewer.name})`
+    );
     setTimeout(() => setActionNotice(null), 3000);
   };
 
   const handleMarkReviewed = async (claimId: string, e: React.MouseEvent) => {
     e.stopPropagation();
     await updateStatus(claimId, "REVIEWED");
-    setActionNotice(`Claim ${claimId} marked as REVIEWED and moved out of triage`);
+    setActionNotice(
+      isIt
+        ? `Sinistro ${claimId} segnato come PERIZIATO`
+        : `Claim ${claimId} marked as REVIEWED`
+    );
     setTimeout(() => setActionNotice(null), 3000);
   };
 
   if (isLoading) {
-    return <div className="py-12 text-center text-xs text-slate-500">Loading review queue...</div>;
+    return (
+      <div className="py-20 text-center text-xs font-mono text-[#666666] uppercase tracking-wider">
+        {isIt ? "Caricamento coda peritale..." : "Loading review queue..."}
+      </div>
+    );
   }
 
   const categoryCounts = {
@@ -76,60 +85,54 @@ export default function ConsoleReviewQueuePage() {
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-6">
-        <div>
-          <div className="flex items-center gap-3">
-            <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-950">
-              Intervention &amp; Review Queue
-            </h1>
-            <span className="text-xs font-mono font-bold text-amber-700 uppercase tracking-wider">
-              {reviewClaims.length} requiring attention
-            </span>
-          </div>
-          <p className="mt-2 text-base text-slate-600">
-            Dossiers escalated due to automated confidence thresholds, conflicting driver statements, or missing documentary evidence.
-          </p>
+      <div className="space-y-1">
+        <div className="flex items-center gap-3">
+          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-[#0E0F10]">
+            {isIt ? "Coda di Perizia & Intervento" : "Review & Intervention Queue"}
+          </h1>
+          <span className="text-xs font-mono font-medium text-amber-700 bg-amber-50 px-2 py-0.5 rounded border border-amber-200">
+            {reviewClaims.length} {isIt ? "richiedono attenzione" : "requiring attention"}
+          </span>
         </div>
+        <p className="text-sm text-[#666666]">
+          {isIt
+            ? "Fascicoli inoltrati per soglia di confidenza ridotta, dichiarazioni contrastanti o discrepanze CAI."
+            : "Dossiers escalated due to automated confidence thresholds, conflicting driver statements, or missing evidence."}
+        </p>
       </div>
 
       {/* Action Notice */}
       {actionNotice && (
-        <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-2xl text-sm text-emerald-900 flex items-center justify-between animate-in fade-in duration-150 shadow-2xs">
-          <span className="flex items-center gap-2 font-semibold">
-            <CheckCircleIcon size={16} className="text-emerald-600" />
+        <div className="p-3 bg-emerald-50 border border-emerald-300 rounded-lg text-xs text-emerald-900 flex items-center justify-between">
+          <span className="flex items-center gap-2 font-medium">
+            <CheckCircleIcon size={14} className="text-emerald-700" />
             <span>{actionNotice}</span>
           </span>
         </div>
       )}
 
       {/* Category Tabs */}
-      <div className="bg-white border border-slate-200 rounded-3xl p-5 sm:p-6 shadow-xs">
-        <div className="flex items-center gap-2.5 overflow-x-auto">
+      <div className="border border-[#E5E5E3] bg-white rounded-xl p-4">
+        <div className="flex items-center gap-2 overflow-x-auto">
           {[
-            { id: "ALL", label: "All Escalations", count: categoryCounts.ALL },
-            { id: "LOW_CONFIDENCE", label: "Low Confidence", count: categoryCounts.LOW_CONFIDENCE },
-            { id: "CONFLICTING_EVIDENCE", label: "Conflicting Evidence", count: categoryCounts.CONFLICTING_EVIDENCE },
-            { id: "MISSING_DATA", label: "Missing Data", count: categoryCounts.MISSING_DATA },
-            { id: "STATEMENT_MISMATCH", label: "Statement Mismatch", count: categoryCounts.STATEMENT_MISMATCH },
+            { id: "ALL", label: isIt ? "Tutti i casi" : "All Escalations", count: categoryCounts.ALL },
+            { id: "LOW_CONFIDENCE", label: isIt ? "Bassa confidenza" : "Low Confidence", count: categoryCounts.LOW_CONFIDENCE },
+            { id: "CONFLICTING_EVIDENCE", label: isIt ? "Prove contrastanti" : "Conflicting Evidence", count: categoryCounts.CONFLICTING_EVIDENCE },
+            { id: "MISSING_DATA", label: isIt ? "Dati mancanti" : "Missing Data", count: categoryCounts.MISSING_DATA },
+            { id: "STATEMENT_MISMATCH", label: isIt ? "Discrepanza Box 12" : "Statement Mismatch", count: categoryCounts.STATEMENT_MISMATCH },
           ].map((cat) => (
             <button
               key={cat.id}
               type="button"
               onClick={() => setCategoryFilter(cat.id)}
-              className={`min-h-[44px] px-4 py-2.5 text-sm rounded-xl transition-colors whitespace-nowrap flex items-center gap-2 ${
+              className={`px-3 py-1.5 text-xs rounded-lg transition-colors whitespace-nowrap flex items-center gap-2 ${
                 categoryFilter === cat.id
-                  ? "bg-slate-950 text-white font-bold shadow-xs"
-                  : "bg-slate-100 text-slate-700 hover:bg-slate-200 font-semibold"
+                  ? "bg-[#0E0F10] text-white font-semibold"
+                  : "bg-[#F7F7F6] text-[#666666] hover:text-[#0E0F10]"
               }`}
             >
               <span>{cat.label}</span>
-              <span
-                className={`text-xs font-mono px-2 py-0.5 rounded-full ${
-                  categoryFilter === cat.id
-                    ? "bg-slate-800 text-slate-200"
-                    : "bg-slate-200 text-slate-700 font-bold"
-                }`}
-              >
+              <span className="font-mono text-[11px] opacity-80">
                 {cat.count}
               </span>
             </button>
@@ -138,47 +141,48 @@ export default function ConsoleReviewQueuePage() {
       </div>
 
       {/* Escalated Claims Table */}
-      <div className="bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-xs">
+      <div className="border border-[#E5E5E3] bg-white rounded-xl overflow-hidden">
         {reviewClaims.length === 0 ? (
-          <div className="py-20 text-center">
-            <div className="w-14 h-14 mx-auto rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center mb-4">
-              <CheckCircleIcon size={28} />
+          <div className="py-16 text-center">
+            <div className="w-12 h-12 mx-auto rounded-full bg-emerald-50 text-emerald-700 flex items-center justify-center mb-3">
+              <CheckCircleIcon size={24} />
             </div>
-            <h3 className="text-base font-bold text-slate-950">Review Queue Clear</h3>
-            <p className="mt-1 text-sm text-slate-500">
-              No claims are currently flagged under category &quot;{categoryFilter}&quot;.
+            <h3 className="text-sm font-bold text-[#0E0F10]">
+              {isIt ? "Nessun sinistro in attesa di perizia" : "Review Queue Clear"}
+            </h3>
+            <p className="mt-1 text-xs text-[#666666]">
+              {isIt ? "Tutti i sinistri di questa categoria sono stati gestiti." : "No claims currently require manual escalation in this filter."}
             </p>
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse text-sm">
+            <table className="w-full text-left border-collapse text-xs">
               <thead>
-                <tr className="border-b border-slate-200 bg-slate-50/80 text-xs uppercase font-mono font-bold text-slate-500 tracking-wider">
-                  <th className="py-3.5 px-6">Severity</th>
-                  <th className="py-3.5 px-6">Claim ID</th>
-                  <th className="py-3.5 px-6">Category &amp; Reason</th>
-                  <th className="py-3.5 px-6 text-center">AI Confidence</th>
-                  <th className="py-3.5 px-6">Age</th>
-                  <th className="py-3.5 px-6">Assignee</th>
-                  <th className="py-3.5 px-6 text-right">Triage Actions</th>
+                <tr className="border-b border-[#E5E5E3] bg-[#F7F7F6] text-[11px] font-mono font-medium text-[#666666] uppercase">
+                  <th className="py-3 px-5">Severity</th>
+                  <th className="py-3 px-5">Claim ID</th>
+                  <th className="py-3 px-5">{isIt ? "Motivo Escalation" : "Category & Reason"}</th>
+                  <th className="py-3 px-5 text-center">{isIt ? "Confidenza" : "Certainty"}</th>
+                  <th className="py-3 px-5">{isIt ? "Tempo" : "Age"}</th>
+                  <th className="py-3 px-5 text-right">{isIt ? "Azioni" : "Actions"}</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 font-normal">
+              <tbody className="divide-y divide-[#E5E5E3]">
                 {reviewClaims.map((claim) => (
                   <tr
                     key={claim.id}
                     onClick={() => router.push(`/console/claims/${claim.id}`)}
-                    className="hover:bg-amber-50/30 cursor-pointer transition-colors"
+                    className="hover:bg-[#F7F7F6] cursor-pointer transition-colors"
                   >
                     {/* Severity */}
-                    <td className="py-4 px-6 whitespace-nowrap">
+                    <td className="py-3.5 px-5 whitespace-nowrap">
                       <span
-                        className={`text-xs font-mono font-bold px-2 py-0.5 rounded-lg border ${
+                        className={`text-[11px] font-mono font-medium px-2 py-0.5 rounded ${
                           claim.severity === "HIGH"
-                            ? "bg-rose-50 text-rose-800 border-rose-200"
+                            ? "bg-rose-50 text-rose-800 border border-rose-200"
                             : claim.severity === "MEDIUM"
-                            ? "bg-amber-50 text-amber-800 border-amber-200"
-                            : "bg-slate-100 text-slate-700 border-slate-200"
+                            ? "bg-amber-50 text-amber-800 border border-amber-200"
+                            : "bg-[#F7F7F6] text-[#666666]"
                         }`}
                       >
                         {claim.severity}
@@ -186,25 +190,25 @@ export default function ConsoleReviewQueuePage() {
                     </td>
 
                     {/* Claim ID */}
-                    <td className="py-4 px-6 font-mono font-bold text-blue-700 whitespace-nowrap">
+                    <td className="py-3.5 px-5 font-mono font-bold text-[#0E0F10] whitespace-nowrap">
                       {claim.id}
                     </td>
 
                     {/* Reason */}
-                    <td className="py-4 px-6">
-                      <div className="font-bold text-slate-950 flex items-center gap-1.5">
-                        <AlertTriangleIcon size={15} className="text-amber-600 flex-shrink-0" />
+                    <td className="py-3.5 px-5">
+                      <div className="font-semibold text-[#0E0F10] flex items-center gap-1.5">
+                        <AlertTriangleIcon size={13} className="text-amber-600 flex-shrink-0" />
                         <span>{claim.aiAnalysis.reviewCategory?.replace(/_/g, " ") || "Under Evaluation"}</span>
                       </div>
-                      <div className="text-xs text-slate-500 mt-0.5 max-w-md line-clamp-2">
+                      <div className="text-[11px] text-[#666666] mt-0.5 max-w-md line-clamp-1">
                         {claim.aiAnalysis.reviewReason || claim.incident.summary}
                       </div>
                     </td>
 
                     {/* Confidence */}
-                    <td className="py-4 px-6 text-center whitespace-nowrap">
+                    <td className="py-3.5 px-5 text-center whitespace-nowrap">
                       <span
-                        className={`font-mono text-xs px-2.5 py-1 rounded-lg border font-bold ${getConfidenceBadgeClass(
+                        className={`font-mono text-xs px-2 py-0.5 rounded font-bold ${getConfidenceBadgeClass(
                           claim.aiAnalysis.overallConfidence
                         )}`}
                       >
@@ -213,50 +217,36 @@ export default function ConsoleReviewQueuePage() {
                     </td>
 
                     {/* Age */}
-                    <td className="py-4 px-6 font-mono text-slate-500 text-xs whitespace-nowrap">
+                    <td className="py-3.5 px-5 font-mono text-[#666666] text-xs whitespace-nowrap">
                       {formatRelativeTime(claim.createdAt)}
                     </td>
 
-                    {/* Assignee */}
-                    <td className="py-4 px-6 text-slate-700 whitespace-nowrap">
-                      {claim.assignee ? (
-                        <div className="flex items-center gap-2">
-                          <span className="w-6 h-6 rounded-full bg-slate-200 text-slate-700 flex items-center justify-center text-xs font-bold">
-                            {claim.assignee.avatarInitials}
-                          </span>
-                          <span className="font-medium text-slate-900">{claim.assignee.name}</span>
-                        </div>
-                      ) : (
-                        <span className="text-amber-800 text-xs italic font-medium">Unassigned</span>
-                      )}
-                    </td>
-
                     {/* Actions */}
-                    <td className="py-4 px-6 text-right whitespace-nowrap">
+                    <td className="py-3.5 px-5 text-right whitespace-nowrap">
                       <div className="flex items-center justify-end gap-2">
                         {claim.assignee?.id !== currentReviewer.id && (
                           <button
                             type="button"
                             onClick={(e) => handleAssignToMe(claim.id, e)}
-                            className="min-h-[36px] px-3 py-1.5 text-xs font-bold rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 transition-colors"
+                            className="px-2.5 py-1 text-xs font-semibold rounded border border-[#E5E5E3] bg-white hover:bg-[#F7F7F6] text-[#0E0F10] transition-colors"
                           >
-                            Assign to me
+                            {isIt ? "Assegna a me" : "Assign"}
                           </button>
                         )}
                         <button
                           type="button"
                           onClick={(e) => handleMarkReviewed(claim.id, e)}
-                          className="min-h-[36px] px-3 py-1.5 text-xs font-bold rounded-lg border border-emerald-200 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 transition-colors"
+                          className="px-2.5 py-1 text-xs font-semibold rounded border border-emerald-200 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 transition-colors"
                         >
-                          Mark Reviewed
+                          {isIt ? "Valida" : "Review"}
                         </button>
                         <Link
                           href={`/console/claims/${claim.id}`}
                           onClick={(e) => e.stopPropagation()}
-                          className="min-h-[36px] px-3 py-1.5 text-xs font-bold rounded-lg bg-slate-950 hover:bg-blue-600 text-white transition-colors flex items-center gap-1"
+                          className="px-2.5 py-1 text-xs font-semibold rounded bg-[#0E0F10] hover:bg-[#1A1B1C] text-white transition-colors inline-flex items-center gap-1"
                         >
-                          <span>Open</span>
-                          <ChevronRightIcon size={12} />
+                          <span>{isIt ? "Apri" : "Open"}</span>
+                          <ChevronRightIcon size={11} />
                         </Link>
                       </div>
                     </td>

@@ -30,7 +30,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${instrumentSans.variable} ${ibmPlexMono.variable}`}>
-      <body className="min-h-screen bg-[#F4F5F3] text-[#090A0A] font-sans antialiased selection:bg-[#090A0A] selection:text-white">
+      <body className="min-h-screen bg-[#F7F7F6] text-[#0E0F10] font-sans antialiased selection:bg-[#0E0F10] selection:text-white">
         {children}
       </body>
     </html>

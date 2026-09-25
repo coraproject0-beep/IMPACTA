@@ -1,104 +1,91 @@
 "use client";
 
 import React from "react";
-import Link from "next/link";
 import { useLanguage } from "@/context/LanguageContext";
-import { SYNTHETIC_DRIVER_PROFILE } from "@/features/driver/data/driverProfileFixture";
-import { ShieldIcon, CheckCircleIcon, ArrowRightIcon } from "@/components/icons/Icons";
+import { CheckCircleIcon } from "@/components/icons/Icons";
 
 export default function DriverInsurancePage() {
-  const { t } = useLanguage();
-  const policy = SYNTHETIC_DRIVER_PROFILE.policy;
+  const { t, language } = useLanguage();
+  const isIt = language === "it";
 
   return (
-    <div className="space-y-10 max-w-4xl mx-auto selection:bg-blue-100 selection:text-blue-900 py-4">
+    <div className="space-y-7 max-w-md mx-auto py-2 selection:bg-[#0E0F10] selection:text-white">
       {/* Header */}
-      <div className="space-y-2">
-        <p className="text-xs font-mono font-bold uppercase tracking-widest text-blue-700">
-          {t.nav.insurance}
-        </p>
-        <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-slate-950">
-          {policy.insurerName}
+      <div className="space-y-1.5 pb-4 border-b border-[#E5E5E3]">
+        <h1 className="text-3xl sm:text-4xl font-semibold tracking-tight text-[#0E0F10]">
+          Generali Italia
         </h1>
-        <p className="text-base sm:text-lg text-slate-600">
-          {t.insurance.subtitle}
+        <p className="text-sm text-[#666666]">
+          {isIt
+            ? "Copertura assicurativa attiva per il tuo veicolo."
+            : "Active insurance policy coverage for your vehicle."}
         </p>
       </div>
 
-      {/* Main Policy Overview */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-8 sm:p-10 space-y-6 shadow-xs">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-5">
+      {/* Main Policy Card */}
+      <div className="bg-white rounded-2xl border border-[#E5E5E3] p-5 space-y-4">
+        <div className="flex items-center justify-between pb-3 border-b border-[#E5E5E3]">
           <div>
-            <span className="text-xs font-mono uppercase tracking-wider text-slate-500 block mb-1">
-              {t.insurance.policyNumber}
+            <span className="text-xs text-[#666666] block">
+              {isIt ? "Numero polizza" : "Policy number"}
             </span>
-            <span className="text-2xl sm:text-4xl font-mono font-bold text-slate-950">
-              {policy.policyNumber}
+            <span className="text-xl font-mono font-bold text-[#0E0F10]">
+              GEN-2026-9812
             </span>
           </div>
-          <span className="font-semibold text-base text-emerald-800 flex items-center gap-1.5 self-start sm:self-auto">
-            <CheckCircleIcon size={20} />
-            <span>{t.insurance.statusActive}</span>
+          <span className="font-medium text-xs text-emerald-700 flex items-center gap-1.5">
+            <CheckCircleIcon size={16} />
+            <span>{isIt ? "Polizza attiva" : "Policy active"}</span>
           </span>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 text-base">
+        <div className="grid grid-cols-2 gap-4 text-xs">
           <div>
-            <span className="text-slate-500 block text-xs uppercase tracking-wider mb-1 font-mono">
-              {t.insurance.insurer}
-            </span>
-            <span className="font-bold text-slate-950 text-lg">{policy.insurerName}</span>
+            <span className="text-[#666666] block">{isIt ? "Compagnia" : "Insurer"}</span>
+            <span className="font-semibold text-sm text-[#0E0F10] block mt-0.5">Generali Italia</span>
           </div>
 
           <div>
-            <span className="text-slate-500 block text-xs uppercase tracking-wider mb-1 font-mono">
-              Coverage Tier
-            </span>
-            <span className="font-semibold text-slate-900 text-lg">Kasko Full + RCA</span>
+            <span className="text-[#666666] block">{isIt ? "Tipo copertura" : "Coverage"}</span>
+            <span className="font-semibold text-sm text-[#0E0F10] block mt-0.5">Kasko Full + RCA</span>
           </div>
 
           <div>
-            <span className="text-slate-500 block text-xs uppercase tracking-wider mb-1 font-mono">
-              {t.insurance.validUntil}
-            </span>
-            <span className="font-semibold text-slate-900 text-lg">{policy.validUntil}</span>
+            <span className="text-[#666666] block">{isIt ? "Validità" : "Valid until"}</span>
+            <span className="font-mono text-sm text-[#0E0F10] block mt-0.5">31 Mar 2027</span>
+          </div>
+
+          <div>
+            <span className="text-[#666666] block">{isIt ? "Soccorso stradale" : "Assistance"}</span>
+            <span className="font-medium text-sm text-emerald-700 block mt-0.5">{isIt ? "Incluso 24/7" : "Included 24/7"}</span>
           </div>
         </div>
 
-        {/* Coverage Guarantees */}
-        <div className="pt-6 border-t border-slate-100 space-y-4">
-          <h2 className="text-lg font-bold text-slate-950">
-            {t.insurance.coverageTitle}
-          </h2>
+        {/* Guarantees List */}
+        <div className="pt-3 border-t border-[#E5E5E3] space-y-2">
+          <span className="text-xs font-semibold uppercase tracking-wider text-[#666666] block">
+            {isIt ? "Garanzie incluse" : "Included coverage"}
+          </span>
 
-          <div className="space-y-4 text-sm text-slate-700">
-            <div className="p-4 bg-slate-50 rounded-xl border border-slate-200">
-              <span className="font-bold text-slate-900 text-base block">{t.insurance.coverageRCA}</span>
-              <p className="text-slate-600 mt-0.5 text-sm">{t.insurance.coverageRCADesc}</p>
+          <div className="space-y-2 text-xs">
+            <div className="p-3 bg-[#F7F7F6] rounded-xl">
+              <span className="font-semibold text-[#0E0F10] block">RCA Obbligatoria</span>
+              <span className="text-[#666666]">Massimale € 6.450.000 per sinistro stradale.</span>
             </div>
-            <div className="p-4 bg-slate-50 rounded-xl border border-slate-200">
-              <span className="font-bold text-slate-900 text-base block">{t.insurance.coverageKasko}</span>
-              <p className="text-slate-600 mt-0.5 text-sm">{t.insurance.coverageKaskoDesc}</p>
-            </div>
-            <div className="p-4 bg-slate-50 rounded-xl border border-slate-200">
-              <span className="font-bold text-slate-900 text-base block">{t.insurance.coverageAssistance}</span>
-              <p className="text-slate-600 mt-0.5 text-sm">{t.insurance.coverageAssistanceDesc}</p>
+            <div className="p-3 bg-[#F7F7F6] rounded-xl">
+              <span className="font-semibold text-[#0E0F10] block">Kasko Completa</span>
+              <span className="text-[#666666]">Copertura danni da collisione con veicoli terzi.</span>
             </div>
           </div>
         </div>
 
-        {/* 24/7 Roadside Assistance Strip */}
-        <div className="p-6 bg-blue-50/70 border border-blue-200 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div>
-            <h3 className="font-bold text-blue-950 text-base">{t.insurance.assistanceHotline}</h3>
-            <p className="text-xs sm:text-sm text-blue-800/80">{t.insurance.assistanceHotlineDesc}</p>
-          </div>
+        {/* Assistance Hotline */}
+        <div className="pt-3 border-t border-[#E5E5E3]">
           <a
-            href="tel:+390684921102"
-            className="min-h-[48px] px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-sm shadow-xs transition-colors flex items-center justify-center gap-2 self-start sm:self-auto whitespace-nowrap"
+            href="tel:112"
+            className="w-full py-3 px-4 rounded-xl bg-[#0E0F10] hover:bg-[#1A1B1C] text-white text-xs font-semibold flex items-center justify-center gap-2 transition-colors"
           >
-            <span>{t.insurance.callAssistance}</span>
-            <ArrowRightIcon size={16} />
+            <span>{isIt ? "Chiama soccorso stradale (112)" : "Emergency Roadside (112)"}</span>
           </a>
         </div>
       </div>

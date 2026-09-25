@@ -53,14 +53,14 @@ export default function PlatformPage() {
   return (
     <PublicShell>
       {/* Header Scene */}
-      <section className="py-24 sm:py-36 bg-white border-b border-[#D7D9D8]">
+      <section className="py-24 sm:py-36 bg-white border-b border-[#E5E5E3]">
         <div className="w-full px-6 sm:px-12 lg:px-20 max-w-7xl mx-auto space-y-6">
-          <TechnicalReveal className="text-xs sm:text-sm font-semibold uppercase tracking-widest text-[#6F7375]">
+          <TechnicalReveal className="text-xs sm:text-sm font-semibold uppercase tracking-wider text-[#666666]">
             {isIt ? "IL CICLO DEL SINISTRO" : "THE INTAKE & TRIAGE LIFECYCLE"}
           </TechnicalReveal>
           <EditorialReveal
             as="h1"
-            className="text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-[#090A0A] leading-[1.04] uppercase max-w-5xl"
+            className="text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-[#0E0F10] leading-[1.04] uppercase max-w-5xl"
           >
             {isIt ? (
               <>
@@ -76,7 +76,7 @@ export default function PlatformPage() {
               </>
             )}
           </EditorialReveal>
-          <p className="text-lg sm:text-2xl text-[#6F7375] leading-relaxed max-w-3xl font-light">
+          <p className="text-lg sm:text-2xl text-[#666666] leading-relaxed max-w-3xl font-light">
             {isIt
               ? "Nessuna confusione cartacea, nessun ritardo di 40 giorni. Una sequenza a 4 tappe progettata con disciplina ingegneristica per automobilisti e compagnie."
               : "Zero paper confusion, zero 42-day claim latency. A 4-stage progression engineered for roadside drivers and insurance claims teams."}
@@ -85,35 +85,35 @@ export default function PlatformPage() {
       </section>
 
       {/* Visual Process Film: Large Vertically Sequenced Scenes */}
-      <div className="w-full bg-[#F4F5F3]">
+      <div className="w-full bg-[#F7F7F6]">
         {platformStages.map((stage) => (
           <section
             key={stage.step}
-            className="w-full border-b border-[#D7D9D8] py-28 lg:py-36"
+            className="w-full border-b border-[#E5E5E3] py-28 lg:py-36"
           >
             <div className="w-full px-6 sm:px-12 lg:px-20 max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-baseline">
               {/* Left Column: Giant Step Identifier */}
               <div className="lg:col-span-4 space-y-3">
-                <span className="text-6xl sm:text-8xl lg:text-9xl font-black font-mono tracking-tighter text-[#090A0A] block leading-none">
+                <span className="text-6xl sm:text-8xl lg:text-9xl font-black font-mono tracking-tighter text-[#0E0F10] block leading-none">
                   {stage.step}
                 </span>
-                <span className="text-xs uppercase tracking-widest text-[#6F7375] font-semibold block">
+                <span className="text-xs uppercase tracking-wider text-[#666666] font-semibold block">
                   {stage.tag}
                 </span>
-                <span className="text-xs font-semibold tracking-wider uppercase text-[#090A0A] block pt-2">
+                <span className="text-xs font-semibold tracking-wider uppercase text-[#0E0F10] block pt-2">
                   ACTOR: {stage.actor}
                 </span>
               </div>
 
               {/* Right Column: Stage Description & Standards */}
               <div className="lg:col-span-8 space-y-6">
-                <h2 className="text-3xl sm:text-5xl font-bold uppercase tracking-tight text-[#090A0A] leading-tight">
+                <h2 className="text-3xl sm:text-5xl font-bold uppercase tracking-tight text-[#0E0F10] leading-tight">
                   {stage.title}
                 </h2>
-                <p className="text-lg sm:text-xl text-[#6F7375] font-light leading-relaxed max-w-3xl">
+                <p className="text-lg sm:text-xl text-[#666666] font-light leading-relaxed max-w-3xl">
                   {stage.description}
                 </p>
-                <div className="pt-4 border-t border-[#D7D9D8] flex items-center justify-between text-xs text-[#6F7375] font-medium uppercase tracking-wider">
+                <div className="pt-4 border-t border-[#E5E5E3] flex items-center justify-between text-xs text-[#666666] font-medium uppercase tracking-wider">
                   <span>STANDARD AUDIT CHECKPOINT</span>
                   <span className="font-mono">EVIDENCE INTEGRITY SHA-256</span>
                 </div>
@@ -127,16 +127,16 @@ export default function PlatformPage() {
       <section className="py-20 bg-white">
         <div className="w-full px-6 sm:px-12 lg:px-20 max-w-7xl mx-auto flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
           <div>
-            <h3 className="text-2xl font-bold uppercase text-[#090A0A]">
+            <h3 className="text-2xl font-bold uppercase text-[#0E0F10]">
               {isIt ? "Inizia la segnalazione" : "Begin roadside report"}
             </h3>
-            <p className="text-sm text-[#6F7375] mt-1 font-light">
+            <p className="text-sm text-[#666666] mt-1 font-light">
               {isIt ? "Sperimenta il flusso di segnalazione per automobilisti." : "Experience the consumer driver workflow."}
             </p>
           </div>
           <Link
             href="/app/report"
-            className="inline-flex items-center justify-center min-h-[52px] px-8 bg-[#090A0A] text-white text-xs font-bold tracking-wider uppercase hover:bg-[#171819] transition-colors"
+            className="inline-flex items-center justify-center min-h-[52px] px-8 bg-[#0E0F10] text-white text-xs font-bold tracking-wider uppercase hover:bg-[#1A1B1C] transition-colors"
           >
             {isIt ? "Segnala un sinistro" : "Report an accident"}
           </Link>

@@ -101,10 +101,10 @@ export default function ReportWizardPage() {
   };
 
   return (
-    <div className="-mx-4 sm:-mx-6 md:-mx-8 -my-6 md:-my-8 min-h-screen bg-[#F4F5F3] flex flex-col justify-between selection:bg-[#090A0A] selection:text-white">
+    <div className="-mx-4 sm:-mx-6 md:-mx-8 -my-6 md:-my-8 min-h-screen bg-[#F7F7F6] text-[#0E0F10] flex flex-col justify-between selection:bg-[#0E0F10] selection:text-white">
       {/* Toast Notification */}
       {toastMessage && (
-        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 bg-[#090A0A] text-white text-xs font-semibold px-5 py-2.5 shadow-xl flex items-center gap-2 animate-fade-in border border-white/10">
+        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 bg-[#0E0F10] text-white text-xs font-semibold px-5 py-2.5 rounded-full shadow-xl flex items-center gap-2 animate-fade-in border border-white/10">
           <CheckCircleIcon size={16} className="text-emerald-400" />
           <span>{toastMessage}</span>
         </div>
@@ -114,16 +114,16 @@ export default function ReportWizardPage() {
       <ReportHeader
         phaseNumber={macroPhase <= 4 ? macroPhase : 4}
         totalPhases={4}
-        phaseTitle={phaseMeta[macroPhase]?.title || (isIt ? "Segnalazione Incidente" : "Accident Report")}
+        phaseTitle={phaseMeta[macroPhase]?.title || (isIt ? "Rapporto incidente" : "Accident Report")}
         showBack={macroPhase > 1 && macroPhase <= 4}
         showSaveAndExit={macroPhase <= 4}
         onBack={handleBack}
         onSaveAndExit={handleSaveAndExit}
       />
 
-      {/* Main Content Area: Focused Open Document Layout (No left sidebar, no card soup) */}
-      <div className="max-w-2xl mx-auto w-full px-4 sm:px-6 py-8 sm:py-12 flex-1">
-        <div className="bg-white border border-[#D7D9D8] p-6 sm:p-10 shadow-xs">
+      {/* Main Content Area: Focused Open Layout matching driver-report-step-reference.png */}
+      <div className="max-w-md mx-auto w-full px-4 sm:px-6 py-6 sm:py-8 flex-1">
+        <div>
           {macroPhase === 1 && (
             <Phase1Safety
               draft={draft}

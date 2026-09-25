@@ -2,214 +2,328 @@
 
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useClaims } from "@/context/ClaimsContext";
 import { useLanguage } from "@/context/LanguageContext";
-import { CountUpMetric } from "@/components/console/CountUpMetric";
-import {
-  ArrowRightIcon,
-  ChevronRightIcon,
-  LayersIcon,
-} from "@/components/icons/Icons";
-import {
-  formatDate,
-  getStatusBadgeClass,
-  getStatusLabel,
-} from "@/lib/utils";
+import { ChevronRightIcon } from "@/components/icons/Icons";
 
 export default function ConsoleOverviewPage() {
   const { claims, stats, isLoading } = useClaims();
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
   const isIt = language === "it";
 
   if (isLoading) {
     return (
-      <div className="py-16 text-center text-xs font-semibold text-[#6F7375] uppercase tracking-wider">
-        {isIt ? "CARICAMENTO OPERAZIONI SINISTRI..." : "LOADING CLAIMS OPERATIONS..."}
+      <div className="py-20 text-center text-xs font-mono text-[#666666] uppercase tracking-wider">
+        {isIt ? "Caricamento operazioni sinistri..." : "Loading claims operations..."}
       </div>
     );
   }
 
-  // Priority queue: claims requiring manual review
-  const priorityClaims = claims
-    .filter((c) => c.status !== "CLOSED" && (c.aiAnalysis.reviewCategory || c.aiAnalysis.overallConfidence < 85))
+  // Identify next priority claim
+  const priorityClaimsList = claims
+    .filter((c) => c.status !== "CLOSED" && (c.aiAnalysis.reviewCategory || c.aiAnalysis.overallConfidence < 85 || c.status === "IN_REVIEW"))
     .sort((a, b) => a.aiAnalysis.overallConfidence - b.aiAnalysis.overallConfidence);
 
-  const nextClaimId = priorityClaims[0]?.id || claims[0]?.id || "CLM-2026-0842";
+  const nextClaim = priorityClaimsList[0] || claims[0];
+  const nextClaimId = nextClaim?.id || "IMP-260925-014";
 
-  // Recent claims: latest 6
-  const recentClaims = [...claims]
-    .sort((a, b) => new Date(b.incidentDate).getTime() - new Date(a.incidentDate).getTime())
-    .slice(0, 6);
+  // Build 4 priority items matching reference
+  const priorityQueueItems = [
+    {
+      id: priorityClaimsList[0]?.id || "IMP-260925-014",
+      attention: isIt ? "Conferma conducente richiesta" : "Driver confirmation required",
+      time: "12m ago",
+      href: `/console/claims/${priorityClaimsList[0]?.id || nextClaimId}`,
+    },
+    {
+      id: priorityClaimsList[1]?.id || "IMP-260925-011",
+      attention: isIt ? "Bassa confidenza sensori" : "Low sensor confidence",
+      time: "34m ago",
+      href: `/console/claims/${priorityClaimsList[1]?.id || nextClaimId}`,
+    },
+    {
+      id: priorityClaimsList[2]?.id || "IMP-260925-009",
+      attention: isIt ? "Discrepanza Box 12" : "Box 12 discrepancy",
+      time: "1h ago",
+      href: `/console/claims/${priorityClaimsList[2]?.id || nextClaimId}`,
+    },
+    {
+      id: priorityClaimsList[3]?.id || "IMP-260925-007",
+      attention: isIt ? "Foto controparte mancanti" : "Missing third-party photos",
+      time: "2h ago",
+      href: `/console/claims/${priorityClaimsList[3]?.id || nextClaimId}`,
+    },
+  ];
 
-  // Derived counts
-  const needsReviewCount = stats.awaitingReview || stats.manualReviewRequiredCount || 12;
-  const newTodayCount = 3;
-  const incompleteCount = claims.filter((c) => c.status === "NEW").length;
-  const readyForReviewCount = stats.awaitingReview;
-  const completedCount = stats.reviewed;
+  // Build recent claims matching reference
+  const recentClaimsList = [
+    {
+      id: claims[1]?.id || "IMP-260925-013",
+      insured: claims[1]?.policyholder?.fullName || "Marco Rossi",
+      status: isIt ? "Pronto per perizia" : "Ready for review",
+      statusColor: "text-emerald-700",
+      time: "18m ago",
+      href: `/console/claims/${claims[1]?.id || nextClaimId}`,
+    },
+    {
+      id: claims[2]?.id || "IMP-260925-012",
+      insured: claims[2]?.policyholder?.fullName || "Giulia Bianchi",
+      status: isIt ? "Invio conducente in corso" : "Driver submitting",
+      statusColor: "text-[#666666]",
+      time: "29m ago",
+      href: `/console/claims/${claims[2]?.id || nextClaimId}`,
+    },
+    {
+      id: claims[3]?.id || "IMP-260925-010",
+      insured: claims[3]?.policyholder?.fullName || "Paolo Verdi",
+      status: isIt ? "Completato" : "Completed",
+      statusColor: "text-[#0E0F10]",
+      time: "1h ago",
+      href: `/console/claims/${claims[3]?.id || nextClaimId}`,
+    },
+    {
+      id: claims[4]?.id || "IMP-260925-008",
+      insured: claims[4]?.policyholder?.fullName || "Elena Moretti",
+      status: isIt ? "Completato" : "Completed",
+      statusColor: "text-[#0E0F10]",
+      time: "2h ago",
+      href: `/console/claims/${claims[4]?.id || nextClaimId}`,
+    },
+  ];
+
+  const reviewCount = stats.manualReviewRequiredCount || 12;
 
   return (
-    <div className="space-y-10 selection:bg-[#090A0A] selection:text-white">
-      {/* Top Operational Command */}
-      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 pb-6 border-b border-[#D7D9D8]">
-        <div className="space-y-1">
-          <span className="text-xs font-semibold uppercase tracking-widest text-[#6F7375]">
-            {isIt ? "GESTIONE OPERATIVA" : "DISPATCH & AUDIT"}
-          </span>
-          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight uppercase text-[#090A0A]">
-            {isIt ? "Operazioni Sinistri" : "Claims Operations"}
-          </h1>
-          <p className="text-sm text-[#6F7375] font-light max-w-2xl">
-            {isIt
-              ? "Perizia dei sinistri stradali, revisione cinematica e convalida CAI Box 12 con audit trail immutabile."
-              : "Roadside incident adjudication, kinematic reconstruction review, and European CAI Box 12 confirmation."}
-          </p>
+    <div className="space-y-12">
+      {/* 1. Header Area (Kicker, Title, Subtitle) */}
+      <div className="space-y-2">
+        <div className="text-xs font-semibold uppercase tracking-wider text-[#666666]">
+          {t("consoleOverview.kicker")}
+        </div>
+        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-[#0E0F10]">
+          {isIt
+            ? `${reviewCount} sinistri richiedono revisione.`
+            : `${reviewCount} claims need review.`}
+        </h1>
+        <p className="text-sm sm:text-base text-[#666666] font-normal">
+          {t("consoleOverview.subtitle")}
+        </p>
+      </div>
+
+      {/* 2. Open Metric Strip (Separated by vertical hairlines, no boxes/cards) */}
+      <div className="grid grid-cols-2 md:grid-cols-4 border-y border-[#E5E5E3] divide-y sm:divide-y-0 sm:divide-x divide-[#E5E5E3] py-6 my-8">
+        {/* Metric 1 */}
+        <div className="px-4 sm:px-6 py-2">
+          <div className="text-3xl sm:text-4xl font-mono font-bold text-[#0E0F10] tracking-tight">
+            {reviewCount}
+          </div>
+          <div className="text-xs text-[#666666] mt-1 font-medium">
+            {t("consoleOverview.needsReview")}
+          </div>
         </div>
 
-        <div className="flex items-center gap-3">
-          <Link
-            href="/console/claims"
-            className="min-h-[44px] px-5 border border-[#D7D9D8] bg-white text-[#090A0A] text-xs font-bold uppercase tracking-wider hover:border-[#090A0A] transition-colors flex items-center gap-2"
-          >
-            <LayersIcon size={15} />
-            <span>{isIt ? "Tutti i sinistri" : "All Claims"} ({stats.totalClaims})</span>
-          </Link>
+        {/* Metric 2 */}
+        <div className="px-4 sm:px-6 py-2">
+          <div className="text-3xl sm:text-4xl font-mono font-bold text-[#0E0F10] tracking-tight">
+            7
+          </div>
+          <div className="text-xs text-[#666666] mt-1 font-medium">
+            {t("consoleOverview.newToday")}
+          </div>
+        </div>
+
+        {/* Metric 3 */}
+        <div className="px-4 sm:px-6 py-2">
+          <div className="text-3xl sm:text-4xl font-mono font-bold text-[#0E0F10] tracking-tight">
+            18
+          </div>
+          <div className="text-xs text-[#666666] mt-1 font-medium">
+            {t("consoleOverview.readyForInsurerReview")}
+          </div>
+        </div>
+
+        {/* Metric 4 */}
+        <div className="px-4 sm:px-6 py-2">
+          <div className="text-3xl sm:text-4xl font-mono font-bold text-[#0E0F10] tracking-tight">
+            4m 32s
+          </div>
+          <div className="text-xs text-[#666666] mt-1 font-medium">
+            {t("consoleOverview.medianReviewTime")}
+          </div>
         </div>
       </div>
 
-      {/* DOMINANT TASK-FIRST HERO STRIP */}
-      <div className="bg-[#090A0A] text-white p-8 sm:p-12 flex flex-col md:flex-row md:items-center justify-between gap-8 border border-white/10">
-        <div className="space-y-2 max-w-xl">
-          <span className="text-xs font-semibold uppercase tracking-widest text-white/50 block">
-            {isIt ? "ATTIVITÀ RICHIESTA" : "ACTION REQUIRED"}
-          </span>
-          <div className="text-4xl sm:text-5xl lg:text-6xl font-black uppercase tracking-tight text-white leading-tight">
-            <span className="font-mono text-white">{needsReviewCount}</span> {isIt ? "sinistri richiedono revisione" : "claims need review"}
+      {/* 3. Main 2-Column Operational Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+        {/* Left Column: Priority queue & Recent claims */}
+        <div className="lg:col-span-7 space-y-10">
+          {/* Priority queue table */}
+          <div className="space-y-4">
+            <h2 className="text-base font-bold text-[#0E0F10] tracking-tight">
+              {t("consoleOverview.priorityQueue")}
+            </h2>
+
+            <div className="border border-[#E5E5E3] bg-white rounded-xl overflow-hidden divide-y divide-[#E5E5E3]">
+              {priorityQueueItems.map((item) => (
+                <Link
+                  key={item.id}
+                  href={item.href}
+                  className="flex items-center justify-between p-4 hover:bg-[#F7F7F6] transition-colors group"
+                >
+                  <div className="flex items-center gap-4 min-w-0">
+                    <span className="font-mono text-xs font-semibold text-[#0E0F10]">
+                      {item.id}
+                    </span>
+                    <span className="text-xs font-medium text-amber-600 truncate">
+                      {item.attention}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-3 flex-shrink-0">
+                    <span className="text-xs font-mono text-[#666666]">
+                      {item.time}
+                    </span>
+                    <ChevronRightIcon
+                      size={14}
+                      className="text-[#666666] group-hover:text-[#0E0F10] transition-colors"
+                    />
+                  </div>
+                </Link>
+              ))}
+            </div>
           </div>
-          <p className="text-sm sm:text-base text-white/70 font-light pt-1">
-            {isIt
-              ? "Elementi probatori in attesa di convalida peritale umana prima della trasmissione all'assicuratore."
-              : "Dossiers awaiting human expert confirmation before formal liability assignment and settlement."}
-          </p>
+
+          {/* Recent claims table */}
+          <div className="space-y-4">
+            <h2 className="text-base font-bold text-[#0E0F10] tracking-tight">
+              {t("consoleOverview.recentClaims")}
+            </h2>
+
+            <div className="border border-[#E5E5E3] bg-white rounded-xl overflow-hidden divide-y divide-[#E5E5E3]">
+              {recentClaimsList.map((item) => (
+                <Link
+                  key={item.id}
+                  href={item.href}
+                  className="flex items-center justify-between p-4 hover:bg-[#F7F7F6] transition-colors group"
+                >
+                  <div className="flex items-center gap-4 min-w-0">
+                    <span className="font-mono text-xs font-semibold text-[#0E0F10]">
+                      {item.id}
+                    </span>
+                    <span className="text-xs font-medium text-[#0E0F10] truncate">
+                      {item.insured}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-4 flex-shrink-0">
+                    <span className={`text-xs font-medium ${item.statusColor}`}>
+                      {item.status}
+                    </span>
+                    <span className="text-xs font-mono text-[#666666]">
+                      {item.time}
+                    </span>
+                    <ChevronRightIcon
+                      size={14}
+                      className="text-[#666666] group-hover:text-[#0E0F10] transition-colors"
+                    />
+                  </div>
+                </Link>
+              ))}
+            </div>
+
+            <div className="pt-1">
+              <Link
+                href="/console/claims"
+                className="text-xs font-semibold text-[#0E0F10] hover:underline"
+              >
+                {t("consoleOverview.viewAll")}
+              </Link>
+            </div>
+          </div>
         </div>
 
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
+        {/* Right Column: Review next claim action & preview card */}
+        <div className="lg:col-span-5 space-y-6">
+          {/* Primary Action Button: Review next claim → */}
           <Link
             href={`/console/claims/${nextClaimId}`}
-            className="min-h-[56px] px-8 bg-white text-[#090A0A] text-sm font-bold uppercase tracking-wider hover:bg-[#F4F5F3] transition-colors inline-flex items-center justify-center gap-3 shadow-lg"
+            className="w-full block text-center py-3.5 px-6 bg-[#0E0F10] text-white hover:bg-[#1A1B1C] rounded-lg text-sm font-semibold tracking-tight transition-colors"
           >
-            <span>{isIt ? "Esamina prossimo sinistro" : "Review next claim"}</span>
-            <ArrowRightIcon size={18} />
+            {t("consoleOverview.reviewNextClaim")}
           </Link>
-        </div>
-      </div>
 
-      {/* SMALL TYPOGRAPHIC COUNTERS STRIP */}
-      <div className="bg-white border border-[#D7D9D8] grid grid-cols-2 sm:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-[#D7D9D8]">
-        <div className="p-5 sm:p-6 space-y-1">
-          <span className="text-xs font-semibold uppercase tracking-wider text-[#6F7375] block">
-            {isIt ? "Nuovi oggi" : "New today"}
-          </span>
-          <div className="text-2xl sm:text-3xl font-mono font-bold text-[#090A0A]">
-            <CountUpMetric value={newTodayCount} duration={600} />
+          {/* Next Claim Preview Container */}
+          <div className="border border-[#E5E5E3] bg-white rounded-xl p-5 space-y-5">
+            {/* Incident Scene Photo Preview */}
+            <div className="relative h-44 w-full rounded-lg overflow-hidden bg-[#0E0F10]">
+              <Image
+                src="/images/hero-car.jpg"
+                alt="Accident scene preview"
+                fill
+                className="object-cover opacity-90"
+                sizes="(max-width: 1024px) 100vw, 400px"
+              />
+            </div>
+
+            {/* Header row: NEXT CLAIM: IMP-260925-014 [ Open → ] */}
+            <div className="flex items-center justify-between pb-3 border-b border-[#E5E5E3]">
+              <div className="font-mono text-xs font-bold text-[#0E0F10] tracking-tight">
+                {t("consoleOverview.nextClaimKicker")}: {nextClaimId}
+              </div>
+              <Link
+                href={`/console/claims/${nextClaimId}`}
+                className="text-xs font-medium text-[#0E0F10] hover:underline"
+              >
+                {t("consoleOverview.openClaim")}
+              </Link>
+            </div>
+
+            {/* Key-Value open list */}
+            <div className="space-y-3 text-xs">
+              <div className="flex items-center justify-between">
+                <span className="text-[#666666]">{t("consoleOverview.incident")}</span>
+                <span className="font-medium text-[#0E0F10]">
+                  {nextClaim?.incident?.summary?.slice(0, 30) || "Multi-vehicle lane change"}...
+                </span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-[#666666]">{t("consoleOverview.location")}</span>
+                <span className="font-medium text-[#0E0F10]">
+                  {nextClaim?.incident?.location?.city || "Milano"}, {nextClaim?.incident?.location?.street || "Via Lorenteggio"}
+                </span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-[#666666]">{t("consoleOverview.vehicles")}</span>
+                <span className="font-medium text-[#0E0F10]">
+                  {nextClaim?.vehicleA?.model || "Audi A3"} · {nextClaim?.vehicleB?.model || "VW Golf"}
+                </span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-[#666666]">{t("consoleOverview.evidence")}</span>
+                <span className="font-medium text-[#0E0F10]">
+                  {nextClaim?.evidence?.length || 4} {isIt ? "foto" : "photos"} · {isIt ? "Telemetria verificata" : "Telemetry verified"}
+                </span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-[#666666]">{t("consoleOverview.attention")}</span>
+                <span className="font-medium text-amber-600">
+                  {isIt ? "Conferma conducente richiesta" : "Driver confirmation required"}
+                </span>
+              </div>
+            </div>
+
+            {/* Reviewer Note */}
+            <div className="bg-[#F7F7F6] border border-[#E5E5E3] rounded-lg p-3.5 text-xs text-[#666666] leading-relaxed">
+              <div className="font-semibold text-[#0E0F10] mb-1">
+                {t("consoleOverview.notes")}
+              </div>
+              <p className="italic">
+                {nextClaim?.reviewerNotes ||
+                  (isIt
+                    ? "\"Box 12 contrassegnato come 'cambio corsia', ma il tracciato dei sensori suggerisce il mantenimento della corsia prima dell'impatto. Richiede revisione.\""
+                    : "\"Box 12 marked 'changing lanes' but sensor trace suggests pre-impact lane keeping. Requires review.\"")}
+              </p>
+            </div>
           </div>
-        </div>
-
-        <div className="p-5 sm:p-6 space-y-1">
-          <span className="text-xs font-semibold uppercase tracking-wider text-[#6F7375] block">
-            {isIt ? "Incompleti" : "Incomplete"}
-          </span>
-          <div className="text-2xl sm:text-3xl font-mono font-bold text-[#090A0A]">
-            <CountUpMetric value={incompleteCount} duration={600} />
-          </div>
-        </div>
-
-        <div className="p-5 sm:p-6 space-y-1">
-          <span className="text-xs font-semibold uppercase tracking-wider text-[#6F7375] block">
-            {isIt ? "Pronti per revisione" : "Ready for review"}
-          </span>
-          <div className="text-2xl sm:text-3xl font-mono font-bold text-[#090A0A]">
-            <CountUpMetric value={readyForReviewCount} duration={600} />
-          </div>
-        </div>
-
-        <div className="p-5 sm:p-6 space-y-1">
-          <span className="text-xs font-semibold uppercase tracking-wider text-[#6F7375] block">
-            {isIt ? "Completati" : "Completed"}
-          </span>
-          <div className="text-2xl sm:text-3xl font-mono font-bold text-emerald-700">
-            <CountUpMetric value={completedCount} duration={600} />
-          </div>
-        </div>
-      </div>
-
-      {/* HIGH-SCAN RECENT CLAIMS TABLE */}
-      <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <h2 className="text-sm font-bold uppercase tracking-wider text-[#090A0A]">
-            {isIt ? "Sinistri Recenti" : "Recent Claims"}
-          </h2>
-          <Link
-            href="/console/claims"
-            className="text-xs font-semibold text-[#090A0A] hover:underline uppercase tracking-wider"
-          >
-            {isIt ? "Vedi archivio completo →" : "View full directory →"}
-          </Link>
-        </div>
-
-        <div className="bg-white border border-[#D7D9D8] overflow-x-auto">
-          <table className="w-full text-left text-xs border-collapse">
-            <thead>
-              <tr className="border-b border-[#D7D9D8] bg-[#F4F5F3] text-[#6F7375] uppercase font-semibold">
-                <th className="py-3 px-4 tracking-wider">{isIt ? "Dossier ID" : "Claim ID"}</th>
-                <th className="py-3 px-4 tracking-wider">{isIt ? "Assicurato & Veicolo" : "Insured & Vehicle"}</th>
-                <th className="py-3 px-4 tracking-wider">{isIt ? "Luogo" : "Location"}</th>
-                <th className="py-3 px-4 tracking-wider">{isIt ? "Data / Ora" : "Date / Time"}</th>
-                <th className="py-3 px-4 tracking-wider">{isIt ? "Stato" : "Status"}</th>
-                <th className="py-3 px-4 tracking-wider text-right">{isIt ? "Azione" : "Action"}</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-[#D7D9D8]">
-              {recentClaims.map((claim) => (
-                <tr
-                  key={claim.id}
-                  className="hover:bg-[#F4F5F3]/60 transition-colors"
-                >
-                  <td className="py-3.5 px-4 font-mono font-bold text-[#090A0A]">
-                    {claim.id}
-                  </td>
-                  <td className="py-3.5 px-4">
-                    <span className="font-semibold text-[#090A0A] block">{claim.policyholder.fullName}</span>
-                    <span className="text-[#6F7375] font-mono text-[11px] block">{claim.vehicleA.make} {claim.vehicleA.model} ({claim.vehicleA.plate})</span>
-                  </td>
-                  <td className="py-3.5 px-4 text-[#090A0A]">
-                    {claim.incident.location.city} ({claim.incident.location.street})
-                  </td>
-                  <td className="py-3.5 px-4 font-mono text-[#6F7375]">
-                    {formatDate(claim.incidentDate)}
-                  </td>
-                  <td className="py-3.5 px-4">
-                    <span
-                      className={`text-[10px] font-semibold px-2 py-0.5 border uppercase ${getStatusBadgeClass(
-                        claim.status
-                      )}`}
-                    >
-                      {getStatusLabel(claim.status)}
-                    </span>
-                  </td>
-                  <td className="py-3.5 px-4 text-right">
-                    <Link
-                      href={`/console/claims/${claim.id}`}
-                      className="font-bold text-[#090A0A] hover:underline uppercase tracking-wider inline-flex items-center gap-1"
-                    >
-                      <span>{isIt ? "Perizia" : "Review"}</span>
-                      <ChevronRightIcon size={14} />
-                    </Link>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
         </div>
       </div>
     </div>

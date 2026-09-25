@@ -3,55 +3,60 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {
-  ActivityIcon,
-  BarChartIcon,
-  LayersIcon,
-  AlertTriangleIcon,
-} from "@/components/icons/Icons";
 import { useClaims } from "@/context/ClaimsContext";
+import { useAuth } from "@/context/AuthContext";
+import { useLanguage } from "@/context/LanguageContext";
 import { cn } from "@/lib/utils";
 
 interface NavItem {
   name: string;
+  nameIt: string;
   href: string;
-  icon: React.ComponentType<{ size?: number; className?: string }>;
   badgeCount?: number;
 }
 
 export function Sidebar({ onCloseMobile }: { onCloseMobile?: () => void }) {
   const pathname = usePathname();
   const { stats, resetDemoData } = useClaims();
+  const { logoutInsurer } = useAuth();
+  const { language } = useLanguage();
+  const isIt = language === "it";
   const [isResetting, setIsResetting] = useState(false);
   const [resetSuccess, setResetSuccess] = useState(false);
 
   const navItems: NavItem[] = [
     {
       name: "Overview",
+      nameIt: "Panoramica",
       href: "/console/overview",
-      icon: ActivityIcon,
     },
     {
       name: "Claims",
+      nameIt: "Sinistri",
       href: "/console/claims",
-      icon: LayersIcon,
       badgeCount: stats.openClaims,
     },
     {
-      name: "Review Queue",
+      name: "Review",
+      nameIt: "Perizia",
       href: "/console/review",
-      icon: AlertTriangleIcon,
       badgeCount: stats.manualReviewRequiredCount,
     },
     {
-      name: "Pipeline Analytics",
+      name: "Analytics",
+      nameIt: "Statistiche",
       href: "/console/analytics",
-      icon: BarChartIcon,
     },
   ];
 
   const handleReset = async () => {
-    if (window.confirm("Reset demo data? This will restore original synthetic claims and clear locally uploaded media.")) {
+    if (
+      window.confirm(
+        isIt
+          ? "Ripristinare i dati dimostrativi? Questo ripristinerà i sinistri sintetici originali."
+          : "Reset demo data? This will restore original synthetic claims and clear locally uploaded media."
+      )
+    ) {
       setIsResetting(true);
       try {
         await resetDemoData();
@@ -64,91 +69,62 @@ export function Sidebar({ onCloseMobile }: { onCloseMobile?: () => void }) {
   };
 
   return (
-    <aside className="w-64 flex-shrink-0 bg-white border-r border-slate-200 flex flex-col h-full select-none">
-      {/* Brand Header explicitly linking to PUBLIC HOME (/) */}
-      <div className="h-16 flex items-center px-5 border-b border-slate-200">
+    <aside className="w-60 flex-shrink-0 bg-[#F7F7F6] border-r border-[#E5E5E3] flex flex-col h-full select-none text-[#0E0F10]">
+      {/* Brand Header */}
+      <div className="h-20 flex flex-col justify-center px-6 border-b border-[#E5E5E3]">
         <Link
           href="/"
           onClick={onCloseMobile}
-          className="flex items-center gap-3 group focus:outline-none focus:ring-2 focus:ring-blue-500 rounded p-1"
+          className="group block focus:outline-none"
           title="Return to Public IMPACTA Corporate Website"
         >
-          <div className="w-8 h-8 rounded-lg bg-slate-950 text-white flex items-center justify-center font-bold tracking-wider text-sm shadow-xs group-hover:bg-blue-600 transition-colors">
-            IM
+          <div className="text-lg font-black tracking-tight text-[#0E0F10]">
+            IMPACTA
           </div>
-          <div>
-            <div className="text-base font-extrabold tracking-tight text-slate-950">
-              IMPACTA
-            </div>
-            <div className="text-xs text-slate-500 font-medium tracking-tight">
-              Claims Operations
-            </div>
+          <div className="text-[11px] text-[#666666] font-medium tracking-tight">
+            {isIt ? "Operazioni Sinistri" : "Claims Operations"}
           </div>
         </Link>
       </div>
 
-      {/* Main Navigation */}
-      <nav className="flex-1 px-3 py-5 space-y-4 overflow-y-auto" aria-label="Main navigation">
-        <div>
-          <div className="px-3 pb-2 text-xs font-semibold text-slate-500 uppercase tracking-wider">
-            Operations Workspace
-          </div>
-          <div className="space-y-1">
-            {navItems.map((item) => {
-              const isActive =
-                pathname === item.href ||
-                (item.href !== "/console/overview" && pathname.startsWith(item.href));
-              const Icon = item.icon;
+      {/* Main Navigation (Reference: Text-only, left black line for active) */}
+      <nav className="flex-1 px-4 py-8 space-y-1 overflow-y-auto" aria-label="Main navigation">
+        {navItems.map((item) => {
+          const isActive =
+            pathname === item.href ||
+            (item.href !== "/console/overview" && pathname.startsWith(item.href));
 
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  onClick={onCloseMobile}
-                  className={cn(
-                    "flex items-center justify-between px-3 py-2.5 text-sm font-medium rounded-xl transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[44px]",
-                    isActive
-                      ? "bg-slate-100 text-slate-950 font-bold border border-slate-200"
-                      : "text-slate-600 hover:text-slate-950 hover:bg-slate-50 border border-transparent"
-                  )}
-                >
-                  <div className="flex items-center gap-3">
-                    <Icon
-                      size={18}
-                      className={cn(
-                        "transition-colors",
-                        isActive ? "text-blue-700" : "text-slate-400 group-hover:text-slate-600"
-                      )}
-                    />
-                    <span>{item.name}</span>
-                  </div>
-                  {item.badgeCount !== undefined && item.badgeCount > 0 && (
-                    <span
-                      className={cn(
-                        "text-xs font-mono px-2 py-0.5 rounded-md font-semibold",
-                        item.href === "/console/review"
-                          ? "bg-amber-100 text-amber-900 border border-amber-300"
-                          : "bg-slate-100 text-slate-800 border border-slate-200"
-                      )}
-                    >
-                      {item.badgeCount}
-                    </span>
-                  )}
-                </Link>
-              );
-            })}
-          </div>
-        </div>
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              onClick={onCloseMobile}
+              className={cn(
+                "flex items-center justify-between py-2.5 px-3 text-sm transition-colors",
+                isActive
+                  ? "border-l-2 border-[#0E0F10] text-[#0E0F10] font-bold pl-3"
+                  : "border-l-2 border-transparent text-[#666666] hover:text-[#0E0F10] font-medium pl-3"
+              )}
+            >
+              <span>{isIt ? item.nameIt : item.name}</span>
+              {item.badgeCount !== undefined && item.badgeCount > 0 && (
+                <span className="text-xs font-mono text-[#666666]">
+                  {item.badgeCount}
+                </span>
+              )}
+            </Link>
+          );
+        })}
       </nav>
 
       {/* Bottom Quiet Utility Area */}
-      <div className="p-4 border-t border-slate-200 bg-slate-50/70 space-y-3">
+      <div className="p-5 border-t border-[#E5E5E3] space-y-4">
         <Link
           href="/"
-          className="flex items-center justify-between text-xs font-semibold text-slate-600 hover:text-slate-900 transition-colors p-1"
+          className="flex items-center justify-between text-xs text-[#666666] hover:text-[#0E0F10] transition-colors"
         >
-          <span>← Back to IMPACTA.eu</span>
-          <span className="text-slate-400 font-mono">Public</span>
+          <span>{isIt ? "Torna a IMPACTA" : "Back to IMPACTA"}</span>
+          <span className="text-[11px]">↗</span>
         </Link>
 
         {/* Reset Demo Data Trigger */}
@@ -156,18 +132,31 @@ export function Sidebar({ onCloseMobile }: { onCloseMobile?: () => void }) {
           type="button"
           onClick={handleReset}
           disabled={isResetting}
-          className="w-full text-center py-2 px-3 rounded-lg border border-slate-300 bg-white hover:bg-slate-100 text-xs font-semibold text-slate-700 transition-colors disabled:opacity-50 min-h-[38px]"
+          className="w-full text-left py-1 text-xs text-[#666666] hover:text-[#0E0F10] transition-colors disabled:opacity-50"
         >
-          {isResetting ? "Resetting data..." : resetSuccess ? "✓ Demo data restored" : "Reset Demo Data"}
+          {isResetting
+            ? (isIt ? "Ripristino dati..." : "Resetting data...")
+            : resetSuccess
+            ? (isIt ? "✓ Dati ripristinati" : "✓ Demo data restored")
+            : (isIt ? "Ripristina dati demo" : "Reset demo data")}
         </button>
 
-        <div className="p-2.5 rounded-lg border border-slate-200 bg-white text-xs space-y-1 text-slate-600">
-          <div className="font-bold text-slate-900">
+        <button
+          type="button"
+          onClick={() => {
+            logoutInsurer();
+            window.location.href = "/console/login";
+          }}
+          className="w-full text-left py-1 text-xs text-[#666666] hover:text-rose-600 transition-colors"
+        >
+          {isIt ? "Esci dal portale" : "Logout"}
+        </button>
+
+        <div className="pt-2 border-t border-[#E5E5E3] text-[11px] text-[#666666] leading-tight">
+          <div className="font-semibold text-[#0E0F10]">
             Aura Mutua Assicurazioni
           </div>
-          <p className="leading-relaxed text-slate-500 text-[11px]">
-            Academic claims console prototype. Shared local browser persistence active.
-          </p>
+          <div className="mt-0.5">Milan Claims Desk</div>
         </div>
       </div>
     </aside>

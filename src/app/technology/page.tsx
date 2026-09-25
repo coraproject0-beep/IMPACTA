@@ -14,14 +14,14 @@ export default function TechnologyPage() {
   return (
     <PublicShell>
       {/* Header */}
-      <section className="py-24 sm:py-36 bg-white border-b border-[#D7D9D8]">
+      <section className="py-24 sm:py-36 bg-white border-b border-[#E5E5E3]">
         <div className="w-full px-6 sm:px-12 lg:px-20 max-w-7xl mx-auto space-y-6">
-          <TechnicalReveal className="text-xs sm:text-sm font-semibold uppercase tracking-widest text-[#6F7375]">
+          <TechnicalReveal className="text-xs sm:text-sm font-semibold uppercase tracking-wider text-[#666666]">
             {isIt ? "ARCHITETTURA TECNOLOGICA" : "TECHNICAL ARCHITECTURE & SPECIFICATION"}
           </TechnicalReveal>
           <EditorialReveal
             as="h1"
-            className="text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-[#090A0A] leading-[1.04] uppercase max-w-5xl"
+            className="text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-[#0E0F10] leading-[1.04] uppercase max-w-5xl"
           >
             {isIt ? (
               <>
@@ -37,7 +37,7 @@ export default function TechnologyPage() {
               </>
             )}
           </EditorialReveal>
-          <p className="text-lg sm:text-2xl text-[#6F7375] leading-relaxed max-w-3xl font-light">
+          <p className="text-lg sm:text-2xl text-[#666666] leading-relaxed max-w-3xl font-light">
             {isIt
               ? "Separiamo con rigore la fondazione tecnica funzionante in locale dalle future integrazioni cloud e OEM. Nessuna falsa promessa di intelligenza artificiale onnisciente."
               : "We rigorously distinguish working local-first client architecture from future enterprise cloud and OEM telemetry integrations."}
@@ -46,10 +46,10 @@ export default function TechnologyPage() {
       </section>
 
       {/* MANDATORY HARDWARE DISCLOSURE STATEMENT */}
-      <section className="py-12 bg-[#090A0A] text-white border-b border-[#D7D9D8]">
+      <section className="py-12 bg-[#0E0F10] text-white border-b border-[#E5E5E3]">
         <div className="w-full px-6 sm:px-12 lg:px-20 max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="space-y-1">
-            <span className="text-xs uppercase tracking-widest text-white/50 font-semibold">
+            <span className="text-xs uppercase tracking-wider text-white/50 font-semibold">
               DISCLOSURE PRODOTTO / PRODUCT DISCLOSURE
             </span>
             <p className="text-sm sm:text-base text-white/80 font-normal leading-relaxed max-w-3xl">
@@ -65,23 +65,23 @@ export default function TechnologyPage() {
       </section>
 
       {/* Current vs Future Architecture (Editorial Open Comparison) */}
-      <section className="py-24 sm:py-36 bg-[#F4F5F3] border-b border-[#D7D9D8]">
+      <section className="py-24 sm:py-36 bg-[#F7F7F6] border-b border-[#E5E5E3]">
         <div className="w-full px-6 sm:px-12 lg:px-20 max-w-7xl mx-auto space-y-16">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20">
             {/* Current Architecture */}
             <div className="space-y-8">
-              <div className="pb-6 border-b border-[#D7D9D8] space-y-2">
-                <span className="text-xs font-semibold tracking-widest text-[#090A0A] uppercase">
+              <div className="pb-6 border-b border-[#E5E5E3] space-y-2">
+                <span className="text-xs font-semibold tracking-wider text-[#0E0F10] uppercase">
                   {isIt ? "FONDAZIONE ATTUALE" : "OPERATIONAL FOUNDATION"}
                 </span>
-                <h2 className="text-2xl sm:text-3xl font-bold uppercase text-[#090A0A]">
+                <h2 className="text-2xl sm:text-3xl font-bold uppercase text-[#0E0F10]">
                   {isIt ? "Architettura Browser-Local" : "Browser-Local Architecture"}
                 </h2>
               </div>
 
-              <div className="space-y-6 text-sm text-[#6F7375]">
-                <div className="space-y-2 pb-6 border-b border-[#D7D9D8]">
-                  <h3 className="text-base font-bold text-[#090A0A] uppercase">
+              <div className="space-y-6 text-sm text-[#666666]">
+                <div className="space-y-2 pb-6 border-b border-[#E5E5E3]">
+                  <h3 className="text-base font-bold text-[#0E0F10] uppercase">
                     Cross-Context Reactive State
                   </h3>
                   <p className="leading-relaxed font-light">
@@ -89,8 +89,8 @@ export default function TechnologyPage() {
                   </p>
                 </div>
 
-                <div className="space-y-2 pb-6 border-b border-[#D7D9D8]">
-                  <h3 className="text-base font-bold text-[#090A0A] uppercase">
+                <div className="space-y-2 pb-6 border-b border-[#E5E5E3]">
+                  <h3 className="text-base font-bold text-[#0E0F10] uppercase">
                     Photographic &amp; GPS Ingestion
                   </h3>
                   <p className="leading-relaxed font-light">
@@ -98,8 +98,8 @@ export default function TechnologyPage() {
                   </p>
                 </div>
 
-                <div className="space-y-2 pb-6 border-b border-[#D7D9D8]">
-                  <h3 className="text-base font-bold text-[#090A0A] uppercase">
+                <div className="space-y-2 pb-6 border-b border-[#E5E5E3]">
+                  <h3 className="text-base font-bold text-[#0E0F10] uppercase">
                     CAI Standard Box 12 Rule Engine
                   </h3>
                   <p className="leading-relaxed font-light">
@@ -111,18 +111,18 @@ export default function TechnologyPage() {
 
             {/* Target Enterprise Cloud Architecture */}
             <div className="space-y-8">
-              <div className="pb-6 border-b border-[#D7D9D8] space-y-2">
-                <span className="text-xs font-semibold tracking-widest text-[#6F7375] uppercase">
+              <div className="pb-6 border-b border-[#E5E5E3] space-y-2">
+                <span className="text-xs font-semibold tracking-wider text-[#666666] uppercase">
                   {isIt ? "ROADMAP AZIENDALE" : "ENTERPRISE ROADMAP"}
                 </span>
-                <h2 className="text-2xl sm:text-3xl font-bold uppercase text-[#090A0A]">
+                <h2 className="text-2xl sm:text-3xl font-bold uppercase text-[#0E0F10]">
                   {isIt ? "Integrazione Carrier &amp; OEM" : "Carrier &amp; OEM Telemetry Target"}
                 </h2>
               </div>
 
-              <div className="space-y-6 text-sm text-[#6F7375]">
-                <div className="space-y-2 pb-6 border-b border-[#D7D9D8]">
-                  <h3 className="text-base font-bold text-[#090A0A] uppercase">
+              <div className="space-y-6 text-sm text-[#666666]">
+                <div className="space-y-2 pb-6 border-b border-[#E5E5E3]">
+                  <h3 className="text-base font-bold text-[#0E0F10] uppercase">
                     OEM Connected Vehicle Feeds
                   </h3>
                   <p className="leading-relaxed font-light">
@@ -130,8 +130,8 @@ export default function TechnologyPage() {
                   </p>
                 </div>
 
-                <div className="space-y-2 pb-6 border-b border-[#D7D9D8]">
-                  <h3 className="text-base font-bold text-[#090A0A] uppercase">
+                <div className="space-y-2 pb-6 border-b border-[#E5E5E3]">
+                  <h3 className="text-base font-bold text-[#0E0F10] uppercase">
                     Core Carrier Core Claims Sync
                   </h3>
                   <p className="leading-relaxed font-light">
@@ -139,8 +139,8 @@ export default function TechnologyPage() {
                   </p>
                 </div>
 
-                <div className="space-y-2 pb-6 border-b border-[#D7D9D8]">
-                  <h3 className="text-base font-bold text-[#090A0A] uppercase">
+                <div className="space-y-2 pb-6 border-b border-[#E5E5E3]">
+                  <h3 className="text-base font-bold text-[#0E0F10] uppercase">
                     Cryptographic Chain of Custody
                   </h3>
                   <p className="leading-relaxed font-light">
@@ -157,16 +157,16 @@ export default function TechnologyPage() {
       <section className="py-20 bg-white">
         <div className="w-full px-6 sm:px-12 lg:px-20 max-w-7xl mx-auto flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
           <div>
-            <h3 className="text-2xl font-bold uppercase text-[#090A0A]">
+            <h3 className="text-2xl font-bold uppercase text-[#0E0F10]">
               {isIt ? "Esamina il fascicolo sinistro" : "Inspect structured claims data"}
             </h3>
-            <p className="text-sm text-[#6F7375] mt-1 font-light">
+            <p className="text-sm text-[#666666] mt-1 font-light">
               {isIt ? "Accedi al banco di lavoro peritale con i dati dimostrativi caricati." : "Access the operational claims workbench with pre-loaded forensic fixtures."}
             </p>
           </div>
           <Link
             href="/console/claims"
-            className="inline-flex items-center justify-center min-h-[52px] px-8 bg-[#090A0A] text-white text-xs font-bold tracking-wider uppercase hover:bg-[#171819] transition-colors"
+            className="inline-flex items-center justify-center min-h-[52px] px-8 bg-[#0E0F10] text-white text-xs font-bold tracking-wider uppercase hover:bg-[#1A1B1C] transition-colors"
           >
             {isIt ? "Accedi alla Console" : "Open Claims Console"}
           </Link>

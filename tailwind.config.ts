@@ -14,11 +14,11 @@ const config: Config = {
         foreground: "var(--foreground)",
         border: "var(--border)",
         impacta: {
-          black: "#090A0A",
-          graphite: "#171819",
-          titanium: "#6F7375",
-          hairline: "#D7D9D8",
-          offwhite: "#F4F5F3",
+          black: "#0E0F10",
+          graphite: "#1A1B1C",
+          titanium: "#666666",
+          hairline: "#E5E5E3",
+          offwhite: "#F7F7F6",
           white: "#FFFFFF",
         },
         emergency: {

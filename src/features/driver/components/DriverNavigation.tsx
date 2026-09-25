@@ -25,29 +25,29 @@ export function DriverNavigation({ variant = "all" }: DriverNavigationProps) {
     return null;
   }
 
-  // Desktop navigation maintains all 5 core surfaces
+  // Desktop navigation maintains core surfaces
   const desktopNavItems = [
-    { label: t.nav.driverHome, href: "/app", icon: HomeIcon },
-    { label: t.nav.reports, href: "/app/reports", icon: FileTextIcon },
-    { label: t.nav.vehicle, href: "/app/vehicle", icon: CarIcon },
-    { label: t.nav.insurance, href: "/app/insurance", icon: ShieldIcon },
-    { label: t.nav.profile, href: "/app/profile", icon: UserIcon },
+    { label: t("nav.driverHome"), href: "/app", icon: HomeIcon },
+    { label: t("nav.reports"), href: "/app/reports", icon: FileTextIcon },
+    { label: t("nav.vehicle"), href: "/app/vehicle", icon: CarIcon },
+    { label: t("nav.insurance"), href: "/app/insurance", icon: ShieldIcon },
+    { label: t("nav.profile"), href: "/app/profile", icon: UserIcon },
   ];
 
-  // Mobile bottom bar focuses on the 3 essential destinations (minimized clutter)
+  // Mobile bottom bar matches driver-home-reference.png (Home, Reports, Profile)
   const mobileNavItems = [
-    { label: t.nav.driverHome, href: "/app", icon: HomeIcon },
-    { label: t.nav.reports, href: "/app/reports", icon: FileTextIcon },
-    { label: t.nav.profile, href: "/app/profile", icon: UserIcon },
+    { label: t("nav.driverHome"), href: "/app", icon: HomeIcon },
+    { label: t("nav.reports"), href: "/app/reports", icon: FileTextIcon },
+    { label: t("nav.profile"), href: "/app/profile", icon: UserIcon },
   ];
 
   return (
     <>
-      {/* Mobile Bottom Navigation Bar (3 Items, comfortable touch target >= 44px) */}
+      {/* Mobile Bottom Navigation Bar matching driver-home-reference.png */}
       {(variant === "all" || variant === "mobile") && (
         <nav
           aria-label="Consumer Mobile Navigation"
-          className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200/80 px-4 py-2 flex items-center justify-around select-none shadow-sm"
+          className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#F7F7F6]/95 backdrop-blur-md border-t border-[#E5E5E3] px-6 py-2.5 flex items-center justify-around select-none"
         >
           {mobileNavItems.map((item) => {
             const isActive = pathname === item.href;
@@ -56,21 +56,21 @@ export function DriverNavigation({ variant = "all" }: DriverNavigationProps) {
               <Link
                 key={item.href}
                 href={item.href}
-                className={`min-h-[44px] min-w-[64px] flex flex-col items-center justify-center gap-1 py-1 px-3 rounded-xl transition-colors ${
+                className={`min-h-[48px] min-w-[72px] flex flex-col items-center justify-center gap-1 transition-colors ${
                   isActive
-                    ? "text-blue-700 font-bold bg-blue-50/60"
-                    : "text-slate-500 hover:text-slate-800"
+                    ? "text-[#0E0F10] font-semibold"
+                    : "text-[#666666] hover:text-[#0E0F10]"
                 }`}
               >
-                <Icon size={20} className={isActive ? "text-blue-600" : "text-slate-400"} />
-                <span className="text-[11px] tracking-tight">{item.label}</span>
+                <Icon size={22} className={isActive ? "text-[#0E0F10]" : "text-[#666666]"} />
+                <span className="text-xs tracking-normal">{item.label}</span>
               </Link>
             );
           })}
         </nav>
       )}
 
-      {/* Desktop Navigation Tabs in Header */}
+      {/* Desktop Navigation Tabs */}
       {(variant === "all" || variant === "desktop") && (
         <nav
           aria-label="Consumer Desktop Navigation"
@@ -83,13 +83,13 @@ export function DriverNavigation({ variant = "all" }: DriverNavigationProps) {
               <Link
                 key={item.href}
                 href={item.href}
-                className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold transition-colors ${
+                className={`flex items-center gap-2 px-3.5 py-2 text-xs font-medium transition-colors ${
                   isActive
-                    ? "bg-slate-100 text-slate-950 font-bold"
-                    : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
+                    ? "text-[#0E0F10] font-bold border-b-2 border-[#0E0F10]"
+                    : "text-[#666666] hover:text-[#0E0F10]"
                 }`}
               >
-                <Icon size={15} className={isActive ? "text-blue-600" : "text-slate-400"} />
+                <Icon size={16} className={isActive ? "text-[#0E0F10]" : "text-[#666666]"} />
                 <span>{item.label}</span>
               </Link>
             );

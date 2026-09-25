@@ -15,14 +15,14 @@ export default function InsurersPage() {
   return (
     <PublicShell>
       {/* Header Scene */}
-      <section className="py-24 sm:py-36 bg-white border-b border-[#D7D9D8]">
+      <section className="py-24 sm:py-36 bg-white border-b border-[#E5E5E3]">
         <div className="w-full px-6 sm:px-12 lg:px-20 max-w-7xl mx-auto space-y-6">
-          <TechnicalReveal className="text-xs sm:text-sm font-semibold uppercase tracking-widest text-[#6F7375]">
+          <TechnicalReveal className="text-xs sm:text-sm font-semibold uppercase tracking-wider text-[#666666]">
             {isIt ? "OPERAZIONI SINISTRI & LIQUIDAZIONE" : "CLAIMS OPERATIONS & SIU"}
           </TechnicalReveal>
           <EditorialReveal
             as="h1"
-            className="text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-[#090A0A] leading-[1.04] uppercase max-w-5xl"
+            className="text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-[#0E0F10] leading-[1.04] uppercase max-w-5xl"
           >
             {isIt ? (
               <>
@@ -38,7 +38,7 @@ export default function InsurersPage() {
               </>
             )}
           </EditorialReveal>
-          <p className="text-lg sm:text-2xl text-[#6F7375] leading-relaxed max-w-3xl font-light">
+          <p className="text-lg sm:text-2xl text-[#666666] leading-relaxed max-w-3xl font-light">
             {isIt
               ? "Sostituisce i moduli CAI illeggibili e le dichiarazioni contraddittorie con rilievi metrici, curve di decelerazione e fascicoli strutturati secondo gli standard europei."
               : "Replace disputed handwritten CAI forms with high-frequency connected vehicle telemetry, calibrated roadway geometry, and immutable digital audit chains."}
@@ -47,7 +47,7 @@ export default function InsurersPage() {
           <div className="pt-4">
             <Link
               href="/console/login"
-              className="inline-flex items-center justify-center min-h-[52px] px-8 bg-[#090A0A] text-white text-xs font-bold tracking-wider uppercase hover:bg-[#171819] transition-colors"
+              className="inline-flex items-center justify-center min-h-[52px] px-8 bg-[#0E0F10] text-white text-xs font-bold tracking-wider uppercase hover:bg-[#1A1B1C] transition-colors"
             >
               {isIt ? "Accedi alla Console Sinistri" : "Launch Claims Console"}
             </Link>
@@ -56,68 +56,68 @@ export default function InsurersPage() {
       </section>
 
       {/* Real Product UI Workbench Preview */}
-      <section className="py-28 bg-[#F4F5F3] border-b border-[#D7D9D8]">
+      <section className="py-28 bg-[#F7F7F6] border-b border-[#E5E5E3]">
         <div className="w-full px-6 sm:px-12 lg:px-20 max-w-7xl mx-auto space-y-12">
           <div className="max-w-2xl space-y-2">
-            <span className="text-xs font-semibold tracking-widest text-[#6F7375] uppercase">
+            <span className="text-xs font-semibold tracking-wider text-[#666666] uppercase">
               {isIt ? "INTERFACCIA PERITALE" : "WORKBENCH ARCHITECTURE"}
             </span>
-            <h2 className="text-3xl font-bold uppercase text-[#090A0A]">
+            <h2 className="text-3xl font-bold uppercase text-[#0E0F10]">
               {isIt ? "Il Fascicolo Sinistro Unificato" : "Unified Claim Dossier Inspection"}
             </h2>
           </div>
 
-          <ProductReveal className="border border-[#D7D9D8] bg-white p-8 sm:p-12 shadow-sm space-y-8">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-6 border-b border-[#D7D9D8] gap-4">
+          <ProductReveal className="border border-[#E5E5E3] bg-white rounded-xl p-8 sm:p-12 space-y-8">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-6 border-b border-[#E5E5E3] gap-4">
               <div>
-                <span className="text-xs uppercase tracking-widest text-[#6F7375] font-semibold">
+                <span className="text-xs uppercase tracking-wider text-[#666666] font-semibold">
                   CARRIER: AURA MUTUA ASSICURAZIONI • FIRENZE
                 </span>
-                <h3 className="text-2xl font-bold font-mono text-[#090A0A] mt-1">
+                <h3 className="text-2xl font-bold font-mono text-[#0E0F10] mt-1">
                   CLAIM #CLM-2026-0891
                 </h3>
               </div>
-              <div className="flex items-center gap-4 text-xs">
+              <div className="flex items-center gap-4 text-xs font-mono">
                 <span className="text-emerald-700 font-bold uppercase">{isIt ? "ACQUISIZIONE COMPLETA 100%" : "100% INGESTION COMPLETE"}</span>
-                <span className="text-[#6F7375] uppercase font-semibold">{isIt ? "PRIORITÀ: MEDIA" : "PRIORITY: MEDIUM"}</span>
+                <span className="text-[#666666] uppercase font-semibold">{isIt ? "PRIORITÀ: MEDIA" : "PRIORITY: MEDIUM"}</span>
               </div>
             </div>
 
             {/* Technical Detail Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 py-4 text-sm border-b border-[#D7D9D8]">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 py-4 text-sm border-b border-[#E5E5E3]">
               <div className="space-y-1">
-                <span className="text-xs text-[#6F7375] uppercase tracking-wider font-semibold block">{isIt ? "Assicurato" : "Policyholder"}</span>
-                <span className="font-bold text-[#090A0A] text-base block">Matteo Bianchi</span>
-                <span className="text-xs text-[#6F7375] font-mono">VW Golf VIII (GF492XP)</span>
+                <span className="text-xs text-[#666666] uppercase tracking-wider font-semibold block">{isIt ? "Assicurato" : "Policyholder"}</span>
+                <span className="font-bold text-[#0E0F10] text-base block">Matteo Bianchi</span>
+                <span className="text-xs text-[#666666] font-mono">VW Golf VIII (GF492XP)</span>
               </div>
               <div className="space-y-1">
-                <span className="text-xs text-[#6F7375] uppercase tracking-wider font-semibold block">{isIt ? "Controparte" : "Counterparty"}</span>
-                <span className="font-bold text-[#090A0A] text-base block">Marco Ferri</span>
-                <span className="text-xs text-[#6F7375] font-mono">Fiat 500X (EB810PZ)</span>
+                <span className="text-xs text-[#666666] uppercase tracking-wider font-semibold block">{isIt ? "Controparte" : "Counterparty"}</span>
+                <span className="font-bold text-[#0E0F10] text-base block">Marco Ferri</span>
+                <span className="text-xs text-[#666666] font-mono">Fiat 500X (EB810PZ)</span>
               </div>
               <div className="space-y-1">
-                <span className="text-xs text-[#6F7375] uppercase tracking-wider font-semibold block">{isIt ? "Casella CAI 12" : "CAI Circumstance"}</span>
-                <span className="font-bold text-[#090A0A] text-base block">Box 12 — Case 04 &amp; 08</span>
-                <span className="text-xs text-[#6F7375]">{isIt ? "Immissione da area privata" : "Entering from private lot"}</span>
+                <span className="text-xs text-[#666666] uppercase tracking-wider font-semibold block">{isIt ? "Casella CAI 12" : "CAI Circumstance"}</span>
+                <span className="font-bold text-[#0E0F10] text-base block">Box 12 — Case 04 &amp; 08</span>
+                <span className="text-xs text-[#666666]">{isIt ? "Immissione da area privata" : "Entering from private lot"}</span>
               </div>
             </div>
 
             {/* Metric Strip */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 text-xs text-[#6F7375]">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 text-xs text-[#666666]">
               <div>
-                <span className="block text-[#6F7375] uppercase tracking-wider font-semibold">{isIt ? "VELOCITÀ IMPATTO" : "IMPACT SPEED"}</span>
-                <span className="text-xl font-bold font-mono text-[#090A0A]">48.2 KM/H</span>
+                <span className="block text-[#666666] uppercase tracking-wider font-semibold">{isIt ? "VELOCITÀ IMPATTO" : "IMPACT SPEED"}</span>
+                <span className="text-xl font-bold font-mono text-[#0E0F10]">48.2 KM/H</span>
               </div>
               <div>
-                <span className="block text-[#6F7375] uppercase tracking-wider font-semibold">{isIt ? "DECELERAZIONE" : "DECELERATION"}</span>
-                <span className="text-xl font-bold font-mono text-[#090A0A]">-0.82 G</span>
+                <span className="block text-[#666666] uppercase tracking-wider font-semibold">{isIt ? "DECELERAZIONE" : "DECELERATION"}</span>
+                <span className="text-xl font-bold font-mono text-[#0E0F10]">-0.82 G</span>
               </div>
               <div>
-                <span className="block text-[#6F7375] uppercase tracking-wider font-semibold">{isIt ? "FOTOGRAFIE" : "PHOTOGRAPHS"}</span>
-                <span className="text-xl font-bold font-mono text-[#090A0A]">4 GEOLOCATED</span>
+                <span className="block text-[#666666] uppercase tracking-wider font-semibold">{isIt ? "FOTOGRAFIE" : "PHOTOGRAPHS"}</span>
+                <span className="text-xl font-bold font-mono text-[#0E0F10]">4 GEOLOCATED</span>
               </div>
               <div>
-                <span className="block text-[#6F7375] uppercase tracking-wider font-semibold">{isIt ? "AUDIT LOG" : "AUDIT LOG"}</span>
+                <span className="block text-[#666666] uppercase tracking-wider font-semibold">{isIt ? "AUDIT LOG" : "AUDIT LOG"}</span>
                 <span className="text-xl font-bold font-mono text-emerald-700">SHA-256 SIGNED</span>
               </div>
             </div>
@@ -126,17 +126,17 @@ export default function InsurersPage() {
       </section>
 
       {/* Epistemic Demarcation Section */}
-      <section className="py-24 sm:py-36 bg-white border-b border-[#D7D9D8]">
+      <section className="py-24 sm:py-36 bg-white border-b border-[#E5E5E3]">
         <div className="w-full px-6 sm:px-12 lg:px-20 max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-baseline">
           <div className="lg:col-span-5 space-y-4">
-            <span className="text-xs font-semibold tracking-widest text-[#090A0A] uppercase">
+            <span className="text-xs font-semibold tracking-wider text-[#0E0F10] uppercase">
               {isIt ? "RESPONSABILITÀ PERITALE" : "ADJUSTER AUTHORITY"}
             </span>
-            <h2 className="text-3xl sm:text-4xl font-bold uppercase text-[#090A0A]">
+            <h2 className="text-3xl sm:text-4xl font-bold uppercase text-[#0E0F10]">
               {isIt ? "Gli algoritmi non emettono sentenze" : "Zero automated liability decrees"}
             </h2>
           </div>
-          <div className="lg:col-span-7 space-y-6 text-base sm:text-lg text-[#6F7375] font-light leading-relaxed">
+          <div className="lg:col-span-7 space-y-6 text-base sm:text-lg text-[#666666] font-light leading-relaxed">
             <p>
               {isIt
                 ? "L'ordinamento giuridico italiano ed europeo richiede che la determinazione della responsabilità sia sempre assunta da periti e liquidatori abilitati. IMPACTA fornisce dati oggettivi incontestabili ma rimette ogni decisione di concorso di colpa all'autorità umana."

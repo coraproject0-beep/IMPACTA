@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import Link from "next/link";
 import { PublicShell } from "@/components/public/PublicShell";
 import { EditorialReveal } from "@/components/motion/EditorialReveal";
 import { TechnicalReveal } from "@/components/motion/TechnicalReveal";
@@ -9,27 +8,27 @@ import { TechnicalReveal } from "@/components/motion/TechnicalReveal";
 export default function TermsPage() {
   return (
     <PublicShell>
-      <section className="py-24 sm:py-36 bg-white border-b border-[#D7D9D8]">
+      <section className="py-24 sm:py-36 bg-white border-b border-[#E5E5E3]">
         <div className="w-full px-6 sm:px-12 lg:px-20 max-w-4xl mx-auto space-y-4">
-          <TechnicalReveal className="text-xs sm:text-sm font-mono font-bold uppercase tracking-widest text-[#6F7375]">
+          <TechnicalReveal className="text-xs sm:text-sm uppercase tracking-wider text-[#666666] font-semibold">
             LEGAL DISCLAIMERS &amp; PROTOCOL
           </TechnicalReveal>
           <EditorialReveal
             as="h1"
-            className="text-4xl sm:text-6xl font-bold tracking-tight text-[#090A0A] uppercase"
+            className="text-4xl sm:text-6xl font-bold tracking-tight text-[#0E0F10] uppercase"
           >
             Terms of Use &amp; Disclaimers
           </EditorialReveal>
-          <p className="text-sm font-mono text-[#6F7375]">
+          <p className="text-sm font-mono text-[#666666]">
             Version 2.0 • Academic &amp; Demonstration Prototype
           </p>
         </div>
       </section>
 
-      <section className="py-20 sm:py-32 bg-[#F4F5F3]">
-        <div className="w-full px-6 sm:px-12 lg:px-20 max-w-4xl mx-auto bg-white border border-[#D7D9D8] p-8 sm:p-16 space-y-12 text-base sm:text-lg text-[#171819] leading-relaxed font-light">
-          <div className="space-y-3 pb-8 border-b border-[#D7D9D8]">
-            <h2 className="text-xl sm:text-2xl font-bold uppercase text-[#090A0A]">
+      <section className="py-20 sm:py-32 bg-[#F7F7F6]">
+        <div className="w-full px-6 sm:px-12 lg:px-20 max-w-4xl mx-auto bg-white border border-[#E5E5E3] rounded-2xl p-8 sm:p-16 space-y-12 text-base sm:text-lg text-[#0E0F10] leading-relaxed font-light">
+          <div className="space-y-3 pb-8 border-b border-[#E5E5E3]">
+            <h2 className="text-xl sm:text-2xl font-bold uppercase text-[#0E0F10]">
               1. Non-Commercial Demonstration
             </h2>
             <p>
@@ -37,8 +36,8 @@ export default function TermsPage() {
             </p>
           </div>
 
-          <div className="space-y-3 pb-8 border-b border-[#D7D9D8]">
-            <h2 className="text-xl sm:text-2xl font-bold uppercase text-[#090A0A]">
+          <div className="space-y-3 pb-8 border-b border-[#E5E5E3]">
+            <h2 className="text-xl sm:text-2xl font-bold uppercase text-[#0E0F10]">
               2. Epistemic Demarcation &amp; Zero Liability Automation
             </h2>
             <p>
@@ -47,7 +46,7 @@ export default function TermsPage() {
           </div>
 
           <div className="space-y-3">
-            <h2 className="text-xl sm:text-2xl font-bold uppercase text-[#090A0A]">
+            <h2 className="text-xl sm:text-2xl font-bold uppercase text-[#0E0F10]">
               3. Acceptance of Terms
             </h2>
             <p>

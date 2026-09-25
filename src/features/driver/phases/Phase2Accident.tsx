@@ -14,11 +14,11 @@ interface Phase2AccidentProps {
 export function Phase2Accident({ draft, onUpdate, onNext }: Phase2AccidentProps) {
   const { t, language } = useLanguage();
   const isIt = language === "it";
-  const [city, setCity] = useState(draft.location.city || "Firenze");
-  const [street, setStreet] = useState(draft.location.street || "Piazza San Giovanni");
+  const [city, setCity] = useState(draft.location.city || "Milano");
+  const [street, setStreet] = useState(draft.location.street || "Via Lorenteggio");
   const [junctionType, setJunctionType] = useState(draft.location.junctionType || "ROUNDABOUT");
-  const [date, setDate] = useState(draft.incidentDate || "2026-09-14");
-  const [time, setTime] = useState(draft.incidentTime || "11:42");
+  const [date, setDate] = useState(draft.incidentDate || "2026-09-25");
+  const [time, setTime] = useState(draft.incidentTime || "08:42");
   const [vehiclesCount, setVehiclesCount] = useState(draft.vehiclesCount || 2);
   const [anyInjured, setAnyInjured] = useState(draft.anyInjured || false);
   const [policePresent, setPolicePresent] = useState(draft.policePresent || false);
@@ -41,217 +41,147 @@ export function Phase2Accident({ draft, onUpdate, onNext }: Phase2AccidentProps)
   };
 
   const setDemoLocation = () => {
-    setCity("Firenze");
-    setStreet("Piazza San Giovanni");
+    setCity("Milano");
+    setStreet("Via Lorenteggio");
     setJunctionType("ROUNDABOUT");
   };
 
   return (
-    <div className="space-y-10 py-2 max-w-xl mx-auto selection:bg-[#090A0A] selection:text-white">
-      {/* Step Header */}
-      <div className="space-y-3 pb-6 border-b border-[#D7D9D8]">
-        <p className="text-xs font-semibold uppercase tracking-widest text-[#6F7375]">
-          {t.wizard.phase2Title}
-        </p>
-        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black uppercase tracking-tight text-[#090A0A] leading-[1.05]">
-          {t.wizard.phase2WhereWhen}
+    <div className="max-w-md mx-auto py-2 space-y-7 selection:bg-[#0E0F10] selection:text-white">
+      {/* Title & Description */}
+      <div className="space-y-2 pt-1">
+        <h1 className="text-3xl sm:text-4xl font-semibold tracking-tight text-[#0E0F10]">
+          {isIt ? "Dove e quando è successo?" : "Where and when?"}
         </h1>
-        <p className="text-base sm:text-lg text-[#6F7375] font-normal leading-relaxed pt-1">
+        <p className="text-base sm:text-lg text-[#666666] font-normal leading-snug">
           {isIt
-            ? "Indica la posizione e le circostanze per collocare con precisione l'evento per la perizia assicurativa."
-            : "Provide the location and basic circumstances to position the event accurately for insurer review."}
+            ? "Indica la posizione e l'orario dell'incidente per la documentazione."
+            : "Set the location and time of the incident to anchor your report."}
         </p>
       </div>
 
-      {/* 1. Location Decision */}
-      <div className="space-y-4 pb-8 border-b border-[#D7D9D8]">
+      {/* 1. Location Inputs */}
+      <div className="space-y-4 pt-1">
         <div className="flex items-center justify-between">
-          <label className="font-bold text-[#090A0A] text-sm uppercase tracking-wider flex items-center gap-2">
-            <MapPinIcon size={16} />
+          <label className="text-xs font-semibold uppercase tracking-wider text-[#666666] flex items-center gap-1.5">
+            <MapPinIcon size={14} />
             <span>{isIt ? "Luogo dell'impatto" : "Collision location"}</span>
           </label>
           <button
             type="button"
             onClick={setDemoLocation}
-            className="text-xs font-semibold text-[#090A0A] hover:underline uppercase tracking-wider"
+            className="text-xs font-medium text-[#0E0F10] hover:underline"
           >
-            {t.wizard.phase2DemoRoundabout}
+            {t("wizard.phase2DemoRoundabout")}
           </button>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div className="space-y-1">
-            <span className="text-xs text-[#6F7375] uppercase tracking-wider">{t.wizard.phase2City}</span>
+        <div className="space-y-3">
+          <div>
             <input
               type="text"
               value={city}
               onChange={(e) => setCity(e.target.value)}
-              placeholder="e.g. Firenze"
-              className="w-full min-h-[50px] px-4 py-3 border border-[#D7D9D8] bg-white focus:border-[#090A0A] focus:outline-none text-[#090A0A] font-medium text-sm"
+              placeholder={isIt ? "Città (es. Milano)" : "City (e.g. Milano)"}
+              className="w-full min-h-[48px] px-4 py-3 rounded-xl border border-[#E5E5E3] bg-white focus:border-[#0E0F10] focus:outline-none text-[#0E0F10] text-sm"
             />
           </div>
-          <div className="space-y-1">
-            <span className="text-xs text-[#6F7375] uppercase tracking-wider">{t.wizard.phase2Street}</span>
+          <div>
             <input
               type="text"
               value={street}
               onChange={(e) => setStreet(e.target.value)}
-              placeholder="e.g. Piazza San Giovanni"
-              className="w-full min-h-[50px] px-4 py-3 border border-[#D7D9D8] bg-white focus:border-[#090A0A] focus:outline-none text-[#090A0A] font-medium text-sm"
+              placeholder={isIt ? "Via o piazza" : "Street or junction"}
+              className="w-full min-h-[48px] px-4 py-3 rounded-xl border border-[#E5E5E3] bg-white focus:border-[#0E0F10] focus:outline-none text-[#0E0F10] text-sm"
             />
-          </div>
-        </div>
-
-        {/* Junction Type Selector */}
-        <div className="space-y-2 pt-2">
-          <span className="text-xs text-[#6F7375] uppercase tracking-wider block">{t.wizard.phase2JunctionType}</span>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-            {[
-              { id: "ROUNDABOUT", label: isIt ? "Rotatoria" : "Roundabout" },
-              { id: "INTERSECTION", label: isIt ? "Incrocio" : "Crossroads" },
-              { id: "STRAIGHT_ROAD", label: isIt ? "Rettilineo" : "Straight Road" },
-              { id: "PARKING", label: isIt ? "Parcheggio" : "Parking Lot" },
-            ].map((j) => (
-              <button
-                key={j.id}
-                type="button"
-                onClick={() => setJunctionType(j.id as typeof junctionType)}
-                className={`min-h-[46px] py-2 px-3 text-xs font-semibold uppercase tracking-wider border transition-colors text-center ${
-                  junctionType === j.id
-                    ? "bg-[#090A0A] text-white border-[#090A0A]"
-                    : "bg-white text-[#6F7375] border-[#D7D9D8] hover:border-[#090A0A] hover:text-[#090A0A]"
-                }`}
-              >
-                {j.label}
-              </button>
-            ))}
           </div>
         </div>
       </div>
 
       {/* 2. Date and Time */}
-      <div className="space-y-4 pb-8 border-b border-[#D7D9D8]">
-        <label className="font-bold text-[#090A0A] text-sm uppercase tracking-wider block">
-          {t.wizard.phase2DateTime}
-        </label>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div className="space-y-1">
-            <span className="text-xs text-[#6F7375] uppercase tracking-wider">{t.wizard.phase2Date}</span>
-            <input
-              type="date"
-              value={date}
-              onChange={(e) => setDate(e.target.value)}
-              className="w-full min-h-[50px] px-4 py-3 border border-[#D7D9D8] bg-white focus:border-[#090A0A] focus:outline-none text-[#090A0A] font-mono text-sm"
-            />
-          </div>
-          <div className="space-y-1">
-            <span className="text-xs text-[#6F7375] uppercase tracking-wider">{t.wizard.phase2Time}</span>
-            <input
-              type="time"
-              value={time}
-              onChange={(e) => setTime(e.target.value)}
-              className="w-full min-h-[50px] px-4 py-3 border border-[#D7D9D8] bg-white focus:border-[#090A0A] focus:outline-none text-[#090A0A] font-mono text-sm"
-            />
-          </div>
+      <div className="space-y-3 pt-2">
+        <span className="text-xs font-semibold uppercase tracking-wider text-[#666666] block">
+          {t("wizard.phase2DateTime")}
+        </span>
+        <div className="grid grid-cols-2 gap-3">
+          <input
+            type="date"
+            value={date}
+            onChange={(e) => setDate(e.target.value)}
+            className="w-full min-h-[48px] px-4 py-2.5 rounded-xl border border-[#E5E5E3] bg-white focus:border-[#0E0F10] focus:outline-none text-[#0E0F10] font-mono text-sm"
+          />
+          <input
+            type="time"
+            value={time}
+            onChange={(e) => setTime(e.target.value)}
+            className="w-full min-h-[48px] px-4 py-2.5 rounded-xl border border-[#E5E5E3] bg-white focus:border-[#0E0F10] focus:outline-none text-[#0E0F10] font-mono text-sm"
+          />
         </div>
       </div>
 
-      {/* 3. Circumstances & Conditions */}
-      <div className="space-y-4 pb-8">
-        <label className="font-bold text-[#090A0A] text-sm uppercase tracking-wider block">
-          {isIt ? "Circostanze e condizioni" : "Circumstances & conditions"}
-        </label>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          {/* Vehicles count */}
-          <div className="space-y-1.5">
-            <span className="text-xs text-[#6F7375] uppercase tracking-wider block">{t.wizard.phase2VehiclesInvolved}</span>
-            <div className="flex items-center gap-1.5">
-              {[2, 3, 1].map((n) => (
-                <button
-                  key={n}
-                  type="button"
-                  onClick={() => setVehiclesCount(n)}
-                  className={`min-h-[46px] flex-1 py-2 text-xs font-semibold uppercase tracking-wider border text-center transition-colors ${
-                    vehiclesCount === n
-                      ? "bg-[#090A0A] text-white border-[#090A0A]"
-                      : "bg-white text-[#6F7375] border-[#D7D9D8] hover:border-[#090A0A] hover:text-[#090A0A]"
-                  }`}
-                >
-                  {n === 1 ? (isIt ? "Solo io" : "Single") : `${n}`}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Injuries */}
-          <div className="space-y-1.5">
-            <span className="text-xs text-[#6F7375] uppercase tracking-wider block">{t.wizard.phase2Injuries}</span>
-            <div className="flex items-center gap-1.5">
-              <button
-                type="button"
-                onClick={() => setAnyInjured(false)}
-                className={`min-h-[46px] flex-1 py-2 text-xs font-semibold uppercase tracking-wider border text-center transition-colors ${
-                  !anyInjured
-                    ? "bg-[#090A0A] text-white border-[#090A0A]"
-                    : "bg-white text-[#6F7375] border-[#D7D9D8] hover:border-[#090A0A] hover:text-[#090A0A]"
-                }`}
-              >
-                No
-              </button>
-              <button
-                type="button"
-                onClick={() => setAnyInjured(true)}
-                className={`min-h-[46px] flex-1 py-2 text-xs font-semibold uppercase tracking-wider border text-center transition-colors ${
-                  anyInjured
-                    ? "bg-rose-600 text-white border-rose-600"
-                    : "bg-white text-[#6F7375] border-[#D7D9D8] hover:border-[#090A0A] hover:text-[#090A0A]"
-                }`}
-              >
-                {isIt ? "Sì" : "Yes"}
-              </button>
-            </div>
-          </div>
-
-          {/* Police */}
-          <div className="space-y-1.5">
-            <span className="text-xs text-[#6F7375] uppercase tracking-wider block">{t.wizard.phase2PolicePresent}</span>
-            <div className="flex items-center gap-1.5">
-              <button
-                type="button"
-                onClick={() => setPolicePresent(false)}
-                className={`min-h-[46px] flex-1 py-2 text-xs font-semibold uppercase tracking-wider border text-center transition-colors ${
-                  !policePresent
-                    ? "bg-[#090A0A] text-white border-[#090A0A]"
-                    : "bg-white text-[#6F7375] border-[#D7D9D8] hover:border-[#090A0A] hover:text-[#090A0A]"
-                }`}
-              >
-                No
-              </button>
-              <button
-                type="button"
-                onClick={() => setPolicePresent(true)}
-                className={`min-h-[46px] flex-1 py-2 text-xs font-semibold uppercase tracking-wider border text-center transition-colors ${
-                  policePresent
-                    ? "bg-[#090A0A] text-white border-[#090A0A]"
-                    : "bg-white text-[#6F7375] border-[#D7D9D8] hover:border-[#090A0A] hover:text-[#090A0A]"
-                }`}
-              >
-                {isIt ? "Sì" : "Yes"}
-              </button>
-            </div>
-          </div>
+      {/* 3. Vehicles Count */}
+      <div className="space-y-3 pt-2">
+        <span className="text-xs font-semibold uppercase tracking-wider text-[#666666] block">
+          {t("wizard.phase2VehiclesInvolved")}
+        </span>
+        <div className="grid grid-cols-3 gap-3">
+          {[2, 3, 4].map((count) => (
+            <button
+              key={count}
+              type="button"
+              onClick={() => setVehiclesCount(count)}
+              className={`py-3 px-4 rounded-xl text-sm font-semibold transition-all border ${
+                vehiclesCount === count
+                  ? "bg-[#0E0F10] text-white border-[#0E0F10]"
+                  : "bg-white text-[#0E0F10] border-[#E5E5E3] hover:border-[#0E0F10]"
+              }`}
+            >
+              {count} {isIt ? "veicoli" : "vehicles"}
+            </button>
+          ))}
         </div>
       </div>
 
-      {/* Primary Action Button */}
-      <div className="pt-2">
+      {/* 4. Injury Check */}
+      <div className="space-y-3 pt-2">
+        <span className="text-xs font-semibold uppercase tracking-wider text-[#666666] block">
+          {t("wizard.phase2Injuries")}
+        </span>
+        <div className="grid grid-cols-2 gap-3">
+          <button
+            type="button"
+            onClick={() => setAnyInjured(false)}
+            className={`py-3 px-4 rounded-xl text-sm font-medium transition-all border ${
+              !anyInjured
+                ? "bg-[#0E0F10] text-white border-[#0E0F10]"
+                : "bg-white text-[#0E0F10] border-[#E5E5E3]"
+            }`}
+          >
+            {t("wizard.phase2InjuriesNo")}
+          </button>
+          <button
+            type="button"
+            onClick={() => setAnyInjured(true)}
+            className={`py-3 px-4 rounded-xl text-sm font-medium transition-all border ${
+              anyInjured
+                ? "bg-rose-600 text-white border-rose-600"
+                : "bg-white text-[#0E0F10] border-[#E5E5E3]"
+            }`}
+          >
+            {t("wizard.phase2InjuriesYes")}
+          </button>
+        </div>
+      </div>
+
+      {/* Hairline Divider & Continue */}
+      <div className="pt-4 border-t border-[#E5E5E3]">
         <button
           type="button"
           onClick={handleContinue}
-          className="min-h-[56px] w-full py-4 px-6 font-bold text-sm uppercase tracking-wider bg-[#090A0A] hover:bg-[#171819] text-white flex items-center justify-between transition-colors"
+          className="w-full py-4 px-6 rounded-2xl bg-[#0E0F10] hover:bg-[#1A1B1C] text-white text-base font-medium flex items-center justify-between transition-colors group"
         >
-          <span>{t.wizard.phase2Next}</span>
-          <ArrowRightIcon size={18} />
+          <span>{isIt ? "Continua con le foto" : "Continue to photos"}</span>
+          <ArrowRightIcon size={20} className="text-white group-hover:translate-x-1 transition-transform" />
         </button>
       </div>
     </div>

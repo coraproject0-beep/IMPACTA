@@ -3,11 +3,11 @@
 @tailwind utilities;
 
 :root {
-  --impacta-black: #090A0A;
-  --graphite: #171819;
-  --titanium: #6F7375;
-  --hairline: #D7D9D8;
-  --off-white: #F4F5F3;
+  --impacta-black: #0E0F10;
+  --graphite: #1A1B1C;
+  --titanium: #666666;
+  --hairline: #E5E5E3;
+  --off-white: #F7F7F6;
   --pure-white: #FFFFFF;
 
   --background: var(--off-white);

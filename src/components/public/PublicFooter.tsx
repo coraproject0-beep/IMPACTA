@@ -8,7 +8,7 @@ export function PublicFooter() {
   const { t } = useLanguage();
 
   return (
-    <footer className="bg-[#090A0A] text-white selection:bg-white selection:text-[#090A0A] border-t border-white/10">
+    <footer className="bg-[#0E0F10] text-white selection:bg-white selection:text-[#0E0F10] border-t border-white/10">
       <div className="w-full px-6 sm:px-12 lg:px-20 py-20 lg:py-28">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-12 lg:gap-16 pb-16 border-b border-white/10">
           {/* Brand & Mission Column */}

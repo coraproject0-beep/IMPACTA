@@ -28,57 +28,46 @@ function DriverLayoutContent({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col font-sans antialiased selection:bg-blue-100 selection:text-blue-900">
+    <div className="min-h-screen bg-[#F7F7F6] text-[#0E0F10] flex flex-col font-sans antialiased selection:bg-[#0E0F10] selection:text-white">
       <OfflineNotice />
 
       {/* Top Brand & Navigation Header (hidden during report) */}
       {!isReporting && (
-        <header className="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-200/80 px-4 sm:px-6 md:px-8 py-3 select-none">
-          <div className="max-w-5xl mx-auto flex items-center justify-between gap-4">
+        <header className="sticky top-0 z-30 bg-[#F7F7F6]/95 backdrop-blur-md border-b border-[#E5E5E3] px-6 py-4 select-none">
+          <div className="max-w-4xl mx-auto flex items-center justify-between gap-4">
             {/* Left: Brand Logo explicitly linking to PUBLIC HOME (/) */}
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-4">
               <Link
                 href="/"
-                className="flex items-center gap-2 group focus:outline-none focus:ring-2 focus:ring-blue-500 rounded p-1"
+                className="flex items-center gap-2 group focus:outline-none"
                 title="Return to Public IMPACTA website"
               >
-                <div className="w-7 h-7 rounded bg-slate-900 text-white flex items-center justify-center font-bold tracking-wider text-xs shadow-xs group-hover:bg-blue-600 transition-colors">
-                  IM
-                </div>
-                <div>
-                  <span className="text-sm font-extrabold tracking-tight text-slate-950">
-                    IMPACTA
-                  </span>
-                  <span className="text-[11px] text-slate-400 font-normal ml-1.5 hidden sm:inline">
-                    Driver
-                  </span>
-                </div>
+                <span className="text-lg font-black tracking-tight uppercase text-[#0E0F10]">
+                  IMPACTA
+                </span>
               </Link>
 
               {/* Explicit Back to Public action */}
               <Link
                 href="/"
-                className="hidden lg:inline-flex text-xs font-semibold text-slate-500 hover:text-slate-900 px-2 py-1 rounded hover:bg-slate-100 transition-colors"
+                className="hidden lg:inline-flex text-xs font-medium text-[#666666] hover:text-[#0E0F10] transition-colors"
               >
-                {t.nav.backToImpacta}
+                ← {t("nav.backToImpacta")}
               </Link>
             </div>
 
-            {/* Center: Desktop Navigation Tabs (5 Items) */}
+            {/* Center: Desktop Navigation Tabs */}
             <DriverNavigation variant="desktop" />
 
             {/* Right: Language Selector & Quick Profile/Logout */}
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-3">
               <LanguageSelector />
               <Link
                 href="/app/profile"
-                className="hidden sm:inline-flex items-center gap-1.5 py-1 px-2 text-xs font-semibold text-slate-700 hover:text-slate-950 rounded-lg hover:bg-slate-100 transition-colors"
+                className="inline-flex items-center justify-center w-8 h-8 rounded-full border border-[#E5E5E3] bg-white text-[#0E0F10] hover:border-[#0E0F10] transition-colors"
                 title="Account and settings"
               >
-                <div className="w-5 h-5 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-[10px]">
-                  MB
-                </div>
-                <span className="max-w-[100px] truncate">{driverUser?.name || "Matteo"}</span>
+                <span className="text-xs font-semibold">L</span>
               </Link>
             </div>
           </div>

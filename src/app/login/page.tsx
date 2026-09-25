@@ -17,7 +17,7 @@ function LoginForm() {
   const { language, t } = useLanguage();
   const isIt = language === "it";
 
-  const [email, setEmail] = useState("matteo.bianchi@impacta-demo.eu");
+  const [email, setEmail] = useState("luca.moretti@impacta-demo.eu");
   const [password, setPassword] = useState("••••••••••••");
   const [forgotNotice, setForgotNotice] = useState(false);
 
@@ -33,86 +33,86 @@ function LoginForm() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F4F5F3] text-[#090A0A] flex flex-col justify-between selection:bg-[#090A0A] selection:text-white">
-      {/* Top Bar with Escape Route */}
-      <header className="px-6 sm:px-12 py-6 flex items-center justify-between border-b border-[#D7D9D8] bg-[#F4F5F3]">
+    <div className="min-h-screen bg-[#F7F7F6] text-[#0E0F10] flex flex-col justify-between selection:bg-[#0E0F10] selection:text-white">
+      {/* Top Bar */}
+      <header className="px-6 sm:px-12 py-6 flex items-center justify-between border-b border-[#E5E5E3] bg-[#F7F7F6]">
         <Link href="/" className="flex items-center gap-3 group" title="Return to Public IMPACTA">
-          <span className="text-xl font-black tracking-tight uppercase">IMPACTA</span>
-          <span className="text-xs font-semibold uppercase tracking-widest text-[#6F7375] pl-3 border-l border-[#D7D9D8] hidden sm:inline">
-            {isIt ? "PORTALE CONDUCENTE" : "DRIVER PORTAL"}
+          <span className="text-xl font-black tracking-tight text-[#0E0F10]">IMPACTA</span>
+          <span className="text-xs font-semibold uppercase tracking-wider text-[#666666] pl-3 border-l border-[#E5E5E3] hidden sm:inline">
+            {isIt ? "Area Conducenti" : "Driver Portal"}
           </span>
         </Link>
         <div className="flex items-center gap-6">
           <LanguageSelector />
           <Link
             href="/"
-            className="text-xs font-bold uppercase tracking-wider text-[#6F7375] hover:text-[#090A0A] transition-colors"
+            className="text-xs font-medium text-[#666666] hover:text-[#0E0F10] transition-colors"
           >
             ← {t("nav.backToImpacta")}
           </Link>
         </div>
       </header>
 
-      {/* Full-Viewport Integrated Split */}
+      {/* Main Integrated Split */}
       <main className="flex-1 grid grid-cols-1 lg:grid-cols-12 w-full">
         {/* Left Column: Full-Height Photographic Field */}
-        <div className="hidden lg:block lg:col-span-6 relative bg-[#090A0A] text-white overflow-hidden">
+        <div className="hidden lg:block lg:col-span-6 relative bg-[#0E0F10] text-white overflow-hidden">
           <Image
             src="/images/hero-car.jpg"
             alt="Driver vehicle environment"
             fill
             priority
-            className="object-cover opacity-60"
+            className="object-cover opacity-70"
             sizes="50vw"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#090A0A] via-[#090A0A]/40 to-transparent p-12 sm:p-16 flex flex-col justify-between">
-            <div className="text-xs font-semibold uppercase tracking-widest text-white/50">
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0E0F10] via-[#0E0F10]/30 to-transparent p-12 sm:p-16 flex flex-col justify-between">
+            <div className="text-xs font-semibold uppercase tracking-wider text-white/60">
               POLICYHOLDER ACCESS GATE
             </div>
             <div className="space-y-4 max-w-lg">
-              <h2 className="text-4xl font-bold uppercase tracking-tight text-white leading-tight">
+              <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-white leading-tight">
                 {isIt
                   ? "La tua sicurezza, prima e dopo l'impatto."
                   : "Your roadside safety, secured and verified."}
               </h2>
               <p className="text-sm text-white/80 font-normal">
-                Matteo Bianchi • Volkswagen Golf VIII (<span className="font-mono">GF492XP</span>)
+                Luca Moretti · Audi A3 (<span className="font-mono">AB 123 CD</span>)
               </p>
             </div>
           </div>
         </div>
 
         {/* Right Column: Directly Integrated Form Field */}
-        <div className="lg:col-span-6 flex items-center justify-center p-8 sm:p-16 lg:p-24 bg-white border-l border-[#D7D9D8]">
+        <div className="lg:col-span-6 flex items-center justify-center p-8 sm:p-16 lg:p-20 bg-white border-l border-[#E5E5E3]">
           <div className="max-w-md w-full space-y-8">
             <div className="space-y-2">
-              <span className="text-xs font-semibold uppercase tracking-widest text-[#6F7375]">
-                {isIt ? "AUTENTICAZIONE" : "AUTHENTICATION"}
+              <span className="text-xs font-semibold uppercase tracking-wider text-[#666666]">
+                {isIt ? "ACCESSO ASSICURATO" : "POLICYHOLDER LOGIN"}
               </span>
-              <h1 className="text-3xl sm:text-4xl font-bold uppercase tracking-tight text-[#090A0A]">
+              <h1 className="text-3xl font-bold tracking-tight text-[#0E0F10]">
                 {t("login.driverTitle")}
               </h1>
-              <p className="text-sm text-[#6F7375] leading-relaxed font-light">
+              <p className="text-sm text-[#666666] leading-relaxed">
                 {t("login.driverSubtitle")}
               </p>
             </div>
 
             {/* 1-Tap Demo Instant Sign-in */}
-            <div className="p-6 border border-[#090A0A] bg-[#F4F5F3] space-y-3">
-              <div className="flex items-center justify-between text-xs font-semibold text-[#6F7375] uppercase tracking-wider">
-                <span>{isIt ? "CREDENZIALI DIMOSTRATIVE" : "DEMO CREDENTIALS"}</span>
-                <span className="text-emerald-700 font-bold">{isIt ? "PRONTE" : "READY"}</span>
+            <div className="p-6 border border-[#E5E5E3] bg-[#F7F7F6] rounded-xl space-y-3">
+              <div className="flex items-center justify-between text-xs font-semibold text-[#666666]">
+                <span>{isIt ? "Credenziali demo preconfigurate" : "Demo credentials ready"}</span>
+                <span className="text-emerald-700 font-bold uppercase">{isIt ? "Attivo" : "Ready"}</span>
               </div>
-              <p className="text-xs text-[#090A0A]">
+              <p className="text-xs text-[#0E0F10]">
                 {isIt
                   ? "Accedi istantaneamente come assicurato"
                   : "Sign in instantly as policyholder"}{" "}
-                <strong>Matteo Bianchi</strong>.
+                <strong>Luca Moretti</strong> (Audi A3).
               </p>
               <button
                 type="button"
                 onClick={handleDemoSignIn}
-                className="w-full min-h-[48px] bg-[#090A0A] text-white text-xs font-bold uppercase tracking-wider hover:bg-[#171819] transition-colors flex items-center justify-center gap-2"
+                className="w-full py-3.5 bg-[#0E0F10] text-white text-xs font-semibold rounded-lg hover:bg-[#1A1B1C] transition-colors flex items-center justify-center gap-2"
               >
                 <span>{t("login.driverDemoAction")}</span>
                 <ArrowRightIcon size={14} />
@@ -120,9 +120,9 @@ function LoginForm() {
             </div>
 
             {/* Standard Form */}
-            <form onSubmit={handleSubmit} className="space-y-5 pt-2">
+            <form onSubmit={handleSubmit} className="space-y-4 pt-1">
               <div className="space-y-1.5">
-                <label className="block text-xs font-semibold uppercase tracking-wider text-[#6F7375]">
+                <label className="block text-xs font-medium text-[#666666]">
                   {t("login.emailLabel")}
                 </label>
                 <input
@@ -130,19 +130,19 @@ function LoginForm() {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full min-h-[50px] px-4 border border-[#D7D9D8] bg-white text-[#090A0A] text-sm focus:outline-none focus:border-[#090A0A] transition-colors"
+                  className="w-full px-3.5 py-2.5 border border-[#E5E5E3] rounded-lg bg-white text-[#0E0F10] text-xs focus:outline-none focus:border-[#0E0F10] transition-colors"
                 />
               </div>
 
               <div className="space-y-1.5">
                 <div className="flex items-center justify-between">
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-[#6F7375]">
+                  <label className="block text-xs font-medium text-[#666666]">
                     {t("login.passwordLabel")}
                   </label>
                   <button
                     type="button"
                     onClick={() => setForgotNotice(true)}
-                    className="text-xs uppercase text-[#6F7375] hover:text-[#090A0A] underline"
+                    className="text-xs text-[#666666] hover:text-[#0E0F10] underline"
                   >
                     {t("login.forgotPassword")}
                   </button>
@@ -152,27 +152,27 @@ function LoginForm() {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full min-h-[50px] px-4 border border-[#D7D9D8] bg-white text-[#090A0A] text-sm focus:outline-none focus:border-[#090A0A] transition-colors font-mono"
+                  className="w-full px-3.5 py-2.5 border border-[#E5E5E3] rounded-lg bg-white text-[#0E0F10] text-xs focus:outline-none focus:border-[#0E0F10] transition-colors font-mono"
                 />
               </div>
 
               {forgotNotice && (
-                <div className="p-3 border border-[#D7D9D8] bg-[#F4F5F3] text-xs text-[#6F7375]">
+                <div className="p-3 border border-[#E5E5E3] bg-[#F7F7F6] rounded-lg text-xs text-[#666666]">
                   {isIt ? "Modalità demo: Usa il pulsante di accesso rapido sopra." : "Demo mode: Use the 1-Tap Demo button above."}
                 </div>
               )}
 
               <button
                 type="submit"
-                className="w-full min-h-[52px] border border-[#090A0A] bg-white text-[#090A0A] text-xs font-bold uppercase tracking-wider hover:bg-[#F4F5F3] transition-colors"
+                className="w-full py-3 border border-[#E5E5E3] bg-white text-[#0E0F10] hover:bg-[#F7F7F6] text-xs font-semibold rounded-lg transition-colors"
               >
                 {t("login.submitDriver")}
               </button>
             </form>
 
-            <div className="pt-4 border-t border-[#D7D9D8] flex items-center justify-between text-xs text-[#6F7375]">
-              <span className="font-semibold uppercase tracking-wider">{isIt ? "SEI UN PERITO?" : "INSURANCE ADJUSTER?"}</span>
-              <Link href="/console/login" className="font-bold text-[#090A0A] hover:underline uppercase">
+            <div className="pt-4 border-t border-[#E5E5E3] flex items-center justify-between text-xs text-[#666666]">
+              <span>{isIt ? "Sei un perito assicurativo?" : "Insurance adjuster?"}</span>
+              <Link href="/console/login" className="font-semibold text-[#0E0F10] hover:underline">
                 {isIt ? "Accedi alla Console →" : "Claims Console Gate →"}
               </Link>
             </div>
@@ -180,8 +180,8 @@ function LoginForm() {
         </div>
       </main>
 
-      {/* Simple Legal Footer */}
-      <footer className="px-6 sm:px-12 py-4 border-t border-[#D7D9D8] bg-white text-xs font-medium text-[#6F7375] flex items-center justify-between uppercase tracking-wider">
+      {/* Simple Footer */}
+      <footer className="px-6 sm:px-12 py-4 border-t border-[#E5E5E3] bg-white text-xs font-medium text-[#666666] flex items-center justify-between">
         <span>IMPACTA LABS MILANO</span>
         <span>BROWSER LOCAL PERSISTENCE</span>
       </footer>
@@ -191,7 +191,7 @@ function LoginForm() {
 
 export default function LoginPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-[#F4F5F3]" />}>
+    <Suspense fallback={<div className="min-h-screen bg-[#F7F7F6]" />}>
       <LoginForm />
     </Suspense>
   );

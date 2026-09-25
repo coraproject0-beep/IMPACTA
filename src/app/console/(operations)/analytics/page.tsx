@@ -12,8 +12,8 @@ export default function ConsoleAnalyticsPage() {
 
   if (isLoading) {
     return (
-      <div className="py-16 text-center text-xs font-semibold text-[#6F7375] uppercase tracking-wider">
-        {isIt ? "VALUTAZIONE METRICHE..." : "EVALUATING PIPELINE METRICS..."}
+      <div className="py-20 text-center text-xs font-mono text-[#666666] uppercase tracking-wider">
+        {isIt ? "Valutazione metriche forensi..." : "Evaluating pipeline metrics..."}
       </div>
     );
   }
@@ -36,102 +36,102 @@ export default function ConsoleAnalyticsPage() {
 
   // Confidence distribution brackets
   const confBrackets = [
-    { label: isIt ? "Alta confidenza (85 - 100%)" : "High (85 - 100%)", count: claims.filter((c) => c.aiAnalysis.overallConfidence >= 85).length },
-    { label: isIt ? "Media confidenza (70 - 84%)" : "Medium (70 - 84%)", count: claims.filter((c) => c.aiAnalysis.overallConfidence >= 70 && c.aiAnalysis.overallConfidence < 85).length },
-    { label: isIt ? "Bassa confidenza (< 70%)" : "Low (< 70%)", count: claims.filter((c) => c.aiAnalysis.overallConfidence < 70).length },
+    { label: isIt ? "Alta confidenza (85 - 100%)" : "High Certainty (85 - 100%)", count: claims.filter((c) => c.aiAnalysis.overallConfidence >= 85).length },
+    { label: isIt ? "Media confidenza (70 - 84%)" : "Medium Certainty (70 - 84%)", count: claims.filter((c) => c.aiAnalysis.overallConfidence >= 70 && c.aiAnalysis.overallConfidence < 85).length },
+    { label: isIt ? "Bassa confidenza (< 70%)" : "Low Certainty (< 70%)", count: claims.filter((c) => c.aiAnalysis.overallConfidence < 70).length },
   ];
 
   return (
-    <div className="space-y-10 selection:bg-[#090A0A] selection:text-white">
+    <div className="space-y-10">
       {/* Top Header */}
-      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 pb-6 border-b border-[#D7D9D8]">
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 pb-6 border-b border-[#E5E5E3]">
         <div className="space-y-1">
-          <span className="text-xs font-semibold uppercase tracking-widest text-[#6F7375]">
-            {isIt ? "ANALISI & PRESTAZIONI" : "ANALYTICS & FORENSIC EVALUATION"}
+          <span className="text-xs font-semibold uppercase tracking-wider text-[#666666]">
+            {isIt ? "ANALISI & PRESTAZIONI" : "ANALYTICS & FORENSIC BENCHMARK"}
           </span>
-          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight uppercase text-[#090A0A]">
+          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-[#0E0F10]">
             {isIt ? "Prestazioni del Sistema" : "Pipeline Performance"}
           </h1>
-          <p className="text-sm text-[#6F7375] font-light max-w-2xl">
+          <p className="text-sm text-[#666666]">
             {isIt
-              ? "Monitoraggio empirico della certezza cinematica, necessità di perizia umana e impatto telemetria."
-              : "Empirical benchmarking of kinematic certainty, human review escalation, and telemetry lift."}
+              ? "Monitoraggio empirico della certezza cinematica, escalation peritale e copertura telemetrica."
+              : "Empirical benchmarking of kinematic certainty, adjuster escalation, and telemetry lift."}
           </p>
         </div>
 
         <div className="text-left sm:text-right text-xs">
-          <div className="text-[#6F7375] uppercase font-semibold">{isIt ? "CAMPIONE DATI" : "LOCAL REPOSITORY"}</div>
-          <div className="text-sm font-bold text-[#090A0A]">
-            N = <span className="font-mono">{claims.length}</span> {isIt ? "FASCICOLI" : "DOSSIERS"}
+          <div className="text-[#666666] uppercase font-semibold">{isIt ? "Campione locale" : "Local Repository"}</div>
+          <div className="text-sm font-bold text-[#0E0F10]">
+            N = <span className="font-mono">{claims.length}</span> {isIt ? "fascicoli" : "dossiers"}
           </div>
         </div>
       </div>
 
-      {/* MINIMAL METRIC STRIP */}
-      <div className="bg-white border border-[#D7D9D8] grid grid-cols-2 md:grid-cols-4 divide-y md:divide-y-0 md:divide-x divide-[#D7D9D8]">
+      {/* Metric Strip (Open layout) */}
+      <div className="border border-[#E5E5E3] bg-white rounded-xl grid grid-cols-2 md:grid-cols-4 divide-y md:divide-y-0 md:divide-x divide-[#E5E5E3]">
         <div className="p-5 sm:p-6 space-y-1">
-          <span className="text-xs font-semibold uppercase tracking-wider text-[#6F7375] block">
+          <span className="text-xs font-medium text-[#666666] block">
             {isIt ? "Confidenza Media" : "Mean AI Certainty"}
           </span>
-          <div className="text-2xl sm:text-3xl font-mono font-bold text-[#090A0A]">
+          <div className="text-2xl sm:text-3xl font-mono font-bold text-[#0E0F10]">
             <CountUpMetric value={stats.meanConfidence} suffix="%" duration={800} />
           </div>
-          <span className="text-[11px] text-[#6F7375] block">
+          <span className="text-[11px] text-[#666666] block">
             {isIt ? "Precisione modelli forensi" : "Forensic algorithm precision"}
           </span>
         </div>
 
         <div className="p-5 sm:p-6 space-y-1">
-          <span className="text-xs font-semibold uppercase tracking-wider text-[#6F7375] block">
+          <span className="text-xs font-medium text-[#666666] block">
             {isIt ? "Tasso Revisione Umana" : "Review Escalation"}
           </span>
-          <div className="text-2xl sm:text-3xl font-mono font-bold text-[#090A0A]">
+          <div className="text-2xl sm:text-3xl font-mono font-bold text-[#0E0F10]">
             <CountUpMetric value={stats.manualReviewRequiredPercent} suffix="%" duration={800} />
           </div>
-          <span className="text-[11px] text-[#6F7375] block">
+          <span className="text-[11px] text-[#666666] block">
             <span className="font-mono">{stats.manualReviewRequiredCount}</span> {isIt ? "casi segnalati" : "flagged cases"}
           </span>
         </div>
 
         <div className="p-5 sm:p-6 space-y-1">
-          <span className="text-xs font-semibold uppercase tracking-wider text-[#6F7375] block">
+          <span className="text-xs font-medium text-[#666666] block">
             {isIt ? "Conformità CAI Box 12" : "CAI Field Alignment"}
           </span>
-          <div className="text-2xl sm:text-3xl font-mono font-bold text-[#090A0A]">
+          <div className="text-2xl sm:text-3xl font-mono font-bold text-[#0E0F10]">
             <CountUpMetric value={stats.caiFieldCompletionPercent} suffix="%" duration={900} />
           </div>
-          <span className="text-[11px] text-[#6F7375] block">
+          <span className="text-[11px] text-[#666666] block">
             <span className="font-mono">{stats.confirmedCaiFields}</span> / <span className="font-mono">{stats.totalCaiFields}</span> {isIt ? "campi" : "fields"}
           </span>
         </div>
 
         <div className="p-5 sm:p-6 space-y-1">
-          <span className="text-xs font-semibold uppercase tracking-wider text-[#6F7375] block">
+          <span className="text-xs font-medium text-[#666666] block">
             {isIt ? "Copertura Telemetrica" : "Telemetry Coverage"}
           </span>
           <div className="text-2xl sm:text-3xl font-mono font-bold text-emerald-700">
             <CountUpMetric value={Math.round((telemCount / (claims.length || 1)) * 100)} suffix="%" duration={900} />
           </div>
-          <span className="text-[11px] text-[#6F7375] block">
+          <span className="text-[11px] text-[#666666] block">
             <span className="font-mono">{telemCount}</span> {isIt ? "veicoli connessi" : "connected vehicles"}
           </span>
         </div>
       </div>
 
-      {/* TWO PRIMARY ANALYTICAL PANELS: One Main Chart, One Comparison */}
+      {/* Two Analytical Panels */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* PANEL 1: ONE MAIN CHART (Confidence Band Distribution) */}
-        <div className="bg-white border border-[#D7D9D8] p-6 sm:p-8 space-y-6">
-          <div className="flex items-center justify-between pb-4 border-b border-[#D7D9D8]">
+        {/* Panel 1 */}
+        <div className="border border-[#E5E5E3] bg-white rounded-xl p-6 sm:p-8 space-y-6">
+          <div className="flex items-center justify-between pb-4 border-b border-[#E5E5E3]">
             <div>
-              <h2 className="text-sm font-bold uppercase tracking-wider text-[#090A0A]">
-                {isIt ? "Distribuzione Confidenza Forense" : "Confidence Band Distribution"}
+              <h2 className="text-sm font-bold text-[#0E0F10]">
+                {isIt ? "Distribuzione Confidenza Forense" : "Certainty Band Distribution"}
               </h2>
-              <p className="text-xs text-[#6F7375] mt-0.5 font-light">
-                {isIt ? "Classificazione fascicoli in base alla soglia di validazione" : "Dossier categorization by automated validation threshold"}
+              <p className="text-xs text-[#666666] mt-0.5">
+                {isIt ? "Classificazione fascicoli in base alla soglia di validazione" : "Dossier breakdown by automated threshold"}
               </p>
             </div>
-            <span className="text-xs font-mono font-bold text-[#6F7375]">N = {claims.length}</span>
+            <span className="text-xs font-mono font-bold text-[#666666]">N = {claims.length}</span>
           </div>
 
           <div className="space-y-5 text-xs">
@@ -139,36 +139,36 @@ export default function ConsoleAnalyticsPage() {
               const pct = Math.round((bracket.count / (claims.length || 1)) * 100);
               return (
                 <div key={bracket.label} className="space-y-1.5">
-                  <div className="flex items-center justify-between font-semibold">
-                    <span className="text-[#090A0A]">{bracket.label}</span>
-                    <div className="text-[#090A0A]">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[#0E0F10] font-medium">{bracket.label}</span>
+                    <div className="text-[#0E0F10]">
                       <span className="font-mono font-bold">{bracket.count}</span> {isIt ? "fascicoli" : "dossiers"}
-                      <span className="text-[#6F7375] ml-2 font-mono">({pct}%)</span>
+                      <span className="text-[#666666] ml-2 font-mono">({pct}%)</span>
                     </div>
                   </div>
-                  <div className="w-full bg-[#F4F5F3] h-2.5 border border-[#D7D9D8]">
-                    <div className="bg-[#090A0A] h-full transition-all duration-500" style={{ width: `${pct}%` }} />
+                  <div className="w-full bg-[#F7F7F6] h-2 rounded-full overflow-hidden border border-[#E5E5E3]">
+                    <div className="bg-[#0E0F10] h-full transition-all duration-500" style={{ width: `${pct}%` }} />
                   </div>
                 </div>
               );
             })}
           </div>
 
-          <div className="pt-3 border-t border-[#D7D9D8] text-xs text-[#6F7375] font-light">
+          <div className="pt-3 border-t border-[#E5E5E3] text-xs text-[#666666]">
             {isIt
-              ? "I fascicoli con confidenza inferiore all'85% vengono inviati direttamente alla perizia umana."
+              ? "I fascicoli con confidenza inferiore all'85% vengono inviati automaticamente alla perizia umana."
               : "Dossiers below 85% confidence automatically route to human adjuster determination."}
           </div>
         </div>
 
-        {/* PANEL 2: ONE COMPARISON (Connected Telemetry vs Baseline) */}
-        <div className="bg-white border border-[#D7D9D8] p-6 sm:p-8 space-y-6">
-          <div className="flex items-center justify-between pb-4 border-b border-[#D7D9D8]">
+        {/* Panel 2 */}
+        <div className="border border-[#E5E5E3] bg-white rounded-xl p-6 sm:p-8 space-y-6">
+          <div className="flex items-center justify-between pb-4 border-b border-[#E5E5E3]">
             <div>
-              <h2 className="text-sm font-bold uppercase tracking-wider text-[#090A0A]">
-                {isIt ? "Telemetria EDR vs Ottico" : "Connected Telemetry vs Optical"}
+              <h2 className="text-sm font-bold text-[#0E0F10]">
+                {isIt ? "Telemetria EDR vs Ottico" : "Connected Telemetry vs Optical Baseline"}
               </h2>
-              <p className="text-xs text-[#6F7375] mt-0.5 font-light">
+              <p className="text-xs text-[#666666] mt-0.5">
                 {isIt ? "Incremento di certezza grazie ai sensori inerziali di bordo" : "Certainty differential between synchronous EDR vs optical-only"}
               </p>
             </div>
@@ -179,16 +179,16 @@ export default function ConsoleAnalyticsPage() {
 
           <div className="space-y-6 text-xs">
             <div className="space-y-2">
-              <div className="flex justify-between items-center font-semibold">
-                <span className="text-[#090A0A]">
-                  {isIt ? "Veicoli con Telemetria EDR" : "Telemetry Vehicles"} (<span className="font-mono">{telemCount}</span> {isIt ? "sinistri" : "claims"})
+              <div className="flex justify-between items-center">
+                <span className="text-[#0E0F10] font-medium">
+                  {isIt ? "Veicoli con Telemetria EDR" : "Telemetry Connected"} (<span className="font-mono">{telemCount}</span> {isIt ? "sinistri" : "claims"})
                 </span>
-                <span className="font-mono font-bold text-[#090A0A]">{telemMeanConf}%</span>
+                <span className="font-mono font-bold text-[#0E0F10]">{telemMeanConf}%</span>
               </div>
-              <div className="w-full bg-[#F4F5F3] h-2.5 border border-[#D7D9D8]">
-                <div className="bg-[#090A0A] h-full" style={{ width: `${telemMeanConf}%` }} />
+              <div className="w-full bg-[#F7F7F6] h-2 rounded-full overflow-hidden border border-[#E5E5E3]">
+                <div className="bg-[#0E0F10] h-full" style={{ width: `${telemMeanConf}%` }} />
               </div>
-              <div className="text-[11px] text-[#6F7375] font-light">
+              <div className="text-[11px] text-[#666666]">
                 {isIt
                   ? "Decelerazione CAN-bus diretta, vettore d'urto millisecondo, correlazione urti."
                   : "Direct CAN-bus deceleration, sub-second impact angle, bumper contact correlation."}
@@ -196,16 +196,16 @@ export default function ConsoleAnalyticsPage() {
             </div>
 
             <div className="space-y-2">
-              <div className="flex justify-between items-center font-semibold">
-                <span className="text-[#6F7375]">
+              <div className="flex justify-between items-center">
+                <span className="text-[#666666]">
                   {isIt ? "Rilievo Solo Fotografico" : "Optical-Only Baseline"} (<span className="font-mono">{nonTelemCount}</span> {isIt ? "sinistri" : "claims"})
                 </span>
-                <span className="font-mono font-bold text-[#6F7375]">{nonTelemMeanConf}%</span>
+                <span className="font-mono font-bold text-[#666666]">{nonTelemMeanConf}%</span>
               </div>
-              <div className="w-full bg-[#F4F5F3] h-2.5 border border-[#D7D9D8]">
-                <div className="bg-[#6F7375] h-full" style={{ width: `${nonTelemMeanConf}%` }} />
+              <div className="w-full bg-[#F7F7F6] h-2 rounded-full overflow-hidden border border-[#E5E5E3]">
+                <div className="bg-[#666666] h-full" style={{ width: `${nonTelemMeanConf}%` }} />
               </div>
-              <div className="text-[11px] text-[#6F7375] font-light">
+              <div className="text-[11px] text-[#666666]">
                 {isIt
                   ? "Richiede perizia umana per risolvere precedenze controverse alle intersezioni."
                   : "Requires adjuster determination for disputed precedence at junctions."}
@@ -213,7 +213,7 @@ export default function ConsoleAnalyticsPage() {
             </div>
           </div>
 
-          <div className="pt-3 border-t border-[#D7D9D8] text-xs text-[#6F7375] font-light">
+          <div className="pt-3 border-t border-[#E5E5E3] text-xs text-[#666666]">
             {isIt
               ? "I dati telemetrici convalidati riducono i tempi di liquidazione del sinistro del 72%."
               : "Validated telemetry inputs reduce claim adjudication cycle times by 72%."}

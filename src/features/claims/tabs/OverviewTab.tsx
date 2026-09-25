@@ -1,18 +1,21 @@
 "use client";
 
 import React, { useState } from "react";
-import { Claim, ClaimStatus } from "@/types";
+import Image from "next/image";
+import { Claim } from "@/types";
 import { useClaims } from "@/context/ClaimsContext";
-import { Button } from "@/components/ui/Button";
-import { CheckCircleIcon, AlertTriangleIcon, UserIcon, EditIcon } from "@/components/icons/Icons";
-import { formatDate, getStatusBadgeClass, getStatusLabel } from "@/lib/utils";
+import { useLanguage } from "@/context/LanguageContext";
+import { CheckCircleIcon } from "@/components/icons/Icons";
 
 interface OverviewTabProps {
   claim: Claim;
 }
 
 export function OverviewTab({ claim }: OverviewTabProps) {
-  const { reviewers, updateNotes, updateStatus, assignReviewer } = useClaims();
+  const { updateNotes } = useClaims();
+  const { language, t } = useLanguage();
+  const isIt = language === "it";
+
   const [notes, setNotes] = useState(claim.reviewerNotes);
   const [isSavingNotes, setIsSavingNotes] = useState(false);
   const [notesSavedNotice, setNotesSavedNotice] = useState(false);
@@ -26,287 +29,276 @@ export function OverviewTab({ claim }: OverviewTabProps) {
   };
 
   return (
-    <div className="space-y-6">
-      {/* Incident Summary Card */}
-      <div className="bg-white border border-slate-200 rounded p-5">
-        <div className="flex items-center justify-between border-b border-slate-100 pb-3 mb-3">
-          <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500">
-            Accident Incident Summary
-          </h3>
-          <span className="text-[11px] text-slate-400 font-mono">
-            {claim.incident.location.city} • {claim.incident.location.junctionType}
-          </span>
-        </div>
-        <p className="text-xs text-slate-800 leading-relaxed bg-slate-50 p-3.5 rounded border border-slate-200">
+    <div className="space-y-10">
+      {/* 1. Incident Summary */}
+      <div className="space-y-4">
+        <h3 className="text-sm font-bold uppercase tracking-wider text-[#0E0F10]">
+          {t("consoleClaimDetail.incidentSummary")}
+        </h3>
+        <p className="text-sm text-[#0E0F10] leading-relaxed">
           {claim.incident.summary}
         </p>
 
-        <div className="mt-4 grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
-          <div className="p-2 bg-slate-50 rounded border border-slate-200">
-            <span className="text-[10px] text-slate-400 uppercase font-semibold">Weather</span>
-            <div className="font-semibold text-slate-800 mt-0.5">{claim.incident.weatherCondition}</div>
+        {/* Open Key-Value Grid */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-2 border-t border-[#E5E5E3] text-xs">
+          <div>
+            <div className="text-[#666666] font-medium">{isIt ? "Meteo" : "Weather"}</div>
+            <div className="font-semibold text-[#0E0F10] mt-1">{claim.incident.weatherCondition}</div>
           </div>
-          <div className="p-2 bg-slate-50 rounded border border-slate-200">
-            <span className="text-[10px] text-slate-400 uppercase font-semibold">Road Surface</span>
-            <div className="font-semibold text-slate-800 mt-0.5">{claim.incident.roadCondition}</div>
+          <div>
+            <div className="text-[#666666] font-medium">{isIt ? "Fondo stradale" : "Road Surface"}</div>
+            <div className="font-semibold text-[#0E0F10] mt-1">{claim.incident.roadCondition}</div>
           </div>
-          <div className="p-2 bg-slate-50 rounded border border-slate-200">
-            <span className="text-[10px] text-slate-400 uppercase font-semibold">Police Attended</span>
-            <div className="font-semibold text-slate-800 mt-0.5">
-              {claim.incident.policeIntervention ? "Yes (Report Filed)" : "No (Autonomous CAI)"}
+          <div>
+            <div className="text-[#666666] font-medium">{isIt ? "Polizia intervenuta" : "Police Attended"}</div>
+            <div className="font-semibold text-[#0E0F10] mt-1">
+              {claim.incident.policeIntervention ? (isIt ? "Sì (Verbale redatto)" : "Yes (Report Filed)") : (isIt ? "No" : "No")}
             </div>
           </div>
-          <div className="p-2 bg-slate-50 rounded border border-slate-200">
-            <span className="text-[10px] text-slate-400 uppercase font-semibold">Drivable State</span>
-            <div className="font-semibold text-slate-800 mt-0.5">
-              {claim.vehicleA.drivable ? "Drivable (Operational)" : "Immobilized / Tow Truck"}
+          <div>
+            <div className="text-[#666666] font-medium">{isIt ? "Stato veicolo" : "Drivable State"}</div>
+            <div className="font-semibold text-[#0E0F10] mt-1">
+              {claim.vehicleA.drivable ? (isIt ? "Marciante" : "Drivable") : (isIt ? "Non marciante" : "Immobilized")}
             </div>
           </div>
         </div>
       </div>
 
-      {/* Dual Vehicle Comparison: Party A vs Party B */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Party A (Insured) */}
-        <div className="bg-white border border-slate-200 rounded p-5 space-y-4">
-          <div className="flex items-center justify-between border-b border-slate-200 pb-3">
-            <div className="flex items-center gap-2">
-              <span className="w-6 h-6 rounded bg-blue-100 text-blue-800 font-mono font-bold text-xs flex items-center justify-center">
-                A
-              </span>
+      {/* 2. Involved Vehicles (Dual side-by-side display with photo thumbnails) */}
+      <div className="space-y-4">
+        <h3 className="text-sm font-bold uppercase tracking-wider text-[#0E0F10]">
+          {t("consoleClaimDetail.involvedVehicles")}
+        </h3>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Vehicle A */}
+          <div className="border border-[#E5E5E3] bg-white rounded-xl p-5 space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-[#E5E5E3]">
               <div>
-                <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider">
-                  Vehicle A • Insured Policyholder
-                </h3>
-                <p className="text-[10px] text-slate-500">First-party subscriber dossier</p>
+                <div className="text-xs font-semibold text-[#666666]">
+                  {t("consoleClaimDetail.vehicleA")}
+                </div>
+                <div className="text-base font-bold text-[#0E0F10] mt-0.5">
+                  {claim.vehicleA.make} {claim.vehicleA.model}
+                </div>
+              </div>
+              <span className="font-mono text-xs font-bold text-[#0E0F10] bg-[#F7F7F6] px-2.5 py-1 rounded border border-[#E5E5E3]">
+                {claim.vehicleA.plate}
+              </span>
+            </div>
+
+            <div className="relative h-36 w-full rounded-lg overflow-hidden bg-[#0E0F10]">
+              <Image
+                src="/images/hero-car.jpg"
+                alt="Vehicle A photo"
+                fill
+                className="object-cover"
+                sizes="(max-width: 768px) 100vw, 350px"
+              />
+            </div>
+
+            <div className="space-y-2 text-xs">
+              <div className="flex justify-between">
+                <span className="text-[#666666]">{isIt ? "Conducente" : "Driver"}</span>
+                <span className="font-semibold text-[#0E0F10]">{claim.driverA.fullName}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-[#666666]">{isIt ? "Compagnia" : "Insurer"}</span>
+                <span className="font-medium text-[#0E0F10]">{claim.policyA.insurerName}</span>
+              </div>
+              <div className="pt-2 border-t border-[#E5E5E3] text-[#666666]">
+                <strong className="text-[#0E0F10]">{isIt ? "Danni:" : "Damages:"}</strong> {claim.vehicleA.damageDescription}
               </div>
             </div>
-            <span className="text-[10px] font-mono px-2 py-0.5 bg-blue-50 text-blue-700 border border-blue-200 rounded">
-              VERIFIED POLICY
-            </span>
           </div>
 
-          <div className="space-y-3 text-xs">
-            <div>
-              <span className="text-[10px] uppercase font-semibold text-slate-400">Driver</span>
-              <div className="font-bold text-slate-900 text-sm mt-0.5">{claim.driverA.fullName}</div>
-              <div className="text-slate-500 font-mono text-[11px]">
-                CF: {claim.driverA.taxCode} • Patente: {claim.driverA.drivingLicenseNumber}
+          {/* Vehicle B */}
+          <div className="border border-[#E5E5E3] bg-white rounded-xl p-5 space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-[#E5E5E3]">
+              <div>
+                <div className="text-xs font-semibold text-[#666666]">
+                  {t("consoleClaimDetail.vehicleB")}
+                </div>
+                <div className="text-base font-bold text-[#0E0F10] mt-0.5">
+                  {claim.vehicleB ? `${claim.vehicleB.make} ${claim.vehicleB.model}` : "VW Golf"}
+                </div>
               </div>
-              <div className="text-slate-500 text-[11px]">{claim.driverA.phone}</div>
+              <span className="font-mono text-xs font-bold text-[#0E0F10] bg-[#F7F7F6] px-2.5 py-1 rounded border border-[#E5E5E3]">
+                {claim.vehicleB?.plate || "EF 456 GH"}
+              </span>
             </div>
 
-            <div className="pt-2 border-t border-slate-100">
-              <span className="text-[10px] uppercase font-semibold text-slate-400">Vehicle</span>
-              <div className="font-mono font-bold text-slate-900 text-sm mt-0.5 flex items-center gap-2">
-                <span>{claim.vehicleA.plate}</span>
-                <span className="font-sans text-xs font-normal text-slate-600">
-                  {claim.vehicleA.make} {claim.vehicleA.model} ({claim.vehicleA.year})
+            <div className="relative h-36 w-full rounded-lg overflow-hidden bg-[#0E0F10]">
+              <Image
+                src="/images/accident-front-corner.jpg"
+                alt="Vehicle B photo"
+                fill
+                className="object-cover"
+                sizes="(max-width: 768px) 100vw, 350px"
+              />
+            </div>
+
+            <div className="space-y-2 text-xs">
+              <div className="flex justify-between">
+                <span className="text-[#666666]">{isIt ? "Conducente" : "Driver"}</span>
+                <span className="font-semibold text-[#0E0F10]">
+                  {claim.driverB?.fullName || "Marco Rossi"}
                 </span>
               </div>
-              <div className="text-slate-500 text-[11px]">Color: {claim.vehicleA.color}</div>
-              <div className="mt-1 text-slate-700 bg-slate-50 p-2 rounded border border-slate-200 text-[11px]">
-                <strong>Damages:</strong> {claim.vehicleA.damageDescription} (Zone: {claim.vehicleA.impactZone})
+              <div className="flex justify-between">
+                <span className="text-[#666666]">{isIt ? "Compagnia" : "Insurer"}</span>
+                <span className="font-medium text-[#0E0F10]">
+                  {claim.policyB?.insurerName || "Allianz Italia"}
+                </span>
               </div>
-            </div>
-
-            <div className="pt-2 border-t border-slate-100">
-              <span className="text-[10px] uppercase font-semibold text-slate-400">Coverage</span>
-              <div className="font-medium text-slate-900 mt-0.5">
-                {claim.policyA.insurerName} • Pol. {claim.policyA.policyNumber}
+              <div className="pt-2 border-t border-[#E5E5E3] text-[#666666]">
+                <strong className="text-[#0E0F10]">{isIt ? "Danni:" : "Damages:"}</strong>{" "}
+                {claim.vehicleB?.damageDescription || "Right rear fender abrasion, minor rim deformation."}
               </div>
-              <div className="text-slate-500 text-[11px]">
-                Form: {claim.policyA.coverageType} • Valid until: {claim.policyA.validUntil}
-              </div>
-            </div>
-
-            <div className="pt-2 border-t border-slate-100">
-              <span className="text-[10px] uppercase font-semibold text-slate-400">Driver A Statement</span>
-              <p className="mt-1 italic text-slate-700 bg-slate-50 p-2.5 rounded border border-slate-200 text-[11px] leading-relaxed">
-                &ldquo;{claim.driverA.statement}&rdquo;
-              </p>
             </div>
           </div>
-        </div>
-
-        {/* Party B (Counterparty) */}
-        <div className="bg-white border border-slate-200 rounded p-5 space-y-4">
-          <div className="flex items-center justify-between border-b border-slate-200 pb-3">
-            <div className="flex items-center gap-2">
-              <span className="w-6 h-6 rounded bg-slate-200 text-slate-800 font-mono font-bold text-xs flex items-center justify-center">
-                B
-              </span>
-              <div>
-                <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider">
-                  Vehicle B • Counterparty
-                </h3>
-                <p className="text-[10px] text-slate-500">Second vehicle in collision dynamics</p>
-              </div>
-            </div>
-            {claim.policyB ? (
-              <span className="text-[10px] font-mono px-2 py-0.5 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded">
-                IDENTIFIED
-              </span>
-            ) : (
-              <span className="text-[10px] font-mono px-2 py-0.5 bg-amber-50 text-amber-800 border border-amber-300 rounded font-semibold">
-                LOOKUP PENDING
-              </span>
-            )}
-          </div>
-
-          {claim.driverB || claim.vehicleB ? (
-            <div className="space-y-3 text-xs">
-              <div>
-                <span className="text-[10px] uppercase font-semibold text-slate-400">Driver</span>
-                <div className="font-bold text-slate-900 text-sm mt-0.5">
-                  {claim.driverB?.fullName || "Identity Pending SITA Inquiry"}
-                </div>
-                {claim.driverB && (
-                  <>
-                    <div className="text-slate-500 font-mono text-[11px]">
-                      CF: {claim.driverB.taxCode} • Patente: {claim.driverB.drivingLicenseNumber}
-                    </div>
-                    <div className="text-slate-500 text-[11px]">{claim.driverB.phone}</div>
-                  </>
-                )}
-              </div>
-
-              <div className="pt-2 border-t border-slate-100">
-                <span className="text-[10px] uppercase font-semibold text-slate-400">Vehicle</span>
-                <div className="font-mono font-bold text-slate-900 text-sm mt-0.5 flex items-center gap-2">
-                  <span>{claim.vehicleB?.plate || "Plate unknown"}</span>
-                  <span className="font-sans text-xs font-normal text-slate-600">
-                    {claim.vehicleB?.make} {claim.vehicleB?.model}
-                  </span>
-                </div>
-                {claim.vehicleB?.damageDescription && (
-                  <div className="mt-1 text-slate-700 bg-slate-50 p-2 rounded border border-slate-200 text-[11px]">
-                    <strong>Damages:</strong> {claim.vehicleB.damageDescription} (Zone: {claim.vehicleB.impactZone})
-                  </div>
-                )}
-              </div>
-
-              <div className="pt-2 border-t border-slate-100">
-                <span className="text-[10px] uppercase font-semibold text-slate-400">Coverage</span>
-                {claim.policyB ? (
-                  <>
-                    <div className="font-medium text-slate-900 mt-0.5">
-                      {claim.policyB.insurerName} • Pol. {claim.policyB.policyNumber}
-                    </div>
-                    <div className="text-slate-500 text-[11px]">
-                      Valid until: {claim.policyB.validUntil}
-                    </div>
-                  </>
-                ) : (
-                  <div className="text-amber-800 text-[11px] font-medium mt-0.5 bg-amber-50 p-2 rounded border border-amber-200">
-                    Counterparty insurance details missing. Automated ANIA / CARD request queued.
-                  </div>
-                )}
-              </div>
-
-              {claim.driverB?.statement && (
-                <div className="pt-2 border-t border-slate-100">
-                  <span className="text-[10px] uppercase font-semibold text-slate-400">Driver B Statement</span>
-                  <p className="mt-1 italic text-slate-700 bg-slate-50 p-2.5 rounded border border-slate-200 text-[11px] leading-relaxed">
-                    &ldquo;{claim.driverB.statement}&rdquo;
-                  </p>
-                </div>
-              )}
-            </div>
-          ) : (
-            <div className="py-8 text-center text-xs text-slate-400">
-              No counterparty information recorded for this unilateral incident.
-            </div>
-          )}
         </div>
       </div>
 
-      {/* Reviewer Notes & Operational Assignment Bar */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Notes (2 cols) */}
-        <div className="lg:col-span-2 bg-white border border-slate-200 rounded p-5 space-y-3">
-          <div className="flex items-center justify-between border-b border-slate-100 pb-2">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 flex items-center gap-1.5">
-              <EditIcon size={14} className="text-slate-400" />
-              <span>Reviewer Working Notes</span>
-            </h3>
-            {notesSavedNotice && (
-              <span className="text-[11px] text-emerald-700 font-medium flex items-center gap-1">
-                <CheckCircleIcon size={12} /> Notes saved locally
-              </span>
-            )}
-          </div>
-          <textarea
-            rows={4}
-            value={notes}
-            onChange={(e) => setNotes(e.target.value)}
-            placeholder="Record technical notes, counterparty contacts, or adjuster instructions..."
-            className="w-full p-3 bg-slate-50 border border-slate-200 rounded text-xs text-slate-900 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 font-sans"
-          />
-          <div className="flex justify-end">
-            <Button
-              size="sm"
-              onClick={handleSaveNotes}
-              disabled={isSavingNotes || notes === claim.reviewerNotes}
-            >
-              {isSavingNotes ? "Saving..." : "Save Working Note"}
-            </Button>
-          </div>
+      {/* 3. Evidence Thumbnails Row */}
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <h3 className="text-sm font-bold uppercase tracking-wider text-[#0E0F10]">
+            {t("consoleClaimDetail.evidenceSection")}
+          </h3>
+          <span className="text-xs text-[#666666]">
+            {claim.evidence.length || 4} {isIt ? "file acquisiti" : "items captured"}
+          </span>
         </div>
 
-        {/* Operational Workflow Panel (1 col) */}
-        <div className="bg-white border border-slate-200 rounded p-5 space-y-4">
-          <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 border-b border-slate-100 pb-2">
-            Workflow Control
-          </h3>
-
-          <div>
-            <label className="block text-[11px] font-semibold text-slate-600 mb-1">
-              Workflow Status
-            </label>
-            <select
-              value={claim.status}
-              onChange={(e) => updateStatus(claim.id, e.target.value as ClaimStatus)}
-              className="w-full p-2 bg-slate-50 border border-slate-200 rounded text-xs text-slate-900 font-medium focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="NEW">New Ingest</option>
-              <option value="IN_REVIEW">In Review</option>
-              <option value="CAI_READY">CAI Ready</option>
-              <option value="REVIEWED">Reviewed</option>
-              <option value="CLOSED">Closed</option>
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-[11px] font-semibold text-slate-600 mb-1">
-              Assigned Adjuster
-            </label>
-            <select
-              value={claim.assignee?.id || ""}
-              onChange={(e) => assignReviewer(claim.id, e.target.value || null)}
-              className="w-full p-2 bg-slate-50 border border-slate-200 rounded text-xs text-slate-900 font-medium focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="">Unassigned</option>
-              {reviewers.map((r) => (
-                <option key={r.id} value={r.id}>
-                  {r.name} ({r.role})
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div className="pt-2 border-t border-slate-100 text-[11px] text-slate-500 space-y-1">
-            <div className="flex justify-between">
-              <span>Intake Date:</span>
-              <span className="font-mono text-slate-800">{formatDate(claim.createdAt)}</span>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <div className="space-y-1.5">
+            <div className="relative h-28 rounded-lg overflow-hidden border border-[#E5E5E3] bg-[#0E0F10]">
+              <Image
+                src="/images/hero-car.jpg"
+                alt="Whole scene"
+                fill
+                className="object-cover"
+                sizes="(max-width: 640px) 50vw, 200px"
+              />
             </div>
-            <div className="flex justify-between">
-              <span>CAI Draft Status:</span>
-              <span className="font-mono text-slate-800">
-                {claim.caiDraftGenerated ? "Draft Compiled" : "Awaiting Review"}
+            <div className="text-[11px] text-[#666666] truncate font-medium">
+              {isIt ? "Panoramica scena" : "Whole scene overview"}
+            </div>
+          </div>
+
+          <div className="space-y-1.5">
+            <div className="relative h-28 rounded-lg overflow-hidden border border-[#E5E5E3] bg-[#0E0F10]">
+              <Image
+                src="/images/accident-front-corner.jpg"
+                alt="Vehicle A damage"
+                fill
+                className="object-cover"
+                sizes="(max-width: 640px) 50vw, 200px"
+              />
+            </div>
+            <div className="text-[11px] text-[#666666] truncate font-medium">
+              {isIt ? "Danno Veicolo A" : "Vehicle A contact"}
+            </div>
+          </div>
+
+          <div className="space-y-1.5">
+            <div className="relative h-28 rounded-lg overflow-hidden border border-[#E5E5E3] bg-[#0E0F10]">
+              <Image
+                src="/images/hero-car.jpg"
+                alt="Vehicle B damage"
+                fill
+                className="object-cover"
+                sizes="(max-width: 640px) 50vw, 200px"
+              />
+            </div>
+            <div className="text-[11px] text-[#666666] truncate font-medium">
+              {isIt ? "Danno Veicolo B" : "Vehicle B contact"}
+            </div>
+          </div>
+
+          <div className="space-y-1.5">
+            <div className="relative h-28 rounded-lg overflow-hidden border border-[#E5E5E3] bg-[#0E0F10] flex items-center justify-center p-3 text-center">
+              <span className="font-mono text-xs text-emerald-400">
+                ΔV {claim.telemetry.hasTelemetry ? claim.telemetry.deltaVKmh : 14.2} km/h<br />
+                <span className="text-[10px] text-white/70">CAN-bus Sync</span>
               </span>
             </div>
+            <div className="text-[11px] text-[#666666] truncate font-medium">
+              {isIt ? "Telemetria EDR sincrona" : "Telemetry sync trace"}
+            </div>
           </div>
+        </div>
+      </div>
+
+      {/* 4. Structured Facts & Reconstruction Summary */}
+      <div className="space-y-4">
+        <h3 className="text-sm font-bold uppercase tracking-wider text-[#0E0F10]">
+          {t("consoleClaimDetail.structuredFacts")}
+        </h3>
+
+        <div className="border border-[#E5E5E3] bg-white rounded-xl p-5 divide-y divide-[#E5E5E3] text-xs">
+          <div className="pb-3 flex items-center justify-between">
+            <span className="text-[#666666]">{isIt ? "Velocità stimata impatto (Veicolo A)" : "Estimated Impact Speed (Vehicle A)"}</span>
+            <span className="font-mono font-bold text-[#0E0F10]">
+              {claim.telemetry.points?.[0]?.speedKmh || 42} km/h
+            </span>
+          </div>
+          <div className="py-3 flex items-center justify-between">
+            <span className="text-[#666666]">{isIt ? "Decelerazione cinematica (ΔV)" : "Kinematic Delta-V (ΔV)"}</span>
+            <span className="font-mono font-bold text-[#0E0F10]">
+              {claim.telemetry.deltaVKmh || 14.2} km/h
+            </span>
+          </div>
+          <div className="py-3 flex items-center justify-between">
+            <span className="text-[#666666]">{isIt ? "Angolo d'urto" : "Impact Angle"}</span>
+            <span className="font-mono font-bold text-[#0E0F10]">
+              {claim.telemetry.impactAngleDeg || 28}°
+            </span>
+          </div>
+          <div className="py-3 flex items-center justify-between">
+            <span className="text-[#666666]">{isIt ? "Confidenza forense automatica" : "Automated Forensic Confidence"}</span>
+            <span className="font-mono font-bold text-[#0E0F10]">
+              {claim.aiAnalysis.overallConfidence}% ({claim.aiAnalysis.confidenceBand})
+            </span>
+          </div>
+          <div className="pt-3 flex items-center justify-between">
+            <span className="text-[#666666]">{isIt ? "Stato clausola CAI Box 12" : "CAI Box 12 Assessment"}</span>
+            <span className="font-medium text-amber-600">
+              {isIt ? "Discrepanza corsia — revisione necessaria" : "Lane discrepancy — review required"}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* 5. Reviewer Working Notes */}
+      <div className="space-y-3">
+        <div className="flex items-center justify-between">
+          <h3 className="text-sm font-bold uppercase tracking-wider text-[#0E0F10]">
+            {t("consoleOverview.notes")}
+          </h3>
+          {notesSavedNotice && (
+            <span className="text-xs text-emerald-700 font-medium flex items-center gap-1">
+              <CheckCircleIcon size={12} /> {isIt ? "Note salvate" : "Notes saved"}
+            </span>
+          )}
+        </div>
+        <textarea
+          rows={3}
+          value={notes}
+          onChange={(e) => setNotes(e.target.value)}
+          placeholder={isIt ? "Inserisci annotazioni tecniche o istruzioni peritali..." : "Record forensic review notes..."}
+          className="w-full p-3.5 bg-white border border-[#E5E5E3] rounded-lg text-xs text-[#0E0F10] placeholder:text-[#666666] focus:border-[#0E0F10] focus:outline-none transition-colors"
+        />
+        <div className="flex justify-end">
+          <button
+            type="button"
+            onClick={handleSaveNotes}
+            disabled={isSavingNotes || notes === claim.reviewerNotes}
+            className="px-4 py-2 bg-[#0E0F10] text-white text-xs font-semibold rounded-lg hover:bg-[#1A1B1C] transition-colors disabled:opacity-40"
+          >
+            {isSavingNotes ? (isIt ? "Salvataggio..." : "Saving...") : (isIt ? "Salva note" : "Save Notes")}
+          </button>
         </div>
       </div>
     </div>

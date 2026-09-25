@@ -31,6 +31,22 @@ export interface Translations {
     reportAccident: string;
     seeHowItWorks: string;
   };
+  postHero: {
+    fragmentsLead: string;
+    fragmentsList: string;
+    fragmentsConclusion: string;
+  };
+  blackBoxSection: {
+    kicker: string;
+    title: string;
+    subtitle: string;
+    feature1Title: string;
+    feature1Desc: string;
+    feature2Title: string;
+    feature2Desc: string;
+    feature3Title: string;
+    feature3Desc: string;
+  };
   evidenceStory: {
     sectionKicker: string;
     sectionTitle: string;
@@ -87,6 +103,10 @@ export interface Translations {
     activePolicy: string;
     insurancePolicy: string;
     noReportsYet: string;
+    insurance: string;
+    policyActive: string;
+    recentReport: string;
+    readyForReview: string;
   };
   vehicle: {
     title: string;
@@ -172,6 +192,13 @@ export interface Translations {
     phase3StatementTitle: string;
     phase3StatementPlaceholder: string;
     phase3Next: string;
+    phase3StepTitle: string;
+    phase3StepDesc: string;
+    phase3PhotoAdded: string;
+    phase3TakeAnother: string;
+    phase3ChooseLibrary: string;
+    phase3FlowIndicator: string;
+    phase3CannotTakeSafely: string;
     phase4Title: string;
     phase4ReconstructionTitle: string;
     phase4ReconstructionNeutral: string;
@@ -240,6 +267,59 @@ export interface Translations {
     driverAreaLink: string;
     claimsOperationsLink: string;
   };
+  consoleOverview: {
+    kicker: string;
+    title: string;
+    subtitle: string;
+    needsReview: string;
+    newToday: string;
+    readyForInsurerReview: string;
+    medianReviewTime: string;
+    priorityQueue: string;
+    recentClaims: string;
+    viewAll: string;
+    reviewNextClaim: string;
+    nextClaimKicker: string;
+    openClaim: string;
+    incident: string;
+    location: string;
+    vehicles: string;
+    evidence: string;
+    attention: string;
+    updated: string;
+    notes: string;
+  };
+  consoleClaimDetail: {
+    backToClaims: string;
+    driverConfirmationRequired: string;
+    driverConfirmationDesc: string;
+    tabSummary: string;
+    tabEvidence: string;
+    tabReconstruction: string;
+    tabReport: string;
+    tabHistory: string;
+    incidentSummary: string;
+    involvedVehicles: string;
+    vehicleA: string;
+    vehicleB: string;
+    evidenceSection: string;
+    evidenceCaption: string;
+    structuredFacts: string;
+    reconstructionSummary: string;
+    reconstructionDesc: string;
+    observed: string;
+    driverConfirmed: string;
+    missing: string;
+    reviewStatus: string;
+    reviewClaimCta: string;
+    requestInfoCta: string;
+    exportReportCta: string;
+    structuredReportTitle: string;
+    structuredReportDesc: string;
+    openReportCta: string;
+    latestActivity: string;
+    viewFullHistory: string;
+  };
 }
 
 export const translations: Record<Locale, Translations> = {
@@ -264,16 +344,31 @@ export const translations: Record<Locale, Translations> = {
     },
     hero: {
       kicker: "The European Mobility Intake Standard",
-      titleLine1: "Every collision fact.",
-      titleLine2: "Preserved at the scene.",
-      titleLine3: "Ready for adjustment.",
-      subtitle:
-        "IMPACTA fuses high-frequency roadside telemetry, structured photographic evidence, and calibrated kinematic models into verified European claim dossiers — removing dispute, fraud, and weeks of uncertainty.",
+      titleLine1: "FROM IMPACT",
+      titleLine2: "TO CLARITY.",
+      titleLine3: "",
+      subtitle: "Turn accident evidence into structured information ready for human review.",
       reportCta: "Report an accident",
       insurerCta: "Claims operations portal →",
       telemetryProof: "Example Telemetry Support • CAI Box 12 Standard • Zero Liability Automation",
       reportAccident: "Report an accident",
       seeHowItWorks: "See how IMPACTA works",
+    },
+    postHero: {
+      fragmentsLead: "An accident creates fragments.",
+      fragmentsList: "Photos. Statements. Vehicle information. Context.",
+      fragmentsConclusion: "IMPACTA brings them together.",
+    },
+    blackBoxSection: {
+      kicker: "THE ACCIDENT BLACK BOX",
+      title: "A cryptographically secure, chronological record of evidence, telemetry, and statements.",
+      subtitle: "Immutable forensic data provenance engineered for objective human review.",
+      feature1Title: "Sensor & Video Integrity",
+      feature1Desc: "Cryptographic SHA-256 fingerprinting on every captured photo, EXIF timestamp, and GNSS coordinate.",
+      feature2Title: "Chronological Telemetry",
+      feature2Desc: "10Hz CAN-bus and accelerometer logs correlated directly with point-of-impact timestamp.",
+      feature3Title: "Deterministic CAI Mapping",
+      feature3Desc: "Direct translation into European CAI Box 12 circumstances without speculative AI inference.",
     },
     evidenceStory: {
       sectionKicker: "The Evidence Transformation",
@@ -322,20 +417,24 @@ export const translations: Record<Locale, Translations> = {
       finalCtaInsurerButton: "Enter Claims Console",
     },
     driverHome: {
-      greeting: "Good morning, Matteo",
-      subtitle: "Volkswagen Golf VIII • Aura Mutua Assicurazioni",
+      greeting: "Good morning, Luca.",
+      subtitle: "If something happens, we'll help you document it clearly.",
       reportAccidentCta: "Report an accident",
-      reportAccidentDesc: "Start guided roadside incident documentation with 112 safety support and photo preservation.",
+      reportAccidentDesc: "Capture what happened and build your report.",
       resumeDraftCta: "Resume Accident Report",
       discardDraftCta: "Discard saved draft",
       draftFoundNotice: "You have an unfinished accident report saved on this device.",
-      yourVehicle: "Your Insured Vehicle",
+      yourVehicle: "Your vehicle",
       insuranceCoverage: "Active Insurance Policy",
       recentReports: "Recent Incident Reports",
       viewAllReports: "View all filed reports →",
       activePolicy: "Policy Active • 24/7 Roadside Assistance Included",
       insurancePolicy: "Active Insurance Policy",
       noReportsYet: "No incident reports filed yet. Safe travels.",
+      insurance: "Insurance",
+      policyActive: "Policy active",
+      recentReport: "Recent report",
+      readyForReview: "Ready for review",
     },
     vehicle: {
       title: "Vehicle Details",
@@ -421,6 +520,13 @@ export const translations: Record<Locale, Translations> = {
       phase3StatementTitle: "Your Personal Statement",
       phase3StatementPlaceholder: "Describe what occurred in your own words (e.g. traveling through roundabout, other vehicle entered from side road)...",
       phase3Next: "Continue to Review & Confirm →",
+      phase3StepTitle: "Document the scene.",
+      phase3StepDesc: "Take a few clear photos before anything is moved, if it is safe to do so.",
+      phase3PhotoAdded: "photo added",
+      phase3TakeAnother: "Take another photo",
+      phase3ChooseLibrary: "Choose from library",
+      phase3FlowIndicator: "Whole scene → Vehicles → Damage → Road",
+      phase3CannotTakeSafely: "I can't take photos safely",
       phase4Title: "Review & Confirmation",
       phase4ReconstructionTitle: "Factual Kinematic Reconstruction",
       phase4ReconstructionNeutral:
@@ -492,6 +598,59 @@ export const translations: Record<Locale, Translations> = {
       driverAreaLink: "Driver Personal Area",
       claimsOperationsLink: "Claims Operations Console",
     },
+    consoleOverview: {
+      kicker: "CLAIMS OPERATIONS",
+      title: "12 claims need review.",
+      subtitle: "Review the next claim and keep the queue moving.",
+      needsReview: "Needs review",
+      newToday: "New today",
+      readyForInsurerReview: "Ready for insurer review",
+      medianReviewTime: "Median review time",
+      priorityQueue: "Priority queue",
+      recentClaims: "Recent claims",
+      viewAll: "View all",
+      reviewNextClaim: "Review next claim",
+      nextClaimKicker: "NEXT CLAIM",
+      openClaim: "Open",
+      incident: "Incident",
+      location: "Location",
+      vehicles: "Vehicles",
+      evidence: "Evidence",
+      attention: "Attention",
+      updated: "Updated",
+      notes: "Driver report received. Waiting for driver confirmation and additional photos of the rear damage.",
+    },
+    consoleClaimDetail: {
+      backToClaims: "Back to claims",
+      driverConfirmationRequired: "Driver confirmation required.",
+      driverConfirmationDesc: "The incident report is complete enough for review, but the driver has not yet confirmed the final statement.",
+      tabSummary: "Summary",
+      tabEvidence: "Evidence",
+      tabReconstruction: "Reconstruction",
+      tabReport: "Report",
+      tabHistory: "History",
+      incidentSummary: "Incident summary",
+      involvedVehicles: "Involved vehicles",
+      vehicleA: "Vehicle A",
+      vehicleB: "Vehicle B",
+      evidenceSection: "Evidence",
+      evidenceCaption: "photos | Driver statement | Vehicle information | Location data",
+      structuredFacts: "Structured facts",
+      reconstructionSummary: "Reconstruction summary",
+      reconstructionDesc: "Available evidence is consistent with a low-speed rear collision involving two vehicles. Reconstruction support only. No liability determination. For human review.",
+      observed: "Observed",
+      driverConfirmed: "Driver confirmed",
+      missing: "Missing",
+      reviewStatus: "Review status",
+      reviewClaimCta: "Review claim",
+      requestInfoCta: "Request information",
+      exportReportCta: "Export structured report",
+      structuredReportTitle: "Structured report",
+      structuredReportDesc: "CAI-compatible data extracted from the incident report.",
+      openReportCta: "Open report",
+      latestActivity: "Latest activity",
+      viewFullHistory: "View full history",
+    },
   },
   it: {
     nav: {
@@ -514,16 +673,31 @@ export const translations: Record<Locale, Translations> = {
     },
     hero: {
       kicker: "Lo Standard Europeo di Rilevamento Sinistri",
-      titleLine1: "Tutti i dati dell'impatto.",
-      titleLine2: "Preservati sul luogo.",
-      titleLine3: "Pronti per la perizia.",
-      subtitle:
-        "IMPACTA combina telemetria ad alta frequenza, prove fotografiche strutturate e modelli cinematici calibrati in dossier pronti per la perizia europea — azzerando contenziosi, frodi e settimane di attesa.",
-      reportCta: "Segnala un sinistro",
+      titleLine1: "DALL'IMPATTO",
+      titleLine2: "ALLA CHIAREZZA.",
+      titleLine3: "",
+      subtitle: "Trasforma le prove dell'incidente in informazioni strutturate per la revisione umana.",
+      reportCta: "Segnala un incidente",
       insurerCta: "Portale liquidatori sinistri →",
       telemetryProof: "Supporto Telemetria di Esempio • Standard CAI Casella 12 • Nessuna Automazione di Responsabilità",
-      reportAccident: "Segnala un sinistro",
+      reportAccident: "Segnala un incidente",
       seeHowItWorks: "Scopri come funziona IMPACTA",
+    },
+    postHero: {
+      fragmentsLead: "Un incidente crea frammenti.",
+      fragmentsList: "Foto. Dichiarazioni. Dati del veicolo. Contesto.",
+      fragmentsConclusion: "IMPACTA li unisce.",
+    },
+    blackBoxSection: {
+      kicker: "LA SCATOLA NERA FORENSE",
+      title: "Un registro cronologico e crittograficamente sicuro di prove, telemetria e dichiarazioni.",
+      subtitle: "Integrità probatoria immutabile progettata per una perizia trasparente e umana.",
+      feature1Title: "Integrità Sensori & Foto",
+      feature1Desc: "Impronta crittografica SHA-256 su ogni fotografia, timestamp EXIF e coordinate GNSS sul luogo dell'urto.",
+      feature2Title: "Telemetria Cronologica",
+      feature2Desc: "Dati CAN-bus e decelerazione a 10Hz correlati direttamente con l'istante del contatto fisico.",
+      feature3Title: "Mappatura Deterministica CAI",
+      feature3Desc: "Traduzione rigorosa nelle caselle della Constatazione Amichevole senza arbitrarie supposizioni algoritmiche.",
     },
     evidenceStory: {
       sectionKicker: "La Trasformazione delle Prove",
@@ -572,20 +746,24 @@ export const translations: Record<Locale, Translations> = {
       finalCtaInsurerButton: "Accedi alla Console Liquidatori",
     },
     driverHome: {
-      greeting: "Buongiorno, Matteo",
-      subtitle: "Volkswagen Golf VIII • Aura Mutua Assicurazioni",
-      reportAccidentCta: "Segnala un sinistro",
-      reportAccidentDesc: "Avvia la documentazione guidata con supporto emergenza 112 e acquisizione prove fotografiche.",
+      greeting: "Buongiorno, Luca.",
+      subtitle: "Se succede qualcosa, ti aiutiamo a documentarlo chiaramente.",
+      reportAccidentCta: "Segnala un incidente",
+      reportAccidentDesc: "Registra l'accaduto e crea il tuo rapporto.",
       resumeDraftCta: "Riprendi segnalazione sinistro",
       discardDraftCta: "Elimina bozza salvata",
       draftFoundNotice: "È presente una segnalazione di incidente non completata su questo dispositivo.",
-      yourVehicle: "Il Tuo Veicolo Assicurato",
+      yourVehicle: "Il tuo veicolo",
       insuranceCoverage: "Polizza Assicurativa Attiva",
       recentReports: "Sinistri Recenti Registrati",
       viewAllReports: "Visualizza tutti i sinistri registrati →",
       activePolicy: "Polizza Attiva • Soccorso Stradale 24/7 Incluso",
       insurancePolicy: "Polizza Assicurativa Attiva",
       noReportsYet: "Nessun sinistro registrato finora. Buon viaggio.",
+      insurance: "Assicurazione",
+      policyActive: "Polizza attiva",
+      recentReport: "Rapporto recente",
+      readyForReview: "Pronto per la revisione",
     },
     vehicle: {
       title: "Dettagli Veicolo",
@@ -671,6 +849,13 @@ export const translations: Record<Locale, Translations> = {
       phase3StatementTitle: "La Tua Dichiarazione",
       phase3StatementPlaceholder: "Descrivi con parole tue cosa è accaduto (es. percorrevo la rotatoria, l'altro veicolo è entrato da destra)...",
       phase3Next: "Continua a Riepilogo e Conferma →",
+      phase3StepTitle: "Documenta la scena.",
+      phase3StepDesc: "Scatta alcune foto chiare prima che qualsiasi cosa venga spostata, se è sicuro farlo.",
+      phase3PhotoAdded: "foto aggiunta",
+      phase3TakeAnother: "Scatta un'altra foto",
+      phase3ChooseLibrary: "Scegli dalla galleria",
+      phase3FlowIndicator: "Scena completa → Veicoli → Danni → Strada",
+      phase3CannotTakeSafely: "Non posso scattare foto in sicurezza",
       phase4Title: "Riepilogo e Conferma",
       phase4ReconstructionTitle: "Ricostruzione Cinematica Oggettiva",
       phase4ReconstructionNeutral:
@@ -741,6 +926,59 @@ export const translations: Record<Locale, Translations> = {
       surfacesHeading: "Portali di Accesso",
       driverAreaLink: "Area Personale Conducente",
       claimsOperationsLink: "Console Operativa Sinistri",
+    },
+    consoleOverview: {
+      kicker: "OPERAZIONI SINISTRI",
+      title: "12 sinistri richiedono revisione.",
+      subtitle: "Esamina il prossimo sinistro e mantieni attiva la coda.",
+      needsReview: "Richiedono revisione",
+      newToday: "Nuovi oggi",
+      readyForInsurerReview: "Pronti per la perizia",
+      medianReviewTime: "Tempo mediano di revisione",
+      priorityQueue: "Coda prioritaria",
+      recentClaims: "Sinistri recenti",
+      viewAll: "Vedi tutti",
+      reviewNextClaim: "Esamina prossimo sinistro",
+      nextClaimKicker: "PROSSIMO SINISTRO",
+      openClaim: "Apri",
+      incident: "Incidente",
+      location: "Luogo",
+      vehicles: "Veicoli",
+      evidence: "Prove",
+      attention: "Attenzione",
+      updated: "Aggiornato",
+      notes: "Rapporto conducente ricevuto. In attesa di conferma del conducente e foto aggiuntive del danno posteriore.",
+    },
+    consoleClaimDetail: {
+      backToClaims: "Torna ai sinistri",
+      driverConfirmationRequired: "Richiesta conferma conducente.",
+      driverConfirmationDesc: "Il rapporto d'incidente è sufficientemente completo per la revisione, ma il conducente non ha ancora confermato la dichiarazione finale.",
+      tabSummary: "Riepilogo",
+      tabEvidence: "Prove",
+      tabReconstruction: "Ricostruzione",
+      tabReport: "Modulo CAI",
+      tabHistory: "Cronologia",
+      incidentSummary: "Riepilogo incidente",
+      involvedVehicles: "Veicoli coinvolti",
+      vehicleA: "Veicolo A",
+      vehicleB: "Veicolo B",
+      evidenceSection: "Prove acquisite",
+      evidenceCaption: "foto • Dichiarazione conducente • Dati veicolo • Posizione GPS",
+      structuredFacts: "Fatti strutturati",
+      reconstructionSummary: "Sintesi ricostruzione",
+      reconstructionDesc: "Le prove disponibili sono coerenti con un tamponamento a bassa velocità che ha coinvolto due veicoli. Supporto alla ricostruzione: nessuna determinazione automatica della responsabilità. Riservato alla perizia umana.",
+      observed: "Rilevato",
+      driverConfirmed: "Confermato da conducente",
+      missing: "Mancante",
+      reviewStatus: "Stato revisione",
+      reviewClaimCta: "Esamina sinistro",
+      requestInfoCta: "Richiedi informazioni",
+      exportReportCta: "Esporta rapporto strutturato",
+      structuredReportTitle: "Rapporto strutturato",
+      structuredReportDesc: "Dati conformi al modulo CAI estratti dal rapporto d'incidente.",
+      openReportCta: "Apri rapporto",
+      latestActivity: "Attività recente",
+      viewFullHistory: "Visualizza cronologia completa",
     },
   },
 };

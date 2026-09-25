@@ -8,7 +8,7 @@ import { ArrowLeftIcon } from "@/components/icons/Icons";
 interface ReportHeaderProps {
   phaseNumber: number;
   totalPhases?: number;
-  phaseTitle: string;
+  phaseTitle?: string;
   onBack: () => void;
   onSaveAndExit: () => void;
   showBack?: boolean;
@@ -18,7 +18,6 @@ interface ReportHeaderProps {
 export function ReportHeader({
   phaseNumber,
   totalPhases = 4,
-  phaseTitle,
   onBack,
   onSaveAndExit,
   showBack = true,
@@ -27,19 +26,19 @@ export function ReportHeader({
   const { language } = useLanguage();
   const isIt = language === "it";
 
-  const progressPercent = Math.min(100, Math.max(5, (phaseNumber / totalPhases) * 100));
+  const progressPercent = Math.min(100, Math.max(10, (phaseNumber / totalPhases) * 100));
 
   return (
-    <header className="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-[#D7D9D8] select-none">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 h-16 sm:h-18 flex items-center justify-between gap-4">
-        {/* Left: Back Action */}
-        <div className="flex items-center min-w-[100px]">
+    <header className="sticky top-0 z-30 bg-[#F7F7F6]/95 backdrop-blur-md border-b border-[#E5E5E3] select-none">
+      <div className="max-w-md mx-auto px-4 h-16 flex items-center justify-between gap-4">
+        {/* Left: Back Action matching driver-report-step-reference.png */}
+        <div className="flex items-center min-w-[80px]">
           {showBack ? (
             <button
               type="button"
               onClick={onBack}
-              className="min-h-[44px] inline-flex items-center gap-2 text-xs sm:text-sm font-semibold text-[#090A0A] hover:text-[#6F7375] transition-colors focus:outline-none"
-              aria-label={isIt ? "Fase precedente" : "Previous step"}
+              className="min-h-[44px] inline-flex items-center gap-1.5 text-sm font-normal text-[#0E0F10] hover:text-[#666666] transition-colors focus:outline-none"
+              aria-label={isIt ? "Torna indietro" : "Back"}
             >
               <ArrowLeftIcon size={16} />
               <span>{isIt ? "Indietro" : "Back"}</span>
@@ -47,34 +46,28 @@ export function ReportHeader({
           ) : (
             <Link
               href="/app"
-              className="text-xs sm:text-sm font-bold tracking-tight text-[#090A0A] flex items-center gap-2"
+              className="text-sm font-bold tracking-tight text-[#0E0F10] uppercase"
             >
-              <span className="w-6 h-6 bg-[#090A0A] text-white flex items-center justify-center text-[10px] font-bold">
-                IM
-              </span>
-              <span className="uppercase">IMPACTA</span>
+              IMPACTA
             </Link>
           )}
         </div>
 
-        {/* Center: Title & Current Phase */}
-        <div className="text-center min-w-0 px-2 flex-1">
-          <div className="text-xs uppercase font-medium text-[#6F7375] tracking-wider">
-            {isIt ? `Fase ${phaseNumber} di ${totalPhases}` : `Phase ${phaseNumber} of ${totalPhases}`}
-          </div>
-          <div className="text-sm sm:text-base font-bold text-[#090A0A] truncate">
-            {phaseTitle}
+        {/* Center: Clean Centered Title matching driver-report-step-reference.png */}
+        <div className="text-center min-w-0 flex-1">
+          <div className="text-base font-medium text-[#0E0F10] truncate">
+            {isIt ? "Rapporto incidente" : "Accident report"}
           </div>
         </div>
 
-        {/* Right: Save & Exit */}
-        <div className="flex items-center justify-end min-w-[100px]">
+        {/* Right: Save & Exit matching driver-report-step-reference.png */}
+        <div className="flex items-center justify-end min-w-[80px]">
           {showSaveAndExit && (
             <button
               type="button"
               onClick={onSaveAndExit}
-              className="min-h-[44px] inline-flex items-center text-xs sm:text-sm font-semibold text-[#6F7375] hover:text-[#090A0A] transition-colors focus:outline-none"
-              title={isIt ? "Salva la bozza ed esci" : "Save your progress and return to home"}
+              className="min-h-[44px] inline-flex items-center text-sm font-normal text-[#0E0F10] hover:text-[#666666] transition-colors focus:outline-none"
+              title={isIt ? "Salva ed esci" : "Save & exit"}
             >
               <span>{isIt ? "Salva ed esci" : "Save & exit"}</span>
             </button>
@@ -83,9 +76,9 @@ export function ReportHeader({
       </div>
 
       {/* Thin Minimal Progress Line */}
-      <div className="w-full h-[2px] bg-[#E5E7EB] overflow-hidden">
+      <div className="w-full h-[1.5px] bg-[#E5E5E3] overflow-hidden">
         <div
-          className="h-full bg-[#090A0A] transition-all duration-500 ease-out"
+          className="h-full bg-[#0E0F10] transition-all duration-300 ease-out"
           style={{ width: `${progressPercent}%` }}
         />
       </div>
