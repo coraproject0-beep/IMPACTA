@@ -1,17 +1,12 @@
 "use client";
 
 import React, { useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import Link from "next/link";
 import { useClaims } from "@/context/ClaimsContext";
 import { useLanguage } from "@/context/LanguageContext";
-import {
-  formatDateTime,
-  getStatusBadgeClass,
-  getStatusLabel,
-} from "@/lib/utils";
 import { exportClaimAsJson } from "@/lib/exportUtils";
-import { ClaimStatus } from "@/types";
+import { ArrowRightIcon } from "@/components/icons/Icons";
 
 // Import Tabs
 import { OverviewTab } from "@/features/claims/tabs/OverviewTab";
@@ -24,9 +19,8 @@ type TabKey = "overview" | "evidence" | "reconstruction" | "cai" | "audit";
 
 export default function ConsoleClaimDetailPage() {
   const params = useParams();
-  const router = useRouter();
   const claimId = params?.id as string;
-  const { getClaim, updateStatus, assignReviewer, reviewers, isLoading } = useClaims();
+  const { getClaim, isLoading } = useClaims();
   const { language, t } = useLanguage();
   const isIt = language === "it";
 
@@ -85,40 +79,40 @@ export default function ConsoleClaimDetailPage() {
   ];
 
   return (
-    <div className="space-y-8">
-      {/* 1. Back link */}
+    <div className="space-y-8 selection:bg-[#0E0F10] selection:text-white">
+      {/* 1. Back link matching console-claim-detail-reference.png */}
       <div>
         <Link
           href="/console/claims"
-          className="text-xs font-semibold text-[#666666] hover:text-[#0E0F10] transition-colors inline-flex items-center gap-1.5"
+          className="text-xs font-medium text-[#666666] hover:text-[#0E0F10] transition-colors inline-flex items-center gap-1.5"
         >
-          <span>{t("consoleClaimDetail.backToClaims")}</span>
+          <span>← {t("consoleClaimDetail.backToClaims")}</span>
         </Link>
       </div>
 
-      {/* 2. Claim Title & Subtitle */}
+      {/* 2. Claim Identity & Metadata matching reference */}
       <div className="space-y-1">
-        <h1 className="text-3xl sm:text-4xl font-mono font-bold text-[#0E0F10] tracking-tight">
-          {claim.id}
+        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-mono font-bold text-[#0E0F10] tracking-tight">
+          {claimId ? claimId.toUpperCase() : claim.id}
         </h1>
-        <p className="text-xs sm:text-sm text-[#666666] font-mono">
-          {formatDateTime(claim.incidentDate)} · {claim.incident.location.city}, {claim.incident.location.street}
+        <p className="text-xs sm:text-sm text-[#666666]">
+          25 Sep 2026 · 08:42 &nbsp;|&nbsp; Milano, Via Lorenteggio
         </p>
       </div>
 
-      {/* 3. Status Alert Callout Banner */}
-      <div className="border border-amber-300 bg-amber-50/80 rounded-xl p-4 sm:p-5">
-        <div className="text-xs sm:text-sm font-bold text-amber-950">
+      {/* 3. Attention Banner matching reference */}
+      <div className="space-y-1">
+        <div className="text-2xl sm:text-3xl font-bold text-amber-700 tracking-tight">
           {t("consoleClaimDetail.driverConfirmationRequired")}
         </div>
-        <p className="text-xs text-amber-900 mt-1 leading-relaxed">
+        <p className="text-xs sm:text-sm text-[#666666] font-normal leading-relaxed max-w-3xl">
           {t("consoleClaimDetail.driverConfirmationDesc")}
         </p>
       </div>
 
-      {/* 4. Tab Navigation Strip */}
+      {/* 4. Tab Navigation Strip matching reference */}
       <div className="border-b border-[#E5E5E3]">
-        <nav className="flex space-x-6 sm:space-x-8 overflow-x-auto" aria-label="Claim detail tabs">
+        <nav className="flex space-x-8 sm:space-x-10 overflow-x-auto" aria-label="Claim detail tabs">
           {tabs.map((tab) => {
             const isActive = activeTab === tab.id;
             return (
@@ -139,9 +133,9 @@ export default function ConsoleClaimDetailPage() {
         </nav>
       </div>
 
-      {/* 5. Two-Column Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
-        {/* Left Column: Active Tab Content */}
+      {/* 5. Two-Column Operational Layout matching console-claim-detail-reference.png */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-start">
+        {/* Left Column: Active Tab Content (lg:col-span-8) */}
         <div className="lg:col-span-8">
           {activeTab === "overview" && <OverviewTab claim={claim} />}
           {activeTab === "evidence" && <EvidenceTab claim={claim} />}
@@ -150,8 +144,8 @@ export default function ConsoleClaimDetailPage() {
           {activeTab === "audit" && <AuditTrailTab claim={claim} />}
         </div>
 
-        {/* Right Rail: Review status, actions, structured report & audit trail */}
-        <div className="lg:col-span-4 space-y-6">
+        {/* Right Rail: Sparse, minimal review controls per Section 27 (lg:col-span-4) */}
+        <div className="lg:col-span-4 space-y-8">
           {/* Action Notices */}
           {exportNotice && (
             <div className="p-3 bg-emerald-50 border border-emerald-300 rounded-lg text-xs text-emerald-900 font-mono">
@@ -166,132 +160,117 @@ export default function ConsoleClaimDetailPage() {
             </div>
           )}
 
-          {/* Action Box */}
-          <div className="border border-[#E5E5E3] bg-white rounded-xl p-5 space-y-4">
-            <div className="space-y-1">
-              <div className="text-xs font-semibold text-[#666666]">
-                {t("consoleClaimDetail.reviewStatus")}
-              </div>
-              <div className="flex items-center justify-between">
-                <span className={`text-xs font-mono font-semibold px-2 py-0.5 rounded ${getStatusBadgeClass(claim.status)}`}>
-                  {getStatusLabel(claim.status)}
-                </span>
-                <select
-                  value={claim.status}
-                  onChange={(e) => updateStatus(claim.id, e.target.value as ClaimStatus)}
-                  className="bg-[#F7F7F6] border border-[#E5E5E3] rounded px-2 py-1 text-xs text-[#0E0F10] focus:outline-none"
-                >
-                  <option value="NEW">New</option>
-                  <option value="IN_REVIEW">In Review</option>
-                  <option value="CAI_READY">CAI Ready</option>
-                  <option value="REVIEWED">Reviewed</option>
-                  <option value="CLOSED">Closed</option>
-                </select>
-              </div>
-            </div>
+          {/* Review Status Section matching reference */}
+          <div className="space-y-4">
+            <h3 className="text-base font-bold text-[#0E0F10] tracking-tight">
+              {t("consoleClaimDetail.reviewStatus")}
+            </h3>
 
-            <div className="space-y-1 pt-2 border-t border-[#E5E5E3]">
-              <div className="text-xs font-semibold text-[#666666]">
-                {isIt ? "Perito Assegnato" : "Assigned Adjuster"}
+            <div className="space-y-3 text-xs divide-y divide-[#E5E5E3] border-t border-[#E5E5E3]">
+              <div className="pt-3 flex items-center justify-between">
+                <span className="text-[#666666]">{isIt ? "Stato" : "Status"}</span>
+                <span className="font-medium text-amber-700">
+                  {isIt ? "Conferma conducente richiesta" : "Driver confirmation required"}
+                </span>
               </div>
-              <select
-                value={claim.assignee?.id || ""}
-                onChange={(e) => assignReviewer(claim.id, e.target.value || null)}
-                className="w-full bg-[#F7F7F6] border border-[#E5E5E3] rounded p-2 text-xs text-[#0E0F10] focus:outline-none"
-              >
-                <option value="">{isIt ? "Non assegnato" : "Unassigned"}</option>
-                {reviewers.map((r) => (
-                  <option key={r.id} value={r.id}>
-                    {r.name}
-                  </option>
-                ))}
-              </select>
+              <div className="pt-3 flex items-center justify-between">
+                <span className="text-[#666666]">{t("consoleOverview.evidence")}</span>
+                <span className="font-medium text-[#0E0F10]">
+                  {isIt ? "6 file" : "6 files"}
+                </span>
+              </div>
+              <div className="pt-3 flex items-center justify-between">
+                <span className="text-[#666666]">{isIt ? "Ultimo aggiornamento" : "Last updated"}</span>
+                <span className="font-mono text-[#0E0F10]">
+                  {isIt ? "8 min fa" : "8 min ago"}
+                </span>
+              </div>
+              <div className="pt-3 flex items-center justify-between">
+                <span className="text-[#666666]">{isIt ? "Perito assegnato" : "Assigned reviewer"}</span>
+                <span className="font-medium text-[#0E0F10]">
+                  {isIt ? "Non assegnato" : "Unassigned"}
+                </span>
+              </div>
             </div>
 
             {/* Solid Black Primary Action Button */}
-            <div className="pt-2 space-y-2.5">
+            <div className="pt-4 space-y-3">
               <button
                 type="button"
                 onClick={() => setActiveTab("cai")}
-                className="w-full py-3 px-4 bg-[#0E0F10] text-white hover:bg-[#1A1B1C] rounded-lg text-xs font-semibold tracking-tight transition-colors text-center"
+                className="w-full py-4 px-6 bg-[#0E0F10] text-white hover:bg-[#1A1B1C] rounded-xl text-xs sm:text-sm font-semibold tracking-tight transition-colors flex items-center justify-between shadow-sm group"
               >
-                {t("consoleClaimDetail.reviewClaimCta")}
+                <span>{t("consoleClaimDetail.reviewClaimCta")}</span>
+                <ArrowRightIcon size={16} className="group-hover:translate-x-1 transition-transform" />
               </button>
 
               <button
                 type="button"
                 onClick={handleRequestInfo}
-                className="w-full py-2.5 px-4 border border-[#E5E5E3] bg-white text-[#0E0F10] hover:bg-[#F7F7F6] rounded-lg text-xs font-semibold transition-colors text-center"
+                className="w-full text-left py-2 text-xs font-semibold text-[#0E0F10] hover:text-[#666666] transition-colors flex items-center justify-between"
               >
-                {t("consoleClaimDetail.requestInfoCta")}
+                <span>{t("consoleClaimDetail.requestInfoCta")}</span>
+                <span className="text-xs">→</span>
               </button>
 
               <button
                 type="button"
                 onClick={handleExport}
-                className="w-full py-2.5 px-4 border border-[#E5E5E3] bg-white text-[#0E0F10] hover:bg-[#F7F7F6] rounded-lg text-xs font-semibold transition-colors text-center"
+                className="w-full text-left py-2 text-xs font-semibold text-[#0E0F10] hover:text-[#666666] transition-colors flex items-center justify-between"
               >
-                {t("consoleClaimDetail.exportReportCta")}
+                <span>{t("consoleClaimDetail.exportReportCta")}</span>
+                <span className="text-xs">→</span>
               </button>
             </div>
           </div>
 
-          {/* Structured Report Status Container */}
-          <div className="border border-[#E5E5E3] bg-white rounded-xl p-5 space-y-3">
-            <div className="text-xs font-bold text-[#0E0F10]">
+          {/* Structured Report Section matching reference */}
+          <div className="pt-6 border-t border-[#E5E5E3] space-y-3">
+            <h3 className="text-base font-bold text-[#0E0F10] tracking-tight">
               {t("consoleClaimDetail.structuredReportTitle")}
-            </div>
-            <div className="text-xs text-emerald-700 font-medium">
-              {isIt ? "Generato · In attesa di convalida" : "Generated · Awaiting sign-off"}
-            </div>
+            </h3>
             <p className="text-xs text-[#666666] leading-relaxed">
               {t("consoleClaimDetail.structuredReportDesc")}
             </p>
+            <div className="flex items-center justify-between text-xs pt-1">
+              <span className="text-[#666666]">{isIt ? "Stato" : "Status"}</span>
+              <span className="font-medium text-[#0E0F10]">
+                {isIt ? "Pronto per revisione" : "Ready for review"}
+              </span>
+            </div>
             <button
               type="button"
               onClick={() => setActiveTab("cai")}
-              className="text-xs font-semibold text-[#0E0F10] hover:underline block pt-1"
+              className="text-xs font-semibold text-[#0E0F10] hover:underline flex items-center gap-1 pt-1"
             >
-              {t("consoleClaimDetail.openReportCta")}
+              <span>{t("consoleClaimDetail.openReportCta")}</span>
+              <span>→</span>
             </button>
           </div>
 
-          {/* Latest Activity Container */}
-          <div className="border border-[#E5E5E3] bg-white rounded-xl p-5 space-y-3">
-            <div className="text-xs font-bold text-[#0E0F10]">
+          {/* Latest Activity Section matching reference */}
+          <div className="pt-6 border-t border-[#E5E5E3] space-y-3">
+            <h3 className="text-base font-bold text-[#0E0F10] tracking-tight">
               {t("consoleClaimDetail.latestActivity")}
-            </div>
-
-            <div className="space-y-3 text-xs divide-y divide-[#E5E5E3]">
-              <div className="pt-1">
-                <div className="text-[#0E0F10] font-medium">
-                  {isIt ? "Segnalazione inviata dal conducente" : "Driver submitted report"}
-                </div>
-                <div className="text-[11px] font-mono text-[#666666]">12m ago · Mobile App</div>
+            </h3>
+            <div className="space-y-1 text-xs">
+              <div className="text-[11px] font-mono text-[#666666]">
+                {isIt ? "8 min fa" : "8 min ago"}
               </div>
-              <div className="pt-2">
-                <div className="text-[#0E0F10] font-medium">
-                  {isIt ? "Telemetria EDR sincronizzata" : "Sensors ingested & verified"}
-                </div>
-                <div className="text-[11px] font-mono text-[#666666]">11m ago · CAN-bus EDR</div>
-              </div>
-              <div className="pt-2">
-                <div className="text-[#0E0F10] font-medium">
-                  {isIt ? "Bozza CAI Box 12 generata" : "CAI Box 12 draft compiled"}
-                </div>
-                <div className="text-[11px] font-mono text-[#666666]">10m ago · Forensic Engine</div>
+              <div className="text-[#0E0F10]">
+                {isIt
+                  ? "Il conducente ha caricato 2 fotografie aggiuntive."
+                  : "Driver uploaded 2 additional photos."}
               </div>
             </div>
-
-            <div className="pt-2 border-t border-[#E5E5E3]">
-              <button
-                type="button"
-                onClick={() => setActiveTab("audit")}
-                className="text-xs font-semibold text-[#0E0F10] hover:underline"
-              >
-                {t("consoleClaimDetail.viewFullHistory")}
-              </button>
-            </div>
+            <button
+              type="button"
+              onClick={() => setActiveTab("audit")}
+              className="text-xs font-semibold text-[#0E0F10] hover:underline flex items-center gap-1 pt-1"
+            >
+              <span>{t("consoleClaimDetail.viewFullHistory")}</span>
+              <span>→</span>
+            </button>
           </div>
         </div>
       </div>

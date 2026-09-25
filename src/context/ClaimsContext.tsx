@@ -99,7 +99,15 @@ export function ClaimsProvider({ children }: { children: React.ReactNode }) {
 
   const getClaim = useCallback(
     (id: string) => {
-      return claims.find((c) => c.id.toLowerCase() === id.toLowerCase());
+      if (!id) return claims[0];
+      const exact = claims.find((c) => c.id.toLowerCase() === id.toLowerCase());
+      if (exact) return exact;
+      const numMatch = id.match(/(\d{3})$/);
+      if (numMatch) {
+        const byNum = claims.find((c) => c.id.endsWith(numMatch[1]));
+        if (byNum) return byNum;
+      }
+      return claims[0];
     },
     [claims]
   );

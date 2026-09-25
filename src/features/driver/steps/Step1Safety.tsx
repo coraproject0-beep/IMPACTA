@@ -52,12 +52,13 @@ export function Step1Safety({ onConfirmSafe }: Step1SafetyProps) {
           <span>Yes, everyone is safe — Continue</span>
         </button>
 
-        <a
-          href="tel:112"
+        <button
+          type="button"
+          onClick={() => alert("Demo simulation: In a real-world emergency, dial 112.")}
           className="w-full py-2.5 px-4 bg-white border border-rose-300 text-rose-700 hover:bg-rose-50 rounded-md text-xs font-semibold transition-colors flex items-center justify-center gap-2"
         >
-          <span>Emergency Assistance • Call 112</span>
-        </a>
+          <span>Emergency Assistance • 112 Demo</span>
+        </button>
       </div>
 
       <p className="text-[11px] text-center text-slate-400 leading-tight">

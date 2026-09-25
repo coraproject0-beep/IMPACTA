@@ -272,9 +272,9 @@ export interface Translations {
     title: string;
     subtitle: string;
     needsReview: string;
+    missingDriverConfirmation: string;
+    evidenceConflicts: string;
     newToday: string;
-    readyForInsurerReview: string;
-    medianReviewTime: string;
     priorityQueue: string;
     recentClaims: string;
     viewAll: string;
@@ -603,9 +603,9 @@ export const translations: Record<Locale, Translations> = {
       title: "12 claims need review.",
       subtitle: "Review the next claim and keep the queue moving.",
       needsReview: "Needs review",
+      missingDriverConfirmation: "Missing driver confirmation",
+      evidenceConflicts: "Evidence conflicts",
       newToday: "New today",
-      readyForInsurerReview: "Ready for insurer review",
-      medianReviewTime: "Median review time",
       priorityQueue: "Priority queue",
       recentClaims: "Recent claims",
       viewAll: "View all",
@@ -932,9 +932,9 @@ export const translations: Record<Locale, Translations> = {
       title: "12 sinistri richiedono revisione.",
       subtitle: "Esamina il prossimo sinistro e mantieni attiva la coda.",
       needsReview: "Richiedono revisione",
+      missingDriverConfirmation: "In attesa conferma conducente",
+      evidenceConflicts: "Conflitti evidenze",
       newToday: "Nuovi oggi",
-      readyForInsurerReview: "Pronti per la perizia",
-      medianReviewTime: "Tempo mediano di revisione",
       priorityQueue: "Coda prioritaria",
       recentClaims: "Sinistri recenti",
       viewAll: "Vedi tutti",

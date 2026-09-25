@@ -10,6 +10,7 @@ async function capture() {
   const height = parseInt(process.argv[3] || "900", 10);
   const outputPath = process.argv[4] || "screenshot.png";
   const url = process.argv[5] || "http://localhost:3000";
+  const action = process.argv[6] || "";
 
   const chromePath = "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe";
   const port = 9222 + Math.floor(Math.random() * 500);
@@ -77,17 +78,58 @@ async function capture() {
       mobile: width < 600,
     });
 
-    const lang = process.argv[6];
-    if (lang) {
+    // Wait for hydration
+    await wait(2000);
+
+    // Handle optional actions
+    if (action === "goto-photo-step") {
+      const locRes = await sendCommand("Runtime.evaluate", {
+        expression: "window.location.href",
+      });
+      console.log("CURRENT URL:", JSON.stringify(locRes));
+
+      const evalRes = await sendCommand("Runtime.evaluate", {
+        expression: `
+          (function() {
+            if (window.__impactaGoToStep) {
+              window.__impactaGoToStep('EVIDENCE');
+              return 'CALLED_STEP';
+            }
+            return 'FN_NOT_FOUND';
+          })()
+        `,
+      });
+      console.log("EVAL RES:", JSON.stringify(evalRes));
+      await wait(1500);
+    } else if (action === "open-112") {
       await sendCommand("Runtime.evaluate", {
         expression: `
           (function() {
-            const btn = document.querySelector('button[title*="Toggle language"]');
-            if (btn) btn.click();
+            // Find and click the 112 emergency accordion trigger or button
+            const buttons = Array.from(document.querySelectorAll('button'));
+            const alertBtn = buttons.find(b => b.textContent && (b.textContent.includes('112') || b.textContent.includes('soccorsi')));
+            if (alertBtn) alertBtn.click();
+            setTimeout(() => {
+              const startDemoBtn = Array.from(document.querySelectorAll('button')).find(b => b.textContent && b.textContent.includes('112'));
+              if (startDemoBtn) startDemoBtn.click();
+            }, 300);
+          })()
+        `,
+      });
+      await wait(1500);
+    } else if (action === "toggle-console-lang") {
+      await sendCommand("Runtime.evaluate", {
+        expression: `
+          (function() {
+            const buttons = Array.from(document.querySelectorAll('button'));
+            const itBtn = buttons.find(b => b.textContent && b.textContent.trim() === 'IT');
+            if (itBtn) itBtn.click();
           })()
         `,
       });
       await wait(1000);
+    } else {
+      await wait(2000);
     }
 
     // Capture screenshot

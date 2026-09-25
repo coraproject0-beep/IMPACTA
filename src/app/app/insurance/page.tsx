@@ -1,15 +1,17 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { useLanguage } from "@/context/LanguageContext";
 import { CheckCircleIcon } from "@/components/icons/Icons";
+import { Emergency112DemoModal } from "@/features/driver/components/Emergency112DemoModal";
 
 export default function DriverInsurancePage() {
   const { t, language } = useLanguage();
   const isIt = language === "it";
+  const [show112Demo, setShow112Demo] = useState(false);
 
   return (
-    <div className="space-y-7 max-w-md mx-auto py-2 selection:bg-[#0E0F10] selection:text-white">
+    <div className="space-y-7 max-w-md lg:max-w-3xl mx-auto py-2 selection:bg-[#0E0F10] selection:text-white">
       {/* Header */}
       <div className="space-y-1.5 pb-4 border-b border-[#E5E5E3]">
         <h1 className="text-3xl sm:text-4xl font-semibold tracking-tight text-[#0E0F10]">
@@ -81,14 +83,20 @@ export default function DriverInsurancePage() {
 
         {/* Assistance Hotline */}
         <div className="pt-3 border-t border-[#E5E5E3]">
-          <a
-            href="tel:112"
+          <button
+            type="button"
+            onClick={() => setShow112Demo(true)}
             className="w-full py-3 px-4 rounded-xl bg-[#0E0F10] hover:bg-[#1A1B1C] text-white text-xs font-semibold flex items-center justify-center gap-2 transition-colors"
           >
-            <span>{isIt ? "Chiama soccorso stradale (112)" : "Emergency Roadside (112)"}</span>
-          </a>
+            <span>{isIt ? "Simulazione emergenza (112)" : "Emergency Assistance Demo (112)"}</span>
+          </button>
         </div>
       </div>
+
+      <Emergency112DemoModal
+        isOpen={show112Demo}
+        onClose={() => setShow112Demo(false)}
+      />
     </div>
   );
 }

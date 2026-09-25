@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useClaims } from "@/context/ClaimsContext";
 import { useLanguage } from "@/context/LanguageContext";
-import { ChevronRightIcon } from "@/components/icons/Icons";
+import { ChevronRightIcon, ArrowRightIcon } from "@/components/icons/Icons";
 
 export default function ConsoleOverviewPage() {
   const { claims, stats, isLoading } = useClaims();
@@ -20,83 +20,109 @@ export default function ConsoleOverviewPage() {
     );
   }
 
-  // Identify next priority claim
-  const priorityClaimsList = claims
-    .filter((c) => c.status !== "CLOSED" && (c.aiAnalysis.reviewCategory || c.aiAnalysis.overallConfidence < 85 || c.status === "IN_REVIEW"))
-    .sort((a, b) => a.aiAnalysis.overallConfidence - b.aiAnalysis.overallConfidence);
-
-  const nextClaim = priorityClaimsList[0] || claims[0];
-  const nextClaimId = nextClaim?.id || "IMP-260925-014";
-
-  // Build 4 priority items matching reference
-  const priorityQueueItems = [
+  // Priority queue claims matching console-overview-reference.png
+  const priorityQueueRows = [
     {
-      id: priorityClaimsList[0]?.id || "IMP-260925-014",
-      attention: isIt ? "Conferma conducente richiesta" : "Driver confirmation required",
-      time: "12m ago",
-      href: `/console/claims/${priorityClaimsList[0]?.id || nextClaimId}`,
+      id: "IMP-260925-014",
+      incident: "25 Sep 2026 · 08:42",
+      location: "Milano",
+      evidence: isIt ? "6 file" : "6 files",
+      attention: isIt ? "Richiesta conferma conducente" : "Missing driver confirmation",
+      attentionClass: "text-rose-600 font-medium",
+      updated: isIt ? "8 min fa" : "8 min ago",
+      href: "/console/claims/IMP-260925-014",
     },
     {
-      id: priorityClaimsList[1]?.id || "IMP-260925-011",
-      attention: isIt ? "Bassa confidenza sensori" : "Low sensor confidence",
-      time: "34m ago",
-      href: `/console/claims/${priorityClaimsList[1]?.id || nextClaimId}`,
+      id: "IMP-260925-011",
+      incident: "25 Sep 2026 · 07:58",
+      location: "Torino",
+      evidence: isIt ? "9 file" : "9 files",
+      attention: isIt ? "Bassa corrispondenza veicolo" : "Low-confidence vehicle match",
+      attentionClass: "text-amber-600 font-medium",
+      updated: isIt ? "22 min fa" : "22 min ago",
+      href: "/console/claims/IMP-260925-011",
     },
     {
-      id: priorityClaimsList[2]?.id || "IMP-260925-009",
-      attention: isIt ? "Discrepanza Box 12" : "Box 12 discrepancy",
-      time: "1h ago",
-      href: `/console/claims/${priorityClaimsList[2]?.id || nextClaimId}`,
+      id: "IMP-260924-037",
+      incident: "24 Sep 2026 · 18:21",
+      location: "Bologna",
+      evidence: isIt ? "4 file" : "4 files",
+      attention: isIt ? "Fotografie mancanti" : "Missing photos",
+      attentionClass: "text-amber-600 font-medium",
+      updated: isIt ? "41 min fa" : "41 min ago",
+      href: "/console/claims/IMP-260924-037",
     },
     {
-      id: priorityClaimsList[3]?.id || "IMP-260925-007",
-      attention: isIt ? "Foto controparte mancanti" : "Missing third-party photos",
-      time: "2h ago",
-      href: `/console/claims/${priorityClaimsList[3]?.id || nextClaimId}`,
+      id: "IMP-260924-028",
+      incident: "24 Sep 2026 · 16:05",
+      location: "Firenze",
+      evidence: isIt ? "7 file" : "7 files",
+      attention: isIt ? "Conferma conducente necessaria" : "Driver confirmation required",
+      attentionClass: "text-amber-600 font-medium",
+      updated: isIt ? "1 ora fa" : "1 hour ago",
+      href: "/console/claims/IMP-260924-028",
+    },
+    {
+      id: "IMP-260924-021",
+      incident: "24 Sep 2026 · 14:33",
+      location: "Roma",
+      evidence: isIt ? "5 file" : "5 files",
+      attention: isIt ? "Dati veicolo discordanti" : "Inconsistent vehicle data",
+      attentionClass: "text-amber-600 font-medium",
+      updated: isIt ? "2 ore fa" : "2 hours ago",
+      href: "/console/claims/IMP-260924-021",
     },
   ];
 
-  // Build recent claims matching reference
-  const recentClaimsList = [
+  // Recent claims matching console-overview-reference.png
+  const recentClaimsRows = [
     {
-      id: claims[1]?.id || "IMP-260925-013",
-      insured: claims[1]?.policyholder?.fullName || "Marco Rossi",
+      id: "IMP-260924-020",
+      incident: "24 Sep 2026 · 12:11",
+      driver: "Marco Bianchi",
       status: isIt ? "Pronto per perizia" : "Ready for review",
-      statusColor: "text-emerald-700",
-      time: "18m ago",
-      href: `/console/claims/${claims[1]?.id || nextClaimId}`,
+      updated: isIt ? "3 ore fa" : "3 hours ago",
+      href: "/console/claims/IMP-260924-020",
     },
     {
-      id: claims[2]?.id || "IMP-260925-012",
-      insured: claims[2]?.policyholder?.fullName || "Giulia Bianchi",
-      status: isIt ? "Invio conducente in corso" : "Driver submitting",
-      statusColor: "text-[#666666]",
-      time: "29m ago",
-      href: `/console/claims/${claims[2]?.id || nextClaimId}`,
+      id: "IMP-260923-018",
+      incident: "23 Sep 2026 · 19:04",
+      driver: "Giulia Rossi",
+      status: isIt ? "In revisione" : "Under review",
+      updated: isIt ? "5 ore fa" : "5 hours ago",
+      href: "/console/claims/IMP-260923-018",
     },
     {
-      id: claims[3]?.id || "IMP-260925-010",
-      insured: claims[3]?.policyholder?.fullName || "Paolo Verdi",
-      status: isIt ? "Completato" : "Completed",
-      statusColor: "text-[#0E0F10]",
-      time: "1h ago",
-      href: `/console/claims/${claims[3]?.id || nextClaimId}`,
+      id: "IMP-260923-016",
+      incident: "23 Sep 2026 · 15:22",
+      driver: "Luca Ferrari",
+      status: isIt ? "Prove complete" : "Evidence complete",
+      updated: isIt ? "1 giorno fa" : "1 day ago",
+      href: "/console/claims/IMP-260923-016",
     },
     {
-      id: claims[4]?.id || "IMP-260925-008",
-      insured: claims[4]?.policyholder?.fullName || "Elena Moretti",
-      status: isIt ? "Completato" : "Completed",
-      statusColor: "text-[#0E0F10]",
-      time: "2h ago",
-      href: `/console/claims/${claims[4]?.id || nextClaimId}`,
+      id: "IMP-260923-012",
+      incident: "23 Sep 2026 · 11:17",
+      driver: "Sara Conti",
+      status: isIt ? "Chiuso" : "Closed",
+      updated: isIt ? "2 giorni fa" : "2 days ago",
+      href: "/console/claims/IMP-260923-012",
+    },
+    {
+      id: "IMP-260922-009",
+      incident: "22 Sep 2026 · 09:48",
+      driver: "Davide Moretti",
+      status: isIt ? "In revisione" : "Under review",
+      updated: isIt ? "2 giorni fa" : "2 days ago",
+      href: "/console/claims/IMP-260922-009",
     },
   ];
 
   const reviewCount = stats.manualReviewRequiredCount || 12;
 
   return (
-    <div className="space-y-12">
-      {/* 1. Header Area (Kicker, Title, Subtitle) */}
+    <div className="space-y-10 selection:bg-[#0E0F10] selection:text-white">
+      {/* 1. Header Area matching console-overview-reference.png */}
       <div className="space-y-2">
         <div className="text-xs font-semibold uppercase tracking-wider text-[#666666]">
           {t("consoleOverview.kicker")}
@@ -111,9 +137,8 @@ export default function ConsoleOverviewPage() {
         </p>
       </div>
 
-      {/* 2. Open Metric Strip (Separated by vertical hairlines, no boxes/cards) */}
-      <div className="grid grid-cols-2 md:grid-cols-4 border-y border-[#E5E5E3] divide-y sm:divide-y-0 sm:divide-x divide-[#E5E5E3] py-6 my-8">
-        {/* Metric 1 */}
+      {/* 2. Open Operational Metric Strip (No cards, no boxes, hairline dividers) */}
+      <div className="grid grid-cols-2 md:grid-cols-4 border-y border-[#E5E5E3] divide-y sm:divide-y-0 sm:divide-x divide-[#E5E5E3] py-6 my-6">
         <div className="px-4 sm:px-6 py-2">
           <div className="text-3xl sm:text-4xl font-mono font-bold text-[#0E0F10] tracking-tight">
             {reviewCount}
@@ -123,7 +148,24 @@ export default function ConsoleOverviewPage() {
           </div>
         </div>
 
-        {/* Metric 2 */}
+        <div className="px-4 sm:px-6 py-2">
+          <div className="text-3xl sm:text-4xl font-mono font-bold text-[#0E0F10] tracking-tight">
+            3
+          </div>
+          <div className="text-xs text-[#666666] mt-1 font-medium">
+            {t("consoleOverview.missingDriverConfirmation")}
+          </div>
+        </div>
+
+        <div className="px-4 sm:px-6 py-2">
+          <div className="text-3xl sm:text-4xl font-mono font-bold text-[#0E0F10] tracking-tight">
+            2
+          </div>
+          <div className="text-xs text-[#666666] mt-1 font-medium">
+            {t("consoleOverview.evidenceConflicts")}
+          </div>
+        </div>
+
         <div className="px-4 sm:px-6 py-2">
           <div className="text-3xl sm:text-4xl font-mono font-bold text-[#0E0F10] tracking-tight">
             7
@@ -132,195 +174,204 @@ export default function ConsoleOverviewPage() {
             {t("consoleOverview.newToday")}
           </div>
         </div>
-
-        {/* Metric 3 */}
-        <div className="px-4 sm:px-6 py-2">
-          <div className="text-3xl sm:text-4xl font-mono font-bold text-[#0E0F10] tracking-tight">
-            18
-          </div>
-          <div className="text-xs text-[#666666] mt-1 font-medium">
-            {t("consoleOverview.readyForInsurerReview")}
-          </div>
-        </div>
-
-        {/* Metric 4 */}
-        <div className="px-4 sm:px-6 py-2">
-          <div className="text-3xl sm:text-4xl font-mono font-bold text-[#0E0F10] tracking-tight">
-            4m 32s
-          </div>
-          <div className="text-xs text-[#666666] mt-1 font-medium">
-            {t("consoleOverview.medianReviewTime")}
-          </div>
-        </div>
       </div>
 
-      {/* 3. Main 2-Column Operational Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
-        {/* Left Column: Priority queue & Recent claims */}
-        <div className="lg:col-span-7 space-y-10">
-          {/* Priority queue table */}
-          <div className="space-y-4">
-            <h2 className="text-base font-bold text-[#0E0F10] tracking-tight">
-              {t("consoleOverview.priorityQueue")}
-            </h2>
+      {/* 3. Main 2-Column Operational Grid matching console-overview-reference.png */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+        {/* Left Column: Priority queue & Recent claims tables (lg:col-span-8) */}
+        <div className="lg:col-span-8 space-y-10">
+          {/* Priority queue */}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between pb-1">
+              <h2 className="text-lg font-bold text-[#0E0F10] tracking-tight">
+                {t("consoleOverview.priorityQueue")}
+              </h2>
+              <Link
+                href="/console/claims"
+                className="text-xs font-semibold text-[#0E0F10] hover:text-[#666666] flex items-center gap-1 transition-colors"
+              >
+                <span>{t("consoleOverview.viewAll")}</span>
+                <ArrowRightIcon size={12} />
+              </Link>
+            </div>
 
-            <div className="border border-[#E5E5E3] bg-white rounded-xl overflow-hidden divide-y divide-[#E5E5E3]">
-              {priorityQueueItems.map((item) => (
-                <Link
-                  key={item.id}
-                  href={item.href}
-                  className="flex items-center justify-between p-4 hover:bg-[#F7F7F6] transition-colors group"
-                >
-                  <div className="flex items-center gap-4 min-w-0">
-                    <span className="font-mono text-xs font-semibold text-[#0E0F10]">
-                      {item.id}
-                    </span>
-                    <span className="text-xs font-medium text-amber-600 truncate">
-                      {item.attention}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-3 flex-shrink-0">
-                    <span className="text-xs font-mono text-[#666666]">
-                      {item.time}
-                    </span>
-                    <ChevronRightIcon
-                      size={14}
-                      className="text-[#666666] group-hover:text-[#0E0F10] transition-colors"
-                    />
-                  </div>
-                </Link>
-              ))}
+            <div className="w-full overflow-x-auto">
+              <table className="w-full text-left text-xs border-collapse">
+                <thead>
+                  <tr className="border-b border-[#E5E5E3] text-[#666666] font-medium tracking-wider uppercase text-[11px]">
+                    <th className="py-2.5 pr-4">{isIt ? "Sinistro" : "Claim"}</th>
+                    <th className="py-2.5 px-4">{isIt ? "Incidente" : "Incident"}</th>
+                    <th className="py-2.5 px-4">{isIt ? "Luogo" : "Location"}</th>
+                    <th className="py-2.5 px-4">{isIt ? "Prove" : "Evidence"}</th>
+                    <th className="py-2.5 px-4">{isIt ? "Attenzione" : "Attention"}</th>
+                    <th className="py-2.5 px-4">{isIt ? "Aggiornato" : "Updated"}</th>
+                    <th className="py-2.5 pl-2"></th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[#E5E5E3]">
+                  {priorityQueueRows.map((row) => (
+                    <tr
+                      key={row.id}
+                      className="hover:bg-white/80 transition-colors cursor-pointer group"
+                      onClick={() => (window.location.href = row.href)}
+                    >
+                      <td className="py-3.5 pr-4 font-mono font-semibold text-[#0E0F10]">
+                        <Link href={row.href} className="hover:underline">
+                          {row.id}
+                        </Link>
+                      </td>
+                      <td className="py-3.5 px-4 text-[#0E0F10] whitespace-nowrap">
+                        {row.incident}
+                      </td>
+                      <td className="py-3.5 px-4 text-[#0E0F10]">
+                        {row.location}
+                      </td>
+                      <td className="py-3.5 px-4 text-[#666666] whitespace-nowrap">
+                        {row.evidence}
+                      </td>
+                      <td className={`py-3.5 px-4 ${row.attentionClass}`}>
+                        {row.attention}
+                      </td>
+                      <td className="py-3.5 px-4 font-mono text-[#666666] whitespace-nowrap">
+                        {row.updated}
+                      </td>
+                      <td className="py-3.5 pl-2 text-right">
+                        <ChevronRightIcon
+                          size={14}
+                          className="text-[#999999] group-hover:text-[#0E0F10] transition-colors inline"
+                        />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           </div>
 
-          {/* Recent claims table */}
-          <div className="space-y-4">
-            <h2 className="text-base font-bold text-[#0E0F10] tracking-tight">
-              {t("consoleOverview.recentClaims")}
-            </h2>
-
-            <div className="border border-[#E5E5E3] bg-white rounded-xl overflow-hidden divide-y divide-[#E5E5E3]">
-              {recentClaimsList.map((item) => (
-                <Link
-                  key={item.id}
-                  href={item.href}
-                  className="flex items-center justify-between p-4 hover:bg-[#F7F7F6] transition-colors group"
-                >
-                  <div className="flex items-center gap-4 min-w-0">
-                    <span className="font-mono text-xs font-semibold text-[#0E0F10]">
-                      {item.id}
-                    </span>
-                    <span className="text-xs font-medium text-[#0E0F10] truncate">
-                      {item.insured}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-4 flex-shrink-0">
-                    <span className={`text-xs font-medium ${item.statusColor}`}>
-                      {item.status}
-                    </span>
-                    <span className="text-xs font-mono text-[#666666]">
-                      {item.time}
-                    </span>
-                    <ChevronRightIcon
-                      size={14}
-                      className="text-[#666666] group-hover:text-[#0E0F10] transition-colors"
-                    />
-                  </div>
-                </Link>
-              ))}
-            </div>
-
-            <div className="pt-1">
+          {/* Recent claims */}
+          <div className="space-y-3 pt-4">
+            <div className="flex items-center justify-between pb-1">
+              <h2 className="text-lg font-bold text-[#0E0F10] tracking-tight">
+                {t("consoleOverview.recentClaims")}
+              </h2>
               <Link
                 href="/console/claims"
-                className="text-xs font-semibold text-[#0E0F10] hover:underline"
+                className="text-xs font-semibold text-[#0E0F10] hover:text-[#666666] flex items-center gap-1 transition-colors"
               >
-                {t("consoleOverview.viewAll")}
+                <span>{t("consoleOverview.viewAll")}</span>
+                <ArrowRightIcon size={12} />
               </Link>
+            </div>
+
+            <div className="w-full overflow-x-auto">
+              <table className="w-full text-left text-xs border-collapse">
+                <thead>
+                  <tr className="border-b border-[#E5E5E3] text-[#666666] font-medium tracking-wider uppercase text-[11px]">
+                    <th className="py-2.5 pr-4">{isIt ? "Sinistro" : "Claim"}</th>
+                    <th className="py-2.5 px-4">{isIt ? "Incidente" : "Incident"}</th>
+                    <th className="py-2.5 px-4">{isIt ? "Conducente" : "Driver"}</th>
+                    <th className="py-2.5 px-4">{isIt ? "Stato" : "Status"}</th>
+                    <th className="py-2.5 px-4">{isIt ? "Aggiornato" : "Updated"}</th>
+                    <th className="py-2.5 pl-2"></th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[#E5E5E3]">
+                  {recentClaimsRows.map((row) => (
+                    <tr
+                      key={row.id}
+                      className="hover:bg-white/80 transition-colors cursor-pointer group"
+                      onClick={() => (window.location.href = row.href)}
+                    >
+                      <td className="py-3.5 pr-4 font-mono font-semibold text-[#0E0F10]">
+                        <Link href={row.href} className="hover:underline">
+                          {row.id}
+                        </Link>
+                      </td>
+                      <td className="py-3.5 px-4 text-[#0E0F10] whitespace-nowrap">
+                        {row.incident}
+                      </td>
+                      <td className="py-3.5 px-4 text-[#0E0F10]">
+                        {row.driver}
+                      </td>
+                      <td className="py-3.5 px-4 text-[#0E0F10] font-medium">
+                        {row.status}
+                      </td>
+                      <td className="py-3.5 px-4 font-mono text-[#666666] whitespace-nowrap">
+                        {row.updated}
+                      </td>
+                      <td className="py-3.5 pl-2 text-right">
+                        <ChevronRightIcon
+                          size={14}
+                          className="text-[#999999] group-hover:text-[#0E0F10] transition-colors inline"
+                        />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
 
-        {/* Right Column: Review next claim action & preview card */}
-        <div className="lg:col-span-5 space-y-6">
+        {/* Right Rail: Radically simplified per Section 25 (lg:col-span-4) */}
+        <div className="lg:col-span-4 space-y-6">
           {/* Primary Action Button: Review next claim → */}
           <Link
-            href={`/console/claims/${nextClaimId}`}
-            className="w-full block text-center py-3.5 px-6 bg-[#0E0F10] text-white hover:bg-[#1A1B1C] rounded-lg text-sm font-semibold tracking-tight transition-colors"
+            href="/console/claims/IMP-260925-014"
+            className="w-full flex items-center justify-between py-4 px-6 bg-[#0E0F10] text-white hover:bg-[#1A1B1C] rounded-xl text-sm font-semibold tracking-tight transition-colors shadow-sm group"
           >
-            {t("consoleOverview.reviewNextClaim")}
+            <span>{t("consoleOverview.reviewNextClaim")}</span>
+            <ArrowRightIcon size={18} className="group-hover:translate-x-1 transition-transform" />
           </Link>
 
-          {/* Next Claim Preview Container */}
-          <div className="border border-[#E5E5E3] bg-white rounded-xl p-5 space-y-5">
+          {/* Next Claim Minimal Summary (NO duplicate lists, pure operational clarity) */}
+          <div className="border border-[#E5E5E3] bg-white rounded-2xl p-6 space-y-5 shadow-xs">
             {/* Incident Scene Photo Preview */}
-            <div className="relative h-44 w-full rounded-lg overflow-hidden bg-[#0E0F10]">
+            <div className="relative aspect-[16/10] w-full rounded-xl overflow-hidden bg-neutral-200">
               <Image
                 src="/images/hero-car.jpg"
-                alt="Accident scene preview"
+                alt="Next claim incident context"
                 fill
-                className="object-cover opacity-90"
+                className="object-cover"
                 sizes="(max-width: 1024px) 100vw, 400px"
               />
             </div>
 
-            {/* Header row: NEXT CLAIM: IMP-260925-014 [ Open → ] */}
-            <div className="flex items-center justify-between pb-3 border-b border-[#E5E5E3]">
-              <div className="font-mono text-xs font-bold text-[#0E0F10] tracking-tight">
-                {t("consoleOverview.nextClaimKicker")}: {nextClaimId}
-              </div>
-              <Link
-                href={`/console/claims/${nextClaimId}`}
-                className="text-xs font-medium text-[#0E0F10] hover:underline"
-              >
-                {t("consoleOverview.openClaim")}
-              </Link>
-            </div>
-
-            {/* Key-Value open list */}
-            <div className="space-y-3 text-xs">
-              <div className="flex items-center justify-between">
-                <span className="text-[#666666]">{t("consoleOverview.incident")}</span>
-                <span className="font-medium text-[#0E0F10]">
-                  {nextClaim?.incident?.summary?.slice(0, 30) || "Multi-vehicle lane change"}...
-                </span>
+            {/* Next Claim Header & Direct Action */}
+            <div className="space-y-1.5 pb-4 border-b border-[#E5E5E3]">
+              <div className="text-[11px] font-semibold uppercase tracking-wider text-[#666666]">
+                {t("consoleOverview.nextClaimKicker")}
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-[#666666]">{t("consoleOverview.location")}</span>
-                <span className="font-medium text-[#0E0F10]">
-                  {nextClaim?.incident?.location?.city || "Milano"}, {nextClaim?.incident?.location?.street || "Via Lorenteggio"}
-                </span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-[#666666]">{t("consoleOverview.vehicles")}</span>
-                <span className="font-medium text-[#0E0F10]">
-                  {nextClaim?.vehicleA?.model || "Audi A3"} · {nextClaim?.vehicleB?.model || "VW Golf"}
-                </span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-[#666666]">{t("consoleOverview.evidence")}</span>
-                <span className="font-medium text-[#0E0F10]">
-                  {nextClaim?.evidence?.length || 4} {isIt ? "foto" : "photos"} · {isIt ? "Telemetria verificata" : "Telemetry verified"}
-                </span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-[#666666]">{t("consoleOverview.attention")}</span>
-                <span className="font-medium text-amber-600">
-                  {isIt ? "Conferma conducente richiesta" : "Driver confirmation required"}
-                </span>
+                <div className="font-mono text-base font-bold text-[#0E0F10]">
+                  IMP-260925-014
+                </div>
+                <Link
+                  href="/console/claims/IMP-260925-014"
+                  className="text-xs font-semibold text-[#0E0F10] hover:text-[#666666] flex items-center gap-1 transition-colors"
+                >
+                  <span>{t("consoleOverview.openClaim")}</span>
+                  <ArrowRightIcon size={14} />
+                </Link>
               </div>
             </div>
 
-            {/* Reviewer Note */}
-            <div className="bg-[#F7F7F6] border border-[#E5E5E3] rounded-lg p-3.5 text-xs text-[#666666] leading-relaxed">
-              <div className="font-semibold text-[#0E0F10] mb-1">
-                {t("consoleOverview.notes")}
+            {/* Operational Attention Badge */}
+            <div className="space-y-1.5">
+              <div className="text-[11px] uppercase tracking-wider text-[#666666]">
+                {t("consoleOverview.attention")}
               </div>
-              <p className="italic">
-                {nextClaim?.reviewerNotes ||
-                  (isIt
-                    ? "\"Box 12 contrassegnato come 'cambio corsia', ma il tracciato dei sensori suggerisce il mantenimento della corsia prima dell'impatto. Richiede revisione.\""
-                    : "\"Box 12 marked 'changing lanes' but sensor trace suggests pre-impact lane keeping. Requires review.\"")}
+              <div className="text-sm font-semibold text-rose-600">
+                {isIt ? "Richiesta conferma conducente" : "Missing driver confirmation"}
+              </div>
+            </div>
+
+            {/* Notes excerpt */}
+            <div className="pt-3 border-t border-[#E5E5E3] text-xs text-[#666666] leading-relaxed">
+              <p>
+                {isIt
+                  ? "Rapporto conducente ricevuto. In attesa di conferma finale e foto aggiuntive dell'impatto posteriore."
+                  : "Driver report received. Waiting for driver confirmation and additional photos of the rear damage."}
               </p>
             </div>
           </div>

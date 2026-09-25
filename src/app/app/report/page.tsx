@@ -29,10 +29,28 @@ export default function ReportWizardPage() {
   } = useDriverDraft();
 
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [overrideStep, setOverrideStep] = useState<string | null>(null);
+
+  // Allow direct step navigation via query param or window helper
+  React.useEffect(() => {
+    if (typeof window !== "undefined") {
+      (window as any).__impactaGoToStep = (step: string) => {
+        setOverrideStep(step);
+        goToStep(step as any);
+      };
+      const params = new URLSearchParams(window.location.search);
+      const stepParam = params.get("step");
+      if (stepParam) {
+        setOverrideStep(stepParam);
+        goToStep(stepParam as any);
+      }
+    }
+  }, [goToStep]);
 
   // Map step values to 4 Macro Phases (1 to 4) and 5 (Submitted)
   const getMacroPhase = (): number => {
-    switch (draft.step) {
+    const currentStep = overrideStep || draft.step;
+    switch (currentStep) {
       case "SAFETY":
         return 1;
       case "INCIDENT_BASICS":
@@ -122,7 +140,7 @@ export default function ReportWizardPage() {
       />
 
       {/* Main Content Area: Focused Open Layout matching driver-report-step-reference.png */}
-      <div className="max-w-md mx-auto w-full px-4 sm:px-6 py-6 sm:py-8 flex-1">
+      <div className="max-w-md lg:max-w-5xl mx-auto w-full px-4 sm:px-6 py-6 sm:py-8 flex-1">
         <div>
           {macroPhase === 1 && (
             <Phase1Safety

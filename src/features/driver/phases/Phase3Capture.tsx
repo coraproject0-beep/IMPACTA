@@ -63,7 +63,7 @@ export function Phase3Capture({
   };
 
   return (
-    <div className="max-w-md mx-auto py-2 space-y-7 selection:bg-[#0E0F10] selection:text-white">
+    <div className="w-full max-w-md lg:max-w-5xl mx-auto py-2 selection:bg-[#0E0F10] selection:text-white">
       {/* Hidden File Input for Native Camera and File Upload */}
       <input
         type="file"
@@ -75,93 +75,102 @@ export function Phase3Capture({
         aria-label="Upload evidence photo"
       />
 
-      {/* Title & Description matching driver-report-step-reference.png */}
-      <div className="space-y-2 pt-1">
-        <h1 className="text-3xl sm:text-4xl font-semibold tracking-tight text-[#0E0F10]">
-          {isIt ? "Documenta la scena." : "Document the scene."}
-        </h1>
-        <p className="text-base sm:text-lg text-[#666666] font-normal leading-snug">
-          {isIt
-            ? "Scatta alcune foto chiare prima che qualsiasi cosa venga spostata, se è sicuro farlo."
-            : "Take a few clear photos before anything is moved, if it is safe to do so."}
-        </p>
-      </div>
+      {/* Responsive Editorial Layout:
+          - Mobile: canonical vertical stack matching driver-report-step-reference.png
+          - Desktop: 12-column grid with Left text/actions and Right large evidence viewport
+      */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-start">
+        {/* LEFT COLUMN: Title, Guidance, Actions */}
+        <div className="lg:col-span-5 space-y-6">
+          {/* Title & Description matching driver-report-step-reference.png */}
+          <div className="space-y-2 pt-1">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-tight text-[#0E0F10] leading-[1.08]">
+              {isIt ? "Documenta la scena." : "Document the scene."}
+            </h1>
+            <p className="text-base sm:text-lg text-[#666666] font-normal leading-relaxed">
+              {isIt
+                ? "Scatta alcune foto chiare prima che qualsiasi cosa venga spostata, se è sicuro farlo."
+                : "Take a few clear photos before anything is moved, if it is safe to do so."}
+            </p>
+          </div>
 
-      {/* Large Dominant Photo Area matching driver-report-step-reference.png */}
-      <div className="space-y-2">
-        <div className="relative aspect-[16/11] w-full overflow-hidden rounded-2xl bg-neutral-200 border border-[#E5E5E3]">
-          <Image
-            src={latestPhotoUrl}
-            alt="Collision scene documentation"
-            fill
-            priority
-            className="object-cover"
-            sizes="(max-width: 640px) 100vw, 448px"
-          />
-          {isUploading && (
-            <div className="absolute inset-0 bg-[#0E0F10]/60 flex items-center justify-center text-white text-xs font-medium">
-              {isIt ? "Elaborazione immagine..." : "Processing image..."}
-            </div>
-          )}
+          {/* Guidance Breadcrumbs matching driver-report-step-reference.png */}
+          <div className="pt-2 text-xs sm:text-sm text-[#666666] flex items-center flex-wrap gap-2">
+            <span>{isIt ? "Scena completa" : "Whole scene"}</span>
+            <span className="text-[#999999]">→</span>
+            <span>{isIt ? "Veicoli" : "Vehicles"}</span>
+            <span className="text-[#999999]">→</span>
+            <span>{isIt ? "Danni" : "Damage"}</span>
+            <span className="text-[#999999]">→</span>
+            <span>{isIt ? "Strada" : "Road"}</span>
+          </div>
+
+          {/* Action Rows matching driver-report-step-reference.png */}
+          <div className="space-y-4 pt-4 border-t border-[#E5E5E3]">
+            <button
+              type="button"
+              onClick={handleTriggerUpload}
+              className="w-full text-left py-3 flex items-center justify-between text-base font-normal text-[#0E0F10] hover:text-[#666666] transition-colors border-b border-[#E5E5E3]"
+            >
+              <span>{isIt ? "Scatta un'altra foto" : "Take another photo"}</span>
+              <ArrowRightIcon size={18} className="text-[#0E0F10]" />
+            </button>
+
+            <button
+              type="button"
+              onClick={handleTriggerUpload}
+              className="w-full text-left py-2 text-base font-normal text-[#0E0F10] hover:text-[#666666] transition-colors"
+            >
+              {isIt ? "Scegli dalla galleria" : "Choose from library"}
+            </button>
+
+            <div className="border-t border-[#E5E5E3] pt-6" />
+
+            {/* Primary Continue Action matching driver-report-step-reference.png */}
+            <button
+              type="button"
+              onClick={onNext}
+              className="w-full text-left py-2 flex items-center justify-between text-lg font-semibold text-[#0E0F10] hover:text-[#666666] transition-colors group"
+            >
+              <span>{isIt ? "Continua" : "Continue"}</span>
+              <ArrowRightIcon size={20} className="text-[#0E0F10] group-hover:translate-x-1 transition-transform" />
+            </button>
+
+            <button
+              type="button"
+              onClick={onNext}
+              className="text-sm text-[#666666] hover:text-[#0E0F10] transition-colors block pt-1"
+            >
+              {isIt ? "Non posso scattare foto in sicurezza" : "I can't take photos safely"}
+            </button>
+          </div>
         </div>
 
-        <p className="text-sm text-[#666666] pt-1">
-          {evidenceCount}{" "}
-          {isIt
-            ? evidenceCount === 1 ? "foto aggiunta" : "foto aggiunte"
-            : evidenceCount === 1 ? "photo added" : "photos added"}
-        </p>
-      </div>
+        {/* RIGHT COLUMN: Large Dominant Evidence Viewport */}
+        <div className="lg:col-span-7 space-y-3 order-first lg:order-last">
+          <div className="relative aspect-[16/11] lg:aspect-[16/10] w-full overflow-hidden rounded-2xl bg-neutral-200 border border-[#E5E5E3] shadow-xs">
+            <Image
+              src={latestPhotoUrl}
+              alt="Collision scene documentation"
+              fill
+              priority
+              className="object-cover"
+              sizes="(max-width: 1024px) 100vw, 700px"
+            />
+            {isUploading && (
+              <div className="absolute inset-0 bg-[#0E0F10]/60 flex items-center justify-center text-white text-xs font-medium">
+                {isIt ? "Elaborazione immagine..." : "Processing image..."}
+              </div>
+            )}
+          </div>
 
-      {/* Action Rows matching driver-report-step-reference.png */}
-      <div className="space-y-4 pt-2">
-        <button
-          type="button"
-          onClick={handleTriggerUpload}
-          className="w-full text-left py-3 flex items-center justify-between text-base font-normal text-[#0E0F10] hover:text-[#666666] transition-colors border-b border-[#E5E5E3]"
-        >
-          <span>{isIt ? "Scatta un'altra foto" : "Take another photo"}</span>
-          <ArrowRightIcon size={18} className="text-[#0E0F10]" />
-        </button>
-
-        <button
-          type="button"
-          onClick={handleTriggerUpload}
-          className="w-full text-left py-2 text-base font-normal text-[#0E0F10] hover:text-[#666666] transition-colors"
-        >
-          {isIt ? "Scegli dalla galleria" : "Choose from library"}
-        </button>
-
-        {/* Guidance Breadcrumbs matching driver-report-step-reference.png */}
-        <div className="pt-3 pb-2 text-xs sm:text-sm text-[#666666] flex items-center flex-wrap gap-2">
-          <span>{isIt ? "Scena completa" : "Whole scene"}</span>
-          <span className="text-[#999999]">→</span>
-          <span>{isIt ? "Veicoli" : "Vehicles"}</span>
-          <span className="text-[#999999]">→</span>
-          <span>{isIt ? "Danni" : "Damage"}</span>
-          <span className="text-[#999999]">→</span>
-          <span>{isIt ? "Strada" : "Road"}</span>
+          <p className="text-sm text-[#666666] pt-1">
+            {evidenceCount}{" "}
+            {isIt
+              ? evidenceCount === 1 ? "foto aggiunta" : "foto aggiunte"
+              : evidenceCount === 1 ? "photo added" : "photos added"}
+          </p>
         </div>
-
-        <div className="border-t border-[#E5E5E3] pt-6" />
-
-        {/* Primary Continue Action matching driver-report-step-reference.png */}
-        <button
-          type="button"
-          onClick={onNext}
-          className="w-full text-left py-2 flex items-center justify-between text-lg font-semibold text-[#0E0F10] hover:text-[#666666] transition-colors group"
-        >
-          <span>{isIt ? "Continua" : "Continue"}</span>
-          <ArrowRightIcon size={20} className="text-[#0E0F10] group-hover:translate-x-1 transition-transform" />
-        </button>
-
-        <button
-          type="button"
-          onClick={onNext}
-          className="text-sm text-[#666666] hover:text-[#0E0F10] transition-colors block"
-        >
-          {isIt ? "Non posso scattare foto in sicurezza" : "I can't take photos safely"}
-        </button>
       </div>
     </div>
   );
