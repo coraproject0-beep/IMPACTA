@@ -19,7 +19,7 @@ if (typeof window !== "undefined") {
  * - Single continuous 3D document slab smoothly transitioning across three evidentiary states:
  *     01: DRIVER INTAKE -> 02: STRUCTURED RECORD -> 03: ADJUSTER REVIEW
  * - Generous dwell intervals ensuring user can read each state at normal scroll velocity.
- * - Zero invented data: strictly canonical fixtures (CLM-IT-2026-001, Roma/Milano).
+ * - Zero invented data: strictly canonical fixtures.
  */
 export function HomeClosingTransition() {
   const { language } = useLanguage();
@@ -283,10 +283,12 @@ export function HomeClosingTransition() {
             <div className="flex items-center justify-between border-b border-white/15 pb-4 text-xs">
               <div className="flex items-center gap-3">
                 <span className="w-2 h-2 rounded-full bg-emerald-400" />
-                <span className="font-mono font-bold text-white tracking-wider">CLM-IT-2026-001</span>
+                <span className="font-mono font-bold text-white tracking-wider">
+                  {isIt ? "FASCICOLO SINISTRO" : "INCIDENT RECORD"}
+                </span>
               </div>
               <span className="text-[11px] font-mono text-white/50 tracking-wide uppercase">
-                {isIt ? "ROMA / MILANO • REGISTRAZIONE VERIFICATA" : "ROMA / MILANO • VERIFIED RECORD"}
+                {isIt ? "REGISTRAZIONE IN SITU • METADATI ALLINEATI" : "ON-SCENE INTAKE • ALIGNED METADATA"}
               </span>
             </div>
 
@@ -311,7 +313,7 @@ export function HomeClosingTransition() {
                   <span className="text-[10px] text-white/40 uppercase tracking-wider block font-semibold">
                     {isIt ? "POSIZIONE" : "LOCATION"}
                   </span>
-                  <span className="font-mono">{isIt ? "Coordinate certificate" : "Certified coordinates"}</span>
+                  <span className="font-mono">{isIt ? "Geolocalizzazione registrata" : "Location logged"}</span>
                 </div>
                 <div>
                   <span className="text-[10px] text-white/40 uppercase tracking-wider block font-semibold">
@@ -341,9 +343,9 @@ export function HomeClosingTransition() {
                 </div>
                 <div>
                   <span className="text-[10px] text-white/40 uppercase tracking-wider block font-semibold">
-                    {isIt ? "MODULO CAI" : "CAI CLAUSE"}
+                    {isIt ? "MODULO CAI" : "AGREED STATEMENT"}
                   </span>
-                  <span className="font-semibold">{isIt ? "Allineamento Casella 12" : "Box 12 Alignment"}</span>
+                  <span className="font-semibold">{isIt ? "Dinamica concordata" : "Aligned criteria"}</span>
                 </div>
                 <div>
                   <span className="text-[10px] text-white/40 uppercase tracking-wider block font-semibold">

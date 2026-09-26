@@ -296,7 +296,7 @@ function HomeContent() {
                 <div className="flex flex-wrap items-center justify-between gap-4 pb-5 border-b border-[#E5E5E3]">
                   <div className="space-y-0.5">
                     <span className="text-xs text-[#777777] uppercase tracking-wider block">
-                      DOSSIER #CLM-IT-2026-001
+                      {isIt ? "FASCICOLO SINISTRO #2026-01" : "INCIDENT FILE #2026-01"}
                     </span>
                     <h4 className="text-base sm:text-lg font-bold text-[#0E0F10] uppercase tracking-tight">
                       {isIt ? "Riepilogo Fatti & Ricostruzione Dinamica" : "Accident Summary & Facts"}
@@ -316,11 +316,11 @@ function HomeContent() {
                         {isIt ? "Dinamica d'Impatto" : "Impact Dynamics"}
                       </span>
                       <span className="font-semibold text-[#0E0F10]">
-                        {isIt ? "Vettore decelerazione registrato • Contatto 42° Anteriore Sx" : "Deceleration registered • 42° Contact Angle"}
+                        {isIt ? "Vettore decelerazione registrato • Contatto Anteriore Sx" : "Deceleration registered • Front-Left Contact"}
                       </span>
                     </div>
                     <span className="text-[11px] text-[#555555]">
-                      09:41:20
+                      {isIt ? "Rilievo registrato" : "Intake logged"}
                     </span>
                   </div>
 
@@ -343,7 +343,7 @@ function HomeContent() {
                   <div className="p-3.5 rounded-lg bg-[#FAFAFA] border border-[#EBEBEB] flex flex-wrap items-center justify-between gap-3">
                     <div className="space-y-0.5">
                       <span className="text-[11px] text-[#777777] uppercase block">
-                        {isIt ? "Allineamento Modulo CAI" : "European Agreed Statement"}
+                        {isIt ? "Modulo CAI" : "Agreed Statement Criteria"}
                       </span>
                       <span className="font-semibold text-[#0E0F10]">
                         {isIt ? "Circolava nello stesso senso e su fila diversa" : "Circumstance 12 - Changing lanes in same direction"}
@@ -413,7 +413,7 @@ function HomeContent() {
 
                 <div className="space-y-1">
                   <h4 className="text-sm font-semibold uppercase tracking-wider text-[#0E0F10]">
-                    {isIt ? "Allineamento Standard CAI Casella 12" : "Standard CAI Box 12 Alignment"}
+                    {isIt ? "Modulo CAI / Constatazione Amichevole" : "Standard Agreed Statement Criteria"}
                   </h4>
                   <p className="text-xs sm:text-sm text-[#666666] leading-relaxed font-light">
                     {isIt
