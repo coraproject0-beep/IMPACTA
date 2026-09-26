@@ -83,7 +83,6 @@ export function BlackBoxExperienceSection() {
           {/* Architecture Status Strip */}
           <div className="mt-14 pt-8 border-t border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-xs text-white/50">
             <div className="flex items-center gap-3">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
               <span className="font-mono uppercase tracking-wider text-white/70">
                 FORENSIC ENGINE STATE: ACTIVE • CAI PROTOCOL COMPLIANT
               </span>

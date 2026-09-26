@@ -12,6 +12,7 @@ import {
   ArrowRightIcon,
 } from "@/components/icons/Icons";
 import { Emergency112DemoModal } from "@/features/driver/components/Emergency112DemoModal";
+import { EmergencyRadar } from "@/components/ui/EmergencyRadar";
 import { formatDate } from "@/lib/dateUtils";
 
 type GuidanceStage = "BEFORE" | "SCENE" | "AFTER";
@@ -40,9 +41,13 @@ export default function DriverInsurancePage() {
           </p>
         </div>
 
-        <div className="flex items-center gap-2.5 py-1.5 px-4 rounded-full bg-emerald-50 border border-emerald-200 text-xs font-semibold text-emerald-800 self-start sm:self-auto">
-          <span className="w-2 h-2 rounded-full bg-emerald-600 animate-pulse" />
-          <span>{t("insurance.statusActive")}</span>
+        <div className="text-right self-start sm:self-auto space-y-0.5">
+          <span className="text-[10px] uppercase tracking-[0.2em] font-medium text-[#777777] block">
+            {isIt ? "Stato copertura" : "Coverage status"}
+          </span>
+          <span className="text-xs uppercase tracking-[0.14em] font-semibold text-[#0E0F10] block">
+            {t("insurance.statusActive")}
+          </span>
         </div>
       </section>
 
@@ -190,9 +195,9 @@ export default function DriverInsurancePage() {
                 type="button"
                 data-testid="trigger-112-demo"
                 onClick={() => setShow112Demo(true)}
-                className="w-full py-4 px-6 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-semibold text-sm transition-all flex items-center justify-center gap-2.5 shadow-sm active:scale-[0.99] focus:outline-none"
+                className="w-full py-4 px-6 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-semibold text-sm transition-all flex items-center justify-center gap-3 shadow-sm active:scale-[0.99] focus:outline-none"
               >
-                <PhoneIcon size={18} />
+                <EmergencyRadar size={20} showSweep={true} />
                 <span>{t("insurance.emergencyDemoCta")}</span>
               </button>
 
@@ -328,9 +333,9 @@ export default function DriverInsurancePage() {
                   <button
                     type="button"
                     onClick={() => setShow112Demo(true)}
-                    className="inline-flex items-center gap-2 py-3 px-5 rounded-xl bg-rose-600 text-white text-xs font-bold uppercase tracking-wider hover:bg-rose-700 transition-colors shadow-sm"
+                    className="inline-flex items-center gap-2.5 py-3 px-5 rounded-xl bg-rose-600 text-white text-xs font-bold uppercase tracking-wider hover:bg-rose-700 transition-colors shadow-sm"
                   >
-                    <PhoneIcon size={16} />
+                    <EmergencyRadar size={18} showSweep={true} />
                     <span>{t("insurance.stageAtSceneAction")}</span>
                   </button>
                   <Link

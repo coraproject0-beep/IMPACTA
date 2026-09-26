@@ -11,7 +11,7 @@ export function Step1Safety({ onConfirmSafe }: Step1SafetyProps) {
   return (
     <div className="space-y-6 py-2">
       <div className="text-center space-y-2">
-        <div className="w-12 h-12 mx-auto rounded-full bg-amber-50 border border-amber-200 text-amber-700 flex items-center justify-center">
+        <div className="w-12 h-12 mx-auto rounded-xl bg-[#0E0F10] text-white flex items-center justify-center">
           <AlertTriangleIcon size={22} />
         </div>
         <h2 className="text-lg font-bold text-slate-950 tracking-tight">

@@ -47,15 +47,15 @@ export default function ConsoleAnalyticsPage() {
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 pb-6 border-b border-[#E5E5E3]">
         <div className="space-y-1">
           <span className="text-xs font-semibold uppercase tracking-wider text-[#666666]">
-            {isIt ? "ANALISI & PRESTAZIONI" : "ANALYTICS & FORENSIC BENCHMARK"}
+            {isIt ? "ANALISI & PRESTAZIONI" : "ANALYTICS & OPERATIONAL BENCHMARK"}
           </span>
           <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-[#0E0F10]">
             {isIt ? "Prestazioni del Sistema" : "Pipeline Performance"}
           </h1>
           <p className="text-sm text-[#666666]">
             {isIt
-              ? "Monitoraggio empirico della certezza cinematica, escalation peritale e copertura telemetrica."
-              : "Empirical benchmarking of kinematic certainty, adjuster escalation, and telemetry lift."}
+              ? "Monitoraggio empirico della certezza delle evidenze, escalation peritale e copertura sensori."
+              : "Empirical benchmarking of evidence certainty, adjuster escalation, and sensor coverage."}
           </p>
         </div>
 

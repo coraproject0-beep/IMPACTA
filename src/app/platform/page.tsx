@@ -54,12 +54,12 @@ function PlatformContent() {
       title: isIt ? "Allineamento allo Standard CAI Europeo" : "European CAI Box 12 alignment",
       actor: isIt ? "Regole standard • Constatazione Amichevole" : "Standard rules • Agreed Statement of Facts",
       description: isIt
-        ? "Il sistema separa rigorosamente i fatti fisici osservati dalle dichiarazioni soggettive. Gli elementi del sinistro vengono mappati direttamente nelle caselle standard della Constatazione Amichevole Europea (Modulo CAI) per agevolare la liquidazione."
-        : "Observed physical facts are strictly demarcated from subjective driver statements. Incident circumstances map directly into standard European Agreed Statement criteria (CAI Box 12), ensuring complete procedural alignment.",
+        ? "Il sistema separa con chiarezza i fatti fisici osservati dalle dichiarazioni soggettive. Gli elementi del sinistro vengono mappati direttamente nelle caselle standard della Constatazione Amichevole Europea (Modulo CAI) per agevolare la liquidazione."
+        : "Observed physical facts are clearly separated from subjective driver statements. Incident circumstances map directly into standard European Agreed Statement criteria (CAI Box 12), ensuring complete procedural alignment.",
       detailHeader: isIt ? "Mappatura standard" : "Standard formulation",
       details: [
         { label: isIt ? "Circostanze accertate" : "Documented circumstances", val: isIt ? "Casella 12 Modulo CAI allineata" : "Aligned European CAI Box 12" },
-        { label: isIt ? "Demarcazione epistemica" : "Epistemic demarcation", val: isIt ? "Fatti separati dalle interpretazioni" : "Facts separated from narratives" },
+        { label: isIt ? "Separazione fatti e narrazioni" : "Fact & narrative separation", val: isIt ? "Evidenze separate dalle interpretazioni" : "Facts separated from subjective narratives" },
         { label: isIt ? "Conflitti risolti" : "Ambiguity reduction", val: isIt ? "Dichiarazioni speculari verificate" : "Bilateral statements cross-checked" },
       ],
     },

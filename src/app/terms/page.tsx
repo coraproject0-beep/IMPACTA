@@ -53,7 +53,7 @@ function TermsContent() {
 
           <div className="space-y-3 pb-8 border-b border-[#E5E5E3]">
             <h2 className="text-xl sm:text-2xl font-bold uppercase text-[#0E0F10]">
-              {isIt ? "2. Demarcazione Epistemica & Assenza di Responsabilità Automatica" : "2. Epistemic Demarcation & Zero Liability Automation"}
+              {isIt ? "2. Separazione dei Fatti Probatori & Assenza di Responsabilità Automatica" : "2. Evidence Separation & Zero Liability Automation"}
             </h2>
             <p>
               {isIt

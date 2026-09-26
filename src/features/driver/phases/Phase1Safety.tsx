@@ -5,6 +5,7 @@ import { DriverDraft } from "@/types/driver";
 import { useLanguage } from "@/context/LanguageContext";
 import { AlertTriangleIcon, ArrowRightIcon } from "@/components/icons/Icons";
 import { Emergency112DemoModal } from "@/features/driver/components/Emergency112DemoModal";
+import { EmergencyRadar } from "@/components/ui/EmergencyRadar";
 
 interface Phase1SafetyProps {
   draft: DriverDraft;
@@ -119,9 +120,10 @@ export function Phase1Safety({ onUpdate, onNext }: Phase1SafetyProps) {
               <button
                 type="button"
                 onClick={() => setShow112Modal(true)}
-                className="w-full py-3 bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold uppercase tracking-wider rounded-xl transition-colors shadow-sm focus:outline-none"
+                className="w-full py-3 bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold uppercase tracking-wider rounded-xl transition-colors shadow-sm focus:outline-none flex items-center justify-center gap-2.5"
               >
-                {isIt ? "Avvia simulazione 112" : "Start 112 Demo Simulation"}
+                <EmergencyRadar size={16} showSweep={true} />
+                <span>{isIt ? "Avvia simulazione 112" : "Start 112 Demo Simulation"}</span>
               </button>
             </div>
           )}

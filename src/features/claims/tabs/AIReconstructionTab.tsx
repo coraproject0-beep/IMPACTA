@@ -86,7 +86,6 @@ export function AIReconstructionTab({ claim }: AIReconstructionTabProps) {
           <div>
             <div className="flex items-center justify-between border-b border-slate-200 pb-3 mb-4">
               <div className="flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-teal-600" />
                 <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider">
                   1. Observed Physical Facts
                 </h3>
@@ -142,7 +141,6 @@ export function AIReconstructionTab({ claim }: AIReconstructionTabProps) {
           <div>
             <div className="flex items-center justify-between border-b border-slate-200 pb-3 mb-4">
               <div className="flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-sky-600" />
                 <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider">
                   2. AI Inferences &amp; Dynamics
                 </h3>
@@ -278,7 +276,7 @@ export function AIReconstructionTab({ claim }: AIReconstructionTabProps) {
       <div className="bg-white border border-slate-200 rounded p-5 space-y-3">
         <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider border-b border-slate-100 pb-2 flex items-center gap-1.5">
           <AlertTriangleIcon size={14} className="text-amber-600" />
-          <span>4. Epistemic Uncertainties &amp; Analysis Limitations</span>
+          <span>4. Analysis Uncertainties &amp; Limitations</span>
         </h3>
         <p className="text-[11px] text-slate-500">
           The following boundary conditions and unobserved variables constrain the certainty of this automated model:
@@ -290,7 +288,7 @@ export function AIReconstructionTab({ claim }: AIReconstructionTabProps) {
               key={idx}
               className="text-xs text-slate-700 bg-amber-50/40 border border-amber-200/70 p-2.5 rounded flex items-start gap-2"
             >
-              <span className="w-1.5 h-1.5 rounded-full bg-amber-500 flex-shrink-0 mt-1.5" />
+              <span className="text-amber-700 font-bold text-xs select-none">—</span>
               <span className="text-[11px] leading-relaxed">{item}</span>
             </li>
           ))}

@@ -65,6 +65,9 @@ export interface Translations {
     feature2Desc: string;
     feature3Title: string;
     feature3Desc: string;
+    kineticLine1: string;
+    kineticLine2: string;
+    exitStatement: string;
   };
   evidenceStory: {
     sectionKicker: string;
@@ -106,6 +109,20 @@ export interface Translations {
     finalCtaDesc: string;
     finalCtaReportButton: string;
     finalCtaInsurerButton: string;
+  };
+  homeClosing: {
+    tag: string;
+    titleLine1: string;
+    titleLine2: string;
+    subtitle: string;
+    stageDriver: string;
+    stageDriverDesc: string;
+    stageUnified: string;
+    stageUnifiedDesc: string;
+    stageInsurer: string;
+    stageInsurerDesc: string;
+    actionDriver: string;
+    actionInsurer: string;
   };
   driverHome: {
     greeting: string;
@@ -475,20 +492,23 @@ export const translations: Record<Locale, Translations> = {
       feature2Desc: "Vehicle telemetry and accelerometer readings correlated directly with impact timing.",
       feature3Title: "Standard CAI Mapping",
       feature3Desc: "Direct translation into European CAI Box 12 circumstances for human validation.",
+      kineticLine1: "EVERY FRAGMENT.",
+      kineticLine2: "ONE REVIEWABLE RECORD.",
+      exitStatement: "READY FOR HUMAN REVIEW.",
     },
     evidenceStory: {
       sectionKicker: "The Evidence Transformation",
       sectionTitle: "From roadside confusion to verified claim in four clear steps.",
       sectionSubtitle:
-        "Watch how raw roadside photography and vehicle telemetry transform into a calibrated, structured dossier ready for human adjuster sign-off.",
+        "Watch how raw roadside photography and vehicle telemetry transform into a structured dossier ready for human adjuster sign-off.",
       stage1Title: "1. Roadside Evidence Capture",
-      stage1Desc: "Driver captures 4 calibrated angles with native sensor timestamps and localized GPS coordinates.",
-      stage2Title: "2. Telemetry & Contact Correlation",
-      stage2Desc: "Synchronized vehicle telemetry correlates impact vectors against visible vehicle deformations.",
-      stage3Title: "3. Spatial Scene Trajectory",
+      stage1Desc: "Driver captures 4 essential angles with native sensor timestamps and localized GPS coordinates.",
+      stage2Title: "2. Contact & Vehicle Context",
+      stage2Desc: "Synchronized vehicle sensors correlate impact timing against visible vehicle deformations.",
+      stage3Title: "3. Spatial Scene Orientation",
       stage3Desc: "Roadway geometry aligns vehicles without subjective speculation or false precision.",
       stage4Title: "4. Claim Ready for Human Review",
-      stage4Desc: "Normalized into standard European CAI Box 12 circumstances, structured and calibrated for human claims adjuster review.",
+      stage4Desc: "Normalized into standard European CAI Box 12 circumstances, structured for human claims adjuster review.",
       interactiveNotice: "Scroll or tap steps to inspect each transformation phase",
     },
     publicSections: {
@@ -502,25 +522,40 @@ export const translations: Record<Locale, Translations> = {
       driverExperiencePoint2Desc: "Clear framing guidance ensures complete scene, vehicle, plate, and document preservation.",
       driverExperiencePoint3Title: "Local Browser Buffering",
       driverExperiencePoint3Desc: "Client-side storage preserves inputs during capture, preventing accidental data loss.",
-      insurerOpsKicker: "Claims Operations Workbench",
-      insurerOpsTitle: "Triage collision claims in minutes instead of months.",
+      insurerOpsKicker: "Claims Operations Desk",
+      insurerOpsTitle: "Structured evidence ready for adjuster review.",
       insurerOpsDesc:
-        "Empower claims adjusters with structured kinematic facts, telemetry verification, and standard CAI circumstances instead of conflicting handwritten statements.",
-      insurerOpsPoint1Title: "Impact Vector Analysis",
+        "Empower claims adjusters with structured facts, photo verification, and standard CAI circumstances instead of conflicting handwritten statements.",
+      insurerOpsPoint1Title: "Visible Vehicle Damage",
       insurerOpsPoint1Desc: "Correlate reported contact zones with visual damage documentation and physical evidence.",
-      insurerOpsPoint2Title: "Epistemic Demarcation",
-      insurerOpsPoint2Desc: "Strict visual separation between verified physical telemetry and subjective driver narratives.",
-      insurerOpsPoint3Title: "Standard CAI Box 12 Alignment",
-      insurerOpsPoint3Desc: "Structures incident facts directly into standard European Agreed Statement circumstances for human review.",
+      insurerOpsPoint2Title: "Fact & Statement Separation",
+      insurerOpsPoint2Desc: "Clear distinction between verified physical evidence and subjective driver narratives.",
+      insurerOpsPoint3Title: "Standard CAI Alignment",
+      insurerOpsPoint3Desc: "Structures incident facts directly into European Agreed Statement circumstances for human review.",
       safetyKicker: "Safety & Ethics",
       safetyTitle: "Strict separation between physical facts and liability decisions.",
       safetyDesc:
         "IMPACTA never decides legal fault or liability. We provide transparent, verifiable physical reconstructions to human adjusters and legal authorities.",
-      finalCtaTitle: "Transform roadside collisions into empirical facts.",
+      finalCtaTitle: "Transform roadside collisions into verifiable facts.",
       finalCtaDesc:
         "Experience the future of European collision intake today through our interactive driver reporting experience or insurer claims workbench.",
       finalCtaReportButton: "Report an accident as Driver",
       finalCtaInsurerButton: "Enter Claims Console",
+    },
+    homeClosing: {
+      tag: "Unified Architecture",
+      titleLine1: "ONE INCIDENT.",
+      titleLine2: "ONE SHARED RECORD.",
+      subtitle:
+        "Roadside driver capture and insurer claims review operate on the same verified evidentiary foundation. Zero manual re-entry. Zero conflicting paper versions.",
+      stageDriver: "Driver Intake",
+      stageDriverDesc: "Guided four-angle photography and localized context recorded calmly at the scene.",
+      stageUnified: "Verified Buffer",
+      stageUnifiedDesc: "Cryptographic timestamps and sensor metadata organized into an unbroken timeline.",
+      stageInsurer: "Adjuster Desk",
+      stageInsurerDesc: "Objective facts and standard European CAI circumstances ready for licensed human sign-off.",
+      actionDriver: "Driver workflow",
+      actionInsurer: "Claims desk",
     },
     driverHome: {
       greeting: "Good morning, Luca.",
@@ -793,22 +828,22 @@ export const translations: Record<Locale, Translations> = {
     },
     insurersPage: {
       heroTag: "Claims operations & triage",
-      heroTitleLine1: "Objective kinematics.",
-      heroTitleLine2: "Faster, equitable claims triage.",
-      heroSubtitle: "Replace disputed handwritten CAI forms with high-frequency connected vehicle telemetry, calibrated roadway geometry, and immutable digital audit chains.",
+      heroTitleLine1: "Structured evidence.",
+      heroTitleLine2: "Faster, equitable claims review.",
+      heroSubtitle: "Replace disputed handwritten CAI forms with georeferenced photography, road context, and clear factual documentation.",
       heroCta: "Launch Claims Console",
       workbenchTag: "Claims desk",
       workbenchTitle: "Review the claim, not the paperwork.",
-      workbenchSubtitle: "A unified workspace connecting vehicle kinematics, calibrated photographs, and driver statements in one open interface. Zero automated liability decrees.",
+      workbenchSubtitle: "A unified workspace connecting vehicle context, verified photographs, and driver statements in one open interface. Zero automated liability decrees.",
       statement1Category: "Structured intake",
       statement1Title: "Structured from the moment it arrives",
       statement1Desc: "The moment roadside intake completes, the claim appears in the operational queue with verified evidence and timestamps, eliminating intake backlogs.",
-      statement2Category: "CAI-compatible data",
+      statement2Category: "CAI-aligned data",
       statement2Title: "CAI-ready facts without manual retyping",
       statement2Desc: "Observed physical facts map deterministically to European standard circumstances without speculation or transcription errors.",
       statement3Category: "Human review",
       statement3Title: "Human judgment retains full authority",
-      statement3Desc: "Kinematics and evidence clarify what happened, while legal liability and economic settlement remain exclusively with licensed adjusters.",
+      statement3Desc: "Physical evidence clarifies what happened, while legal liability and economic settlement remain exclusively with licensed adjusters.",
       workbenchCta: "Explore live Console workspace",
       previewOrg: "Aura Mutua Assicurazioni / Claims Portal",
       previewStatus: "Awaiting driver confirmation",
@@ -822,7 +857,7 @@ export const translations: Record<Locale, Translations> = {
       previewReviewLabel: "Review status",
       previewReviewVal: "Ready for adjuster",
       authorityTag: "Adjuster authority",
-      authorityTitle: "Algorithms provide evidence, not verdicts",
+      authorityTitle: "Evidence for human decision, never automated verdicts",
       authorityBody: "European insurance regulations require that legal liability determinations be made by licensed adjusters. IMPACTA provides indisputable objective facts while leaving fault assessment exclusively to human discretion.",
     },
   },
@@ -891,6 +926,9 @@ export const translations: Record<Locale, Translations> = {
       feature2Desc: "Dati di bordo e accelerometri correlati direttamente all'istante del contatto fisico.",
       feature3Title: "Mappatura CAI Standard",
       feature3Desc: "Traduzione diretta nelle circostanze del Modulo CAI Casella 12 per la verifica umana.",
+      kineticLine1: "OGNI FRAMMENTO.",
+      kineticLine2: "UN UNICO RECORD DA VERIFICARE.",
+      exitStatement: "PRONTO PER LA REVISIONE UMANA.",
     },
     evidenceStory: {
       sectionKicker: "La Trasformazione delle Prove",
@@ -898,13 +936,13 @@ export const translations: Record<Locale, Translations> = {
       sectionSubtitle:
         "Guarda come fotografie scattate a bordo strada e telemetria di bordo si trasformano in un dossier oggettivo pronto per la convalida del perito assicurativo.",
       stage1Title: "1. Acquisizione Prove sul Posto",
-      stage1Desc: "Il conducente acquisisce 4 angolazioni calibrate con coordinate GPS e timestamp nativi.",
-      stage2Title: "2. Correlazione Telemetria e Contatto",
-      stage2Desc: "La telemetria del veicolo correla i vettori di impatto con le deformazioni visibili della carrozzeria.",
-      stage3Title: "3. Traiettoria Spaziale della Scena",
+      stage1Desc: "Il conducente acquisisce 4 prospetti essenziali con coordinate GPS e timestamp nativi.",
+      stage2Title: "2. Contesto e Danni Visibili",
+      stage2Desc: "I sensori del veicolo correlano l'istante dell'impatto con le deformazioni visibili della carrozzeria.",
+      stage3Title: "3. Orientamento della Scena",
       stage3Desc: "La geometria stradale posiziona entrambi i veicoli senza speculazioni soggettive o attribuzioni indebite.",
       stage4Title: "4. Sinistro Pronto per la Perizia Umana",
-      stage4Desc: "Strutturato nelle circostanze standard del Modulo CAI Casella 12, calibrato per la revisione del perito assicurativo.",
+      stage4Desc: "Strutturato nelle circostanze standard del Modulo CAI Casella 12 per la revisione del perito assicurativo.",
       interactiveNotice: "Scorri o tocca i passaggi per ispezionare ciascuna fase della trasformazione",
     },
     publicSections: {
@@ -918,25 +956,40 @@ export const translations: Record<Locale, Translations> = {
       driverExperiencePoint2Desc: "Inquadrature guidate per preservare panoramica, veicolo, targa controparte e documenti.",
       driverExperiencePoint3Title: "Salvataggio Locale nel Browser",
       driverExperiencePoint3Desc: "La memorizzazione locale preserva i dati inseriti durante il rilievo, prevenendo perdite accidentali.",
-      insurerOpsKicker: "Banco di Lavoro per Liquidatori",
-      insurerOpsTitle: "Gestisci i sinistri in pochi minuti anziché mesi.",
+      insurerOpsKicker: "Area Liquidazione e Perizia",
+      insurerOpsTitle: "Prove strutturate per la perizia umana.",
       insurerOpsDesc:
-        "Fornisci ai liquidatori dati cinematici oggettivi, telemetria verificata e circostanze CAI standard invece di moduli cartacei illeggibili e contrastanti.",
-      insurerOpsPoint1Title: "Analisi Vettoriale dell'Impatto",
+        "Fornisci ai liquidatori dati oggettivi, fotografie verificate e circostanze CAI standard invece di moduli cartacei illeggibili e contrastanti.",
+      insurerOpsPoint1Title: "Danni Visibili al Veicolo",
       insurerOpsPoint1Desc: "Correla le zone d'urto dichiarate con la documentazione fotografica e gli elementi riscontrati.",
-      insurerOpsPoint2Title: "Demarcazione Epistemica Rigorosa",
-      insurerOpsPoint2Desc: "Netta separazione visiva tra dati fisici verificati e dichiarazioni soggettive dei conducenti.",
-      insurerOpsPoint3Title: "Allineamento Standard CAI Casella 12",
+      insurerOpsPoint2Title: "Separazione tra Fatti e Dichiarazioni",
+      insurerOpsPoint2Desc: "Netta distinzione tra dati fisici verificati e dichiarazioni soggettive dei conducenti.",
+      insurerOpsPoint3Title: "Allineamento Circostanze CAI",
       insurerOpsPoint3Desc: "Struttura i fatti dell'incidente nelle circostanze standard del Modulo di Constatazione Amichevole per la revisione umana.",
       safetyKicker: "Sicurezza ed Etica",
       safetyTitle: "Rigida separazione tra fatti fisici e attribuzione di colpa.",
       safetyDesc:
         "IMPACTA non decide mai la responsabilità giuridica. Forniamo ricostruzioni fisiche trasparenti e verificabili a periti umani e autorità legali.",
-      finalCtaTitle: "Trasforma gli incidenti stradali in evidenze oggettive.",
+      finalCtaTitle: "Trasforma gli incidenti stradali in evidenze verificabili.",
       finalCtaDesc:
         "Sperimenta oggi il futuro della gestione sinistri europea tramite l'app conducente o il portale liquidatori.",
       finalCtaReportButton: "Segnala un sinistro come Conducente",
       finalCtaInsurerButton: "Accedi alla Console Liquidatori",
+    },
+    homeClosing: {
+      tag: "Architettura Unificata",
+      titleLine1: "UN INCIDENTE.",
+      titleLine2: "UN UNICO RECORD CONDIVISO.",
+      subtitle:
+        "Il rilievo del conducente e la perizia assicurativa poggiano sulla medesima base probatoria verificata. Nessuna ricompilazione manuale. Nessuna versione contrastante.",
+      stageDriver: "Rilievo Conducente",
+      stageDriverDesc: "Quattro inquadrature guidate e contesto geolocalizzato raccolti con calma sul posto.",
+      stageUnified: "Buffer Verificato",
+      stageUnifiedDesc: "Marcature temporali e metadati dei sensori organizzati in una sequenza continua.",
+      stageInsurer: "Banco Liquidatori",
+      stageInsurerDesc: "Fatti oggettivi e circostanze CAI standard europee pronti per la convalida del perito umano.",
+      actionDriver: "Flusso conducente",
+      actionInsurer: "Area liquidazione",
     },
     driverHome: {
       greeting: "Buongiorno, Luca.",
@@ -1211,11 +1264,11 @@ export const translations: Record<Locale, Translations> = {
       heroTag: "Operazioni sinistri e liquidazione",
       heroTitleLine1: "Dati oggettivi.",
       heroTitleLine2: "Liquidazione rapida ed equa.",
-      heroSubtitle: "Sostituisce i moduli CAI illeggibili e le dichiarazioni contraddittorie con rilievi metrici, curve di decelerazione e fascicoli strutturati secondo gli standard europei.",
+      heroSubtitle: "Sostituisce i moduli CAI illeggibili e le dichiarazioni contraddittorie con fotografie georeferenziate, contesto stradale e fascicoli strutturati secondo gli standard europei.",
       heroCta: "Accedi alla Console Sinistri",
       workbenchTag: "Area liquidazione e perizia",
       workbenchTitle: "Esamina il sinistro, non i documenti cartacei.",
-      workbenchSubtitle: "Una visione unificata che integra curve telemetriche, fotografie certificate e dichiarazioni in un'interfaccia aperta. Nessuna scatola nera che decide la colpa.",
+      workbenchSubtitle: "Una visione unificata che integra dati del veicolo, fotografie certificate e dichiarazioni in un'interfaccia aperta. Nessuna scatola nera che decide la colpa.",
       statement1Category: "Acquisizione strutturata",
       statement1Title: "Strutturato dal momento dell'invio",
       statement1Desc: "Non appena il conducente completa l'invio sul posto, il sinistro appare nella coda operativa con prove e metadati verificati, senza ritardi di acquisizione.",
@@ -1224,7 +1277,7 @@ export const translations: Record<Locale, Translations> = {
       statement2Desc: "I fatti fisici osservati vengono ricondotti univocamente alle circostanze del Modulo Blu europeo senza congetture o errori di trascrizione.",
       statement3Category: "Controllo peritale",
       statement3Title: "Il giudizio umano mantiene il pieno controllo",
-      statement3Desc: "Cinematica e rilievi chiariscono i fatti accaduti, mentre la responsabilità giuridica e la liquidazione rimangono saldamente al perito.",
+      statement3Desc: "Elementi fisici e rilievi chiariscono i fatti accaduti, mentre la responsabilità giuridica e la liquidazione rimangono saldamente al perito.",
       workbenchCta: "Esplora lo spazio di lavoro Console",
       previewOrg: "Aura Mutua Assicurazioni / Portale Sinistri",
       previewStatus: "In attesa conducente",
@@ -1238,7 +1291,7 @@ export const translations: Record<Locale, Translations> = {
       previewReviewLabel: "Stato perizia",
       previewReviewVal: "Pronto per perito",
       authorityTag: "Responsabilità peritale",
-      authorityTitle: "Gli algoritmi non emettono sentenze",
+      authorityTitle: "Evidenze per la decisione umana, mai sentenze automatiche",
       authorityBody: "L'ordinamento giuridico italiano ed europeo richiede che la determinazione della responsabilità sia sempre assunta da periti e liquidatori abilitati. IMPACTA fornisce dati oggettivi incontestabili ma rimette ogni decisione di concorso di colpa all'autorità umana.",
     },
   },

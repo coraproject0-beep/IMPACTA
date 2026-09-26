@@ -7,6 +7,7 @@ import { HeroMedia } from "@/components/public/HeroMedia";
 import { RotatingStatement } from "@/components/motion/RotatingStatement";
 import { RevealText } from "@/components/motion/RevealText";
 import { DriverVehicleScene3D } from "@/components/motion/DriverVehicleScene3D";
+import { HomeClosingTransition } from "@/components/motion/HomeClosingTransition";
 import { PartnerMarquee } from "@/components/public/PartnerMarquee";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAuth } from "@/context/AuthContext";
@@ -184,14 +185,14 @@ function HomeContent() {
         </div>
       </section>
 
-      {/* 3. CINEMATIC GRADIENT TRANSITION INTO THE BLACK BOX VOID */}
-      <div className="w-full h-36 sm:h-52 bg-gradient-to-b from-[#F7F7F6] via-[#0E0F10] to-[#000000] pointer-events-none" />
+      {/* 3. CINEMATIC GRADIENT TRANSITION INTO THE BLACK BOX VOID (Progressive Dark Volume Corridor) */}
+      <div className="w-full h-48 sm:h-72 lg:h-96 bg-gradient-to-b from-[#F7F7F6] via-[#2A2B2E] via-[#101114] to-[#000000] pointer-events-none -mb-px" />
 
       {/* 4. CANONICAL BLACK BOX SIGNATURE EXPERIENCE (Continuous Autoplaying Cinematic Video) */}
       <BlackBoxScene />
 
       {/* 5. CINEMATIC TRANSITION OUT: INTO PRODUCT CHAPTERS */}
-      <div className="w-full h-32 sm:h-48 bg-gradient-to-b from-[#000000] via-[#08090B] to-[#0E0F12] pointer-events-none" />
+      <div className="w-full h-40 sm:h-64 bg-gradient-to-b from-[#000000] via-[#08090B] to-[#0E0F12] pointer-events-none -mt-px" />
 
       {/* 6. CHAPTER ONE — DRIVER ROADSIDE INTAKE */}
       <section
@@ -298,7 +299,7 @@ function HomeContent() {
                       DOSSIER #CLM-2026-0894
                     </span>
                     <h4 className="text-base sm:text-lg font-bold text-[#0E0F10] uppercase tracking-tight">
-                      {isIt ? "Riepilogo Fatti & Ricostruzione Dinamica" : "Collision Verification Ledger"}
+                      {isIt ? "Riepilogo Fatti & Ricostruzione Dinamica" : "Accident Summary & Facts"}
                     </h4>
                   </div>
                   <span className="text-xs text-[#777777] uppercase tracking-wider font-medium">
@@ -366,7 +367,7 @@ function HomeContent() {
             <div className="lg:col-span-5 order-1 lg:order-2 space-y-8">
               <div className="space-y-3">
                 <span className="text-xs font-semibold uppercase tracking-wider text-[#777777]">
-                  {isIt ? "SINTESI PERITALE" : "CLAIMS SYNTHESIS"}
+                  {isIt ? "AREA LIQUIDAZIONE" : "CLAIMS DESK"}
                 </span>
                 <RevealText
                   as="h2"
@@ -376,21 +377,21 @@ function HomeContent() {
                 >
                   {isIt
                     ? "Dati oggettivi per la perizia umana."
-                    : "Objective facts ready for adjuster review."}
+                    : "Structured facts ready for human review."}
                 </RevealText>
               </div>
 
               <p className="text-base sm:text-lg text-[#555555] font-light leading-relaxed">
                 {isIt
-                  ? "I sinistri complessi richiedono settimane di chiarimenti e versioni contrastanti. IMPACTA ricompone fotografie geolocalizzate, dinamica vettoriale e circostanze CAI standard in una linea temporale trasparente pronta per la convalida del perito."
-                  : "Complex claims lose weeks to conflicting handwritten statements. IMPACTA structures geolocalized photos, vector dynamics, and standard European CAI circumstances into an objective evidentiary ledger calibrated for prompt adjuster sign-off."}
+                  ? "I sinistri complessi richiedono settimane di chiarimenti e versioni contrastanti. IMPACTA ricompone fotografie geolocalizzate, contesto dei veicoli e circostanze CAI standard in una linea temporale trasparente pronta per la convalida del perito."
+                  : "Complex claims lose weeks to conflicting handwritten statements. IMPACTA structures geolocalized photos, vehicle context, and standard European CAI circumstances into an objective evidence record ready for prompt adjuster sign-off."}
               </p>
 
               {/* Structural Highlights */}
               <div className="space-y-6 pt-4 border-t border-[#E5E5E3]">
                 <div className="space-y-1">
                   <h4 className="text-sm font-semibold uppercase tracking-wider text-[#0E0F10]">
-                    {isIt ? "Analisi Vettoriale dell'Impatto" : "Impact Vector Analysis"}
+                    {isIt ? "Danni Visibili al Veicolo" : "Visible Vehicle Damage"}
                   </h4>
                   <p className="text-xs sm:text-sm text-[#666666] leading-relaxed font-light">
                     {isIt
@@ -401,11 +402,11 @@ function HomeContent() {
 
                 <div className="space-y-1">
                   <h4 className="text-sm font-semibold uppercase tracking-wider text-[#0E0F10]">
-                    {isIt ? "Demarcazione Epistemica Rigorosa" : "Epistemic Demarcation"}
+                    {isIt ? "Separazione tra Fatti e Dichiarazioni" : "Fact & Statement Separation"}
                   </h4>
                   <p className="text-xs sm:text-sm text-[#666666] leading-relaxed font-light">
                     {isIt
-                      ? "Rigida separazione visiva tra dati fisici osservati e narrazioni soggettive dei conducenti."
+                      ? "Rigida separazione visiva tra dati fisici riscontrati e narrazioni soggettive dei conducenti."
                       : "Strict visual separation between verified physical evidence and subjective driver narratives."}
                   </p>
                 </div>
@@ -438,7 +439,10 @@ function HomeContent() {
         </div>
       </section>
 
-      {/* 8. FICTIONAL PARTNER MARQUEE (Clean Rail, Zero Disclaimer Labels) */}
+      {/* 8. CLOSING CONTINUUM: ONE INCIDENT, ONE SHARED RECORD */}
+      <HomeClosingTransition />
+
+      {/* 9. FICTIONAL DEMO COMPANY MARQUEE */}
       <PartnerMarquee />
     </>
   );

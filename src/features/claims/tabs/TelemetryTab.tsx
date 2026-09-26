@@ -73,12 +73,11 @@ export function TelemetryTab({ claim }: TelemetryTabProps) {
       <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-7 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xs">
         <div>
           <div className="flex items-center gap-2.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-emerald-600" />
             <h3 className="text-base sm:text-lg font-bold text-slate-950 tracking-tight">
-              Synchronous Black-Box Telemetry Ingestion
+              Vehicle Sensor Data &amp; Telemetry
             </h3>
-            <span className="text-xs font-mono font-bold text-slate-500 uppercase tracking-wider">
-              Demo Kinematics
+            <span className="text-xs font-mono font-medium text-slate-500 uppercase tracking-wider">
+              Sensor Records
             </span>
           </div>
           <p className="text-sm text-slate-600 mt-1">

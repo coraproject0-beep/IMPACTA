@@ -15,7 +15,7 @@ export function Step9Submitted({ draft, onReturnHome }: Step9SubmittedProps) {
 
   return (
     <div className="space-y-6 py-4 text-center">
-      <div className="w-14 h-14 mx-auto rounded-full bg-emerald-50 border border-emerald-200 text-emerald-600 flex items-center justify-center">
+      <div className="w-14 h-14 mx-auto rounded-xl bg-[#0E0F10] text-white flex items-center justify-center">
         <CheckCircleIcon size={28} />
       </div>
 

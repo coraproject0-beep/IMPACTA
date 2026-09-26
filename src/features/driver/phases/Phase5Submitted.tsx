@@ -35,7 +35,7 @@ export function Phase5Submitted({ draft, onReturnHome }: Phase5SubmittedProps) {
     <div className="max-w-md mx-auto py-4 space-y-7 selection:bg-[#0E0F10] selection:text-white">
       {/* Big Calm Success Indicator */}
       <div className="space-y-2 pt-2">
-        <div className="w-12 h-12 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center mb-3">
+        <div className="w-12 h-12 rounded-xl bg-[#0E0F10] text-white flex items-center justify-center mb-3">
           <CheckCircleIcon size={24} />
         </div>
         <h1 className="text-3xl sm:text-4xl font-semibold tracking-tight text-[#0E0F10]">

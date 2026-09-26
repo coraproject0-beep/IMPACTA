@@ -36,7 +36,7 @@ function DriversContent() {
     },
     {
       step: "02",
-      title: isIt ? "Quattro Inquadrature Guidate" : "Four Calibrated Perspectives",
+      title: isIt ? "Quattro Inquadrature Guidate" : "Four Guided Perspectives",
       desc: isIt
         ? "Il mirino a schermo suggerisce come posizionare la fotocamera per documentare veicoli, targhe, punti d'urto e contesto."
         : "Clear on-screen framing helps you capture scene context, vehicle plates, contact areas, and road markings with ease.",

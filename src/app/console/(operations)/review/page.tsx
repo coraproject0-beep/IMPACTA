@@ -144,8 +144,8 @@ export default function ConsoleReviewQueuePage() {
       <div className="border border-[#E5E5E3] bg-white rounded-xl overflow-hidden">
         {reviewClaims.length === 0 ? (
           <div className="py-16 text-center">
-            <div className="w-12 h-12 mx-auto rounded-full bg-emerald-50 text-emerald-700 flex items-center justify-center mb-3">
-              <CheckCircleIcon size={24} />
+            <div className="w-12 h-12 mx-auto rounded-xl bg-[#F7F7F6] text-[#0E0F10] border border-[#E5E5E3] flex items-center justify-center mb-3">
+              <CheckCircleIcon size={22} />
             </div>
             <h3 className="text-sm font-bold text-[#0E0F10]">
               {isIt ? "Nessun sinistro in attesa di perizia" : "Review Queue Clear"}
