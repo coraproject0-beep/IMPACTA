@@ -18,8 +18,8 @@ export default function BlackBoxVideoExperience() {
   const videoWrapperRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  const textLine1Ref = useRef<HTMLDivElement>(null);
-  const textLine2Ref = useRef<HTMLDivElement>(null);
+  const topRailRef = useRef<HTMLDivElement>(null);
+  const bottomRailRef = useRef<HTMLDivElement>(null);
   const exitStatementRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -32,16 +32,16 @@ export default function BlackBoxVideoExperience() {
     const container = containerRef.current;
     const stage = stageRef.current;
     const wrapper = videoWrapperRef.current;
-    const line1 = textLine1Ref.current;
-    const line2 = textLine2Ref.current;
+    const topRail = topRailRef.current;
+    const bottomRail = bottomRailRef.current;
     const exitStatement = exitStatementRef.current;
 
-    if (!container || !stage || !wrapper || !line1 || !line2 || !exitStatement) {
+    if (!container || !stage || !wrapper || !topRail || !bottomRail || !exitStatement) {
       return;
     }
 
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      gsap.set([line1, line2], { opacity: 0 });
+      gsap.set([topRail, bottomRail], { opacity: 0 });
       gsap.set(exitStatement, { opacity: 1 });
       return;
     }
@@ -59,42 +59,44 @@ export default function BlackBoxVideoExperience() {
         },
       });
 
-      // Initial state: lines positioned along their respective upper & lower safe corridors
-      gsap.set(line1, {
-        x: "-14vw",
-        z: -120,
+      // Initial state: top and bottom atmospheric overlays staged outside collision zone
+      gsap.set(topRail, {
+        x: "-5vw",
+        z: -25,
         opacity: 0,
-        scale: 0.95,
+        filter: "blur(4px)",
+        scale: 0.98,
       });
 
-      gsap.set(line2, {
-        x: "14vw",
-        z: -120,
+      gsap.set(bottomRail, {
+        x: "5vw",
+        z: -25,
         opacity: 0,
-        scale: 0.95,
+        filter: "blur(4px)",
+        scale: 0.98,
       });
 
       gsap.set(wrapper, {
-        scale: 0.95,
-        opacity: 0.95,
+        scale: 0.98,
+        opacity: 1,
         filter: "blur(0px)",
       });
 
       gsap.set(exitStatement, {
         opacity: 0,
-        scale: 0.92,
-        y: 25,
+        scale: 0.94,
+        y: 20,
       });
 
       // 1. Kinetic Typography Entrance (0.0 -> 0.32)
-      // Line 1 drifts upper-left -> upper-right; Line 2 counter-travels lower-right -> lower-left
-      // Both stay strictly in their upper/lower bands outside the central 56vw x 62vh safe zone
+      // Atmosphere overlays appear gently with subtle drift; never dominate or compete with video
       tl.to(
-        line1,
+        topRail,
         {
-          x: "3vw",
+          x: "0vw",
           z: 0,
-          opacity: 0.95,
+          opacity: 0.35,
+          filter: "blur(0px)",
           scale: 1,
           ease: "power2.out",
           duration: 0.32,
@@ -102,11 +104,12 @@ export default function BlackBoxVideoExperience() {
         0
       )
         .to(
-          line2,
+          bottomRail,
           {
-            x: "-3vw",
+            x: "0vw",
             z: 0,
-            opacity: 0.9,
+            opacity: 0.35,
+            filter: "blur(0px)",
             scale: 1,
             ease: "power2.out",
             duration: 0.32,
@@ -124,31 +127,42 @@ export default function BlackBoxVideoExperience() {
           0
         )
 
-        // 2. Collision Window: Total Clearance (0.34 -> 0.66)
-        // Typography completely fades and recedes backward in Z-space so vehicular impact is 100% unobstructed
+        // 2. Collision Window: Total Atmospheric Clearance (0.34 -> 0.66)
+        // Overlays vanish completely during impact so the Black Box has 100% stage dominance
         .to(
-          [line1, line2],
+          topRail,
           {
             opacity: 0,
-            scale: 0.84,
-            z: -300,
+            y: -18,
+            filter: "blur(4px)",
+            ease: "power2.in",
+            duration: 0.16,
+          },
+          0.34
+        )
+        .to(
+          bottomRail,
+          {
+            opacity: 0,
+            y: 18,
+            filter: "blur(4px)",
             ease: "power2.in",
             duration: 0.16,
           },
           0.34
         )
 
-        // Pure video focus during collision & reconstruction
+        // Pure video focus during collision & reassembly
         .to({}, { duration: 0.18 })
 
         // 3. Black Box Exit Statement (0.70 -> 0.92)
-        // Video gently recedes and dims into the dark void; final statement appears dead-center without any technical labels
+        // Video gently recedes and dims into the dark void; final statement appears dead-center
         .to(
           wrapper,
           {
-            opacity: 0.22,
+            opacity: 0.16,
             scale: 0.94,
-            filter: "blur(2px)",
+            filter: "blur(3px)",
             ease: "power1.inOut",
             duration: 0.2,
           },
@@ -172,7 +186,7 @@ export default function BlackBoxVideoExperience() {
           [exitStatement, wrapper],
           {
             opacity: 0.85,
-            scale: 0.96,
+            scale: 0.97,
             ease: "power1.in",
             duration: 0.08,
           },
@@ -190,62 +204,46 @@ export default function BlackBoxVideoExperience() {
       id="black-box"
       ref={containerRef}
       className="relative w-full bg-[#000000] text-white selection:bg-white selection:text-black overflow-hidden"
+      style={{ backgroundColor: "var(--blackbox-void, #000000)" }}
     >
       {/* Pinned Stage Viewport (100vh) */}
       <div
         ref={stageRef}
         className="relative w-full h-[100vh] min-h-[640px] flex items-center justify-center overflow-hidden bg-[#000000]"
-        style={{ perspective: "1400px" }}
+        style={{
+          perspective: "1400px",
+          backgroundColor: "var(--blackbox-void, #000000)",
+        }}
       >
         {/* Subtle radial depth gradient in the background void matching video tone */}
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_50%_50%,rgba(18,19,22,0.45)_0%,rgba(0,0,0,1)_100%)] pointer-events-none" />
 
-        {/* KINETIC TYPOGRAPHY LAYER WITH CENTRAL EXCLUSION MASK */}
-        {/* The mask cuts out the central 56vw x 62vh footprint so letters CANNOT touch the Black Box geometry */}
+        {/* TOP TYPOGRAPHIC OVERLAY: Subtle Atmospheric Whisper */}
         <div
+          ref={topRailRef}
           aria-hidden="true"
-          className="absolute inset-0 pointer-events-none select-none overflow-hidden z-10"
+          className="absolute z-30 w-full text-center px-6 pointer-events-none select-none"
           style={{
-            maskImage:
-              "radial-gradient(ellipse 58vw 62vh at 50% 50%, transparent 58%, black 88%)",
-            WebkitMaskImage:
-              "radial-gradient(ellipse 58vw 62vh at 50% 50%, transparent 58%, black 88%)",
+            top: "clamp(96px, 14vh, 180px)",
+            transformStyle: "preserve-3d",
+            willChange: "transform, opacity, filter",
           }}
         >
-          {/* Upper Horizon Corridor (Line 1) */}
-          <div
-            ref={textLine1Ref}
-            className="absolute top-[6%] sm:top-[7%] lg:top-[8%] w-full text-center px-4"
-            style={{ transformStyle: "preserve-3d", willChange: "transform, opacity" }}
-          >
-            <div className="font-bold tracking-[-0.035em] uppercase text-white/95 leading-none whitespace-nowrap text-[6.5vw] sm:text-[7vw] lg:text-[7.2vw]">
-              {isIt ? "OGNI FRAMMENTO." : "EVERY FRAGMENT."}
-            </div>
-          </div>
-
-          {/* Lower Horizon Corridor (Line 2) */}
-          <div
-            ref={textLine2Ref}
-            className="absolute bottom-[6%] sm:bottom-[7%] lg:bottom-[8%] w-full text-center px-4"
-            style={{ transformStyle: "preserve-3d", willChange: "transform, opacity" }}
-          >
-            <div className="font-bold tracking-[-0.03em] uppercase text-neutral-300/90 leading-none whitespace-nowrap text-[5vw] sm:text-[5.4vw] lg:text-[5.6vw]">
-              {isIt ? "UN UNICO RECORD DA VERIFICARE." : "ONE REVIEWABLE RECORD."}
-            </div>
+          <div className="font-bold tracking-tight uppercase text-white/35 leading-none whitespace-nowrap text-[clamp(1.35rem,3.2vw,2.75rem)]">
+            {isIt ? "OGNI FRAMMENTO." : "EVERY FRAGMENT."}
           </div>
         </div>
 
-        {/* CENTRAL VIDEO CONTAINER (Continuous Autoplay, Seamless Feathered Dissolve) */}
-        {/* Soft feathered radial mask completely dissolves the top-left flare & all 4 outer edges into #000000 */}
+        {/* CENTRAL HERO BLACK BOX VIDEO (Large Dominant Footprint, Seamless Void Dissolve) */}
         <div
           ref={videoWrapperRef}
-          className="relative z-20 w-full h-full max-w-[1480px] max-h-[880px] flex items-center justify-center px-4 sm:px-8 pointer-events-none select-none"
+          className="relative z-20 w-[125vw] h-[68vh] -mx-[12.5vw] sm:w-[88vw] sm:h-[80vh] sm:mx-0 sm:min-h-[580px] sm:max-h-[820px] flex items-center justify-center pointer-events-none select-none"
           style={{
             willChange: "transform, opacity",
             maskImage:
-              "radial-gradient(ellipse 78% 74% at 50% 50%, black 46%, rgba(0,0,0,0.85) 62%, transparent 88%)",
+              "radial-gradient(ellipse 76% 72% at 50% 50%, #000000 48%, rgba(0,0,0,0.92) 64%, rgba(0,0,0,0.45) 80%, rgba(0,0,0,0.1) 90%, transparent 98%)",
             WebkitMaskImage:
-              "radial-gradient(ellipse 78% 74% at 50% 50%, black 46%, rgba(0,0,0,0.85) 62%, transparent 88%)",
+              "radial-gradient(ellipse 76% 72% at 50% 50%, #000000 48%, rgba(0,0,0,0.92) 64%, rgba(0,0,0,0.45) 80%, rgba(0,0,0,0.1) 90%, transparent 98%)",
           }}
         >
           <video
@@ -260,16 +258,37 @@ export default function BlackBoxVideoExperience() {
           />
         </div>
 
+        {/* BOTTOM TYPOGRAPHIC OVERLAY: Subtle Atmospheric Whisper */}
+        <div
+          ref={bottomRailRef}
+          aria-hidden="true"
+          className="absolute z-30 w-full text-center px-6 pointer-events-none select-none"
+          style={{
+            bottom: "clamp(48px, 12vh, 140px)",
+            transformStyle: "preserve-3d",
+            willChange: "transform, opacity, filter",
+          }}
+        >
+          <div className="font-bold tracking-tight uppercase text-neutral-300/35 leading-none whitespace-nowrap text-[clamp(1.2rem,2.8vw,2.2rem)]">
+            {isIt ? "UN UNICO RECORD DA VERIFICARE." : "ONE REVIEWABLE RECORD."}
+          </div>
+        </div>
+
         {/* BLACK BOX EXIT STATEMENT (Clean, authorial, zero technical eyebrows) */}
         <div
           ref={exitStatementRef}
-          className="absolute z-30 inset-0 flex items-center justify-center pointer-events-none select-none px-6 text-center"
+          className="absolute z-40 inset-0 flex items-center justify-center pointer-events-none select-none px-6 text-center"
           style={{ willChange: "transform, opacity" }}
         >
-          <div className="max-w-4xl">
+          <div className="max-w-4xl space-y-4">
             <h2 className="text-3xl sm:text-5xl lg:text-7xl font-bold tracking-tight text-white uppercase leading-[1.05]">
               {isIt ? "PRONTO PER LA REVISIONE UMANA." : "READY FOR HUMAN REVIEW."}
             </h2>
+            <p className="text-sm sm:text-base lg:text-lg text-white/60 font-light max-w-2xl mx-auto">
+              {isIt
+                ? "Sinistro ricostruito da telemetria, evidenze visive e testimonianza del conducente."
+                : "Incident reconstructed from telemetry, visual evidence, and driver testimony."}
+            </p>
           </div>
         </div>
       </div>

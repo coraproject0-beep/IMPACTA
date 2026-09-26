@@ -14,6 +14,8 @@
   --foreground: var(--impacta-black);
   --border: var(--hairline);
 
+  --blackbox-void: #000000;
+
   --public-header-height: 76px;
 }
 

@@ -1,12 +1,13 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import { PublicShell } from "@/components/public/PublicShell";
 import { EditorialReveal } from "@/components/motion/EditorialReveal";
 import { TechnicalReveal } from "@/components/motion/TechnicalReveal";
 import { RevealText } from "@/components/motion/RevealText";
-import { PerspectiveCard } from "@/components/motion/PerspectiveCard";
+import { EmergencyRadar } from "@/components/ui/EmergencyRadar";
+import { Emergency112DemoModal } from "@/features/driver/components/Emergency112DemoModal";
 import { useLanguage } from "@/context/LanguageContext";
 
 export default function SafetyPage() {
@@ -20,6 +21,7 @@ export default function SafetyPage() {
 function SafetyContent() {
   const { language } = useLanguage();
   const isIt = language === "it";
+  const [show112Modal, setShow112Modal] = useState(false);
 
   const safetyPillars = [
     {
@@ -53,8 +55,8 @@ function SafetyContent() {
       {/* Header */}
       <section className="py-24 sm:py-36 bg-white border-b border-[#E5E5E3]">
         <div className="w-full px-6 sm:px-12 lg:px-20 max-w-7xl mx-auto space-y-6">
-          <TechnicalReveal className="text-xs sm:text-sm font-medium text-[#555555]">
-            {isIt ? "Sicurezza, etica e governo del dato" : "Safety, ethics & evidentiary governance"}
+          <TechnicalReveal className="text-xs sm:text-sm font-semibold uppercase tracking-[0.2em] text-[#666666]">
+            {isIt ? "SICUREZZA, ETICA E GOVERNO DEL DATO" : "SAFETY, ETHICS & EVIDENTIARY GOVERNANCE"}
           </TechnicalReveal>
           <EditorialReveal
             as="h1"
@@ -79,51 +81,67 @@ function SafetyContent() {
               ? "Sul ciglio della strada, la sicurezza fisica è l'unica priorità. Nella gestione del sinistro, il rigore probatorio non può mai essere delegato a sentenze automatizzate."
               : "At roadside collisions, physical safety is absolute. In insurance claims processing, evidentiary rigor and legal governance must never be abdicated to automated black boxes."}
           </p>
+
+          <div className="pt-4">
+            <button
+              type="button"
+              onClick={() => setShow112Modal(true)}
+              className="group inline-flex items-center gap-3.5 px-7 py-4 bg-[#0E0F10] hover:bg-rose-600 text-white text-xs font-bold tracking-wider uppercase transition-colors shadow-sm cursor-pointer"
+            >
+              <EmergencyRadar size={24} showSweep={true} />
+              <span>{isIt ? "CHIAMA 112" : "CALL 112"}</span>
+              <span className="text-white/50 text-[11px] font-normal lowercase tracking-normal pl-1">
+                ({isIt ? "simulazione emergenza" : "demo simulation"})
+              </span>
+            </button>
+          </div>
         </div>
       </section>
 
-      {/* Roadside Safety Protocol Narrative - Cards */}
+      {/* Roadside Safety Protocol Narrative - OPEN ARCHITECTURAL COLUMNS (NO WHITE CARDS) */}
       <section className="py-24 sm:py-36 bg-[#F7F7F6] border-b border-[#E5E5E3]">
-        <div className="w-full px-6 sm:px-12 lg:px-20 max-w-7xl mx-auto space-y-12">
+        <div className="w-full px-6 sm:px-12 lg:px-20 max-w-7xl mx-auto space-y-16">
           <div className="space-y-2">
-            <span className="text-xs uppercase tracking-wider text-[#777777] font-medium">
+            <span className="text-xs uppercase tracking-[0.24em] text-[#777777] font-semibold block">
               {isIt ? "TRE PRINCIPI INDEROGABILI" : "THREE NON-NEGOTIABLE TENETS"}
             </span>
             <RevealText
               as="h2"
               mode="word"
               variant="vertical-mask"
-              className="text-3xl sm:text-4xl font-bold uppercase tracking-tight text-[#0E0F10]"
+              className="text-3xl sm:text-5xl font-bold uppercase tracking-tight text-[#0E0F10]"
             >
               {isIt ? "I cardini operativi di IMPACTA" : "Operational Core of IMPACTA"}
             </RevealText>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {/* Clean Architectural 3-Column Split (No generic rounded boxes) */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 lg:gap-14 pt-4">
             {safetyPillars.map((pillar) => (
-              <PerspectiveCard key={pillar.num} maxTilt={4} className="h-full">
-                <div className="h-full bg-white border border-[#E5E5E3] rounded-2xl p-8 flex flex-col justify-between space-y-6 shadow-sm hover:border-[#0E0F10] transition-colors">
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between pb-3 border-b border-[#E5E5E3]">
-                      <span className="text-2xl font-bold text-[#0E0F10]">
-                        {pillar.num}
-                      </span>
-                      <span className="text-[11px] font-medium uppercase tracking-wider text-[#777777]">
-                        {pillar.tag}
-                      </span>
-                    </div>
-                    <h3 className="text-xl font-bold uppercase text-[#0E0F10]">
-                      {pillar.title}
-                    </h3>
-                    <p className="text-[#666666] font-light text-sm sm:text-base leading-relaxed">
-                      {pillar.desc}
-                    </p>
+              <div
+                key={pillar.num}
+                className="border-t-2 border-[#0E0F10] pt-6 flex flex-col justify-between space-y-8 select-none"
+              >
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between pb-3 border-b border-[#E0E0DE]">
+                    <span className="text-3xl font-mono font-bold text-[#0E0F10]">
+                      {pillar.num}
+                    </span>
+                    <span className="text-[10px] font-mono uppercase tracking-widest text-[#777777]">
+                      {pillar.tag}
+                    </span>
                   </div>
-                  <div className="pt-4 border-t border-[#E5E5E3] text-[11px] uppercase tracking-wider text-[#777777] font-medium">
-                    VERIFIED ETHICAL GOVERNANCE
-                  </div>
+                  <h3 className="text-2xl font-bold uppercase tracking-tight text-[#0E0F10]">
+                    {pillar.title}
+                  </h3>
+                  <p className="text-[#555555] font-light text-sm sm:text-base leading-relaxed">
+                    {pillar.desc}
+                  </p>
                 </div>
-              </PerspectiveCard>
+                <div className="pt-4 border-t border-[#E0E0DE] text-[10px] font-mono uppercase tracking-widest text-[#777777]">
+                  VERIFIED ETHICAL GOVERNANCE
+                </div>
+              </div>
             ))}
           </div>
         </div>
@@ -151,6 +169,12 @@ function SafetyContent() {
           </Link>
         </div>
       </section>
+
+      {/* Emergency 112 Demo Modal */}
+      <Emergency112DemoModal
+        isOpen={show112Modal}
+        onClose={() => setShow112Modal(false)}
+      />
     </>
   );
 }

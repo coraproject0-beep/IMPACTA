@@ -23,93 +23,141 @@ export function EmergencyRadar({
         viewBox="0 0 48 48"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
-        className="w-full h-full"
+        className="w-full h-full overflow-visible"
       >
         <defs>
-          <linearGradient id="radarSweepGrad" x1="24" y1="24" x2="44" y2="24" gradientUnits="userSpaceOnUse">
-            <stop stopColor="#E11D48" stopOpacity="0.45" />
+          <linearGradient id="radarSweepGradV5" x1="24" y1="24" x2="44" y2="24" gradientUnits="userSpaceOnUse">
+            <stop stopColor="#E11D48" stopOpacity="0.35" />
             <stop offset="1" stopColor="#E11D48" stopOpacity="0" />
           </linearGradient>
         </defs>
 
-        {/* Outer boundary ring */}
+        {/* Outer boundary perimeter (stable reference ring) */}
         <circle
           cx="24"
           cy="24"
           r="22"
           stroke="#E11D48"
-          strokeWidth="0.75"
-          className="opacity-25"
+          strokeWidth="0.8"
+          strokeOpacity="0.25"
         />
 
-        {/* Concentric Breathing Wave Ring 1 */}
+        {/* Expanding Ring 1 (Wave 1: T = 0ms) */}
         <circle
           cx="24"
           cy="24"
-          r="16"
+          r="21"
           stroke="#E11D48"
-          strokeWidth="1"
-          className="radar-ring-1"
+          strokeWidth="1.2"
+          className="radar-ring-wave-1"
         />
 
-        {/* Concentric Breathing Wave Ring 2 */}
+        {/* Expanding Ring 2 (Wave 2: T = +350ms) */}
         <circle
           cx="24"
           cy="24"
-          r="10"
+          r="21"
           stroke="#E11D48"
-          strokeWidth="1"
-          className="radar-ring-2"
+          strokeWidth="1.2"
+          className="radar-ring-wave-2"
         />
 
-        {/* Optional Rotating Sweep Line & Beam */}
+        {/* Expanding Ring 3 (Wave 3: T = +700ms) */}
+        <circle
+          cx="24"
+          cy="24"
+          r="21"
+          stroke="#E11D48"
+          strokeWidth="1.2"
+          className="radar-ring-wave-3"
+        />
+
+        {/* Optional Faint Rotating Sweep Line & Beam */}
         {showSweep && (
-          <g className="radar-sweep-beam origin-center">
+          <g className="radar-sweep-beam">
             <line
               x1="24"
               y1="24"
-              x2="46"
+              x2="45"
               y2="24"
               stroke="#E11D48"
-              strokeWidth="1.25"
+              strokeWidth="1"
               strokeLinecap="round"
-              className="opacity-75"
+              strokeOpacity="0.6"
             />
             {/* Subtle beam sector */}
             <path
-              d="M 24 24 L 46 24 A 22 22 0 0 0 39.5 8.5 Z"
-              fill="url(#radarSweepGrad)"
-              className="opacity-40"
+              d="M 24 24 L 45 24 A 21 21 0 0 0 38.8 9.1 Z"
+              fill="url(#radarSweepGradV5)"
+              className="opacity-30"
             />
           </g>
         )}
 
-        {/* Center Emergency Node */}
-        <circle cx="24" cy="24" r="3.75" fill="#E11D48" className="radar-node-pulse" />
-        <circle cx="24" cy="24" r="1.5" fill="#FFFFFF" />
+        {/* Solid Small Red Core + Crisp Center Specular */}
+        <circle cx="24" cy="24" r="4" fill="#E11D48" className="radar-core-pulse" />
+        <circle cx="24" cy="24" r="1.6" fill="#FFFFFF" />
       </svg>
 
       <style jsx>{`
         .radar-sweep-beam {
           transform-origin: 24px 24px;
-          animation: radarSweep 3.2s linear infinite;
+          animation: radarSweepAnim 2.8s linear infinite;
         }
 
-        .radar-ring-1 {
+        .radar-ring-wave-1 {
           transform-origin: 24px 24px;
-          animation: ringPulse 2.8s ease-out infinite;
+          animation: radarPulsePam 1.6s cubic-bezier(0.16, 1, 0.3, 1) infinite;
         }
 
-        .radar-ring-2 {
+        .radar-ring-wave-2 {
           transform-origin: 24px 24px;
-          animation: ringPulse 2.8s ease-out infinite 0.7s;
+          animation: radarPulsePam 1.6s cubic-bezier(0.16, 1, 0.3, 1) infinite 0.35s;
         }
 
-        .radar-node-pulse {
-          animation: nodeGlow 2.4s ease-in-out infinite;
+        .radar-ring-wave-3 {
+          transform-origin: 24px 24px;
+          animation: radarPulsePam 1.6s cubic-bezier(0.16, 1, 0.3, 1) infinite 0.7s;
         }
 
-        @keyframes radarSweep {
+        .radar-core-pulse {
+          transform-origin: 24px 24px;
+          animation: radarCorePam 1.6s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+        }
+
+        @keyframes radarPulsePam {
+          0% {
+            transform: scale(0.25);
+            opacity: 0.95;
+            stroke-width: 2px;
+          }
+          45% {
+            opacity: 0.55;
+            stroke-width: 1.2px;
+          }
+          100% {
+            transform: scale(1.05);
+            opacity: 0;
+            stroke-width: 0.6px;
+          }
+        }
+
+        @keyframes radarCorePam {
+          0%, 100% {
+            transform: scale(1);
+            opacity: 0.92;
+          }
+          20% {
+            transform: scale(1.15);
+            opacity: 1;
+          }
+          40% {
+            transform: scale(1);
+            opacity: 0.92;
+          }
+        }
+
+        @keyframes radarSweepAnim {
           0% {
             transform: rotate(0deg);
           }
@@ -118,36 +166,12 @@ export function EmergencyRadar({
           }
         }
 
-        @keyframes ringPulse {
-          0% {
-            r: 8px;
-            opacity: 0.7;
-          }
-          50% {
-            opacity: 0.35;
-          }
-          100% {
-            r: 21px;
-            opacity: 0;
-          }
-        }
-
-        @keyframes nodeGlow {
-          0%, 100% {
-            opacity: 0.9;
-            transform: scale(1);
-          }
-          50% {
-            opacity: 1;
-            transform: scale(1.1);
-          }
-        }
-
         @media (prefers-reduced-motion: reduce) {
           .radar-sweep-beam,
-          .radar-ring-1,
-          .radar-ring-2,
-          .radar-node-pulse {
+          .radar-ring-wave-1,
+          .radar-ring-wave-2,
+          .radar-ring-wave-3,
+          .radar-core-pulse {
             animation: none !important;
           }
         }
