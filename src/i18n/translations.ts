@@ -354,6 +354,40 @@ export interface Translations {
     latestActivity: string;
     viewFullHistory: string;
   };
+  insurersPage: {
+    heroTag: string;
+    heroTitleLine1: string;
+    heroTitleLine2: string;
+    heroSubtitle: string;
+    heroCta: string;
+    workbenchTag: string;
+    workbenchTitle: string;
+    workbenchSubtitle: string;
+    statement1Category: string;
+    statement1Title: string;
+    statement1Desc: string;
+    statement2Category: string;
+    statement2Title: string;
+    statement2Desc: string;
+    statement3Category: string;
+    statement3Title: string;
+    statement3Desc: string;
+    workbenchCta: string;
+    previewOrg: string;
+    previewStatus: string;
+    previewTime: string;
+    previewVehicleA: string;
+    previewVehicleB: string;
+    previewEvidenceLabel: string;
+    previewEvidenceVal: string;
+    previewTelemetryLabel: string;
+    previewTelemetryVal: string;
+    previewReviewLabel: string;
+    previewReviewVal: string;
+    authorityTag: string;
+    authorityTitle: string;
+    authorityBody: string;
+  };
 }
 
 export const translations: Record<Locale, Translations> = {
@@ -719,6 +753,40 @@ export const translations: Record<Locale, Translations> = {
       latestActivity: "Latest activity",
       viewFullHistory: "View full history",
     },
+    insurersPage: {
+      heroTag: "Claims operations & triage",
+      heroTitleLine1: "Objective kinematics.",
+      heroTitleLine2: "Faster, equitable claims triage.",
+      heroSubtitle: "Replace disputed handwritten CAI forms with high-frequency connected vehicle telemetry, calibrated roadway geometry, and immutable digital audit chains.",
+      heroCta: "Launch Claims Console",
+      workbenchTag: "Claims desk",
+      workbenchTitle: "Review the claim, not the paperwork.",
+      workbenchSubtitle: "A unified workspace connecting vehicle kinematics, calibrated photographs, and driver statements in one open interface. Zero automated liability decrees.",
+      statement1Category: "Structured intake",
+      statement1Title: "Structured from the moment it arrives",
+      statement1Desc: "The moment roadside intake completes, the claim appears in the operational queue with verified evidence and timestamps, eliminating intake backlogs.",
+      statement2Category: "CAI-compatible data",
+      statement2Title: "CAI-ready facts without manual retyping",
+      statement2Desc: "Observed physical facts map deterministically to European standard circumstances without speculation or transcription errors.",
+      statement3Category: "Human review",
+      statement3Title: "Human judgment retains full authority",
+      statement3Desc: "Kinematics and evidence clarify what happened, while legal liability and economic settlement remain exclusively with licensed adjusters.",
+      workbenchCta: "Explore live Console workspace",
+      previewOrg: "Aura Mutua Assicurazioni / Claims Portal",
+      previewStatus: "Awaiting driver confirmation",
+      previewTime: "8 min ago",
+      previewVehicleA: "Vehicle A (Insured)",
+      previewVehicleB: "Vehicle B (Counterparty)",
+      previewEvidenceLabel: "Evidence",
+      previewEvidenceVal: "6 photos",
+      previewTelemetryLabel: "Telemetry",
+      previewTelemetryVal: "10 Hz synchronous",
+      previewReviewLabel: "Review status",
+      previewReviewVal: "Ready for adjuster",
+      authorityTag: "Adjuster authority",
+      authorityTitle: "Algorithms provide evidence, not verdicts",
+      authorityBody: "European insurance regulations require that legal liability determinations be made by licensed adjusters. IMPACTA provides indisputable objective facts while leaving fault assessment exclusively to human discretion.",
+    },
   },
   it: {
     nav: {
@@ -1081,6 +1149,40 @@ export const translations: Record<Locale, Translations> = {
       openReportCta: "Apri rapporto",
       latestActivity: "Attività recente",
       viewFullHistory: "Visualizza cronologia completa",
+    },
+    insurersPage: {
+      heroTag: "Operazioni sinistri e liquidazione",
+      heroTitleLine1: "Dati oggettivi.",
+      heroTitleLine2: "Liquidazione rapida ed equa.",
+      heroSubtitle: "Sostituisce i moduli CAI illeggibili e le dichiarazioni contraddittorie con rilievi metrici, curve di decelerazione e fascicoli strutturati secondo gli standard europei.",
+      heroCta: "Accedi alla Console Sinistri",
+      workbenchTag: "Area liquidazione e perizia",
+      workbenchTitle: "Esamina il sinistro, non i documenti cartacei.",
+      workbenchSubtitle: "Una visione unificata che integra curve telemetriche, fotografie certificate e dichiarazioni in un'interfaccia aperta. Nessuna scatola nera che decide la colpa.",
+      statement1Category: "Acquisizione strutturata",
+      statement1Title: "Strutturato dal momento dell'invio",
+      statement1Desc: "Non appena il conducente completa l'invio sul posto, il sinistro appare nella coda operativa con prove e metadati verificati, senza ritardi di acquisizione.",
+      statement2Category: "Dati conformi CAI",
+      statement2Title: "Dati conformi CAI senza riscrittura manuale",
+      statement2Desc: "I fatti fisici osservati vengono ricondotti univocamente alle circostanze del Modulo Blu europeo senza congetture o errori di trascrizione.",
+      statement3Category: "Controllo peritale",
+      statement3Title: "Il giudizio umano mantiene il pieno controllo",
+      statement3Desc: "Cinematica e rilievi chiariscono i fatti accaduti, mentre la responsabilità giuridica e la liquidazione rimangono saldamente al perito.",
+      workbenchCta: "Esplora lo spazio di lavoro Console",
+      previewOrg: "Aura Mutua Assicurazioni / Portale Sinistri",
+      previewStatus: "In attesa conducente",
+      previewTime: "8 min fa",
+      previewVehicleA: "Veicolo A (Assicurato)",
+      previewVehicleB: "Veicolo B (Controparte)",
+      previewEvidenceLabel: "Prove raccolte",
+      previewEvidenceVal: "6 fotografie",
+      previewTelemetryLabel: "Telemetria CAN",
+      previewTelemetryVal: "10 Hz sincrono",
+      previewReviewLabel: "Stato perizia",
+      previewReviewVal: "Pronto per perito",
+      authorityTag: "Responsabilità peritale",
+      authorityTitle: "Gli algoritmi non emettono sentenze",
+      authorityBody: "L'ordinamento giuridico italiano ed europeo richiede che la determinazione della responsabilità sia sempre assunta da periti e liquidatori abilitati. IMPACTA fornisce dati oggettivi incontestabili ma rimette ogni decisione di concorso di colpa all'autorità umana.",
     },
   },
 };

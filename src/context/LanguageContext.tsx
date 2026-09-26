@@ -62,6 +62,10 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
+  if (typeof window !== "undefined") {
+    (window as any).__impactaSetLocale = setLocale;
+  }
+
   useEffect(() => {
     if (typeof window !== "undefined") {
       (window as any).__impactaSetLocale = setLocale;
