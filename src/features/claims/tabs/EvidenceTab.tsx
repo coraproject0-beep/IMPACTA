@@ -1,4 +1,5 @@
 "use client";
+/* eslint-disable @next/next/no-img-element */
 
 import React, { useState } from "react";
 import { Claim, EvidenceItem } from "@/types";
@@ -87,7 +88,13 @@ export function EvidenceTab({ claim }: EvidenceTabProps) {
               >
                 {/* Visual Thumbnail Representation */}
                 <div className="h-40 bg-slate-900 relative flex items-center justify-center text-slate-300 overflow-hidden border-b border-slate-200">
-                  {item.type.includes("PHOTO") ? (
+                  {item.thumbnailUrl ? (
+                    <img
+                      src={item.thumbnailUrl}
+                      alt={item.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                  ) : item.type.includes("PHOTO") ? (
                     <svg className="w-full h-full p-4" viewBox="0 0 300 150" fill="none">
                       <rect width="300" height="150" fill="#1e293b" rx="4" />
                       {/* Stylized road & car wireframe */}

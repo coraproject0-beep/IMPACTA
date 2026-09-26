@@ -1,4 +1,5 @@
 "use client";
+/* eslint-disable @next/next/no-img-element */
 
 import React from "react";
 import { EvidenceItem } from "@/types";
@@ -28,8 +29,15 @@ export function EvidenceViewerModal({ item, isOpen, onClose }: EvidenceViewerMod
       <div className="space-y-5">
         {/* Visual Deterministic Representation */}
         <div className="w-full bg-slate-900 rounded-lg p-6 flex flex-col items-center justify-center text-slate-100 relative overflow-hidden border border-slate-800 select-none">
-          {/* Schematic SVG based on evidence type */}
-          {item.type.includes("PHOTO") ? (
+          {item.thumbnailUrl ? (
+            <div className="w-full flex items-center justify-center bg-black/90 rounded-lg p-2 overflow-hidden max-h-[380px]">
+              <img
+                src={item.thumbnailUrl}
+                alt={item.title}
+                className="max-h-[360px] max-w-full object-contain rounded"
+              />
+            </div>
+          ) : item.type.includes("PHOTO") ? (
             <div className="w-full h-48 flex flex-col items-center justify-center relative">
               <svg className="w-full h-full" viewBox="0 0 400 180" fill="none">
                 <rect x="10" y="10" width="380" height="160" rx="6" fill="#1e293b" stroke="#334155" strokeWidth="1.5" />

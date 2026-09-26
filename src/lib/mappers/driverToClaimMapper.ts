@@ -8,7 +8,7 @@ export function mapDriverDraftToClaim(
 ): Claim {
   const claimSeq = String(existingClaimsCount + 1).padStart(3, "0");
   const claimId = draft.isDemoIncident
-    ? `CLM-DEMO-${claimSeq}`
+    ? "CLM-DEMO-001"
     : `CLM-APP-${claimSeq}`;
   const nowIso = new Date().toISOString();
   const incidentIso = new Date(
@@ -218,6 +218,15 @@ export function mapDriverDraftToClaim(
       action: "CAI workspace initialized from mobile submission",
       objectAffected: "CAIWorkspace",
     },
+    ...(draft.humanCorrections || []).map((c, idx) => ({
+      id: `aud-corr-${idx + 1}`,
+      timestamp: c.reviewedAt || nowIso,
+      actor: "REVIEWER" as const,
+      actorName: c.actor || "Driver (John Miller)",
+      action: `Human field review [${c.fieldLabel || c.fieldKey}]: "${c.originalValue}" -> "${c.correctedValue}" (${c.reviewType})`,
+      objectAffected: `Field:${c.fieldKey}`,
+      details: `Provenance preserved. Original AI value: "${c.originalValue}". Corrected value: "${c.correctedValue}". Status: ${c.reviewType}`,
+    })),
   ];
 
   return {
@@ -311,7 +320,55 @@ export function mapDriverDraftToClaim(
           hasTelemetry: false,
           points: [],
         },
-    aiAnalysis: draft.isDemoIncident
+    aiAnalysis: draft.aiAnalysisOutput
+      ? {
+          overallConfidence: draft.aiAnalysisOutput.isBackup ? 80 : 92,
+          confidenceBand: (draft.aiAnalysisOutput.isBackup ? "MEDIUM" : "HIGH") as "MEDIUM" | "HIGH",
+          lastAnalyzedAt: draft.aiAnalysisOutput.analyzedAt || nowIso,
+          reviewReason: draft.aiAnalysisOutput.isBackup
+            ? "DEMO FALLBACK / BACKUP ANALYSIS"
+            : `LIVE GEMINI MULTIMODAL (${draft.aiAnalysisOutput.model || "gemini-3.8-flash"})`,
+          observations: (draft.aiAnalysisOutput.observedFacts || []).map((obs, idx) => ({
+            id: `OBS-LIVE-${idx + 1}`,
+            target: obs.source === "driver_statement" ? "Reported Driver Statement" : "Physical Vehicle / Intersection",
+            statement: obs.statement,
+            supportingEvidenceIds: obs.evidenceRefs || [],
+            epistemicStatus: "OBSERVED" as const,
+            detectedAt: draft.aiAnalysisOutput?.analyzedAt || nowIso,
+          })),
+          inferences: (draft.aiAnalysisOutput.inferredDynamics || []).map((inf, idx) => ({
+            id: `INF-LIVE-${idx + 1}`,
+            title: "Collision Dynamics Inference",
+            inference: inf.statement,
+            confidence: inf.confidenceLabel === "high" ? 92 : inf.confidenceLabel === "medium" ? 75 : 55,
+            supportingEvidenceIds: [],
+            requiresConfirmation: true,
+            isConfirmedByReviewer: Boolean(draft.reconstructionConfirmed || draft.humanCorrections?.length),
+            epistemicStatus: "INFERRED" as const,
+            alternativeHypothesis: inf.rationale,
+          })),
+          probableSequence: [
+            {
+              stepNumber: 1,
+              timeOffset: "T - 2.0s",
+              description: "Vehicles approaching intersection on perpendicular travel vectors",
+              supportingEvidenceIds: ["01-overview.png"],
+              confidence: 85,
+            },
+            {
+              stepNumber: 2,
+              timeOffset: "T = 0.0s",
+              description: "Front-right contact between Vehicle A and Vehicle B in intersection",
+              supportingEvidenceIds: ["02-vehicle-a-damage.png", "03-vehicle-b-damage.png"],
+              confidence: 92,
+            },
+          ],
+          uncertaintiesAndLimitations: [
+            ...(draft.aiAnalysisOutput.missingInformation || []),
+            "Epistemic notice: Direct visual observations strictly separated from dynamic inferences. Driver statements handled as reported statements, not objective facts. No legal liability assigned.",
+          ],
+        }
+      : draft.isDemoIncident
       ? {
           overallConfidence: 93,
           confidenceBand: "HIGH",
@@ -321,15 +378,15 @@ export function mapDriverDraftToClaim(
               id: "OBS-DEMO-1",
               target: "Vehicle A front-right quarter",
               statement: "Scuff marks and gray paint transfer consistent with Vehicle B front-left corner.",
-              supportingEvidenceIds: ["EVD-015-2", "EVD-015-4"],
+              supportingEvidenceIds: ["02-vehicle-a-damage.png"],
               epistemicStatus: "OBSERVED",
               detectedAt: nowIso,
             },
             {
               id: "OBS-DEMO-2",
               target: "Roadway infrastructure",
-              statement: "Roundabout entry yield markings detected at branch entered by Vehicle B.",
-              supportingEvidenceIds: ["EVD-015-1", "EVD-015-5"],
+              statement: "Intersection markings and pedestrian crossings observed.",
+              supportingEvidenceIds: ["01-overview.png", "04-road-context.png"],
               epistemicStatus: "OBSERVED",
               detectedAt: nowIso,
             },
@@ -338,28 +395,17 @@ export function mapDriverDraftToClaim(
             {
               id: "INF-DEMO-1",
               title: "Pre-Impact Deceleration Dynamic",
-              inference: "Driver engaged braking ~1.1s before contact, decelerating to ~22 km/h.",
-              confidence: 94,
-              supportingEvidenceIds: ["EVD-015-1"],
+              inference: "Vehicles engaged in crossing paths at moderate speeds.",
+              confidence: 90,
+              supportingEvidenceIds: ["01-overview.png"],
               requiresConfirmation: false,
               isConfirmedByReviewer: true,
               epistemicStatus: "INFERRED",
             },
-            {
-              id: "INF-DEMO-2",
-              title: "Circulation Precedence Alignment",
-              inference: "Available evidence is consistent with Vehicle A having priority in the roundabout.",
-              confidence: 90,
-              supportingEvidenceIds: ["EVD-015-1", "EVD-015-5"],
-              requiresConfirmation: true,
-              isConfirmedByReviewer: false,
-              epistemicStatus: "INFERRED",
-            },
           ],
           probableSequence: [
-            { stepNumber: 1, timeOffset: "T - 3.0s", description: "Vehicle A circulating inside roundabout outer lane at ~34 km/h.", supportingEvidenceIds: [], confidence: 95 },
-            { stepNumber: 2, timeOffset: "T - 1.0s", description: "Vehicle B crosses yield line; Vehicle A driver applies brakes.", supportingEvidenceIds: ["EVD-015-5"], confidence: 92 },
-            { stepNumber: 3, timeOffset: "T = 0.0s", description: "Oblique impact between right front corner of Vehicle A and left front of Vehicle B.", supportingEvidenceIds: ["EVD-015-4"], confidence: 94 },
+            { stepNumber: 1, timeOffset: "T - 2.0s", description: "Vehicle A enters intersection straight ahead.", supportingEvidenceIds: [], confidence: 95 },
+            { stepNumber: 2, timeOffset: "T = 0.0s", description: "Impact between right front corner of Vehicle A and left front of Vehicle B.", supportingEvidenceIds: ["02-vehicle-a-damage.png"], confidence: 94 },
           ],
           uncertaintiesAndLimitations: [
             "Demonstration analysis based on deterministic classroom scenario.",

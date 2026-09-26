@@ -85,18 +85,25 @@ export function Phase5Submitted({ draft, onReturnHome }: Phase5SubmittedProps) {
 
       {/* Navigation Actions */}
       <div className="space-y-3 pt-2">
+        <Link
+          href={`/console/claims/${claimId}`}
+          className="w-full py-4 px-6 rounded-2xl bg-[#0E0F10] hover:bg-[#1A1B1C] text-white text-base font-semibold flex items-center justify-between transition-colors group"
+        >
+          <span>{isIt ? "Apri nella Console Liquidatore" : "Inspect in Insurer Console"}</span>
+          <span className="font-mono text-xs bg-white/20 px-2 py-0.5 rounded text-white">{claimId} →</span>
+        </Link>
+
         <button
           type="button"
           onClick={onReturnHome}
-          className="w-full py-4 px-6 rounded-2xl bg-[#0E0F10] hover:bg-[#1A1B1C] text-white text-base font-semibold flex items-center justify-between transition-colors group"
+          className="w-full py-3.5 px-6 rounded-2xl bg-white border border-[#E5E5E3] hover:border-[#0E0F10] text-[#0E0F10] text-sm font-medium flex items-center justify-center transition-colors block text-center"
         >
           <span>{isIt ? "Torna all'area conducente" : "Back to Driver Home"}</span>
-          <ArrowRightIcon size={20} className="group-hover:translate-x-1 transition-transform" />
         </button>
 
         <Link
           href="/app/reports"
-          className="w-full py-3.5 px-6 rounded-2xl bg-white border border-[#E5E5E3] hover:border-[#0E0F10] text-[#0E0F10] text-sm font-medium flex items-center justify-center transition-colors block text-center"
+          className="w-full py-2.5 text-[#666666] hover:text-[#0E0F10] text-xs font-medium flex items-center justify-center transition-colors block text-center"
         >
           {isIt ? "Visualizza lo storico sinistri" : "View claims history"}
         </Link>

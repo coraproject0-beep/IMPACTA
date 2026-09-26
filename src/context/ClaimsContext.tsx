@@ -107,7 +107,7 @@ export function ClaimsProvider({ children }: { children: React.ReactNode }) {
         const byNum = claims.find((c) => c.id.endsWith(numMatch[1]));
         if (byNum) return byNum;
       }
-      return claims[0];
+      return undefined;
     },
     [claims]
   );

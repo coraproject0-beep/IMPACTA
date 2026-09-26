@@ -1,0 +1,73 @@
+{
+  "mode": "DEMO_FALLBACK",
+  "notice": "DEMO FALLBACK / BACKUP ANALYSIS — Used only when live AI service is unavailable or in offline evaluation mode. Not a live Gemini response.",
+  "model": "gemini-3.8-flash (deterministic backup)",
+  "analyzedAt": "2026-09-26T14:25:00Z",
+  "observedFacts": [
+    {
+      "statement": "Two passenger vehicles (dark gray Vehicle A and silver Vehicle B) are situated within an urban intersection with contacting or immediately adjacent front corners.",
+      "source": "image",
+      "evidenceRefs": ["01-overview.png"]
+    },
+    {
+      "statement": "Debris consisting of shattered headlamp plastic and bumper fragments is concentrated on the asphalt directly beneath the contact point of both vehicles.",
+      "source": "image",
+      "evidenceRefs": ["01-overview.png", "04-road-context.png"]
+    },
+    {
+      "statement": "Vehicle A (dark gray) shows crush deformation to its front-right wing, fractured front bumper cover, and shattered headlight unit.",
+      "source": "image",
+      "evidenceRefs": ["02-vehicle-a-damage.png"]
+    },
+    {
+      "statement": "Vehicle B (silver) exhibits lateral scraping and compression along its front-left wing, wheel arch, and adjoining panel seam.",
+      "source": "image",
+      "evidenceRefs": ["03-vehicle-b-damage.png"]
+    },
+    {
+      "statement": "Driver reported travelling straight through the intersection when the other vehicle entered their path.",
+      "source": "driver_statement",
+      "evidenceRefs": []
+    }
+  ],
+  "inferredDynamics": [
+    {
+      "statement": "The relative positions and damage geometries are consistent with intersecting approach trajectories at an angle.",
+      "rationale": "Debris field concentration and matching deformation heights support an intersection collision.",
+      "confidenceLabel": "medium"
+    },
+    {
+      "statement": "Pre-impact vehicle speeds appear to have been low to moderate.",
+      "rationale": "Passenger cabin survival spaces are undeformed, A-pillars intact, and wheel hubs remain in primary alignment.",
+      "confidenceLabel": "medium"
+    }
+  ],
+  "visibleDamage": [
+    {
+      "vehicle": "A",
+      "area": "Front-right corner and wing",
+      "description": "Bumper fascia torn, front-right fender crushed inward, right headlamp assembly destroyed.",
+      "evidenceRefs": ["02-vehicle-a-damage.png"]
+    },
+    {
+      "vehicle": "B",
+      "area": "Front-left wing and wheel arch",
+      "description": "Body crease across front-left wing, paint transfer/scuffing extending toward driver door seam.",
+      "evidenceRefs": ["03-vehicle-b-damage.png"]
+    }
+  ],
+  "missingInformation": [
+    "Active phase of traffic light signals at the exact second of intersection entry",
+    "Independent eyewitness depositions or local surveillance video",
+    "Braking and acceleration telemetry from Vehicle B",
+    "Airbag deployment sensor log data from both vehicles"
+  ],
+  "caiFields": {
+    "circumstancesSummary": "Collision at intersection between dark gray Vehicle A and silver Vehicle B with front-corner engagement.",
+    "pointOfImpactA": "Front-right corner / bumper",
+    "pointOfImpactB": "Front-left wing / corner",
+    "apparentDamageA": "Crushed right wing, fractured bumper, shattered headlamp",
+    "apparentDamageB": "Crumpled left wing, scuffed wheel arch and door seam"
+  },
+  "epistemicNotice": "EPISTEMIC SAFETY GUARANTEE: In accordance with IMPACTA safety guidelines, direct physical observations are strictly segregated from inferences. Driver statements are handled as reported claims, not objective physical fact. No fault determination, legal liability assessment, or claim validation is performed."
+}

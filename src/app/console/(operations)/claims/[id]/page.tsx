@@ -28,16 +28,34 @@ export default function ConsoleClaimDetailPage() {
   const [activeTab, setActiveTab] = useState<TabKey>("overview");
   const [exportNotice, setExportNotice] = useState(false);
   const [requestInfoNotice, setRequestInfoNotice] = useState(false);
+  const [fetchedClaim, setFetchedClaim] = useState<any>(null);
+  const [isFetchingDirect, setIsFetchingDirect] = useState(false);
 
-  if (isLoading) {
+  const contextClaim = getClaim(claimId);
+  const claim = contextClaim || fetchedClaim;
+
+  React.useEffect(() => {
+    if (!contextClaim && claimId) {
+      setIsFetchingDirect(true);
+      fetch(`/api/claims/${claimId}`)
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.claim) {
+            setFetchedClaim(data.claim);
+          }
+        })
+        .catch((e) => console.warn("Direct fetch error:", e))
+        .finally(() => setIsFetchingDirect(false));
+    }
+  }, [contextClaim, claimId]);
+
+  if (isLoading || isFetchingDirect) {
     return (
       <div className="py-20 text-center text-xs font-mono text-[#666666] uppercase tracking-wider">
         {isIt ? `Caricamento sinistro ${claimId}...` : `Loading claim ${claimId}...`}
       </div>
     );
   }
-
-  const claim = getClaim(claimId);
 
   if (!claim) {
     return (

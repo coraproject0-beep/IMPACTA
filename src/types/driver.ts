@@ -63,6 +63,47 @@ export interface DriverDraft {
   caiManualOverrides: Record<string, string>; // CAI field code -> override value
   submittedClaimId?: string;
   submittedAt?: string;
+  aiAnalysisOutput?: {
+    mode: "LIVE_GEMINI" | "DEMO_FALLBACK";
+    model: string;
+    analyzedAt: string;
+    isBackup: boolean;
+    notice?: string;
+    observedFacts: Array<{
+      statement: string;
+      source: "image" | "driver_statement" | "telemetry";
+      evidenceRefs: string[];
+    }>;
+    inferredDynamics: Array<{
+      statement: string;
+      rationale: string;
+      confidenceLabel: "low" | "medium" | "high";
+    }>;
+    visibleDamage: Array<{
+      vehicle: "A" | "B" | "unknown";
+      area: string;
+      description: string;
+      evidenceRefs: string[];
+    }>;
+    missingInformation: string[];
+    caiFields?: {
+      circumstancesSummary?: string;
+      pointOfImpactA?: string;
+      pointOfImpactB?: string;
+      apparentDamageA?: string;
+      apparentDamageB?: string;
+    };
+    epistemicNotice?: string;
+  };
+  humanCorrections?: Array<{
+    fieldKey: string;
+    fieldLabel: string;
+    originalValue: string;
+    correctedValue: string;
+    reviewType: "driver_confirmation" | "driver_correction";
+    actor: string;
+    reviewedAt: string;
+  }>;
 }
 
 export interface DriverProfile {

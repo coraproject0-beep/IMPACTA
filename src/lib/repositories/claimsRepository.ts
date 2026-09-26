@@ -70,11 +70,48 @@ class PersistentClaimsRepository implements ClaimsRepository {
 
   async getAll(): Promise<Claim[]> {
     this.initIfNeeded();
+    if (typeof window !== "undefined") {
+      try {
+        const res = await fetch("/api/claims");
+        if (res.ok) {
+          const data = await res.json();
+          if (data.claims && Array.isArray(data.claims) && data.claims.length > 0) {
+            const serverIds = new Set(data.claims.map((c: Claim) => c.id.toLowerCase()));
+            const localOnly = this.claims.filter((c) => !serverIds.has(c.id.toLowerCase()));
+            this.claims = [...data.claims, ...localOnly];
+            this.saveToStorage();
+          }
+        }
+      } catch (e) {
+        console.warn("Could not fetch claims from /api/claims, using cache", e);
+      }
+    }
     return JSON.parse(JSON.stringify(this.claims));
   }
 
   async getById(id: string): Promise<Claim | null> {
     this.initIfNeeded();
+    if (typeof window !== "undefined" && id) {
+      try {
+        const res = await fetch(`/api/claims/${id}`);
+        if (res.ok) {
+          const data = await res.json();
+          if (data.claim) {
+            const idx = this.claims.findIndex((c) => c.id.toLowerCase() === id.toLowerCase());
+            if (idx >= 0) {
+              this.claims[idx] = data.claim;
+            } else {
+              this.claims.unshift(data.claim);
+            }
+            this.saveToStorage();
+            return JSON.parse(JSON.stringify(data.claim));
+          }
+        }
+      } catch (e) {
+        console.warn(`Could not fetch claim ${id} from server:`, e);
+      }
+    }
+
     if (!id) return this.claims.length > 0 ? JSON.parse(JSON.stringify(this.claims[0])) : null;
     const found = this.claims.find((c) => c.id.toLowerCase() === id.toLowerCase());
     if (found) return JSON.parse(JSON.stringify(found));
@@ -95,6 +132,19 @@ class PersistentClaimsRepository implements ClaimsRepository {
     // Prepend new claim so it appears at top of ledger
     this.claims = [claim, ...this.claims.filter((c) => c.id !== claim.id)];
     this.saveToStorage();
+
+    if (typeof window !== "undefined") {
+      try {
+        await fetch("/api/claims", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(claim),
+        });
+      } catch (e) {
+        console.warn("Could not sync added claim to /api/claims:", e);
+      }
+    }
+
     return JSON.parse(JSON.stringify(claim));
   }
 
@@ -103,6 +153,20 @@ class PersistentClaimsRepository implements ClaimsRepository {
     const claim = mapDriverDraftToClaim(draft, this.claims.length);
     await this.addClaim(claim);
     return claim;
+  }
+
+  private async syncPatch(id: string, patch: any) {
+    if (typeof window !== "undefined") {
+      try {
+        await fetch(`/api/claims/${id}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(patch),
+        });
+      } catch (e) {
+        console.warn(`Could not sync claim ${id} patch to server:`, e);
+      }
+    }
   }
 
   async updateStatus(id: string, status: ClaimStatus, actorName = "Reviewer"): Promise<Claim> {
@@ -122,6 +186,7 @@ class PersistentClaimsRepository implements ClaimsRepository {
     });
 
     this.saveToStorage();
+    this.syncPatch(claim.id, { status: claim.status, audit_trail: claim.auditTrail });
     return JSON.parse(JSON.stringify(claim));
   }
 
@@ -156,6 +221,7 @@ class PersistentClaimsRepository implements ClaimsRepository {
     }
 
     this.saveToStorage();
+    this.syncPatch(claim.id, { audit_trail: claim.auditTrail });
     return JSON.parse(JSON.stringify(claim));
   }
 
@@ -166,6 +232,7 @@ class PersistentClaimsRepository implements ClaimsRepository {
 
     claim.reviewerNotes = notes;
     this.saveToStorage();
+    this.syncPatch(claim.id, { reviewer_notes: notes });
     return JSON.parse(JSON.stringify(claim));
   }
 
@@ -191,6 +258,7 @@ class PersistentClaimsRepository implements ClaimsRepository {
     }
 
     this.saveToStorage();
+    this.syncPatch(claim.id, { cai_fields: claim.caiFields, audit_trail: claim.auditTrail });
     return JSON.parse(JSON.stringify(claim));
   }
 
@@ -213,6 +281,18 @@ class PersistentClaimsRepository implements ClaimsRepository {
         actorName,
         action: `Manually updated CAI field [${field.code}] "${prev}" -> "${value}"`,
         objectAffected: `CAIField:${field.code}`,
+      });
+
+      this.syncPatch(claim.id, {
+        cai_fields: claim.caiFields,
+        audit_trail: claim.auditTrail,
+        reviewEvent: {
+          fieldKey: field.code,
+          originalValue: prev,
+          correctedValue: value,
+          reviewType: "driver_correction",
+          reviewerRole: actorName.toLowerCase().includes("driver") ? "driver" : "adjuster",
+        },
       });
     }
 

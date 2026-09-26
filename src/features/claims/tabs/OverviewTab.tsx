@@ -1,4 +1,5 @@
 "use client";
+/* eslint-disable @next/next/no-img-element */
 
 import React from "react";
 import Image from "next/image";
@@ -132,67 +133,72 @@ export function OverviewTab({ claim }: OverviewTabProps) {
         </h3>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <div className="relative aspect-[16/10] rounded-xl overflow-hidden bg-neutral-200 border border-[#E5E5E3]">
-            <Image
-              src="/images/hero-car.jpg"
-              alt="Accident overview"
-              fill
-              className="object-cover"
-              sizes="(max-width: 768px) 100vw, 300px"
-            />
-          </div>
-          <div className="relative aspect-[16/10] rounded-xl overflow-hidden bg-neutral-200 border border-[#E5E5E3]">
-            <Image
-              src="/images/hero-car.jpg"
-              alt="Rear contact detail"
-              fill
-              className="object-cover"
-              sizes="(max-width: 768px) 100vw, 300px"
-            />
-          </div>
-          <div className="relative aspect-[16/10] rounded-xl overflow-hidden bg-neutral-200 border border-[#E5E5E3]">
-            <Image
-              src="/images/hero-car.jpg"
-              alt="Road lane layout"
-              fill
-              className="object-cover"
-              sizes="(max-width: 768px) 100vw, 300px"
-            />
-          </div>
+          {(claim.evidence && claim.evidence.length > 0
+            ? claim.evidence.slice(0, 3)
+            : [
+                { thumbnailUrl: "/demo/scenario-01/01-overview.png", title: "Overview" },
+                { thumbnailUrl: "/demo/scenario-01/02-vehicle-a-damage.png", title: "Damage A" },
+                { thumbnailUrl: "/demo/scenario-01/04-road-context.png", title: "Context" },
+              ]
+          ).map((ev: any, idx: number) => (
+            <div
+              key={idx}
+              className="relative aspect-[16/10] rounded-xl overflow-hidden bg-neutral-200 border border-[#E5E5E3]"
+            >
+              <img
+                src={ev.thumbnailUrl || "/demo/scenario-01/01-overview.png"}
+                alt={ev.title || "Accident evidence"}
+                className="w-full h-full object-cover"
+              />
+            </div>
+          ))}
         </div>
 
         <p className="text-xs text-[#666666] pt-1">
-          {isIt
-            ? "6 fotografie | Dichiarazione conducente | Dati veicolo | Coordinate GNSS"
-            : "6 photos | Driver statement | Vehicle information | Location data"}
+          {claim.evidence?.length || 4}{" "}
+          {isIt ? "fotografie registrate nel bucket privato Supabase" : "photographs stored in private Supabase Storage"} &nbsp;|&nbsp;{" "}
+          {isIt ? "Dichiarazione conducente" : "Driver statement"} &nbsp;|&nbsp;{" "}
+          {isIt ? "Analisi Gemini multimodale" : "Gemini multimodal analysis"}
         </p>
       </div>
 
       {/* 4. Structured facts & Reconstruction summary side-by-side matching console-claim-detail-reference.png */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10 pt-4 border-t border-[#E5E5E3]">
-        {/* Structured facts (Epistemic separation: Observed, Driver confirmed, Missing) */}
+        {/* Structured facts (Epistemic separation: Observed, Driver confirmed/corrected, Missing) */}
         <div className="space-y-4">
           <h3 className="text-base font-bold text-[#0E0F10] tracking-tight">
             {t("consoleClaimDetail.structuredFacts")}
           </h3>
 
           <div className="border-t border-[#E5E5E3] divide-y divide-[#E5E5E3] text-xs">
-            <div className="py-3 flex items-center justify-between">
-              <span className="text-[#666666] font-medium">{t("consoleClaimDetail.observed")}</span>
+            <div className="py-3 flex items-start justify-between gap-4">
+              <span className="text-[#666666] font-medium flex-shrink-0">{t("consoleClaimDetail.observed")}</span>
               <span className="text-[#0E0F10] font-medium text-right">
-                {isIt ? "Impatto posteriore visibile sul Veicolo A" : "Rear impact visible on Vehicle A"}
+                {claim.aiAnalysis?.observations?.[0]?.statement ||
+                  (isIt
+                    ? "Due veicoli a contatto all'intersezione (evidenza fotografica)"
+                    : "Two vehicles contacting at intersection (visual evidence)")}
               </span>
             </div>
-            <div className="py-3 flex items-center justify-between">
-              <span className="text-[#666666] font-medium">{t("consoleClaimDetail.driverConfirmed")}</span>
-              <span className="text-[#0E0F10] font-medium text-right">
-                {isIt ? "Veicolo A era fermo in corsia" : "Vehicle A was stationary"}
+
+            <div className="py-3 flex items-start justify-between gap-4">
+              <span className="text-[#666666] font-medium flex-shrink-0">
+                {claim.auditTrail?.some((a) => a.action.includes("Human field review"))
+                  ? isIt ? "Corretto dal Conducente" : "Driver Corrected"
+                  : t("consoleClaimDetail.driverConfirmed")}
+              </span>
+              <span className="text-[#0E0F10] font-medium text-right font-mono">
+                {claim.auditTrail?.find((a) => a.action.includes("Human field review"))?.details ||
+                  claim.caiFields?.find((f) => f.code === "10A" || f.code === "10")?.value ||
+                  (isIt ? "Danno e dinamica confermati dal conducente" : "Damage and dynamics confirmed by driver")}
               </span>
             </div>
-            <div className="py-3 flex items-center justify-between">
-              <span className="text-rose-600 font-medium">{t("consoleClaimDetail.missing")}</span>
+
+            <div className="py-3 flex items-start justify-between gap-4">
+              <span className="text-rose-600 font-medium flex-shrink-0">{t("consoleClaimDetail.missing")}</span>
               <span className="text-rose-600 font-medium text-right">
-                {isIt ? "Conferma finale del conducente" : "Final driver confirmation"}
+                {claim.aiAnalysis?.uncertaintiesAndLimitations?.[0] ||
+                  (isIt ? "Fase semaforica al momento dell'ingresso" : "Traffic signal state at entry")}
               </span>
             </div>
           </div>
@@ -200,20 +206,24 @@ export function OverviewTab({ claim }: OverviewTabProps) {
 
         {/* Reconstruction summary (Supportive, no liability determination) */}
         <div className="space-y-4">
-          <h3 className="text-base font-bold text-[#0E0F10] tracking-tight">
-            {t("consoleClaimDetail.reconstructionSummary")}
+          <h3 className="text-base font-bold text-[#0E0F10] tracking-tight flex items-center justify-between">
+            <span>{t("consoleClaimDetail.reconstructionSummary")}</span>
+            <span className="text-[10px] font-mono font-medium px-2 py-0.5 rounded bg-neutral-100 text-[#0E0F10] border border-[#E5E5E3]">
+              {claim.aiAnalysis?.reviewReason?.includes("DEMO") ? "DEMO FALLBACK" : "LIVE GEMINI"}
+            </span>
           </h3>
 
           <div className="border-t border-[#E5E5E3] pt-3 space-y-3 text-xs leading-relaxed">
             <p className="text-[#0E0F10]">
-              {isIt
-                ? "Le evidenze raccolte sono coerenti con un tamponamento a bassa velocità tra due veicoli all'interno della corsia di marcia."
-                : "Available evidence is consistent with a low-speed rear collision involving two vehicles."}
+              {claim.aiAnalysis?.inferences?.[0]?.inference ||
+                (isIt
+                  ? "Dinamica compatibile con traiettorie perpendicolari convergenti ad un incrocio."
+                  : "Dynamics consistent with intersecting approach trajectories at an intersection.")}
             </p>
-            <p className="text-[#666666] italic">
+            <p className="text-[#666666] italic text-[11px]">
               {isIt
-                ? "Supporto alla ricostruzione cinematica. Nessuna determinazione automatica di responsabilità legale. Fascicolo per la valutazione del perito umano."
-                : "Reconstruction support only. No liability determination. For human review."}
+                ? "Garanzia epistemica: Nessuna determinazione automatica di colpa o responsabilità legale. Le dichiarazioni sono trattate come dichiarazioni riportate."
+                : "Epistemic guarantee: No automated assignment of fault or legal liability. Driver statements treated as reported statements."}
             </p>
           </div>
         </div>
