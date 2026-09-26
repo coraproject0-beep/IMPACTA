@@ -151,6 +151,33 @@ ALTER TABLE public.claims ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.claim_evidence ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.claim_reviews ENABLE ROW LEVEL SECURITY;
 
+-- 10B. GRANT PRIVILEGES TO SUPABASE ROLES
+GRANT USAGE ON SCHEMA public TO authenticated, service_role;
+
+GRANT SELECT, INSERT, UPDATE, DELETE
+ON TABLE
+  public.profiles,
+  public.claims,
+  public.claim_evidence,
+  public.claim_reviews
+TO authenticated;
+
+GRANT SELECT, INSERT, UPDATE, DELETE
+ON TABLE
+  public.profiles,
+  public.claims,
+  public.claim_evidence,
+  public.claim_reviews
+TO service_role;
+
+GRANT USAGE, SELECT
+ON ALL SEQUENCES IN SCHEMA public
+TO authenticated, service_role;
+
+GRANT EXECUTE
+ON FUNCTION public.current_user_role()
+TO authenticated;
+
 -- 11. RLS POLICIES FOR PROFILES
 DROP POLICY IF EXISTS "profiles_select_own" ON public.profiles;
 CREATE POLICY "profiles_select_own" ON public.profiles
