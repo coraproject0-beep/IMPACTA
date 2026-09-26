@@ -10,6 +10,14 @@ import { PerspectiveCard } from "@/components/motion/PerspectiveCard";
 import { useLanguage } from "@/context/LanguageContext";
 
 export default function SafetyPage() {
+  return (
+    <PublicShell>
+      <SafetyContent />
+    </PublicShell>
+  );
+}
+
+function SafetyContent() {
   const { language } = useLanguage();
   const isIt = language === "it";
 
@@ -21,7 +29,6 @@ export default function SafetyPage() {
       desc: isIt
         ? "Se ci sono feriti o pericoli imminenti, l'interfaccia blocca qualsiasi richiesta documentale e offre un tasto diretto di chiamata verso il Numero Unico di Emergenza Europeo."
         : "If physical injuries are detected, all questionnaire inputs are halted in favor of an instant dialer connecting directly to European Emergency 112.",
-      accent: "border-red-200 text-red-600 bg-red-50",
     },
     {
       num: "02",
@@ -30,7 +37,6 @@ export default function SafetyPage() {
       desc: isIt
         ? "I conducenti vengono istruiti a indossare il giubbotto catarifrangente e a posizionarsi dietro il guardrail prima di scattare qualsiasi fotografia."
         : "Drivers are prompted to don high-visibility vests and retreat behind roadside barriers before attempting any photographic capture.",
-      accent: "border-amber-200 text-amber-700 bg-amber-50",
     },
     {
       num: "03",
@@ -39,16 +45,15 @@ export default function SafetyPage() {
       desc: isIt
         ? "IMPACTA non assegna mai percentuali di colpa. La nostra tecnologia organizza i fatti metrici a supporto esclusivo dei periti umani abilitati."
         : "IMPACTA never outputs automated legal fault percentages. Machine models structure empirical facts for licensed human adjusters.",
-      accent: "border-neutral-200 text-neutral-700 bg-neutral-100",
     },
   ];
 
   return (
-    <PublicShell>
+    <>
       {/* Header */}
       <section className="py-24 sm:py-36 bg-white border-b border-[#E5E5E3]">
         <div className="w-full px-6 sm:px-12 lg:px-20 max-w-7xl mx-auto space-y-6">
-          <TechnicalReveal className="text-xs sm:text-sm font-medium text-[#DC2626]">
+          <TechnicalReveal className="text-xs sm:text-sm font-medium text-[#555555]">
             {isIt ? "Sicurezza, etica e governo del dato" : "Safety, ethics & evidentiary governance"}
           </TechnicalReveal>
           <EditorialReveal
@@ -77,16 +82,17 @@ export default function SafetyPage() {
         </div>
       </section>
 
-      {/* Roadside Safety Protocol Narrative - Bento Cards */}
+      {/* Roadside Safety Protocol Narrative - Cards */}
       <section className="py-24 sm:py-36 bg-[#F7F7F6] border-b border-[#E5E5E3]">
         <div className="w-full px-6 sm:px-12 lg:px-20 max-w-7xl mx-auto space-y-12">
           <div className="space-y-2">
-            <span className="text-xs font-mono uppercase tracking-wider text-[#777777]">
+            <span className="text-xs uppercase tracking-wider text-[#777777] font-medium">
               {isIt ? "TRE PRINCIPI INDEROGABILI" : "THREE NON-NEGOTIABLE TENETS"}
             </span>
             <RevealText
               as="h2"
               mode="word"
+              variant="vertical-mask"
               className="text-3xl sm:text-4xl font-bold uppercase tracking-tight text-[#0E0F10]"
             >
               {isIt ? "I cardini operativi di IMPACTA" : "Operational Core of IMPACTA"}
@@ -99,10 +105,10 @@ export default function SafetyPage() {
                 <div className="h-full bg-white border border-[#E5E5E3] rounded-2xl p-8 flex flex-col justify-between space-y-6 shadow-sm hover:border-[#0E0F10] transition-colors">
                   <div className="space-y-4">
                     <div className="flex items-center justify-between pb-3 border-b border-[#E5E5E3]">
-                      <span className="text-2xl font-mono font-bold text-[#0E0F10]">
+                      <span className="text-2xl font-bold text-[#0E0F10]">
                         {pillar.num}
                       </span>
-                      <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded border ${pillar.accent}`}>
+                      <span className="text-[11px] font-medium uppercase tracking-wider text-[#777777]">
                         {pillar.tag}
                       </span>
                     </div>
@@ -113,7 +119,7 @@ export default function SafetyPage() {
                       {pillar.desc}
                     </p>
                   </div>
-                  <div className="pt-4 border-t border-[#E5E5E3] text-[11px] font-mono text-[#555555]">
+                  <div className="pt-4 border-t border-[#E5E5E3] text-[11px] uppercase tracking-wider text-[#777777] font-medium">
                     VERIFIED ETHICAL GOVERNANCE
                   </div>
                 </div>
@@ -145,6 +151,6 @@ export default function SafetyPage() {
           </Link>
         </div>
       </section>
-    </PublicShell>
+    </>
   );
 }

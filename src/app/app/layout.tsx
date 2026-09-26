@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { ClaimsProvider } from "@/context/ClaimsContext";
 import { DriverDraftProvider } from "@/context/DriverDraftContext";
-import { LanguageProvider, useLanguage, LanguageSelector } from "@/context/LanguageContext";
+import { useLanguage, LanguageSelector } from "@/context/LanguageContext";
 import { AuthProvider, useAuth } from "@/context/AuthContext";
 import { OfflineNotice } from "@/features/driver/components/OfflineNotice";
 import { InstallPrompt } from "@/features/driver/components/InstallPrompt";
@@ -93,14 +93,12 @@ function DriverLayoutContent({ children }: { children: React.ReactNode }) {
 
 export default function DriverLayout({ children }: { children: React.ReactNode }) {
   return (
-    <LanguageProvider>
-      <AuthProvider>
-        <ClaimsProvider>
-          <DriverDraftProvider>
-            <DriverLayoutContent>{children}</DriverLayoutContent>
-          </DriverDraftProvider>
-        </ClaimsProvider>
-      </AuthProvider>
-    </LanguageProvider>
+    <AuthProvider>
+      <ClaimsProvider>
+        <DriverDraftProvider>
+          <DriverLayoutContent>{children}</DriverLayoutContent>
+        </DriverDraftProvider>
+      </ClaimsProvider>
+    </AuthProvider>
   );
 }

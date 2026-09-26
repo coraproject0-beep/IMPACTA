@@ -8,6 +8,14 @@ import { CheckCircleIcon } from "@/components/icons/Icons";
 import { useLanguage } from "@/context/LanguageContext";
 
 export default function ContactPage() {
+  return (
+    <PublicShell>
+      <ContactContent />
+    </PublicShell>
+  );
+}
+
+function ContactContent() {
   const { language } = useLanguage();
   const isIt = language === "it";
   const [submitted, setSubmitted] = useState(false);
@@ -25,7 +33,7 @@ export default function ContactPage() {
   };
 
   return (
-    <PublicShell>
+    <>
       {/* Header */}
       <section className="py-24 sm:py-36 bg-white border-b border-[#E5E5E3]">
         <div className="w-full px-6 sm:px-12 lg:px-20 max-w-7xl mx-auto space-y-6">
@@ -199,6 +207,6 @@ export default function ContactPage() {
           </div>
         </div>
       </section>
-    </PublicShell>
+    </>
   );
 }

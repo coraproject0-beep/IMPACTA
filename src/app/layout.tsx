@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Instrument_Sans, IBM_Plex_Mono } from "next/font/google";
+import { LanguageProvider } from "@/context/LanguageContext";
 import "./globals.css";
 
 const instrumentSans = Instrument_Sans({
@@ -31,7 +32,9 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${instrumentSans.variable} ${ibmPlexMono.variable}`}>
       <body className="min-h-screen bg-[#F7F7F6] text-[#0E0F10] font-sans antialiased selection:bg-[#0E0F10] selection:text-white">
-        {children}
+        <LanguageProvider>
+          {children}
+        </LanguageProvider>
       </body>
     </html>
   );

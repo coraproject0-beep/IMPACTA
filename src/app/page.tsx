@@ -6,8 +6,8 @@ import { PublicShell } from "@/components/public/PublicShell";
 import { HeroMedia } from "@/components/public/HeroMedia";
 import { RotatingStatement } from "@/components/motion/RotatingStatement";
 import { RevealText } from "@/components/motion/RevealText";
-import { PerspectiveCard } from "@/components/motion/PerspectiveCard";
-import { MediaReveal } from "@/components/motion/MediaReveal";
+import { DriverVehicleScene3D } from "@/components/motion/DriverVehicleScene3D";
+import { PartnerMarquee } from "@/components/public/PartnerMarquee";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAuth } from "@/context/AuthContext";
 import BlackBoxScene from "@/components/3d/BlackBoxScene";
@@ -21,7 +21,7 @@ export default function HomePage() {
 }
 
 function HomeContent() {
-  const { locale, t } = useLanguage();
+  const { locale } = useLanguage();
   const { isDriverAuthenticated } = useAuth();
   const isIt = locale === "it";
   const [scrollY, setScrollY] = useState(0);
@@ -65,12 +65,12 @@ function HomeContent() {
               {isIt ? (
                 <>
                   <span className="block">
-                    <RevealText as="span" mode="word" triggerOnScroll={false}>
+                    <RevealText as="span" mode="char" variant="depth" delay={0.05} triggerOnScroll={false}>
                       DALL&apos;IMPATTO
                     </RevealText>
                   </span>
                   <span className="block whitespace-nowrap">
-                    <RevealText as="span" mode="word" delay={0.15} triggerOnScroll={false}>
+                    <RevealText as="span" mode="char" variant="depth" delay={0.35} triggerOnScroll={false}>
                       ALLA CHIAREZZA.
                     </RevealText>
                   </span>
@@ -78,12 +78,12 @@ function HomeContent() {
               ) : (
                 <>
                   <span className="block">
-                    <RevealText as="span" mode="word" triggerOnScroll={false}>
+                    <RevealText as="span" mode="char" variant="depth" delay={0.05} triggerOnScroll={false}>
                       FROM IMPACT
                     </RevealText>
                   </span>
                   <span className="block whitespace-nowrap">
-                    <RevealText as="span" mode="word" delay={0.15} triggerOnScroll={false}>
+                    <RevealText as="span" mode="char" variant="depth" delay={0.35} triggerOnScroll={false}>
                       TO CLARITY.
                     </RevealText>
                   </span>
@@ -91,13 +91,15 @@ function HomeContent() {
               )}
             </h1>
 
-            <p className="text-base sm:text-lg lg:text-xl text-white/85 max-w-lg font-normal leading-relaxed">
-              {isIt
-                ? "Trasforma le prove dell'incidente in informazioni strutturate per la revisione umana."
-                : "Turn accident evidence into structured information ready for human review."}
-            </p>
+            <div className="overflow-hidden">
+              <RevealText as="p" mode="word" variant="depth" delay={0.75} triggerOnScroll={false} className="text-base sm:text-lg lg:text-xl text-white/85 max-w-lg font-normal leading-relaxed">
+                {isIt
+                  ? "Trasforma le prove dell'incidente in informazioni strutturate per la revisione umana."
+                  : "Turn accident evidence into structured information ready for human review."}
+              </RevealText>
+            </div>
 
-            {/* Restrained Action Row matching public-brand-reference.png */}
+            {/* Restrained Action Row */}
             <div className="flex flex-wrap items-center gap-8 sm:gap-10 pt-2 sm:pt-4">
               <Link
                 href={reportLink}
@@ -148,7 +150,7 @@ function HomeContent() {
             />
           </div>
 
-          {/* Spatial Editorial Bridge (Preparing for the Black Box) */}
+          {/* Spatial Editorial Bridge */}
           <div className="pt-12 sm:pt-16 border-t border-[#E5E5E3] grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-start">
             <div className="lg:col-span-5 space-y-3">
               <span className="text-xs sm:text-sm font-medium text-[#555555]">
@@ -157,6 +159,7 @@ function HomeContent() {
               <RevealText
                 as="h3"
                 mode="word"
+                variant="depth"
                 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-[#0E0F10] tracking-tight leading-tight"
               >
                 {isIt
@@ -168,8 +171,8 @@ function HomeContent() {
             <div className="lg:col-span-7 space-y-6 text-base sm:text-lg text-[#555555] font-light leading-relaxed">
               <p>
                 {isIt
-                  ? "Fotografie georeferenziate, dichiarazioni concordate e telemetria di bordo vengono ricomposte in una sequenza temporale continua, eliminando le contraddizioni dei moduli cartacei."
-                  : "Georeferenced photography, aligned driver statements, and connected vehicle telemetry are synthesized into an unbroken evidentiary timeline, eliminating the ambiguities of manual paper reports."}
+                  ? "Fotografie georeferenziate, dichiarazioni concordate e orientamento della carreggiata vengono ricomposte in una sequenza temporale continua, eliminando le contraddizioni dei moduli cartacei."
+                  : "Georeferenced photography, aligned driver statements, and roadway orientation are synthesized into an unbroken evidentiary timeline, eliminating the ambiguities of manual paper reports."}
               </p>
               <p>
                 {isIt
@@ -181,153 +184,262 @@ function HomeContent() {
         </div>
       </section>
 
-      {/* 3. EDITORIAL TONAL TRANSITION INTO THE BLACK BOX */}
-      <div className="w-full bg-gradient-to-b from-[#F7F7F6] via-[#0E0F12] to-[#000000] pt-28 pb-16 px-8 flex flex-col items-center justify-center text-center">
-        <div className="w-px h-16 bg-gradient-to-b from-[#0E0F10]/20 via-white/30 to-white/60 mb-6" />
-        <span className="text-xs uppercase tracking-[0.25em] text-white/50 font-mono">
-          {isIt ? "RICOSTRUZIONE FORENSE IN TEMPO REALE" : "REAL-TIME FORENSIC RECONSTRUCTION"}
-        </span>
-      </div>
+      {/* 3. CINEMATIC GRADIENT TRANSITION INTO THE BLACK BOX VOID */}
+      <div className="w-full h-36 sm:h-52 bg-gradient-to-b from-[#F7F7F6] via-[#0E0F10] to-[#000000] pointer-events-none" />
 
-      {/* 4. CANONICAL BLACK BOX SIGNATURE EXPERIENCE (Scroll-Scrubbed Omni Motion Study) */}
+      {/* 4. CANONICAL BLACK BOX SIGNATURE EXPERIENCE (Continuous Autoplaying Cinematic Video) */}
       <BlackBoxScene />
 
-      {/* 5. EDITORIAL TRANSITION OUT: INTO PRODUCT PLATFORMS */}
+      {/* 5. CINEMATIC TRANSITION OUT: INTO PRODUCT CHAPTERS */}
+      <div className="w-full h-32 sm:h-48 bg-gradient-to-b from-[#000000] via-[#08090B] to-[#0E0F12] pointer-events-none" />
+
+      {/* 6. CHAPTER ONE — DRIVER ROADSIDE INTAKE */}
       <section
-        id="platforms"
-        className="w-full bg-gradient-to-b from-[#000000] via-[#0E0F12] to-[#F7F7F6] py-24 sm:py-32 px-8 sm:px-12 lg:px-20 border-b border-[#E5E5E3]"
+        id="driver-chapter"
+        className="w-full bg-[#0E0F12] text-white py-24 sm:py-36 px-6 sm:px-12 lg:px-20 overflow-hidden relative"
       >
-        <div className="max-w-6xl mx-auto space-y-16">
-          <div className="max-w-4xl mx-auto text-center space-y-4">
-            <span className="text-xs sm:text-sm uppercase tracking-[0.2em] text-white/50 font-mono">
-              {isIt ? "DALL'EVIDENZA ALL'AZIONE" : "FROM EVIDENCE TO ACTION"}
-            </span>
-            <RevealText
-              as="h3"
-              mode="word"
-              className="text-3xl sm:text-5xl font-bold tracking-tight text-white leading-tight"
-            >
-              {isIt
-                ? "Una piattaforma unificata per conducenti e periti assicurativi."
-                : "A unified platform for drivers and claims specialists."}
-            </RevealText>
-            <p className="text-base sm:text-lg text-white/70 font-light max-w-2xl mx-auto leading-relaxed">
-              {isIt
-                ? "Dalla raccolta guidata delle prove sul luogo del sinistro fino all'analisi peritale in tempo reale."
-                : "From guided roadside evidence capture to real-time adjuster forensic review."}
-            </p>
-          </div>
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+            {/* Left: Editorial Narrative */}
+            <div className="lg:col-span-6 space-y-8">
+              <div className="space-y-3">
+                <span className="text-xs font-semibold uppercase tracking-wider text-white/50">
+                  {isIt ? "RILIEVO CONDUCENTE" : "DRIVER INTAKE"}
+                </span>
+                <RevealText
+                  as="h2"
+                  mode="word"
+                  variant="depth"
+                  className="text-3xl sm:text-5xl lg:text-6xl font-bold uppercase tracking-tight text-white leading-[1.05]"
+                >
+                  {isIt
+                    ? "Guida calma e chiara nei momenti critici."
+                    : "Calm, guided clarity when accidents happen."}
+                </RevealText>
+              </div>
 
-          {/* Dual Product Platform Bento Cards with Tactile 3D Depth */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
-            {/* Card 1: Driver Roadside Intake */}
-            <PerspectiveCard className="h-full" maxTilt={4}>
-              <div className="h-full bg-white border border-[#E5E5E3] rounded-2xl p-8 sm:p-10 flex flex-col justify-between shadow-sm hover:border-[#0E0F10] transition-colors group">
-                <div className="space-y-6">
-                  <div className="flex items-center justify-between pb-4 border-b border-[#E5E5E3]">
-                    <span className="text-xs font-mono tracking-wider uppercase text-[#777777]">
-                      01 / {isIt ? "RILIEVO CONDUCENTE" : "DRIVER INTAKE"}
-                    </span>
-                    <span className="text-xs font-semibold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded border border-emerald-200">
-                      {isIt ? "Attivo sul campo" : "Roadside active"}
-                    </span>
-                  </div>
+              <p className="text-base sm:text-lg text-white/70 font-light leading-relaxed max-w-xl">
+                {isIt
+                  ? "Un incidente provoca ansia immediata. IMPACTA sostituisce la confusione con un flusso ordinato e protetto: prima la sicurezza fisica delle persone e la chiamata d'emergenza, poi l'acquisizione ordinata di veicoli, targhe e contesto."
+                  : "Accidents trigger acute sensory overload. IMPACTA replaces panic with an authored, protective workflow: verifying human physical safety and emergency access first, then methodically capturing vehicle contact, plates, and road context."}
+              </p>
 
-                  <h4 className="text-2xl sm:text-3xl font-bold uppercase tracking-tight text-[#0E0F10]">
-                    {isIt ? "Esperienza Conducente" : "Driver Experience"}
+              {/* Structural Editorial Points */}
+              <div className="space-y-6 pt-4 border-t border-white/10">
+                <div className="space-y-1">
+                  <h4 className="text-sm font-semibold uppercase tracking-wider text-white">
+                    {isIt ? "Prima di tutto la Sicurezza" : "Immediate Safety Protocol"}
                   </h4>
-
-                  <p className="text-sm sm:text-base text-[#666666] font-light leading-relaxed">
-                    {t("publicSections.driverExperienceDesc")}
+                  <p className="text-xs sm:text-sm text-white/60 leading-relaxed font-light">
+                    {isIt
+                      ? "Chiamata 112 con un tocco e indicazioni per posizionare il triangolo prima di ogni rilievo fotografico."
+                      : "Direct 112 emergency dialing and hazard positioning check before photo capture begins."}
                   </p>
-
-                  <ul className="space-y-2.5 pt-2 text-xs sm:text-sm text-[#444444]">
-                    <li className="flex items-center gap-2.5">
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#0E0F10]" />
-                      <span>{t("publicSections.driverExperiencePoint1Title")}</span>
-                    </li>
-                    <li className="flex items-center gap-2.5">
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#0E0F10]" />
-                      <span>{t("publicSections.driverExperiencePoint2Title")}</span>
-                    </li>
-                    <li className="flex items-center gap-2.5">
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#0E0F10]" />
-                      <span>{t("publicSections.driverExperiencePoint3Title")}</span>
-                    </li>
-                  </ul>
                 </div>
 
-                <div className="pt-8">
-                  <Link
-                    href={reportLink}
-                    className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold text-[#0E0F10] group-hover:text-black transition-colors"
-                  >
-                    <span className="border-b border-[#0E0F10] pb-0.5">
-                      {isIt ? "Avvia segnalazione sinistro" : "Begin roadside report"}
-                    </span>
-                    <span className="inline-block transition-transform duration-300 group-hover:translate-x-1.5" aria-hidden="true">
-                      →
-                    </span>
-                  </Link>
+                <div className="space-y-1">
+                  <h4 className="text-sm font-semibold uppercase tracking-wider text-white">
+                    {isIt ? "Rilievo a 4 Inquadrature Guidate" : "Four-Angle Scene Alignment"}
+                  </h4>
+                  <p className="text-xs sm:text-sm text-white/60 leading-relaxed font-light">
+                    {isIt
+                      ? "Guide visive a schermo garantiscono l'inquadratura di panoramica, targhe, documenti e punti d'urto."
+                      : "On-screen guides calibrate framing for wide scene, license plates, documents, and vehicle contact points."}
+                  </p>
+                </div>
+
+                <div className="space-y-1">
+                  <h4 className="text-sm font-semibold uppercase tracking-wider text-white">
+                    {isIt ? "Salvataggio Locale nel Browser" : "Local Browser Buffering"}
+                  </h4>
+                  <p className="text-xs sm:text-sm text-white/60 leading-relaxed font-light">
+                    {isIt
+                      ? "Memorizzazione automatica lato client: nessuna perdita di dati anche in zone prive di segnale."
+                      : "Client-side storage preserves inputs during capture, preventing accidental data loss."}
+                  </p>
                 </div>
               </div>
-            </PerspectiveCard>
 
-            {/* Card 2: Insurer Claims Console */}
-            <PerspectiveCard className="h-full" maxTilt={4}>
-              <div className="h-full bg-white border border-[#E5E5E3] rounded-2xl p-8 sm:p-10 flex flex-col justify-between shadow-sm hover:border-[#0E0F10] transition-colors group">
-                <div className="space-y-6">
-                  <div className="flex items-center justify-between pb-4 border-b border-[#E5E5E3]">
-                    <span className="text-xs font-mono tracking-wider uppercase text-[#777777]">
-                      02 / {isIt ? "CONSOLE PERITI" : "ADJUSTER CONSOLE"}
-                    </span>
-                    <span className="text-xs font-semibold text-amber-900 bg-amber-50 px-2.5 py-1 rounded border border-amber-200">
-                      {isIt ? "Controllo forense" : "Forensic intake"}
-                    </span>
-                  </div>
-
-                  <h4 className="text-2xl sm:text-3xl font-bold uppercase tracking-tight text-[#0E0F10]">
-                    {isIt ? "Portale Periti & Assicuratori" : "Insurer & Adjuster Portal"}
-                  </h4>
-
-                  <p className="text-sm sm:text-base text-[#666666] font-light leading-relaxed">
-                    {t("publicSections.insurerOpsDesc")}
-                  </p>
-
-                  <ul className="space-y-2.5 pt-2 text-xs sm:text-sm text-[#444444]">
-                    <li className="flex items-center gap-2.5">
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#0E0F10]" />
-                      <span>{t("publicSections.insurerOpsPoint1Title")}</span>
-                    </li>
-                    <li className="flex items-center gap-2.5">
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#0E0F10]" />
-                      <span>{t("publicSections.insurerOpsPoint2Title")}</span>
-                    </li>
-                    <li className="flex items-center gap-2.5">
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#0E0F10]" />
-                      <span>{t("publicSections.insurerOpsPoint3Title")}</span>
-                    </li>
-                  </ul>
-                </div>
-
-                <div className="pt-8">
-                  <Link
-                    href="/insurers"
-                    className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold text-[#0E0F10] group-hover:text-black transition-colors"
-                  >
-                    <span className="border-b border-[#0E0F10] pb-0.5">
-                      {isIt ? "Esplora console liquidatori" : "Explore adjuster workbench"}
-                    </span>
-                    <span className="inline-block transition-transform duration-300 group-hover:translate-x-1.5" aria-hidden="true">
-                      →
-                    </span>
-                  </Link>
-                </div>
+              <div className="pt-4">
+                <Link
+                  href={reportLink}
+                  className="group inline-flex items-center gap-3 text-sm sm:text-base font-semibold text-white border-b border-white pb-1 hover:text-white/80 transition-colors"
+                >
+                  <span>{isIt ? "Avvia rilievo sul posto" : "Begin roadside report"}</span>
+                  <span className="inline-block transition-transform duration-300 group-hover:translate-x-1.5" aria-hidden="true">
+                    →
+                  </span>
+                </Link>
               </div>
-            </PerspectiveCard>
+            </div>
+
+            {/* Right: Bespoke 3D Driver Scene with Stylized Vehicle Damage Animation */}
+            <div className="lg:col-span-6 flex justify-center">
+              <DriverVehicleScene3D />
+            </div>
           </div>
         </div>
       </section>
+
+      {/* 7. CHAPTER TWO — INSURER & ADJUSTER CLAIMS SYNTHESIS */}
+      <section
+        id="insurer-chapter"
+        className="w-full bg-[#F7F7F6] text-[#0E0F10] py-24 sm:py-36 px-6 sm:px-12 lg:px-20 overflow-hidden relative border-t border-[#E5E5E3]"
+      >
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+            {/* Left: Asymmetric Workbench Ledger Plane with 3D Spatial Angle */}
+            <div className="lg:col-span-7 order-2 lg:order-1 flex justify-center [perspective:1200px]">
+              <div className="w-full rounded-2xl bg-white border border-[#E5E5E3] p-6 sm:p-8 shadow-xl transition-transform duration-500 hover:[transform:rotateY(3deg)_rotateX(-2deg)_scale(1.01)] [transform:rotateY(6deg)_rotateX(-3deg)]">
+                {/* Console Dossier Header */}
+                <div className="flex flex-wrap items-center justify-between gap-4 pb-5 border-b border-[#E5E5E3]">
+                  <div className="space-y-0.5">
+                    <span className="text-xs text-[#777777] uppercase tracking-wider block">
+                      DOSSIER #CLM-2026-0894
+                    </span>
+                    <h4 className="text-base sm:text-lg font-bold text-[#0E0F10] uppercase tracking-tight">
+                      {isIt ? "Riepilogo Fatti & Ricostruzione Dinamica" : "Collision Verification Ledger"}
+                    </h4>
+                  </div>
+                  <span className="text-xs text-[#777777] uppercase tracking-wider font-medium">
+                    {isIt ? "Perizia da convalidare" : "Review pending"}
+                  </span>
+                </div>
+
+                {/* Evidence Ledger Rows */}
+                <div className="py-6 space-y-4 text-xs sm:text-sm">
+                  {/* Telemetry Correlation */}
+                  <div className="p-3.5 rounded-lg bg-[#FAFAFA] border border-[#EBEBEB] flex flex-wrap items-center justify-between gap-3">
+                    <div className="space-y-0.5">
+                      <span className="text-[11px] text-[#777777] uppercase block">
+                        {isIt ? "Dinamica d'Impatto" : "Impact Dynamics"}
+                      </span>
+                      <span className="font-semibold text-[#0E0F10]">
+                        {isIt ? "Vettore decelerazione registrato • Contatto 42° Anteriore Sx" : "Deceleration registered • 42° Contact Angle"}
+                      </span>
+                    </div>
+                    <span className="text-[11px] text-[#555555]">
+                      14:22:04
+                    </span>
+                  </div>
+
+                  {/* Photography Verification */}
+                  <div className="p-3.5 rounded-lg bg-[#FAFAFA] border border-[#EBEBEB] flex flex-wrap items-center justify-between gap-3">
+                    <div className="space-y-0.5">
+                      <span className="text-[11px] text-[#777777] uppercase block">
+                        {isIt ? "Evidenze Fotografiche" : "Photographic Proof"}
+                      </span>
+                      <span className="font-semibold text-[#0E0F10]">
+                        {isIt ? "4 prospetti acquisiti • Metadati e coordinate coerenti" : "4 angles captured • Metadata localized"}
+                      </span>
+                    </div>
+                    <span className="text-xs text-[#555555] font-medium">
+                      {isIt ? "Conforme" : "Aligned"}
+                    </span>
+                  </div>
+
+                  {/* Standard CAI Mapping */}
+                  <div className="p-3.5 rounded-lg bg-[#FAFAFA] border border-[#EBEBEB] flex flex-wrap items-center justify-between gap-3">
+                    <div className="space-y-0.5">
+                      <span className="text-[11px] text-[#777777] uppercase block">
+                        {isIt ? "Circostanza CAI Casella 12" : "European CAI Box 12"}
+                      </span>
+                      <span className="font-semibold text-[#0E0F10]">
+                        {isIt ? "Circolava nello stesso senso e su fila diversa" : "Circumstance 12 - Changing lanes in same direction"}
+                      </span>
+                    </div>
+                    <span className="text-xs text-[#555555]">
+                      {isIt ? "Oggettivo" : "Objective"}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Workbench Footer Action */}
+                <div className="pt-4 border-t border-[#E5E5E3] flex items-center justify-between text-xs text-[#666666]">
+                  <span>{isIt ? "2 Veicoli Coinvolti" : "2 Vehicles Aligned"}</span>
+                  <span className="font-semibold text-[#0E0F10]">{isIt ? "Valida circostanze peritali →" : "Validate circumstances →"}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Right: Editorial Narrative */}
+            <div className="lg:col-span-5 order-1 lg:order-2 space-y-8">
+              <div className="space-y-3">
+                <span className="text-xs font-semibold uppercase tracking-wider text-[#777777]">
+                  {isIt ? "SINTESI PERITALE" : "CLAIMS SYNTHESIS"}
+                </span>
+                <RevealText
+                  as="h2"
+                  mode="word"
+                  variant="depth"
+                  className="text-3xl sm:text-5xl lg:text-6xl font-bold uppercase tracking-tight text-[#0E0F10] leading-[1.05]"
+                >
+                  {isIt
+                    ? "Dati oggettivi per la perizia umana."
+                    : "Objective facts ready for adjuster review."}
+                </RevealText>
+              </div>
+
+              <p className="text-base sm:text-lg text-[#555555] font-light leading-relaxed">
+                {isIt
+                  ? "I sinistri complessi richiedono settimane di chiarimenti e versioni contrastanti. IMPACTA ricompone fotografie geolocalizzate, dinamica vettoriale e circostanze CAI standard in una linea temporale trasparente pronta per la convalida del perito."
+                  : "Complex claims lose weeks to conflicting handwritten statements. IMPACTA structures geolocalized photos, vector dynamics, and standard European CAI circumstances into an objective evidentiary ledger calibrated for prompt adjuster sign-off."}
+              </p>
+
+              {/* Structural Highlights */}
+              <div className="space-y-6 pt-4 border-t border-[#E5E5E3]">
+                <div className="space-y-1">
+                  <h4 className="text-sm font-semibold uppercase tracking-wider text-[#0E0F10]">
+                    {isIt ? "Analisi Vettoriale dell'Impatto" : "Impact Vector Analysis"}
+                  </h4>
+                  <p className="text-xs sm:text-sm text-[#666666] leading-relaxed font-light">
+                    {isIt
+                      ? "Correlazione diretta tra le zone di contatto dichiarate e le evidenze fotografiche riscontrate."
+                      : "Correlates reported contact zones with visual damage documentation and physical evidence."}
+                  </p>
+                </div>
+
+                <div className="space-y-1">
+                  <h4 className="text-sm font-semibold uppercase tracking-wider text-[#0E0F10]">
+                    {isIt ? "Demarcazione Epistemica Rigorosa" : "Epistemic Demarcation"}
+                  </h4>
+                  <p className="text-xs sm:text-sm text-[#666666] leading-relaxed font-light">
+                    {isIt
+                      ? "Rigida separazione visiva tra dati fisici osservati e narrazioni soggettive dei conducenti."
+                      : "Strict visual separation between verified physical evidence and subjective driver narratives."}
+                  </p>
+                </div>
+
+                <div className="space-y-1">
+                  <h4 className="text-sm font-semibold uppercase tracking-wider text-[#0E0F10]">
+                    {isIt ? "Allineamento Standard CAI Casella 12" : "Standard CAI Box 12 Alignment"}
+                  </h4>
+                  <p className="text-xs sm:text-sm text-[#666666] leading-relaxed font-light">
+                    {isIt
+                      ? "Strutturazione immediata delle circostanze standard del Modulo di Constatazione Amichevole."
+                      : "Direct circumstance mapping to standard European Agreed Statement criteria."}
+                  </p>
+                </div>
+              </div>
+
+              <div className="pt-4">
+                <Link
+                  href="/insurers"
+                  className="group inline-flex items-center gap-3 text-sm sm:text-base font-semibold text-[#0E0F10] border-b border-[#0E0F10] pb-1 hover:text-black transition-colors"
+                >
+                  <span>{isIt ? "Esplora console liquidatori" : "Explore adjuster workbench"}</span>
+                  <span className="inline-block transition-transform duration-300 group-hover:translate-x-1.5" aria-hidden="true">
+                    →
+                  </span>
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 8. FICTIONAL PARTNER MARQUEE (Clean Rail, Zero Disclaimer Labels) */}
+      <PartnerMarquee />
     </>
   );
 }

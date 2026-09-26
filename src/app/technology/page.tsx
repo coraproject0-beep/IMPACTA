@@ -10,11 +10,19 @@ import { PerspectiveCard } from "@/components/motion/PerspectiveCard";
 import { useLanguage } from "@/context/LanguageContext";
 
 export default function TechnologyPage() {
+  return (
+    <PublicShell>
+      <TechnologyContent />
+    </PublicShell>
+  );
+}
+
+function TechnologyContent() {
   const { language } = useLanguage();
   const isIt = language === "it";
 
   return (
-    <PublicShell>
+    <>
       {/* Header */}
       <section className="py-24 sm:py-36 bg-white border-b border-[#E5E5E3]">
         <div className="w-full px-6 sm:px-12 lg:px-20 max-w-7xl mx-auto space-y-6">
@@ -75,16 +83,17 @@ export default function TechnologyPage() {
               <div className="h-full bg-white border border-[#E5E5E3] rounded-2xl p-8 sm:p-10 space-y-8 shadow-sm">
                 <div className="pb-6 border-b border-[#E5E5E3] space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-mono font-semibold tracking-wider text-[#0E0F10] uppercase">
+                    <span className="text-xs font-semibold tracking-wider text-[#0E0F10] uppercase">
                       {isIt ? "FONDAZIONE ATTUALE" : "OPERATIONAL FOUNDATION"}
                     </span>
-                    <span className="text-[11px] font-mono font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                    <span className="text-xs font-medium text-[#555555] uppercase tracking-wider">
                       LOCAL BROWSER
                     </span>
                   </div>
                   <RevealText
                     as="h2"
                     mode="word"
+                    variant="tracking-spread"
                     className="text-2xl sm:text-3xl font-bold uppercase text-[#0E0F10]"
                   >
                     {isIt ? "Architettura Browser-Local" : "Browser-Local Architecture"}
@@ -127,16 +136,17 @@ export default function TechnologyPage() {
               <div className="h-full bg-white border border-[#E5E5E3] rounded-2xl p-8 sm:p-10 space-y-8 shadow-sm">
                 <div className="pb-6 border-b border-[#E5E5E3] space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-mono font-semibold tracking-wider text-[#666666] uppercase">
+                    <span className="text-xs font-semibold tracking-wider text-[#666666] uppercase">
                       {isIt ? "ROADMAP AZIENDALE" : "ENTERPRISE ROADMAP"}
                     </span>
-                    <span className="text-[11px] font-mono font-semibold text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
+                    <span className="text-xs font-medium text-[#777777] uppercase tracking-wider">
                       FUTURE TARGET
                     </span>
                   </div>
                   <RevealText
                     as="h2"
                     mode="word"
+                    variant="tracking-spread"
                     className="text-2xl sm:text-3xl font-bold uppercase text-[#0E0F10]"
                   >
                     {isIt ? "Integrazione Carrier & OEM" : "Carrier & OEM Telemetry Target"}
@@ -164,10 +174,12 @@ export default function TechnologyPage() {
 
                   <div className="space-y-2">
                     <h3 className="text-base font-bold text-[#0E0F10] uppercase">
-                      Cryptographic Chain of Custody
+                      {isIt ? "Tracciabilità e Integrità del Rilievo" : "Auditable Evidence Provenance"}
                     </h3>
                     <p className="leading-relaxed font-light">
-                      Digital signature timestamping on raw evidence packets to guarantee tamper-proof admissibility in Italian and European legal jurisdictions.
+                      {isIt
+                        ? "Marcatura temporale e registrazione metadati per ogni rilievo fotografico, garantendo una sequenza cronologica trasparente per la perizia."
+                        : "Structured timestamping and metadata logging on captured evidence files to ensure a transparent, verifiable timeline for claims assessment."}
                     </p>
                   </div>
                 </div>
@@ -185,7 +197,7 @@ export default function TechnologyPage() {
               {isIt ? "Esamina il fascicolo sinistro" : "Inspect structured claims data"}
             </h3>
             <p className="text-sm text-[#666666] mt-1 font-light">
-              {isIt ? "Accedi al banco di lavoro peritale con i dati dimostrativi caricati." : "Access the operational claims workbench with pre-loaded forensic fixtures."}
+              {isIt ? "Accedi al banco di lavoro peritale con i dati dimostrativi caricati." : "Access the claims workbench with demonstration incident data."}
             </p>
           </div>
           <Link
@@ -196,6 +208,6 @@ export default function TechnologyPage() {
           </Link>
         </div>
       </section>
-    </PublicShell>
+    </>
   );
 }

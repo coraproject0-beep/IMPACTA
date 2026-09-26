@@ -83,6 +83,7 @@ function InsurersContent() {
             <RevealText
               as="h2"
               mode="word"
+              variant="fragment"
               className="text-3xl sm:text-5xl font-bold tracking-tight text-[#0E0F10] leading-tight"
             >
               {t("insurersPage.workbenchTitle")}
@@ -166,7 +167,7 @@ function InsurersContent() {
                       </div>
                     </div>
                     <div className="flex items-center gap-3">
-                      <span className="text-xs font-medium text-amber-900 bg-amber-50/80 px-2.5 py-1 rounded border border-amber-200/60">
+                      <span className="text-xs font-medium text-[#777777]">
                         {t("insurersPage.previewStatus")}
                       </span>
                       <span className="text-xs text-[#666666]">

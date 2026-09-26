@@ -8,11 +8,20 @@ if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
 
+export type RevealVariant =
+  | "depth"
+  | "slide-lateral"
+  | "rotate-plane"
+  | "fragment"
+  | "tracking-spread"
+  | "vertical-mask";
+
 export interface RevealTextProps {
   children: string;
   className?: string;
   as?: "h1" | "h2" | "h3" | "h4" | "p" | "span";
   mode?: "char" | "word" | "line";
+  variant?: RevealVariant;
   delay?: number;
   triggerOnScroll?: boolean;
 }
@@ -22,6 +31,7 @@ export function RevealText({
   className = "",
   as = "h2",
   mode = "word",
+  variant = "depth",
   delay = 0,
   triggerOnScroll = true,
 }: RevealTextProps) {
@@ -31,7 +41,6 @@ export function RevealText({
     const el = containerRef.current;
     if (!el) return;
 
-    // Check prefers-reduced-motion
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       return;
     }
@@ -39,23 +48,120 @@ export function RevealText({
     const targets = el.querySelectorAll(".reveal-unit");
     if (!targets.length) return;
 
-    // Initial state: hidden slightly below baseline with subtle 3D tilt
-    gsap.set(targets, {
-      yPercent: 110,
-      opacity: 0,
-      rotateX: -12,
-      transformOrigin: "50% 100% -20px",
-    });
+    // Apply distinct motion configuration based on page-specific variant
+    let initialProps: gsap.TweenVars = {};
+    let animProps: gsap.TweenVars = {};
 
-    const animProps = {
-      yPercent: 0,
-      opacity: 1,
-      rotateX: 0,
-      duration: mode === "char" ? 0.75 : 0.85,
-      stagger: mode === "char" ? 0.022 : 0.045,
-      ease: "power3.out",
-      delay,
-    };
+    switch (variant) {
+      case "slide-lateral": // PLATFORM: lines slide laterally and lock into alignment
+        initialProps = {
+          x: -35,
+          opacity: 0,
+          skewX: -6,
+        };
+        animProps = {
+          x: 0,
+          opacity: 1,
+          skewX: 0,
+          duration: 0.85,
+          stagger: mode === "char" ? 0.02 : 0.04,
+          ease: "power2.out",
+          delay,
+        };
+        break;
+
+      case "rotate-plane": // DRIVERS: headline rotates slightly into camera plane
+        initialProps = {
+          rotateY: -18,
+          rotateX: 12,
+          z: -40,
+          yPercent: 35,
+          opacity: 0,
+          transformOrigin: "0% 50% -30px",
+        };
+        animProps = {
+          rotateY: 0,
+          rotateX: 0,
+          z: 0,
+          yPercent: 0,
+          opacity: 1,
+          duration: 0.85,
+          stagger: mode === "char" ? 0.022 : 0.04,
+          ease: "power3.out",
+          delay,
+        };
+        break;
+
+      case "fragment": // INSURERS: words assemble from horizontal fragments
+        initialProps = {
+          x: 20,
+          y: 12,
+          opacity: 0,
+        };
+        animProps = {
+          x: 0,
+          y: 0,
+          opacity: 1,
+          duration: 0.8,
+          stagger: mode === "char" ? 0.018 : 0.038,
+          ease: "power2.out",
+          delay,
+        };
+        break;
+
+      case "tracking-spread": // TECHNOLOGY: characters sharpen from slight spread
+        initialProps = {
+          opacity: 0,
+          y: -8,
+        };
+        animProps = {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          stagger: mode === "char" ? 0.02 : 0.035,
+          ease: "power3.out",
+          delay,
+        };
+        break;
+
+      case "vertical-mask": // SAFETY: slower vertical reveal with depth
+        initialProps = {
+          yPercent: 105,
+          opacity: 0,
+        };
+        animProps = {
+          yPercent: 0,
+          opacity: 1,
+          duration: 1.0,
+          stagger: mode === "char" ? 0.025 : 0.05,
+          ease: "power2.out",
+          delay,
+        };
+        break;
+
+      case "depth": // HOME: characters rise from deep Z-space
+      default:
+        initialProps = {
+          yPercent: 110,
+          opacity: 0,
+          rotateX: 16,
+          z: -50,
+          transformOrigin: "50% 100% -30px",
+        };
+        animProps = {
+          yPercent: 0,
+          opacity: 1,
+          rotateX: 0,
+          z: 0,
+          duration: mode === "char" ? 0.8 : 0.9,
+          stagger: mode === "char" ? 0.022 : 0.045,
+          ease: "power3.out",
+          delay,
+        };
+        break;
+    }
+
+    gsap.set(targets, initialProps);
 
     if (triggerOnScroll) {
       const st = ScrollTrigger.create({
@@ -73,11 +179,10 @@ export function RevealText({
         tween.kill();
       };
     }
-  }, [delay, mode, triggerOnScroll]);
+  }, [delay, mode, triggerOnScroll, variant]);
 
   const Component = as as React.ElementType;
 
-  // Split text into lines, words, or characters while preserving accessibility
   const renderContent = () => {
     if (mode === "char") {
       const words = children.split(" ");
@@ -105,7 +210,6 @@ export function RevealText({
       ));
     }
 
-    // Default: line or block
     return (
       <span className="inline-block overflow-hidden align-top w-full">
         <span className="reveal-unit inline-block will-change-transform">
