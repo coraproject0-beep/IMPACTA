@@ -2,28 +2,24 @@ import { spawn } from "child_process";
 import fs from "fs";
 import path from "path";
 
+const auditDir = "c:\\Dev\\ANTI\\IMPACTA\\docs\\audits\\final-pre-backend-lock";
+fs.mkdirSync(auditDir, { recursive: true });
+
 async function wait(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
+  return new Promise((r) => setTimeout(r, ms));
 }
 
-const auditDir = "c:\\Dev\\ANTI\\IMPACTA\\docs\\audits\\v5.2.3-art-direction";
-if (!fs.existsSync(auditDir)) {
-  fs.mkdirSync(auditDir, { recursive: true });
-}
-
-async function runAudits() {
+async function run() {
+  console.log("Starting Chrome for Final Pre-Backend Visual Lock Audits...");
   const chromePath = "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe";
-  const port = 9568;
-  const tempDir = `C:\\Users\\sanna\\AppData\\Local\\Temp\\chrome_audit_${port}`;
+  const port = 9222;
 
-  console.log("Starting Chrome for V5.2.3 Final Art-Direction Audits...");
-  const proc = spawn(chromePath, [
+  const chrome = spawn(chromePath, [
+    `--remote-debugging-port=${port}`,
     "--headless=new",
     "--disable-gpu",
-    `--remote-debugging-port=${port}`,
-    `--user-data-dir=${tempDir}`,
-    "--window-size=1440,900",
-    "http://localhost:3000",
+    "--no-sandbox",
+    "--hide-scrollbars",
   ]);
 
   try {
@@ -81,7 +77,7 @@ async function runAudits() {
     }
 
     async function capture(filename) {
-      await wait(350);
+      await wait(400);
       const res = await sendCommand("Page.captureScreenshot", { format: "png" });
       const filepath = path.join(auditDir, filename);
       fs.writeFileSync(filepath, Buffer.from(res.data, "base64"));
@@ -90,14 +86,14 @@ async function runAudits() {
 
     async function navigate(url) {
       await sendCommand("Page.navigate", { url });
-      await wait(1400);
+      await wait(1800);
     }
 
     async function scrollTo(y) {
       await sendCommand("Runtime.evaluate", {
         expression: `window.scrollTo({ top: ${y}, behavior: 'instant' });`,
       });
-      await wait(350);
+      await wait(400);
     }
 
     async function getElementScrollY(selector) {
@@ -116,13 +112,13 @@ async function runAudits() {
     }
 
     // ==========================================
-    // 1. DESKTOP VIEWPORT (1440 x 900)
+    // 1. DESKTOP VIEWPORT (1440 x 900) - ENGLISH
     // ==========================================
     console.log("\n--- Capturing Desktop Audits (1440x900) ---");
     await setViewport(1440, 900, false);
     await navigate("http://localhost:3000/");
 
-    // Explicitly select EN for consistent English captures first
+    // Explicitly set EN
     await sendCommand("Runtime.evaluate", {
       expression: `
         (() => {
@@ -137,83 +133,27 @@ async function runAudits() {
         })()
       `,
     });
-    await wait(400);
+    await wait(500);
 
-    // Check Black Box autoplay status in DOM
-    const videoStatus = await sendCommand("Runtime.evaluate", {
-      expression: `
-        (() => {
-          const video = document.querySelector("#black-box video");
-          return {
-            exists: !!video,
-            src: video ? video.getAttribute("src") : null,
-            paused: video ? video.paused : null,
-            loop: video ? video.loop : null,
-            currentTime: video ? video.currentTime : null
-          };
-        })()
-      `,
-      returnByValue: true,
-    });
-    console.log("Black Box video status:", videoStatus.result.value);
-
-    // Sample video edges for true background tone
-    const edgeColors = await sendCommand("Runtime.evaluate", {
-      expression: `
-        (() => {
-          const v = document.querySelector("#black-box video");
-          if (!v) return "no video";
-          const canvas = document.createElement("canvas");
-          canvas.width = v.videoWidth || 1920;
-          canvas.height = v.videoHeight || 1080;
-          const ctx = canvas.getContext("2d");
-          ctx.drawImage(v, 0, 0, canvas.width, canvas.height);
-          const pAt = (x, y) => {
-            const d = ctx.getImageData(x, y, 1, 1).data;
-            return {
-              r: d[0],
-              g: d[1],
-              b: d[2],
-              hex: "#" + [d[0], d[1], d[2]].map(x => x.toString(16).padStart(2, "0")).join("")
-            };
-          };
-          return {
-            dim: { w: canvas.width, h: canvas.height },
-            tl: pAt(10, 10),
-            tr: pAt(canvas.width - 10, 10),
-            bl: pAt(10, canvas.height - 10),
-            br: pAt(canvas.width - 10, canvas.height - 10),
-            tm: pAt(Math.floor(canvas.width / 2), 10),
-            bm: pAt(Math.floor(canvas.width / 2), canvas.height - 10),
-            lm: pAt(10, Math.floor(canvas.height / 2)),
-            rm: pAt(canvas.width - 10, Math.floor(canvas.height / 2)),
-          };
-        })()
-      `,
-      returnByValue: true,
-    });
-    console.log("Black Box sampled edge colors:", JSON.stringify(edgeColors.result.value, null, 2));
-
-    // 01: Home Black Box entry (Progressive dark corridor)
     const bbY = await getElementScrollY("#black-box");
+
+    // 01: Black Box entry corridor
     await scrollTo(Math.max(0, bbY - 600));
     await capture("01-desktop-home-blackbox-entry.png");
 
-    // 02: Black Box kinetic typography (Top of black box sequence)
+    // 02: Black Box kinetic typography with safe-zone
     await scrollTo(bbY + 300);
-    await capture("02-desktop-home-blackbox-kinetic-type.png");
+    await capture("02-desktop-home-blackbox-kinetic-safezone.png");
 
-    // 03: Black Box impact moment (Midpoint of pin, text recedes)
+    // 03: Black Box collision window (unobstructed crash)
     await scrollTo(bbY + 900);
     await capture("03-desktop-home-blackbox-impact.png");
 
-    // 04: Black Box closing exit statement (Within pin, ready for human review centered)
+    // 04: Black Box closing exit statement (no technical eyebrows)
     await scrollTo(bbY + 1300);
     await capture("04-desktop-home-blackbox-closing.png");
 
-    // 05: Home unified ending (One Incident. One Shared Record.)
-    const endingY = await getElementScrollY("section:has(#black-box) ~ section");
-    // Find HomeClosingTransition
+    // 05: Home unified closing section (truthful structured record)
     const closingY = await sendCommand("Runtime.evaluate", {
       expression: `
         (() => {
@@ -228,9 +168,9 @@ async function runAudits() {
     if (closingY.result.value) {
       await scrollTo(closingY.result.value);
     }
-    await capture("05-desktop-home-unified-ending.png");
+    await capture("05-desktop-home-closing-truthful.png");
 
-    // 06: Logo Marquee (Discreet DEMO NETWORK label, 8 bespoke vector logos)
+    // 06: Logo Marquee (no DEMO NETWORK label)
     const marqueeY = await sendCommand("Runtime.evaluate", {
       expression: `
         (() => {
@@ -244,53 +184,63 @@ async function runAudits() {
     if (marqueeY.result.value) {
       await scrollTo(marqueeY.result.value);
     }
-    await capture("06-desktop-home-logo-marquee.png");
+    await capture("06-desktop-home-logo-marquee-clean.png");
 
-    // 07: Insurers Hero (Integrated spatial claim plane in DOM 3D)
+    // 07: Insurers Hero (Multi-plane 3D dossier)
     await navigate("http://localhost:3000/insurers");
     await scrollTo(0);
     await capture("07-desktop-insurers-hero.png");
 
-    // 08: Insurers Operational Flow (4-stage flow with separated 3D evidence planes)
+    // 08: Insurers Operational Continuum (Stage 1: Queue)
     await scrollTo(850);
-    await capture("08-desktop-insurers-operational-flow.png");
-
-    // 09: 112 Demo Screen (Modal with EmergencyRadar and calm urgency)
-    await navigate("http://localhost:3000/app/insurance");
-    await wait(600);
-    // Click trigger-112-demo button
     await sendCommand("Runtime.evaluate", {
       expression: `
         (() => {
-          const btn = document.querySelector('[data-testid="trigger-112-demo"]');
-          if (btn) btn.click();
-        })()
-      `,
-    });
-    await wait(800);
-    await capture("09-desktop-112-demo-screen.png");
-
-    // Close 112 modal
-    await sendCommand("Runtime.evaluate", {
-      expression: `
-        (() => {
-          const btn = document.querySelector('button[aria-label*="Close"], button[aria-label*="Chiudi"]');
-          if (btn) btn.click();
+          const buttons = Array.from(document.querySelectorAll("button"));
+          const qBtn = buttons.find(b => b.textContent.includes("01") || b.textContent.includes("Queue"));
+          if (qBtn) qBtn.click();
         })()
       `,
     });
     await wait(400);
+    await capture("08-desktop-insurers-operational-continuum.png");
 
-    // 10: Insurance Status Area (Editorial Active Policy treatment, no green dot, no pill)
+    // 09: Insurers Stage 3: Evidence Planes (Confirmed vs Inferred)
+    await sendCommand("Runtime.evaluate", {
+      expression: `
+        (() => {
+          const buttons = Array.from(document.querySelectorAll("button"));
+          const pBtn = buttons.find(b => b.textContent.includes("03") || b.textContent.includes("Planes"));
+          if (pBtn) pBtn.click();
+        })()
+      `,
+    });
+    await wait(400);
+    await capture("09-desktop-insurers-planes-separated.png");
+
+    // 10: Insurers Stage 4: Human Review Payoff
+    await sendCommand("Runtime.evaluate", {
+      expression: `
+        (() => {
+          const buttons = Array.from(document.querySelectorAll("button"));
+          const rBtn = buttons.find(b => b.textContent.includes("04") || b.textContent.includes("Sign-off") || b.textContent.includes("Revisione"));
+          if (rBtn) rBtn.click();
+        })()
+      `,
+    });
+    await wait(400);
+    await capture("10-desktop-insurers-human-payoff.png");
+
+    // 11: Active Policy micro-cleanup in Driver Insurance page
+    await navigate("http://localhost:3000/app/insurance");
     await scrollTo(0);
-    await capture("10-desktop-insurance-status-area.png");
+    await capture("11-desktop-insurance-active-policy.png");
 
     // ==========================================
     // 2. ITALIAN RUNTIME TOGGLE AUDITS (1440 x 900)
     // ==========================================
     console.log("\n--- Capturing Italian Runtime Audits ---");
     await navigate("http://localhost:3000/");
-    // Toggle language to Italian via header button and localStorage
     await sendCommand("Runtime.evaluate", {
       expression: `
         (() => {
@@ -305,14 +255,14 @@ async function runAudits() {
         })()
       `,
     });
-    await wait(600);
+    await wait(500);
 
-    // 11: Italian kinetic typography
+    // 12: Italian kinetic typography
     const itBbY = await getElementScrollY("#black-box");
     await scrollTo(itBbY + 300);
-    await capture("11-desktop-home-italian-kinetic-type.png");
+    await capture("12-desktop-italian-blackbox-kinetic.png");
 
-    // 12: Italian Home closing section
+    // 13: Italian Home closing section
     const itClosingY = await sendCommand("Runtime.evaluate", {
       expression: `
         (() => {
@@ -327,12 +277,26 @@ async function runAudits() {
     if (itClosingY.result.value) {
       await scrollTo(itClosingY.result.value);
     }
-    await capture("12-desktop-home-italian-closing.png");
+    await capture("13-desktop-italian-home-closing.png");
 
-    // 13: Italian Insurers Page
+    // 14: Italian Insurers Hero
     await navigate("http://localhost:3000/insurers");
     await scrollTo(0);
-    await capture("13-desktop-insurers-italian.png");
+    await capture("14-desktop-italian-insurers-hero.png");
+
+    // 15: Italian Insurers Stage 4 Payoff
+    await scrollTo(850);
+    await sendCommand("Runtime.evaluate", {
+      expression: `
+        (() => {
+          const buttons = Array.from(document.querySelectorAll("button"));
+          const rBtn = buttons.find(b => b.textContent.includes("04") || b.textContent.includes("Firma"));
+          if (rBtn) rBtn.click();
+        })()
+      `,
+    });
+    await wait(400);
+    await capture("15-desktop-italian-insurers-payoff.png");
 
     // ==========================================
     // 3. MOBILE VIEWPORT (390 x 844)
@@ -341,69 +305,28 @@ async function runAudits() {
     await setViewport(390, 844, true);
     await navigate("http://localhost:3000/");
 
-    // 14: Mobile Black Box
+    // 16: Mobile Black Box safe typography & edge dissolve
     const mBbY = await getElementScrollY("#black-box");
-    await scrollTo(mBbY + 200);
-    await capture("14-mobile-blackbox.png");
-
-    // 15: Mobile 112 Demo Screen
-    await navigate("http://localhost:3000/app/insurance");
-    await wait(600);
-    await sendCommand("Runtime.evaluate", {
-      expression: `
-        (() => {
-          const btn = document.querySelector('[data-testid="trigger-112-demo"]');
-          if (btn) btn.click();
-        })()
-      `,
-    });
-    await wait(800);
-    await capture("15-mobile-112.png");
-
-    // Close 112 modal
-    await sendCommand("Runtime.evaluate", {
-      expression: `
-        (() => {
-          const btn = document.querySelector('button[aria-label*="Close"], button[aria-label*="Chiudi"]');
-          if (btn) btn.click();
-        })()
-      `,
-    });
-    await wait(400);
-
-    // 18: Mobile Insurance Status Area
-    await scrollTo(0);
-    await capture("18-mobile-insurance-status.png");
-
-    // 16: Mobile Marquee
-    await navigate("http://localhost:3000/");
-    const mMqY = await sendCommand("Runtime.evaluate", {
-      expression: `
-        (() => {
-          const el = document.querySelector(".animate-marquee");
-          if (!el) return null;
-          return window.scrollY + el.getBoundingClientRect().top - 200;
-        })()
-      `,
-      returnByValue: true,
-    });
-    if (mMqY.result.value) {
-      await scrollTo(mMqY.result.value);
-    }
-    await capture("16-mobile-marquee.png");
+    await scrollTo(mBbY + 250);
+    await capture("16-mobile-blackbox-safezone.png");
 
     // 17: Mobile Insurers
     await navigate("http://localhost:3000/insurers");
     await scrollTo(0);
     await capture("17-mobile-insurers.png");
 
-    console.log("\n✅ All V5.2.3 visual audits completed successfully!");
+    // 18: Mobile Policy status
+    await navigate("http://localhost:3000/app/insurance");
+    await scrollTo(0);
+    await capture("18-mobile-insurance-status.png");
+
+    console.log("\n✅ All Final Pre-Backend Visual Lock audits completed successfully!");
   } finally {
-    proc.kill();
+    chrome.kill();
   }
 }
 
-runAudits().catch((err) => {
-  console.error("Audit error:", err);
+run().catch((e) => {
+  console.error("Audit error:", e);
   process.exit(1);
 });

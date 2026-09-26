@@ -423,6 +423,8 @@ export interface Translations {
     authorityTag: string;
     authorityTitle: string;
     authorityBody: string;
+    finalReviewStatement: string;
+    finalReviewSub: string;
   };
 }
 
@@ -543,17 +545,17 @@ export const translations: Record<Locale, Translations> = {
       finalCtaInsurerButton: "Enter Claims Console",
     },
     homeClosing: {
-      tag: "Unified Architecture",
+      tag: "Shared Architecture",
       titleLine1: "ONE INCIDENT.",
       titleLine2: "ONE SHARED RECORD.",
       subtitle:
-        "Roadside driver capture and insurer claims review operate on the same verified evidentiary foundation. Zero manual re-entry. Zero conflicting paper versions.",
+        "Roadside driver capture and insurer claims review operate on the same structured evidentiary foundation. Zero manual re-entry. Zero conflicting paper versions.",
       stageDriver: "Driver Intake",
       stageDriverDesc: "Guided four-angle photography and localized context recorded calmly at the scene.",
-      stageUnified: "Verified Buffer",
-      stageUnifiedDesc: "Cryptographic timestamps and sensor metadata organized into an unbroken timeline.",
-      stageInsurer: "Adjuster Desk",
-      stageInsurerDesc: "Objective facts and standard European CAI circumstances ready for licensed human sign-off.",
+      stageUnified: "Structured Record",
+      stageUnifiedDesc: "Incident timestamps, location context, and photos organized into a structured timeline.",
+      stageInsurer: "Adjuster Review",
+      stageInsurerDesc: "Objective facts and standard European CAI circumstances ready for human adjuster review.",
       actionDriver: "Driver workflow",
       actionInsurer: "Claims desk",
     },
@@ -858,7 +860,9 @@ export const translations: Record<Locale, Translations> = {
       previewReviewVal: "Ready for adjuster",
       authorityTag: "Adjuster authority",
       authorityTitle: "Evidence for human decision, never automated verdicts",
-      authorityBody: "European insurance regulations require that legal liability determinations be made by licensed adjusters. IMPACTA provides indisputable objective facts while leaving fault assessment exclusively to human discretion.",
+      authorityBody: "European insurance practice requires that liability determinations be made by licensed adjusters. Final claim review remains with a human adjuster, supported by clear objective evidence.",
+      finalReviewStatement: "HUMAN REVIEW REMAINS IN CONTROL.",
+      finalReviewSub: "Final claim review remains with a human adjuster.",
     },
   },
   it: {
@@ -977,17 +981,17 @@ export const translations: Record<Locale, Translations> = {
       finalCtaInsurerButton: "Accedi alla Console Liquidatori",
     },
     homeClosing: {
-      tag: "Architettura Unificata",
+      tag: "Architettura Condivisa",
       titleLine1: "UN INCIDENTE.",
       titleLine2: "UN UNICO RECORD CONDIVISO.",
       subtitle:
-        "Il rilievo del conducente e la perizia assicurativa poggiano sulla medesima base probatoria verificata. Nessuna ricompilazione manuale. Nessuna versione contrastante.",
+        "Il rilievo del conducente e la perizia assicurativa poggiano sulla medesima base probatoria strutturata. Nessuna ricompilazione manuale. Nessuna versione contrastante.",
       stageDriver: "Rilievo Conducente",
       stageDriverDesc: "Quattro inquadrature guidate e contesto geolocalizzato raccolti con calma sul posto.",
-      stageUnified: "Buffer Verificato",
-      stageUnifiedDesc: "Marcature temporali e metadati dei sensori organizzati in una sequenza continua.",
-      stageInsurer: "Banco Liquidatori",
-      stageInsurerDesc: "Fatti oggettivi e circostanze CAI standard europee pronti per la convalida del perito umano.",
+      stageUnified: "Record Strutturato",
+      stageUnifiedDesc: "Marcature temporali, contesto di posizione e fotografie organizzati in una sequenza strutturata.",
+      stageInsurer: "Revisione del Perito",
+      stageInsurerDesc: "Fatti oggettivi e circostanze CAI standard europee pronti per la revisione del perito.",
       actionDriver: "Flusso conducente",
       actionInsurer: "Area liquidazione",
     },
@@ -1292,7 +1296,9 @@ export const translations: Record<Locale, Translations> = {
       previewReviewVal: "Pronto per perito",
       authorityTag: "Responsabilità peritale",
       authorityTitle: "Evidenze per la decisione umana, mai sentenze automatiche",
-      authorityBody: "L'ordinamento giuridico italiano ed europeo richiede che la determinazione della responsabilità sia sempre assunta da periti e liquidatori abilitati. IMPACTA fornisce dati oggettivi incontestabili ma rimette ogni decisione di concorso di colpa all'autorità umana.",
+      authorityBody: "L'ordinamento europeo richiede che la determinazione della responsabilità sia sempre assunta da periti e liquidatori. La revisione finale del sinistro resta affidata a un perito umano, supportato da evidenze chiare e oggettive.",
+      finalReviewStatement: "LA REVISIONE UMANA RESTA CENTRALE.",
+      finalReviewSub: "La revisione finale del sinistro resta affidata a un perito umano.",
     },
   },
 };

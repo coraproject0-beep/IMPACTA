@@ -21,9 +21,6 @@ export function PublicFooter() {
             <p className="text-white/70 text-base lg:text-lg max-w-md leading-relaxed font-light">
               {t("footer.tagline")}
             </p>
-            <div className="pt-2 text-xs font-medium tracking-widest text-white/40 uppercase">
-              {t("footer.academicNotice")}
-            </div>
           </div>
 
           {/* Column 1: System */}

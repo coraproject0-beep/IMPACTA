@@ -186,13 +186,13 @@ function HomeContent() {
       </section>
 
       {/* 3. CINEMATIC GRADIENT TRANSITION INTO THE BLACK BOX VOID (Progressive Dark Volume Corridor) */}
-      <div className="w-full h-48 sm:h-72 lg:h-96 bg-gradient-to-b from-[#F7F7F6] via-[#2A2B2E] via-[#101114] to-[#000000] pointer-events-none -mb-px" />
+      <div className="w-full h-56 sm:h-80 lg:h-[420px] bg-gradient-to-b from-[#F7F7F6] via-[#2A2B2E] via-[#101114] via-[#050506] to-[#000000] pointer-events-none -mb-px" />
 
       {/* 4. CANONICAL BLACK BOX SIGNATURE EXPERIENCE (Continuous Autoplaying Cinematic Video) */}
       <BlackBoxScene />
 
       {/* 5. CINEMATIC TRANSITION OUT: INTO PRODUCT CHAPTERS */}
-      <div className="w-full h-40 sm:h-64 bg-gradient-to-b from-[#000000] via-[#08090B] to-[#0E0F12] pointer-events-none -mt-px" />
+      <div className="w-full h-48 sm:h-72 lg:h-80 bg-gradient-to-b from-[#000000] via-[#050506] via-[#08090B] to-[#0E0F12] pointer-events-none -mt-px" />
 
       {/* 6. CHAPTER ONE — DRIVER ROADSIDE INTAKE */}
       <section

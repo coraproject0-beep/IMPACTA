@@ -41,12 +41,12 @@ export default function DriverInsurancePage() {
           </p>
         </div>
 
-        <div className="text-right self-start sm:self-auto space-y-0.5">
-          <span className="text-[10px] uppercase tracking-[0.2em] font-medium text-[#777777] block">
-            {isIt ? "Stato copertura" : "Coverage status"}
+        <div className="text-right self-start sm:self-auto space-y-0.5 font-sans">
+          <span className="text-xs text-[#777777] block font-normal">
+            {isIt ? "Polizza" : "Policy"}
           </span>
-          <span className="text-xs uppercase tracking-[0.14em] font-semibold text-[#0E0F10] block">
-            {t("insurance.statusActive")}
+          <span className="text-sm font-semibold text-[#0E0F10] block tracking-tight">
+            {isIt ? "Attiva" : "Active"}
           </span>
         </div>
       </section>

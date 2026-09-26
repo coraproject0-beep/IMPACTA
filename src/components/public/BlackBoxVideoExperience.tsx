@@ -47,69 +47,71 @@ export default function BlackBoxVideoExperience() {
     }
 
     const ctx = gsap.context(() => {
-      // Master ScrollTrigger timeline pinned across the 240vh scroll volume
+      // Master ScrollTrigger timeline pinned across the stage
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: container,
           start: "top top",
-          end: "+=160%",
+          end: "+=170%",
           pin: stage,
-          scrub: 0.8,
+          scrub: 0.6,
           anticipatePin: 1,
         },
       });
 
-      // Initial state
+      // Initial state: lines positioned along their respective upper & lower safe corridors
       gsap.set(line1, {
-        x: "-28vw",
-        z: -180,
+        x: "-14vw",
+        z: -120,
         opacity: 0,
-        scale: 0.92,
+        scale: 0.95,
       });
 
       gsap.set(line2, {
-        x: "28vw",
-        z: -180,
+        x: "14vw",
+        z: -120,
         opacity: 0,
-        scale: 0.92,
+        scale: 0.95,
       });
 
       gsap.set(wrapper, {
-        scale: 0.94,
-        opacity: 0.9,
+        scale: 0.95,
+        opacity: 0.95,
+        filter: "blur(0px)",
       });
 
       gsap.set(exitStatement, {
         opacity: 0,
-        scale: 0.94,
-        y: 30,
+        scale: 0.92,
+        y: 25,
       });
 
       // 1. Kinetic Typography Entrance (0.0 -> 0.32)
-      // Large typography sweeps in from depth/sides while video scales up to focal presence
+      // Line 1 drifts upper-left -> upper-right; Line 2 counter-travels lower-right -> lower-left
+      // Both stay strictly in their upper/lower bands outside the central 56vw x 62vh safe zone
       tl.to(
         line1,
         {
-          x: "0vw",
+          x: "3vw",
           z: 0,
-          opacity: 0.92,
+          opacity: 0.95,
           scale: 1,
           ease: "power2.out",
-          duration: 0.3,
+          duration: 0.32,
         },
         0
       )
         .to(
           line2,
           {
-            x: "0vw",
+            x: "-3vw",
             z: 0,
-            opacity: 0.88,
+            opacity: 0.9,
             scale: 1,
             ease: "power2.out",
-            duration: 0.3,
+            duration: 0.32,
           },
-          0.04
+          0.02
         )
         .to(
           wrapper,
@@ -122,35 +124,35 @@ export default function BlackBoxVideoExperience() {
           0
         )
 
-        // 2. Collision Window: Purge Competing Text (0.34 -> 0.65)
-        // Typography fades and recedes deep into Z-space so vehicle impact is 100% unobstructed
+        // 2. Collision Window: Total Clearance (0.34 -> 0.66)
+        // Typography completely fades and recedes backward in Z-space so vehicular impact is 100% unobstructed
         .to(
           [line1, line2],
           {
             opacity: 0,
-            scale: 0.82,
-            z: -350,
+            scale: 0.84,
+            z: -300,
             ease: "power2.in",
-            duration: 0.2,
+            duration: 0.16,
           },
-          0.36
+          0.34
         )
 
-        // Hold purely on the video during collision
-        .to({}, { duration: 0.15 })
+        // Pure video focus during collision & reconstruction
+        .to({}, { duration: 0.18 })
 
-        // 3. Black Box Exit Statement (0.72 -> 0.95)
-        // Video gently recedes and final statement emerges with human review focus
+        // 3. Black Box Exit Statement (0.70 -> 0.92)
+        // Video gently recedes and dims into the dark void; final statement appears dead-center without any technical labels
         .to(
           wrapper,
           {
-            opacity: 0.25,
+            opacity: 0.22,
             scale: 0.94,
             filter: "blur(2px)",
             ease: "power1.inOut",
             duration: 0.2,
           },
-          0.72
+          0.7
         )
         .to(
           exitStatement,
@@ -161,7 +163,20 @@ export default function BlackBoxVideoExperience() {
             ease: "power2.out",
             duration: 0.2,
           },
-          0.75
+          0.72
+        )
+
+        // 4. Cinematic Exit Handoff (0.92 -> 1.0)
+        // Scene recedes gracefully into the deep darkness toward the next chapter
+        .to(
+          [exitStatement, wrapper],
+          {
+            opacity: 0.85,
+            scale: 0.96,
+            ease: "power1.in",
+            duration: 0.08,
+          },
+          0.92
         );
     }, container);
 
@@ -174,7 +189,7 @@ export default function BlackBoxVideoExperience() {
     <section
       id="black-box"
       ref={containerRef}
-      className="relative w-full bg-[#000000] text-white selection:bg-white selection:text-black"
+      className="relative w-full bg-[#000000] text-white selection:bg-white selection:text-black overflow-hidden"
     >
       {/* Pinned Stage Viewport (100vh) */}
       <div
@@ -182,31 +197,55 @@ export default function BlackBoxVideoExperience() {
         className="relative w-full h-[100vh] min-h-[640px] flex items-center justify-center overflow-hidden bg-[#000000]"
         style={{ perspective: "1400px" }}
       >
-        {/* Subtle radial depth gradient in the background void */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_50%,rgba(35,37,42,0.45)_0%,rgba(0,0,0,1)_100%)] pointer-events-none" />
+        {/* Subtle radial depth gradient in the background void matching video tone */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_50%_50%,rgba(18,19,22,0.45)_0%,rgba(0,0,0,1)_100%)] pointer-events-none" />
 
-        {/* KINETIC TYPOGRAPHY LAYER 1 (Positioned in 3D upper-half behind/around video) */}
+        {/* KINETIC TYPOGRAPHY LAYER WITH CENTRAL EXCLUSION MASK */}
+        {/* The mask cuts out the central 56vw x 62vh footprint so letters CANNOT touch the Black Box geometry */}
         <div
-          ref={textLine1Ref}
           aria-hidden="true"
-          className="absolute z-10 top-[18%] sm:top-[16%] lg:top-[14%] w-full text-center pointer-events-none select-none px-4"
-          style={{ transformStyle: "preserve-3d", willChange: "transform, opacity" }}
+          className="absolute inset-0 pointer-events-none select-none overflow-hidden z-10"
+          style={{
+            maskImage:
+              "radial-gradient(ellipse 58vw 62vh at 50% 50%, transparent 58%, black 88%)",
+            WebkitMaskImage:
+              "radial-gradient(ellipse 58vw 62vh at 50% 50%, transparent 58%, black 88%)",
+          }}
         >
-          <div className="font-bold tracking-[-0.035em] uppercase text-white/90 leading-none whitespace-nowrap text-[12vw] sm:text-[13vw] lg:text-[13.5vw]">
-            {isIt ? "OGNI FRAMMENTO." : "EVERY FRAGMENT."}
+          {/* Upper Horizon Corridor (Line 1) */}
+          <div
+            ref={textLine1Ref}
+            className="absolute top-[6%] sm:top-[7%] lg:top-[8%] w-full text-center px-4"
+            style={{ transformStyle: "preserve-3d", willChange: "transform, opacity" }}
+          >
+            <div className="font-bold tracking-[-0.035em] uppercase text-white/95 leading-none whitespace-nowrap text-[6.5vw] sm:text-[7vw] lg:text-[7.2vw]">
+              {isIt ? "OGNI FRAMMENTO." : "EVERY FRAGMENT."}
+            </div>
+          </div>
+
+          {/* Lower Horizon Corridor (Line 2) */}
+          <div
+            ref={textLine2Ref}
+            className="absolute bottom-[6%] sm:bottom-[7%] lg:bottom-[8%] w-full text-center px-4"
+            style={{ transformStyle: "preserve-3d", willChange: "transform, opacity" }}
+          >
+            <div className="font-bold tracking-[-0.03em] uppercase text-neutral-300/90 leading-none whitespace-nowrap text-[5vw] sm:text-[5.4vw] lg:text-[5.6vw]">
+              {isIt ? "UN UNICO RECORD DA VERIFICARE." : "ONE REVIEWABLE RECORD."}
+            </div>
           </div>
         </div>
 
-        {/* CENTRAL VIDEO CONTAINER (Continuous Autoplay, Seamless Edge Masking) */}
+        {/* CENTRAL VIDEO CONTAINER (Continuous Autoplay, Seamless Feathered Dissolve) */}
+        {/* Soft feathered radial mask completely dissolves the top-left flare & all 4 outer edges into #000000 */}
         <div
           ref={videoWrapperRef}
-          className="relative z-20 w-full h-full max-w-[1540px] max-h-[920px] flex items-center justify-center px-4 sm:px-8 pointer-events-none select-none"
+          className="relative z-20 w-full h-full max-w-[1480px] max-h-[880px] flex items-center justify-center px-4 sm:px-8 pointer-events-none select-none"
           style={{
             willChange: "transform, opacity",
             maskImage:
-              "radial-gradient(ellipse 92% 88% at 50% 50%, black 72%, transparent 100%)",
+              "radial-gradient(ellipse 78% 74% at 50% 50%, black 46%, rgba(0,0,0,0.85) 62%, transparent 88%)",
             WebkitMaskImage:
-              "radial-gradient(ellipse 92% 88% at 50% 50%, black 72%, transparent 100%)",
+              "radial-gradient(ellipse 78% 74% at 50% 50%, black 46%, rgba(0,0,0,0.85) 62%, transparent 88%)",
           }}
         >
           <video
@@ -221,29 +260,14 @@ export default function BlackBoxVideoExperience() {
           />
         </div>
 
-        {/* KINETIC TYPOGRAPHY LAYER 2 (Positioned in 3D lower-half behind/around video) */}
-        <div
-          ref={textLine2Ref}
-          aria-hidden="true"
-          className="absolute z-10 bottom-[16%] sm:bottom-[15%] lg:bottom-[13%] w-full text-center pointer-events-none select-none px-4"
-          style={{ transformStyle: "preserve-3d", willChange: "transform, opacity" }}
-        >
-          <div className="font-bold tracking-[-0.03em] uppercase text-neutral-300/85 leading-none whitespace-nowrap text-[8.5vw] sm:text-[9.5vw] lg:text-[10vw]">
-            {isIt ? "UN UNICO RECORD DA VERIFICARE." : "ONE REVIEWABLE RECORD."}
-          </div>
-        </div>
-
-        {/* BLACK BOX EXIT STATEMENT (Appears as video closes, before next chapter) */}
+        {/* BLACK BOX EXIT STATEMENT (Clean, authorial, zero technical eyebrows) */}
         <div
           ref={exitStatementRef}
           className="absolute z-30 inset-0 flex items-center justify-center pointer-events-none select-none px-6 text-center"
           style={{ willChange: "transform, opacity" }}
         >
-          <div className="max-w-4xl space-y-3">
-            <span className="text-[10px] sm:text-xs uppercase tracking-[0.28em] text-neutral-400 font-mono block">
-              {isIt ? "STATO FINALE DEL SINISTRO" : "SYNTHESIZED CLAIM STATE"}
-            </span>
-            <h2 className="text-3xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white uppercase leading-[1.08]">
+          <div className="max-w-4xl">
+            <h2 className="text-3xl sm:text-5xl lg:text-7xl font-bold tracking-tight text-white uppercase leading-[1.05]">
               {isIt ? "PRONTO PER LA REVISIONE UMANA." : "READY FOR HUMAN REVIEW."}
             </h2>
           </div>

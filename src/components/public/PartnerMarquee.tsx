@@ -104,14 +104,7 @@ export function PartnerMarquee() {
   const isIt = language === "it";
 
   return (
-    <section className="relative w-full py-16 sm:py-24 bg-[#F7F7F6] overflow-hidden border-y border-[#E5E5E3]">
-      {/* Discreet Fictional Network Eyebrow Label */}
-      <div className="w-full max-w-7xl mx-auto px-6 sm:px-12 mb-8 text-center sm:text-left">
-        <span className="text-[10px] uppercase tracking-[0.26em] text-[#888888] font-medium">
-          {isIt ? "RETE DIMOSTRATIVA" : "DEMO NETWORK"}
-        </span>
-      </div>
-
+    <section className="relative w-full py-14 sm:py-20 bg-[#F7F7F6] overflow-hidden border-y border-[#E5E5E3]">
       {/* Infinite Seamless Typographic + Vector Logo Rail */}
       <div className="relative w-full overflow-hidden select-none">
         {/* Soft edge masks for seamless entry and exit */}

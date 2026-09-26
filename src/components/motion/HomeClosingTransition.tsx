@@ -196,7 +196,7 @@ export function HomeClosingTransition() {
                 <div className="flex items-center justify-between border-b border-white/10 pb-3">
                   <div className="space-y-0.5">
                     <span className="text-[10px] font-mono text-neutral-400 uppercase tracking-widest block">
-                      VERIFIABLE CLAIM RECORD
+                      {isIt ? "RECORD DEL SINISTRO" : "STRUCTURED CLAIM RECORD"}
                     </span>
                     <div className="text-sm font-bold font-mono text-white">IMP-260925-014</div>
                   </div>
@@ -206,7 +206,7 @@ export function HomeClosingTransition() {
                 <div className="space-y-2 text-xs">
                   <div className="flex justify-between text-neutral-300 py-1 border-b border-white/5">
                     <span className="text-neutral-400 font-light">{isIt ? "Stato rilievo" : "Intake status"}</span>
-                    <span className="font-semibold text-white">{isIt ? "4 prospetti verificati" : "4 angles verified"}</span>
+                    <span className="font-semibold text-white">{isIt ? "4 prospetti coerenti" : "4 photos aligned"}</span>
                   </div>
                   <div className="flex justify-between text-neutral-300 py-1 border-b border-white/5">
                     <span className="text-neutral-400 font-light">{isIt ? "Modulo CAI" : "CAI Circumstance"}</span>
@@ -214,18 +214,18 @@ export function HomeClosingTransition() {
                   </div>
                   <div className="flex justify-between text-neutral-300 py-1">
                     <span className="text-neutral-400 font-light">{isIt ? "Destinazione" : "Destination"}</span>
-                    <span className="font-semibold text-neutral-200">{isIt ? "Perizia umana abilitata" : "Licensed adjuster desk"}</span>
+                    <span className="font-semibold text-neutral-200">{isIt ? "Revisione perito umano" : "Human adjuster review"}</span>
                   </div>
                 </div>
 
                 <div className="pt-2 flex items-center justify-between text-[11px] font-mono text-neutral-400 border-t border-white/10">
-                  <span>SHA-256: 7f8a...c91e</span>
+                  <span>{isIt ? "TIMELINE: STRUTTURATA" : "TIMELINE: STRUCTURED"}</span>
                   <span className="text-neutral-300">
                     {activeStation === "driver"
-                      ? "STATION: ROADSIDE"
+                      ? isIt ? "FASE: RILIEVO" : "STAGE: INTAKE"
                       : activeStation === "buffer"
-                      ? "STATION: LOCAL BUFFER"
-                      : "STATION: ADJUSTER DESK"}
+                      ? isIt ? "FASE: RECORD STRUTTURATO" : "STAGE: STRUCTURED RECORD"
+                      : isIt ? "FASE: REVISIONE PERITO" : "STAGE: ADJUSTER REVIEW"}
                   </span>
                 </div>
               </div>
@@ -254,15 +254,6 @@ export function HomeClosingTransition() {
               </Link>
             </div>
           </div>
-        </div>
-
-        {/* Truthful Academic/Demo Disclosure */}
-        <div className="text-center pt-2">
-          <span className="text-[11px] font-mono uppercase tracking-[0.24em] text-neutral-500">
-            {isIt
-              ? "CONTINUUM PROBATORIO DIMOSTRATIVO • SIMULAZIONE ACCADEMICA LOCALE"
-              : "CONCEPTUAL DATA CONTINUUM • LOCAL DEMONSTRATION RECORD"}
-          </span>
         </div>
       </div>
     </section>
