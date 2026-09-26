@@ -5,8 +5,12 @@ import Link from "next/link";
 import { PublicShell } from "@/components/public/PublicShell";
 import { HeroMedia } from "@/components/public/HeroMedia";
 import { RotatingStatement } from "@/components/motion/RotatingStatement";
+import { RevealText } from "@/components/motion/RevealText";
+import { PerspectiveCard } from "@/components/motion/PerspectiveCard";
+import { MediaReveal } from "@/components/motion/MediaReveal";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAuth } from "@/context/AuthContext";
+import BlackBoxScene from "@/components/3d/BlackBoxScene";
 
 export default function HomePage() {
   return (
@@ -17,7 +21,7 @@ export default function HomePage() {
 }
 
 function HomeContent() {
-  const { locale } = useLanguage();
+  const { locale, t } = useLanguage();
   const { isDriverAuthenticated } = useAuth();
   const isIt = locale === "it";
   const [scrollY, setScrollY] = useState(0);
@@ -60,13 +64,29 @@ function HomeContent() {
             >
               {isIt ? (
                 <>
-                  <span className="block">DALL&apos;IMPATTO</span>
-                  <span className="block whitespace-nowrap">ALLA CHIAREZZA.</span>
+                  <span className="block">
+                    <RevealText as="span" mode="word" triggerOnScroll={false}>
+                      DALL&apos;IMPATTO
+                    </RevealText>
+                  </span>
+                  <span className="block whitespace-nowrap">
+                    <RevealText as="span" mode="word" delay={0.15} triggerOnScroll={false}>
+                      ALLA CHIAREZZA.
+                    </RevealText>
+                  </span>
                 </>
               ) : (
                 <>
-                  <span className="block">FROM IMPACT</span>
-                  <span className="block whitespace-nowrap">TO CLARITY.</span>
+                  <span className="block">
+                    <RevealText as="span" mode="word" triggerOnScroll={false}>
+                      FROM IMPACT
+                    </RevealText>
+                  </span>
+                  <span className="block whitespace-nowrap">
+                    <RevealText as="span" mode="word" delay={0.15} triggerOnScroll={false}>
+                      TO CLARITY.
+                    </RevealText>
+                  </span>
                 </>
               )}
             </h1>
@@ -81,15 +101,21 @@ function HomeContent() {
             <div className="flex flex-wrap items-center gap-8 sm:gap-10 pt-2 sm:pt-4">
               <Link
                 href={reportLink}
-                className="text-sm sm:text-base font-medium text-white hover:text-white/80 border-b border-white pb-1 transition-colors tracking-normal"
+                className="group inline-flex items-center gap-2 text-sm sm:text-base font-medium text-white hover:text-white/80 border-b border-white pb-1 transition-colors tracking-normal"
               >
-                {isIt ? "Segnala un sinistro" : "Report an accident"}
+                <span>{isIt ? "Segnala un sinistro" : "Report an accident"}</span>
+                <span className="inline-block transition-transform duration-300 group-hover:translate-x-1.5" aria-hidden="true">
+                  →
+                </span>
               </Link>
               <a
                 href="#fragments"
-                className="text-sm sm:text-base font-normal text-white/70 hover:text-white transition-colors tracking-normal"
+                className="group inline-flex items-center gap-2 text-sm sm:text-base font-normal text-white/70 hover:text-white transition-colors tracking-normal"
               >
-                {isIt ? "Scopri come funziona IMPACTA" : "See how IMPACTA works"}
+                <span>{isIt ? "Scopri come funziona IMPACTA" : "See how IMPACTA works"}</span>
+                <span className="inline-block transition-transform duration-300 group-hover:translate-y-1" aria-hidden="true">
+                  ↓
+                </span>
               </a>
             </div>
           </div>
@@ -128,11 +154,15 @@ function HomeContent() {
               <span className="text-xs sm:text-sm font-medium text-[#555555]">
                 {isIt ? "Dalla frammentazione alla certezza" : "From fragmentation to certainty"}
               </span>
-              <h3 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-[#0E0F10] tracking-tight leading-tight">
+              <RevealText
+                as="h3"
+                mode="word"
+                className="text-2xl sm:text-3xl lg:text-4xl font-bold text-[#0E0F10] tracking-tight leading-tight"
+              >
                 {isIt
                   ? "I rilievi sul campo diventano elementi probatori verificabili."
                   : "Field evidence transformed into verifiable proof."}
-              </h3>
+              </RevealText>
             </div>
 
             <div className="lg:col-span-7 space-y-6 text-base sm:text-lg text-[#555555] font-light leading-relaxed">
@@ -147,6 +177,154 @@ function HomeContent() {
                   : "Zero opaque decrees, zero automated fault verdicts: our pipeline structures empirical facts to empower licensed human adjusters."}
               </p>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 3. EDITORIAL TONAL TRANSITION INTO THE BLACK BOX */}
+      <div className="w-full bg-gradient-to-b from-[#F7F7F6] via-[#0E0F12] to-[#000000] pt-28 pb-16 px-8 flex flex-col items-center justify-center text-center">
+        <div className="w-px h-16 bg-gradient-to-b from-[#0E0F10]/20 via-white/30 to-white/60 mb-6" />
+        <span className="text-xs uppercase tracking-[0.25em] text-white/50 font-mono">
+          {isIt ? "RICOSTRUZIONE FORENSE IN TEMPO REALE" : "REAL-TIME FORENSIC RECONSTRUCTION"}
+        </span>
+      </div>
+
+      {/* 4. CANONICAL BLACK BOX SIGNATURE EXPERIENCE (Scroll-Scrubbed Omni Motion Study) */}
+      <BlackBoxScene />
+
+      {/* 5. EDITORIAL TRANSITION OUT: INTO PRODUCT PLATFORMS */}
+      <section
+        id="platforms"
+        className="w-full bg-gradient-to-b from-[#000000] via-[#0E0F12] to-[#F7F7F6] py-24 sm:py-32 px-8 sm:px-12 lg:px-20 border-b border-[#E5E5E3]"
+      >
+        <div className="max-w-6xl mx-auto space-y-16">
+          <div className="max-w-4xl mx-auto text-center space-y-4">
+            <span className="text-xs sm:text-sm uppercase tracking-[0.2em] text-white/50 font-mono">
+              {isIt ? "DALL'EVIDENZA ALL'AZIONE" : "FROM EVIDENCE TO ACTION"}
+            </span>
+            <RevealText
+              as="h3"
+              mode="word"
+              className="text-3xl sm:text-5xl font-bold tracking-tight text-white leading-tight"
+            >
+              {isIt
+                ? "Una piattaforma unificata per conducenti e periti assicurativi."
+                : "A unified platform for drivers and claims specialists."}
+            </RevealText>
+            <p className="text-base sm:text-lg text-white/70 font-light max-w-2xl mx-auto leading-relaxed">
+              {isIt
+                ? "Dalla raccolta guidata delle prove sul luogo del sinistro fino all'analisi peritale in tempo reale."
+                : "From guided roadside evidence capture to real-time adjuster forensic review."}
+            </p>
+          </div>
+
+          {/* Dual Product Platform Bento Cards with Tactile 3D Depth */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
+            {/* Card 1: Driver Roadside Intake */}
+            <PerspectiveCard className="h-full" maxTilt={4}>
+              <div className="h-full bg-white border border-[#E5E5E3] rounded-2xl p-8 sm:p-10 flex flex-col justify-between shadow-sm hover:border-[#0E0F10] transition-colors group">
+                <div className="space-y-6">
+                  <div className="flex items-center justify-between pb-4 border-b border-[#E5E5E3]">
+                    <span className="text-xs font-mono tracking-wider uppercase text-[#777777]">
+                      01 / {isIt ? "RILIEVO CONDUCENTE" : "DRIVER INTAKE"}
+                    </span>
+                    <span className="text-xs font-semibold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded border border-emerald-200">
+                      {isIt ? "Attivo sul campo" : "Roadside active"}
+                    </span>
+                  </div>
+
+                  <h4 className="text-2xl sm:text-3xl font-bold uppercase tracking-tight text-[#0E0F10]">
+                    {isIt ? "Esperienza Conducente" : "Driver Experience"}
+                  </h4>
+
+                  <p className="text-sm sm:text-base text-[#666666] font-light leading-relaxed">
+                    {t("publicSections.driverExperienceDesc")}
+                  </p>
+
+                  <ul className="space-y-2.5 pt-2 text-xs sm:text-sm text-[#444444]">
+                    <li className="flex items-center gap-2.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#0E0F10]" />
+                      <span>{t("publicSections.driverExperiencePoint1Title")}</span>
+                    </li>
+                    <li className="flex items-center gap-2.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#0E0F10]" />
+                      <span>{t("publicSections.driverExperiencePoint2Title")}</span>
+                    </li>
+                    <li className="flex items-center gap-2.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#0E0F10]" />
+                      <span>{t("publicSections.driverExperiencePoint3Title")}</span>
+                    </li>
+                  </ul>
+                </div>
+
+                <div className="pt-8">
+                  <Link
+                    href={reportLink}
+                    className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold text-[#0E0F10] group-hover:text-black transition-colors"
+                  >
+                    <span className="border-b border-[#0E0F10] pb-0.5">
+                      {isIt ? "Avvia segnalazione sinistro" : "Begin roadside report"}
+                    </span>
+                    <span className="inline-block transition-transform duration-300 group-hover:translate-x-1.5" aria-hidden="true">
+                      →
+                    </span>
+                  </Link>
+                </div>
+              </div>
+            </PerspectiveCard>
+
+            {/* Card 2: Insurer Claims Console */}
+            <PerspectiveCard className="h-full" maxTilt={4}>
+              <div className="h-full bg-white border border-[#E5E5E3] rounded-2xl p-8 sm:p-10 flex flex-col justify-between shadow-sm hover:border-[#0E0F10] transition-colors group">
+                <div className="space-y-6">
+                  <div className="flex items-center justify-between pb-4 border-b border-[#E5E5E3]">
+                    <span className="text-xs font-mono tracking-wider uppercase text-[#777777]">
+                      02 / {isIt ? "CONSOLE PERITI" : "ADJUSTER CONSOLE"}
+                    </span>
+                    <span className="text-xs font-semibold text-amber-900 bg-amber-50 px-2.5 py-1 rounded border border-amber-200">
+                      {isIt ? "Controllo forense" : "Forensic intake"}
+                    </span>
+                  </div>
+
+                  <h4 className="text-2xl sm:text-3xl font-bold uppercase tracking-tight text-[#0E0F10]">
+                    {isIt ? "Portale Periti & Assicuratori" : "Insurer & Adjuster Portal"}
+                  </h4>
+
+                  <p className="text-sm sm:text-base text-[#666666] font-light leading-relaxed">
+                    {t("publicSections.insurerOpsDesc")}
+                  </p>
+
+                  <ul className="space-y-2.5 pt-2 text-xs sm:text-sm text-[#444444]">
+                    <li className="flex items-center gap-2.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#0E0F10]" />
+                      <span>{t("publicSections.insurerOpsPoint1Title")}</span>
+                    </li>
+                    <li className="flex items-center gap-2.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#0E0F10]" />
+                      <span>{t("publicSections.insurerOpsPoint2Title")}</span>
+                    </li>
+                    <li className="flex items-center gap-2.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#0E0F10]" />
+                      <span>{t("publicSections.insurerOpsPoint3Title")}</span>
+                    </li>
+                  </ul>
+                </div>
+
+                <div className="pt-8">
+                  <Link
+                    href="/insurers"
+                    className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold text-[#0E0F10] group-hover:text-black transition-colors"
+                  >
+                    <span className="border-b border-[#0E0F10] pb-0.5">
+                      {isIt ? "Esplora console liquidatori" : "Explore adjuster workbench"}
+                    </span>
+                    <span className="inline-block transition-transform duration-300 group-hover:translate-x-1.5" aria-hidden="true">
+                      →
+                    </span>
+                  </Link>
+                </div>
+              </div>
+            </PerspectiveCard>
           </div>
         </div>
       </section>

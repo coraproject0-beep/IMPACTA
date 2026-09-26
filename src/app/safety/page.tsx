@@ -1,14 +1,47 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
 import { PublicShell } from "@/components/public/PublicShell";
 import { EditorialReveal } from "@/components/motion/EditorialReveal";
 import { TechnicalReveal } from "@/components/motion/TechnicalReveal";
+import { RevealText } from "@/components/motion/RevealText";
+import { PerspectiveCard } from "@/components/motion/PerspectiveCard";
 import { useLanguage } from "@/context/LanguageContext";
 
 export default function SafetyPage() {
   const { language } = useLanguage();
   const isIt = language === "it";
+
+  const safetyPillars = [
+    {
+      num: "01",
+      tag: isIt ? "PRIORITÀ DI SOCCORSO" : "EMERGENCY ESCALATION",
+      title: isIt ? "Chiamata Rapida 112" : "112 Direct Access",
+      desc: isIt
+        ? "Se ci sono feriti o pericoli imminenti, l'interfaccia blocca qualsiasi richiesta documentale e offre un tasto diretto di chiamata verso il Numero Unico di Emergenza Europeo."
+        : "If physical injuries are detected, all questionnaire inputs are halted in favor of an instant dialer connecting directly to European Emergency 112.",
+      accent: "border-red-200 text-red-600 bg-red-50",
+    },
+    {
+      num: "02",
+      tag: isIt ? "PROTEZIONE ATTIVA" : "ROADWAY REFUGING",
+      title: isIt ? "Incolumità Fuori Carreggiata" : "Safe Refuge Protocol",
+      desc: isIt
+        ? "I conducenti vengono istruiti a indossare il giubbotto catarifrangente e a posizionarsi dietro il guardrail prima di scattare qualsiasi fotografia."
+        : "Drivers are prompted to don high-visibility vests and retreat behind roadside barriers before attempting any photographic capture.",
+      accent: "border-amber-200 text-amber-700 bg-amber-50",
+    },
+    {
+      num: "03",
+      tag: isIt ? "SUPERVISIONE PERITALE" : "HUMAN GOVERNANCE",
+      title: isIt ? "Nessuna Sentenza Automatica" : "Zero Automated Decrees",
+      desc: isIt
+        ? "IMPACTA non assegna mai percentuali di colpa. La nostra tecnologia organizza i fatti metrici a supporto esclusivo dei periti umani abilitati."
+        : "IMPACTA never outputs automated legal fault percentages. Machine models structure empirical facts for licensed human adjusters.",
+      accent: "border-neutral-200 text-neutral-700 bg-neutral-100",
+    },
+  ];
 
   return (
     <PublicShell>
@@ -44,52 +77,72 @@ export default function SafetyPage() {
         </div>
       </section>
 
-      {/* Roadside Safety Protocol Narrative */}
+      {/* Roadside Safety Protocol Narrative - Bento Cards */}
       <section className="py-24 sm:py-36 bg-[#F7F7F6] border-b border-[#E5E5E3]">
-        <div className="w-full px-6 sm:px-12 lg:px-20 max-w-7xl mx-auto space-y-16">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 text-sm">
-            <div className="space-y-3 pb-6 border-b border-[#E5E5E3] md:border-b-0 md:border-r md:pr-8">
-              <span className="text-xs text-[#DC2626] font-medium block">
-                {isIt ? "Priorità di soccorso" : "Emergency escalation"}
-              </span>
-              <h3 className="text-xl font-bold uppercase text-[#0E0F10]">
-                {isIt ? "Chiamata Rapida 112" : "112 Direct Access"}
-              </h3>
-              <p className="text-[#666666] font-light text-base leading-relaxed">
-                {isIt
-                  ? "Se ci sono feriti, l'interfaccia blocca qualsiasi richiesta documentale e offre un tasto diretto di chiamata verso il Numero Unico di Emergenza Europeo."
-                  : "If physical injuries are detected, all questionnaire inputs are halted in favor of an instant dialer connecting directly to European Emergency 112."}
-              </p>
-            </div>
-
-            <div className="space-y-3 pb-6 border-b border-[#E5E5E3] md:border-b-0 md:border-r md:pr-8">
-              <span className="text-xs text-[#555555] font-medium block">
-                {isIt ? "Protezione attiva" : "Roadway refuging"}
-              </span>
-              <h3 className="text-xl font-bold uppercase text-[#0E0F10]">
-                {isIt ? "Incolumità Fuori Carreggiata" : "Safe Refuge Protocol"}
-              </h3>
-              <p className="text-[#666666] font-light text-base leading-relaxed">
-                {isIt
-                  ? "I conducenti vengono istruiti a indossare il giubbotto catarifrangente e a posizionarsi dietro il guardrail prima di scattare qualsiasi fotografia."
-                  : "Drivers are prompted to don high-visibility vests and retreat behind roadside barriers before attempting any photographic capture."}
-              </p>
-            </div>
-
-            <div className="space-y-3">
-              <span className="text-xs text-[#555555] font-medium block">
-                {isIt ? "Supervisione peritale" : "Human governance"}
-              </span>
-              <h3 className="text-xl font-bold uppercase text-[#0E0F10]">
-                {isIt ? "Nessuna Sentenza Automatica" : "Zero Automated Decrees"}
-              </h3>
-              <p className="text-[#666666] font-light text-base leading-relaxed">
-                {isIt
-                  ? "IMPACTA non assegna mai percentuali di colpa. La nostra intelligenza artificiale organizza le prove a supporto dei periti umani abilitati."
-                  : "IMPACTA never outputs automated legal fault percentages. Machine models structure empirical facts for licensed human adjusters."}
-              </p>
-            </div>
+        <div className="w-full px-6 sm:px-12 lg:px-20 max-w-7xl mx-auto space-y-12">
+          <div className="space-y-2">
+            <span className="text-xs font-mono uppercase tracking-wider text-[#777777]">
+              {isIt ? "TRE PRINCIPI INDEROGABILI" : "THREE NON-NEGOTIABLE TENETS"}
+            </span>
+            <RevealText
+              as="h2"
+              mode="word"
+              className="text-3xl sm:text-4xl font-bold uppercase tracking-tight text-[#0E0F10]"
+            >
+              {isIt ? "I cardini operativi di IMPACTA" : "Operational Core of IMPACTA"}
+            </RevealText>
           </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {safetyPillars.map((pillar) => (
+              <PerspectiveCard key={pillar.num} maxTilt={4} className="h-full">
+                <div className="h-full bg-white border border-[#E5E5E3] rounded-2xl p-8 flex flex-col justify-between space-y-6 shadow-sm hover:border-[#0E0F10] transition-colors">
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between pb-3 border-b border-[#E5E5E3]">
+                      <span className="text-2xl font-mono font-bold text-[#0E0F10]">
+                        {pillar.num}
+                      </span>
+                      <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded border ${pillar.accent}`}>
+                        {pillar.tag}
+                      </span>
+                    </div>
+                    <h3 className="text-xl font-bold uppercase text-[#0E0F10]">
+                      {pillar.title}
+                    </h3>
+                    <p className="text-[#666666] font-light text-sm sm:text-base leading-relaxed">
+                      {pillar.desc}
+                    </p>
+                  </div>
+                  <div className="pt-4 border-t border-[#E5E5E3] text-[11px] font-mono text-[#555555]">
+                    VERIFIED ETHICAL GOVERNANCE
+                  </div>
+                </div>
+              </PerspectiveCard>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Strip */}
+      <section className="py-20 bg-white">
+        <div className="w-full px-6 sm:px-12 lg:px-20 max-w-7xl mx-auto flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+          <div>
+            <h3 className="text-2xl font-bold uppercase text-[#0E0F10]">
+              {isIt ? "Approfondisci la nostra architettura" : "Learn more about our architecture"}
+            </h3>
+            <p className="text-sm text-[#666666] mt-1 font-light">
+              {isIt ? "Consulta la specifica tecnica browser-local e carrier roadmap." : "Review our browser-local technical specification and carrier roadmap."}
+            </p>
+          </div>
+          <Link
+            href="/technology"
+            className="group inline-flex items-center justify-center gap-2 min-h-[52px] px-8 bg-[#0E0F10] text-white text-xs font-bold tracking-wider uppercase hover:bg-black transition-colors"
+          >
+            <span>{isIt ? "Architettura Tecnologica" : "Technical Architecture"}</span>
+            <span className="inline-block transition-transform duration-300 group-hover:translate-x-1.5" aria-hidden="true">
+              →
+            </span>
+          </Link>
         </div>
       </section>
     </PublicShell>

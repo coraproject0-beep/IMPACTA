@@ -36,6 +36,25 @@ export interface Translations {
     fragmentsList: string;
     fragmentsConclusion: string;
   };
+  blackBoxNarrative: {
+    kicker: string;
+    phase0Title: string;
+    phase0Subtitle: string;
+    phase1Title: string;
+    phase1Subtitle: string;
+    phase2Title: string;
+    phase2Subtitle: string;
+    phase3Title: string;
+    phase3Subtitle: string;
+    phase4Title: string;
+    phase4Subtitle: string;
+    phase5Title: string;
+    phase5Subtitle: string;
+    phase6Title: string;
+    phase6Subtitle: string;
+    fallbackTitle: string;
+    fallbackDesc: string;
+  };
   blackBoxSection: {
     kicker: string;
     title: string;
@@ -426,6 +445,25 @@ export const translations: Record<Locale, Translations> = {
       fragmentsLead: "An accident creates fragments.",
       fragmentsList: "Photos. Statements. Vehicle information. Context.",
       fragmentsConclusion: "IMPACTA brings them together.",
+    },
+    blackBoxNarrative: {
+      kicker: "CANONICAL BLACK BOX",
+      phase0Title: "Evidence begins fragmented.",
+      phase0Subtitle: "Dispersed physical facts captured at the scene.",
+      phase1Title: "Controlled mechanical opening.",
+      phase1Subtitle: "Unfolding internal chambers and precision frame geometry.",
+      phase2Title: "Photos. Statements. Damage. Context.",
+      phase2Subtitle: "Calibrated physical evidence planes emerging from the core.",
+      phase3Title: "A coherent incident model.",
+      phase3Subtitle: "Overhead kinematic reconstruction with direct physical contact.",
+      phase4Title: "From fragments to structured information.",
+      phase4Subtitle: "Incident data calibrated and ordered into parallel evidentiary layers.",
+      phase5Title: "Ready for human review.",
+      phase5Subtitle: "Human judgment remains in control.",
+      phase6Title: "Structured evidence preserved.",
+      phase6Subtitle: "Compact, tamper-evident record ready for claims assessment.",
+      fallbackTitle: "The Black Box Signature Experience",
+      fallbackDesc: "From fragmented roadside evidence to structured claim information ready for human review.",
     },
     blackBoxSection: {
       kicker: "THE ACCIDENT BLACK BOX",
@@ -823,6 +861,25 @@ export const translations: Record<Locale, Translations> = {
       fragmentsLead: "Un incidente crea frammenti.",
       fragmentsList: "Foto. Dichiarazioni. Dati del veicolo. Contesto.",
       fragmentsConclusion: "IMPACTA li unisce.",
+    },
+    blackBoxNarrative: {
+      kicker: "SCATOLA NERA CANONICA",
+      phase0Title: "Le prove dell'incidente iniziano frammentate.",
+      phase0Subtitle: "Fatti fisici dispersi acquisiti sul luogo dell'urto.",
+      phase1Title: "Apertura meccanica controllata.",
+      phase1Subtitle: "Dispiegamento delle camere interne e della geometria dei telai.",
+      phase2Title: "Fotografie. Dichiarazioni. Danni. Contesto.",
+      phase2Subtitle: "Piani probatori fisici calibrati che emergono dal nucleo.",
+      phase3Title: "Un modello coerente dell'incidente.",
+      phase3Subtitle: "Ricostruzione cinematica con contatto fisico diretto.",
+      phase4Title: "Dai frammenti alle informazioni strutturate.",
+      phase4Subtitle: "Dati dell'incidente calibrati e ordinati in livelli probatori paralleli.",
+      phase5Title: "Pronto per la revisione umana.",
+      phase5Subtitle: "Il giudizio umano mantiene il controllo.",
+      phase6Title: "Elementi probatori strutturati e conservati.",
+      phase6Subtitle: "Archivio compatto e verificabile pronto per la perizia.",
+      fallbackTitle: "L'Esperienza Scatola Nera",
+      fallbackDesc: "Dalle prove frammentate a bordo strada alle informazioni strutturate per la perizia umana.",
     },
     blackBoxSection: {
       kicker: "LA SCATOLA NERA FORENSE",

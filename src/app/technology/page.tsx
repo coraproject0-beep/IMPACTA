@@ -5,6 +5,8 @@ import Link from "next/link";
 import { PublicShell } from "@/components/public/PublicShell";
 import { EditorialReveal } from "@/components/motion/EditorialReveal";
 import { TechnicalReveal } from "@/components/motion/TechnicalReveal";
+import { RevealText } from "@/components/motion/RevealText";
+import { PerspectiveCard } from "@/components/motion/PerspectiveCard";
 import { useLanguage } from "@/context/LanguageContext";
 
 export default function TechnologyPage() {
@@ -67,88 +69,110 @@ export default function TechnologyPage() {
       {/* Current vs Future Architecture (Editorial Open Comparison) */}
       <section className="py-24 sm:py-36 bg-[#F7F7F6] border-b border-[#E5E5E3]">
         <div className="w-full px-6 sm:px-12 lg:px-20 max-w-7xl mx-auto space-y-16">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
             {/* Current Architecture */}
-            <div className="space-y-8">
-              <div className="pb-6 border-b border-[#E5E5E3] space-y-2">
-                <span className="text-xs font-semibold tracking-wider text-[#0E0F10] uppercase">
-                  {isIt ? "FONDAZIONE ATTUALE" : "OPERATIONAL FOUNDATION"}
-                </span>
-                <h2 className="text-2xl sm:text-3xl font-bold uppercase text-[#0E0F10]">
-                  {isIt ? "Architettura Browser-Local" : "Browser-Local Architecture"}
-                </h2>
+            <PerspectiveCard maxTilt={3} className="h-full">
+              <div className="h-full bg-white border border-[#E5E5E3] rounded-2xl p-8 sm:p-10 space-y-8 shadow-sm">
+                <div className="pb-6 border-b border-[#E5E5E3] space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-mono font-semibold tracking-wider text-[#0E0F10] uppercase">
+                      {isIt ? "FONDAZIONE ATTUALE" : "OPERATIONAL FOUNDATION"}
+                    </span>
+                    <span className="text-[11px] font-mono font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                      LOCAL BROWSER
+                    </span>
+                  </div>
+                  <RevealText
+                    as="h2"
+                    mode="word"
+                    className="text-2xl sm:text-3xl font-bold uppercase text-[#0E0F10]"
+                  >
+                    {isIt ? "Architettura Browser-Local" : "Browser-Local Architecture"}
+                  </RevealText>
+                </div>
+
+                <div className="space-y-6 text-sm text-[#666666]">
+                  <div className="space-y-2 pb-6 border-b border-[#E5E5E3]">
+                    <h3 className="text-base font-bold text-[#0E0F10] uppercase">
+                      Cross-Context Reactive State
+                    </h3>
+                    <p className="leading-relaxed font-light">
+                      Claims repository running directly in browser storage (`localStorage` and `IndexedDB`). State synchronized instantly between the Consumer Driver workspace and the Insurance Claims Console without cloud latency.
+                    </p>
+                  </div>
+
+                  <div className="space-y-2 pb-6 border-b border-[#E5E5E3]">
+                    <h3 className="text-base font-bold text-[#0E0F10] uppercase">
+                      Photographic &amp; GPS Ingestion
+                    </h3>
+                    <p className="leading-relaxed font-light">
+                      Camera captures compressed and indexed in IndexedDB blobs with embedded GNSS coordinates, timestamp verification, and multi-angle orientation flags.
+                    </p>
+                  </div>
+
+                  <div className="space-y-2">
+                    <h3 className="text-base font-bold text-[#0E0F10] uppercase">
+                      CAI Standard Box 12 Rule Engine
+                    </h3>
+                    <p className="leading-relaxed font-light">
+                      Deterministic mapping from selected accident dynamics directly into European Accident Statement (Constat Amiable) circumstances without probabilistic AI hallucination.
+                    </p>
+                  </div>
+                </div>
               </div>
-
-              <div className="space-y-6 text-sm text-[#666666]">
-                <div className="space-y-2 pb-6 border-b border-[#E5E5E3]">
-                  <h3 className="text-base font-bold text-[#0E0F10] uppercase">
-                    Cross-Context Reactive State
-                  </h3>
-                  <p className="leading-relaxed font-light">
-                    Claims repository running directly in browser storage (`localStorage` and `IndexedDB`). State synchronized instantly between the Consumer Driver workspace and the Insurance Claims Console without cloud latency.
-                  </p>
-                </div>
-
-                <div className="space-y-2 pb-6 border-b border-[#E5E5E3]">
-                  <h3 className="text-base font-bold text-[#0E0F10] uppercase">
-                    Photographic &amp; GPS Ingestion
-                  </h3>
-                  <p className="leading-relaxed font-light">
-                    Camera captures compressed and indexed in IndexedDB blobs with embedded GNSS coordinates, timestamp verification, and multi-angle orientation flags.
-                  </p>
-                </div>
-
-                <div className="space-y-2 pb-6 border-b border-[#E5E5E3]">
-                  <h3 className="text-base font-bold text-[#0E0F10] uppercase">
-                    CAI Standard Box 12 Rule Engine
-                  </h3>
-                  <p className="leading-relaxed font-light">
-                    Deterministic mapping from selected accident dynamics directly into European Accident Statement (Constat Amiable) circumstances without probabilistic AI hallucination.
-                  </p>
-                </div>
-              </div>
-            </div>
+            </PerspectiveCard>
 
             {/* Target Enterprise Cloud Architecture */}
-            <div className="space-y-8">
-              <div className="pb-6 border-b border-[#E5E5E3] space-y-2">
-                <span className="text-xs font-semibold tracking-wider text-[#666666] uppercase">
-                  {isIt ? "ROADMAP AZIENDALE" : "ENTERPRISE ROADMAP"}
-                </span>
-                <h2 className="text-2xl sm:text-3xl font-bold uppercase text-[#0E0F10]">
-                  {isIt ? "Integrazione Carrier &amp; OEM" : "Carrier &amp; OEM Telemetry Target"}
-                </h2>
+            <PerspectiveCard maxTilt={3} className="h-full">
+              <div className="h-full bg-white border border-[#E5E5E3] rounded-2xl p-8 sm:p-10 space-y-8 shadow-sm">
+                <div className="pb-6 border-b border-[#E5E5E3] space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-mono font-semibold tracking-wider text-[#666666] uppercase">
+                      {isIt ? "ROADMAP AZIENDALE" : "ENTERPRISE ROADMAP"}
+                    </span>
+                    <span className="text-[11px] font-mono font-semibold text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
+                      FUTURE TARGET
+                    </span>
+                  </div>
+                  <RevealText
+                    as="h2"
+                    mode="word"
+                    className="text-2xl sm:text-3xl font-bold uppercase text-[#0E0F10]"
+                  >
+                    {isIt ? "Integrazione Carrier & OEM" : "Carrier & OEM Telemetry Target"}
+                  </RevealText>
+                </div>
+
+                <div className="space-y-6 text-sm text-[#666666]">
+                  <div className="space-y-2 pb-6 border-b border-[#E5E5E3]">
+                    <h3 className="text-base font-bold text-[#0E0F10] uppercase">
+                      OEM Connected Vehicle Feeds
+                    </h3>
+                    <p className="leading-relaxed font-light">
+                      Secure ingest of 10–20Hz CAN-bus telemetry (longitudinal/lateral deceleration vectors, brake pedal pressure, ABS engagement, steering angle) directly from automotive telematics APIs.
+                    </p>
+                  </div>
+
+                  <div className="space-y-2 pb-6 border-b border-[#E5E5E3]">
+                    <h3 className="text-base font-bold text-[#0E0F10] uppercase">
+                      Carrier Core Claims Sync
+                    </h3>
+                    <p className="leading-relaxed font-light">
+                      Bi-directional integration with Guidewire, Duck Creek, and SAP Insurance platforms via authenticated webhook streams and signed JSON dossiers.
+                    </p>
+                  </div>
+
+                  <div className="space-y-2">
+                    <h3 className="text-base font-bold text-[#0E0F10] uppercase">
+                      Cryptographic Chain of Custody
+                    </h3>
+                    <p className="leading-relaxed font-light">
+                      Digital signature timestamping on raw evidence packets to guarantee tamper-proof admissibility in Italian and European legal jurisdictions.
+                    </p>
+                  </div>
+                </div>
               </div>
-
-              <div className="space-y-6 text-sm text-[#666666]">
-                <div className="space-y-2 pb-6 border-b border-[#E5E5E3]">
-                  <h3 className="text-base font-bold text-[#0E0F10] uppercase">
-                    OEM Connected Vehicle Feeds
-                  </h3>
-                  <p className="leading-relaxed font-light">
-                    Secure ingest of 10–20Hz CAN-bus telemetry (longitudinal/lateral deceleration vectors, brake pedal pressure, ABS engagement, steering angle) directly from automotive telematics APIs.
-                  </p>
-                </div>
-
-                <div className="space-y-2 pb-6 border-b border-[#E5E5E3]">
-                  <h3 className="text-base font-bold text-[#0E0F10] uppercase">
-                    Core Carrier Core Claims Sync
-                  </h3>
-                  <p className="leading-relaxed font-light">
-                    Bi-directional integration with Guidewire, Duck Creek, and SAP Insurance platforms via authenticated webhook streams and signed JSON dossiers.
-                  </p>
-                </div>
-
-                <div className="space-y-2 pb-6 border-b border-[#E5E5E3]">
-                  <h3 className="text-base font-bold text-[#0E0F10] uppercase">
-                    Cryptographic Chain of Custody
-                  </h3>
-                  <p className="leading-relaxed font-light">
-                    Digital signature timestamping on raw evidence packets to guarantee tamper-proof admissibility in Italian and European legal jurisdictions.
-                  </p>
-                </div>
-              </div>
-            </div>
+            </PerspectiveCard>
           </div>
         </div>
       </section>

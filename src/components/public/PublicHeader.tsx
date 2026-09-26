@@ -13,10 +13,18 @@ export function PublicHeader() {
   const { isDriverAuthenticated } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [inBlackBox, setInBlackBox] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 400);
+      const bbEl = document.getElementById("black-box");
+      if (bbEl) {
+        const rect = bbEl.getBoundingClientRect();
+        setInBlackBox(rect.top <= 80 && rect.bottom >= 80);
+      } else {
+        setInBlackBox(false);
+      }
     };
     window.addEventListener("scroll", handleScroll, { passive: true });
     handleScroll();
@@ -25,6 +33,7 @@ export function PublicHeader() {
 
   const isHome = pathname === "/";
   const isDarkHero = isHome && !isScrolled;
+  const isDarkTheme = isDarkHero || inBlackBox;
 
   const reportLink = isDriverAuthenticated ? "/app/report" : "/login?redirect=/app/report";
 
@@ -34,6 +43,8 @@ export function PublicHeader() {
         className={`fixed top-0 left-0 right-0 z-50 select-none transition-colors duration-300 ${
           isDarkHero
             ? "bg-transparent text-white"
+            : inBlackBox
+            ? "bg-[#000000]/90 backdrop-blur-md text-white border-b border-white/10"
             : "bg-[#F7F7F6]/95 backdrop-blur-md text-[#0E0F10] border-b border-[#E5E5E3]"
         }`}
       >
@@ -54,7 +65,7 @@ export function PublicHeader() {
             <Link
               href="/platform"
               className={`text-sm lg:text-[15px] font-normal tracking-normal transition-colors ${
-                isDarkHero ? "text-white/90 hover:text-white" : "text-[#666666] hover:text-[#0E0F10]"
+                isDarkTheme ? "text-white/90 hover:text-white" : "text-[#666666] hover:text-[#0E0F10]"
               }`}
             >
               {t("nav.platform")}
@@ -62,7 +73,7 @@ export function PublicHeader() {
             <Link
               href="/drivers"
               className={`text-sm lg:text-[15px] font-normal tracking-normal transition-colors ${
-                isDarkHero ? "text-white/90 hover:text-white" : "text-[#666666] hover:text-[#0E0F10]"
+                isDarkTheme ? "text-white/90 hover:text-white" : "text-[#666666] hover:text-[#0E0F10]"
               }`}
             >
               {t("nav.drivers")}
@@ -70,7 +81,7 @@ export function PublicHeader() {
             <Link
               href="/insurers"
               className={`text-sm lg:text-[15px] font-normal tracking-normal transition-colors ${
-                isDarkHero ? "text-white/90 hover:text-white" : "text-[#666666] hover:text-[#0E0F10]"
+                isDarkTheme ? "text-white/90 hover:text-white" : "text-[#666666] hover:text-[#0E0F10]"
               }`}
             >
               {t("nav.insurers")}
@@ -84,33 +95,33 @@ export function PublicHeader() {
               type="button"
               onClick={() => setLocale(locale === "en" ? "it" : "en")}
               className={`text-xs sm:text-sm tracking-wider uppercase transition-colors ${
-                isDarkHero ? "text-white/80 hover:text-white" : "text-[#444444] hover:text-[#0E0F10]"
+                isDarkTheme ? "text-white/80 hover:text-white" : "text-[#444444] hover:text-[#0E0F10]"
               }`}
               title="Toggle language English / Italiano"
             >
               <span
                 className={
                   locale === "en"
-                    ? isDarkHero
+                    ? isDarkTheme
                       ? "font-bold text-white"
                       : "font-bold text-[#0E0F10]"
-                    : isDarkHero
+                    : isDarkTheme
                     ? "opacity-50 text-white"
                     : "opacity-50 text-[#555555]"
                 }
               >
                 EN
               </span>
-              <span className={`mx-1 ${isDarkHero ? "opacity-40 text-white" : "opacity-40 text-[#0E0F10]"}`}>
+              <span className={`mx-1 ${isDarkTheme ? "opacity-40 text-white" : "opacity-40 text-[#0E0F10]"}`}>
                 /
               </span>
               <span
                 className={
                   locale === "it"
-                    ? isDarkHero
+                    ? isDarkTheme
                       ? "font-bold text-white"
                       : "font-bold text-[#0E0F10]"
-                    : isDarkHero
+                    : isDarkTheme
                     ? "opacity-50 text-white"
                     : "opacity-50 text-[#555555]"
                 }
@@ -123,7 +134,7 @@ export function PublicHeader() {
             <Link
               href="/login"
               className={`text-xs sm:text-sm font-normal tracking-normal transition-colors ${
-                isDarkHero ? "text-white/90 hover:text-white" : "text-[#555555] hover:text-[#0E0F10]"
+                isDarkTheme ? "text-white/90 hover:text-white" : "text-[#555555] hover:text-[#0E0F10]"
               }`}
             >
               {t("nav.signIn")}
@@ -133,7 +144,7 @@ export function PublicHeader() {
             <Link
               href={reportLink}
               className={`text-xs sm:text-sm font-medium tracking-normal transition-colors ${
-                isDarkHero ? "text-white hover:text-white/80" : "text-[#0E0F10] hover:text-[#555555]"
+                isDarkTheme ? "text-white hover:text-white/80" : "text-[#0E0F10] hover:text-[#555555]"
               }`}
             >
               {t("nav.reportAccident")}
@@ -146,32 +157,32 @@ export function PublicHeader() {
               type="button"
               onClick={() => setLocale(locale === "en" ? "it" : "en")}
               className={`text-xs font-mono tracking-wider uppercase ${
-                isDarkHero ? "text-white" : "text-[#0E0F10]"
+                isDarkTheme ? "text-white" : "text-[#0E0F10]"
               }`}
             >
               <span
                 className={
                   locale === "en"
-                    ? isDarkHero
+                    ? isDarkTheme
                       ? "font-bold text-white"
                       : "font-bold text-[#0E0F10]"
-                    : isDarkHero
+                    : isDarkTheme
                     ? "opacity-50 text-white"
                     : "opacity-50 text-[#555555]"
                 }
               >
                 EN
               </span>
-              <span className={`mx-0.5 ${isDarkHero ? "opacity-40 text-white" : "opacity-40 text-[#0E0F10]"}`}>
+              <span className={`mx-0.5 ${isDarkTheme ? "opacity-40 text-white" : "opacity-40 text-[#0E0F10]"}`}>
                 /
               </span>
               <span
                 className={
                   locale === "it"
-                    ? isDarkHero
+                    ? isDarkTheme
                       ? "font-bold text-white"
                       : "font-bold text-[#0E0F10]"
-                    : isDarkHero
+                    : isDarkTheme
                     ? "opacity-50 text-white"
                     : "opacity-50 text-[#555555]"
                 }

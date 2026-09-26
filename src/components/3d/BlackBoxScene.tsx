@@ -3,26 +3,21 @@
 import dynamic from "next/dynamic";
 import React from "react";
 
-// Client-only dynamic import with SSR disabled to prevent hydration mismatch and server WebGL errors
-const BlackBoxHeroClient = dynamic(() => import("./BlackBoxHero"), {
-  ssr: false,
-  loading: () => (
-    <div className="relative w-full h-screen bg-[#090A0A] text-white flex items-center justify-center">
-      <div className="max-w-4xl px-6 sm:px-12 w-full space-y-6">
-        <div className="text-xs font-semibold tracking-widest text-white/40 uppercase">
-          IMPACTA • EVIDENCE FUSION
+// Client-only dynamic import with SSR disabled to prevent hydration mismatches
+const BlackBoxVideoExperience = dynamic(
+  () => import("@/components/public/BlackBoxVideoExperience"),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="relative w-full h-screen bg-[#000000] text-white flex items-center justify-center">
+        <div className="text-xs font-mono tracking-[0.25em] text-white/40 uppercase">
+          SCATOLA NERA CANONICA
         </div>
-        <h1 className="text-5xl sm:text-7xl font-bold tracking-tight uppercase leading-[0.98]">
-          Accident evidence.
-          <br />
-          Structured.
-        </h1>
-        <div className="w-12 h-px bg-white/30" />
       </div>
-    </div>
-  ),
-});
+    ),
+  }
+);
 
 export default function BlackBoxScene() {
-  return <BlackBoxHeroClient />;
+  return <BlackBoxVideoExperience />;
 }
