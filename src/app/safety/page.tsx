@@ -78,8 +78,8 @@ function SafetyContent() {
           </EditorialReveal>
           <p className="text-lg sm:text-2xl text-[#666666] leading-relaxed max-w-3xl font-light">
             {isIt
-              ? "Sul ciglio della strada, la sicurezza fisica è l'unica priorità. Nella gestione del sinistro, il rigore probatorio non può mai essere delegato a sentenze automatizzate."
-              : "At roadside collisions, physical safety is absolute. In insurance claims processing, evidentiary rigor and legal governance must never be abdicated to automated black boxes."}
+              ? "Sul ciglio della strada, la sicurezza fisica è l'unica priorità. Nella gestione del sinistro, la certezza delle prove non può mai essere delegata a sentenze automatizzate."
+              : "At roadside collisions, physical safety is absolute. In insurance claims processing, objective evidence and legal governance must never be abdicated to automated black boxes."}
           </p>
 
           <div className="pt-4">

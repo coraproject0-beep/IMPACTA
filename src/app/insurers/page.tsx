@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
+import React, { useRef, useEffect } from "react";
 import Link from "next/link";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -23,289 +23,341 @@ function InsurersContent() {
   const { t, language } = useLanguage();
   const isIt = language === "it";
 
-  const [inferredElevated, setInferredElevated] = useState(false);
-
-  // Refs for 3D motion systems
+  // SCENE 3: Hero Collision Field Refs
   const heroRef = useRef<HTMLElement>(null);
   const headlineRef = useRef<HTMLHeadingElement>(null);
-  const planeARef = useRef<HTMLDivElement>(null);
-  const planeBRef = useRef<HTMLDivElement>(null);
-  const planeTelemetryRef = useRef<HTMLDivElement>(null);
+  const vehicleARef = useRef<HTMLDivElement>(null);
+  const vehicleBRef = useRef<HTMLDivElement>(null);
+  const trajectorySvgRef = useRef<SVGSVGElement>(null);
+  const impactPulseRef = useRef<SVGCircleElement>(null);
+  const heroConceptsRef = useRef<HTMLDivElement>(null);
 
-  // Queue -> Claim Transformation Refs
-  const continuumSectionRef = useRef<HTMLElement>(null);
-  const queueRow1Ref = useRef<HTMLDivElement>(null);
-  const queueRow2Ref = useRef<HTMLDivElement>(null);
-  const queueRow3Ref = useRef<HTMLDivElement>(null);
-  const expandedClaimRef = useRef<HTMLDivElement>(null);
+  // SCENE 2: Queue Extrusion Refs
+  const queueSectionRef = useRef<HTMLElement>(null);
+  const queueContainerRef = useRef<HTMLDivElement>(null);
+  const row0Ref = useRef<HTMLDivElement>(null);
+  const row1Ref = useRef<HTMLDivElement>(null); // Selected claim
+  const row2Ref = useRef<HTMLDivElement>(null);
+  const row3Ref = useRef<HTMLDivElement>(null);
+  const row4Ref = useRef<HTMLDivElement>(null);
+  const claimColumnsRef = useRef<HTMLDivElement>(null);
 
-  // Evidence Fan Refs
+  // SCENE 4: 3D Evidence Fan Refs (3 Visual Planes, Zero Cards)
   const fanSectionRef = useRef<HTMLElement>(null);
-  const fanLeftRef = useRef<HTMLDivElement>(null);
-  const fanCenterRef = useRef<HTMLDivElement>(null);
-  const fanRightRef = useRef<HTMLDivElement>(null);
+  const planeRoadRef = useRef<HTMLDivElement>(null);
+  const planeDamageRef = useRef<HTMLDivElement>(null);
+  const planeCaiRef = useRef<HTMLDivElement>(null);
+  const unifiedRailRef = useRef<HTMLDivElement>(null);
 
-  // Observed vs Inferred Refs
-  const observedSectionRef = useRef<HTMLElement>(null);
-  const observedPlaneRef = useRef<HTMLDivElement>(null);
-  const inferredPlaneRef = useRef<HTMLDivElement>(null);
+  // SCENE 5: Observed vs Inferred Depth Swap Refs
+  const depthSectionRef = useRef<HTMLElement>(null);
+  const observedBlockRef = useRef<HTMLDivElement>(null);
+  const inferredBlockRef = useRef<HTMLDivElement>(null);
+  const humanReviewBaselineRef = useRef<HTMLDivElement>(null);
 
-  // Final Payoff Refs
+  // Section 5: Payoff Refs
   const payoffSectionRef = useRef<HTMLElement>(null);
   const payoffHeadlineRef = useRef<HTMLHeadingElement>(null);
   const payoffTextRef = useRef<HTMLDivElement>(null);
   const horizonLineRef = useRef<HTMLDivElement>(null);
 
-  // 1. Hero Fragmented Headline + Open Spatial 3D Multi-Plane Composition (NO CARD, ZERO SLOP)
+  // -------------------------------------------------------------
+  // 1. SCENE 3: HERO COLLISION FIELD ANIMATION
+  // -------------------------------------------------------------
   useEffect(() => {
     const hero = heroRef.current;
     const headline = headlineRef.current;
-    const planeA = planeARef.current;
-    const planeB = planeBRef.current;
-    const planeTel = planeTelemetryRef.current;
-    if (!hero || !headline || !planeA || !planeB || !planeTel) return;
+    const vehA = vehicleARef.current;
+    const vehB = vehicleBRef.current;
+    const traj = trajectorySvgRef.current;
+    const pulse = impactPulseRef.current;
+    const concepts = heroConceptsRef.current;
+    if (!hero || !headline || !vehA || !vehB || !traj || !pulse || !concepts) return;
 
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       return;
     }
 
     const ctx = gsap.context(() => {
-      // Headline entrance
+      // Word-by-word headline entrance with vertical mask
       const words = headline.querySelectorAll(".hero-word");
       gsap.fromTo(
         words,
+        { y: 60, opacity: 0, scale: 0.94 },
         {
-          opacity: 0,
-          x: (i) => (i % 2 === 0 ? -36 : 36),
-          z: -60,
-          scale: 0.94,
-        },
-        {
+          y: 0,
           opacity: 1,
-          x: 0,
-          z: 0,
           scale: 1,
           duration: 1.1,
-          stagger: 0.08,
+          stagger: 0.09,
           ease: "power3.out",
         }
       );
 
-      // Independent Spatial 3D Planes Entrance directly on page canvas
+      // Vehicles converge from depth
       gsap.fromTo(
-        planeA,
-        { opacity: 0, x: 40, z: -80, rotateY: 10, rotateX: 6 },
-        { opacity: 1, x: 0, z: 25, rotateY: -3, rotateX: 2, duration: 1.2, ease: "power3.out", delay: 0.1 }
+        vehA,
+        { x: -90, y: 40, z: -140, rotateY: 18, opacity: 0 },
+        { x: 0, y: 0, z: 20, rotateY: -4, opacity: 1, duration: 1.3, ease: "power3.out", delay: 0.15 }
       );
 
       gsap.fromTo(
-        planeB,
-        { opacity: 0, x: -30, z: -120, rotateY: -8, rotateX: 5 },
-        { opacity: 1, x: 0, z: -15, rotateY: 4, rotateX: -1, duration: 1.2, ease: "power3.out", delay: 0.2 }
+        vehB,
+        { x: 90, y: -40, z: -180, rotateY: -18, opacity: 0 },
+        { x: 0, y: 0, z: -15, rotateY: 4, opacity: 1, duration: 1.3, ease: "power3.out", delay: 0.25 }
       );
 
+      // Trajectory lines draw
+      const pathA = traj.querySelector(".traj-a");
+      const pathB = traj.querySelector(".traj-b");
+      if (pathA && pathB) {
+        gsap.fromTo(
+          [pathA, pathB],
+          { strokeDashoffset: 400, opacity: 0 },
+          { strokeDashoffset: 0, opacity: 1, duration: 1.2, ease: "power2.inOut", delay: 0.4 }
+        );
+      }
+
+      // Contact pulse
       gsap.fromTo(
-        planeTel,
-        { opacity: 0, y: 35, z: -60 },
-        { opacity: 1, y: 0, z: 10, duration: 1.1, ease: "power3.out", delay: 0.3 }
+        pulse,
+        { scale: 0, opacity: 0 },
+        { scale: 1.8, opacity: 0.9, duration: 0.8, ease: "back.out(2)", delay: 0.8 }
       );
 
-      // Scroll-Velocity 3D Parallax Depth for each plane
-      ScrollTrigger.create({
-        trigger: hero,
-        start: "top bottom",
-        end: "bottom top",
-        onUpdate: (self) => {
-          const vel = self.getVelocity();
-          const tiltA = Math.max(-10, Math.min(10, -3 + vel * 0.003));
-          const tiltB = Math.max(-8, Math.min(8, 4 - vel * 0.0025));
-          gsap.to(planeA, {
-            rotateY: tiltA,
-            z: 25 + vel * 0.015,
-            duration: 0.5,
-            ease: "power2.out",
-            overwrite: "auto",
-          });
-          gsap.to(planeB, {
-            rotateY: tiltB,
-            z: -15 - vel * 0.01,
-            duration: 0.5,
-            ease: "power2.out",
-            overwrite: "auto",
-          });
-        },
-      });
+      // Product concept labels emerge
+      gsap.fromTo(
+        concepts.children,
+        { y: 20, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.8, stagger: 0.08, ease: "power2.out", delay: 0.9 }
+      );
     }, hero);
 
     return () => ctx.revert();
   }, []);
 
-  // 2. Queue Row -> Selected Claim Continuous Transformation (No crossfading, physical expansion)
+  // -------------------------------------------------------------
+  // 2. SCENE 2: QUEUE EXTRUSION (Full-viewport ledger strips, 3D scroll extrusion)
+  // -------------------------------------------------------------
   useEffect(() => {
-    const sec = continuumSectionRef.current;
-    const r1 = queueRow1Ref.current;
-    const r2 = queueRow2Ref.current;
-    const r3 = queueRow3Ref.current;
-    const expanded = expandedClaimRef.current;
-    if (!sec || !r1 || !r2 || !r3 || !expanded) return;
+    const sec = queueSectionRef.current;
+    const r0 = row0Ref.current;
+    const r1 = row1Ref.current;
+    const r2 = row2Ref.current;
+    const r3 = row3Ref.current;
+    const r4 = row4Ref.current;
+    const cols = claimColumnsRef.current;
+    if (!sec || !r0 || !r1 || !r2 || !r3 || !r4 || !cols) return;
 
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       return;
     }
 
     const ctx = gsap.context(() => {
-      gsap.set(expanded, { opacity: 0, scale: 0.92, z: -40 });
+      gsap.set(cols, { opacity: 0, y: 30, height: 0 });
 
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: sec,
           start: "top top",
-          end: "+=180%",
+          end: "+=190%",
           pin: true,
           scrub: 0.7,
         },
       });
 
-      // Row 1 steps forward, rows 2 & 3 recede into depth
-      tl.to([r2, r3], {
-        z: -140,
-        opacity: 0.15,
-        y: (i) => (i === 0 ? 30 : 60),
-        duration: 0.35,
+      // 1. Non-selected rows recede in Z and separate vertically
+      tl.to([r0, r2, r3, r4], {
+        z: -180,
+        opacity: 0.12,
+        y: (i) => (i === 0 ? -60 : (i + 1) * 35),
+        duration: 0.4,
         ease: "power2.inOut",
       }, 0)
+      // 2. Selected row steps forward in Z and expands
       .to(r1, {
-        z: 60,
-        scale: 1.06,
-        duration: 0.35,
+        z: 80,
+        scale: 1.04,
+        duration: 0.4,
         ease: "power2.inOut",
       }, 0)
-      // Row 1 morphs/expands into full multi-plane claim stack
-      .to(r1, {
-        opacity: 0,
-        scale: 1.15,
-        duration: 0.25,
-      }, 0.35)
-      .to(expanded, {
+      // 3. Selected row reveals expanded structured claim columns
+      .to(cols, {
         opacity: 1,
-        scale: 1,
-        z: 0,
-        duration: 0.35,
-        ease: "power2.out",
+        y: 0,
+        height: "auto",
+        duration: 0.5,
+        ease: "power3.out",
       }, 0.35);
+
+      // Scroll velocity tilt response: 1-3 degrees tilt on fast scrolling
+      ScrollTrigger.create({
+        trigger: sec,
+        start: "top bottom",
+        end: "bottom top",
+        onUpdate: (self) => {
+          const vel = self.getVelocity();
+          const tilt = Math.max(-3, Math.min(3, vel * 0.002));
+          gsap.to([r0, r1, r2, r3, r4], {
+            rotateX: tilt,
+            duration: 0.4,
+            ease: "power2.out",
+            overwrite: "auto",
+          });
+        },
+      });
     }, sec);
 
     return () => ctx.revert();
   }, []);
 
-  // 3. Evidence Fan: 3 Physical Document Surfaces Fan Out in Z and Y
+  // -------------------------------------------------------------
+  // 3. SCENE 4: 3D EVIDENCE FAN (3 Visual Planes, Clip reveals, Collapse into 1 Record)
+  // -------------------------------------------------------------
   useEffect(() => {
     const sec = fanSectionRef.current;
-    const left = fanLeftRef.current;
-    const center = fanCenterRef.current;
-    const right = fanRightRef.current;
-    if (!sec || !left || !center || !right) return;
+    const road = planeRoadRef.current;
+    const damage = planeDamageRef.current;
+    const cai = planeCaiRef.current;
+    const unified = unifiedRailRef.current;
+    if (!sec || !road || !damage || !cai || !unified) return;
 
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       return;
     }
 
     const ctx = gsap.context(() => {
-      // Initially compact stack
-      gsap.set(left, { x: 0, rotateY: 0, z: 0 });
-      gsap.set(center, { z: 15, scale: 1 });
-      gsap.set(right, { x: 0, rotateY: 0, z: 0 });
+      // Initial state: close together
+      gsap.set(road, { x: 0, rotateY: 0, z: 0, opacity: 0.7 });
+      gsap.set(damage, { z: 15, scale: 0.95, opacity: 0.9 });
+      gsap.set(cai, { x: 0, rotateY: 0, z: 0, opacity: 0.7 });
+      gsap.set(unified, { opacity: 0, y: 40 });
 
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: sec,
-          start: "top 70%",
+          start: "top 65%",
           end: "bottom 30%",
-          scrub: 0.7,
+          scrub: 0.8,
         },
       });
 
-      // Fans out like physical paper planes on a desk
-      tl.to(left, {
-        x: -90,
-        rotateY: 14,
-        z: -20,
+      const isMobile = window.innerWidth < 768;
+      const fanSpread = isMobile ? 35 : 300;
+      const fanRotate = isMobile ? 6 : 22;
+
+      // Step 1: Unfold in wide 3D perspective
+      tl.to(road, {
+        x: -fanSpread,
+        rotateY: fanRotate,
+        z: isMobile ? -30 : -60,
+        opacity: 1,
+        duration: 0.45,
         ease: "power2.out",
-        duration: 1,
       }, 0)
-      .to(center, {
-        z: 50,
-        scale: 1.04,
+      .to(damage, {
+        z: isMobile ? 40 : 70,
+        scale: isMobile ? 1.01 : 1.03,
+        opacity: 1,
+        duration: 0.45,
         ease: "power2.out",
-        duration: 1,
       }, 0)
-      .to(right, {
-        x: 90,
-        rotateY: -14,
-        z: -20,
+      .to(cai, {
+        x: fanSpread,
+        rotateY: -fanRotate,
+        z: isMobile ? -30 : -60,
+        opacity: 1,
+        duration: 0.45,
         ease: "power2.out",
-        duration: 1,
-      }, 0);
+      }, 0)
+      // Step 2: Peak hold, then rotate towards 0 and collapse toward center line
+      .to([road, cai], {
+        x: 0,
+        rotateY: 0,
+        z: 0,
+        opacity: 0.4,
+        duration: 0.35,
+        ease: "power3.inOut",
+      }, 0.55)
+      .to(damage, {
+        z: 0,
+        scale: 1,
+        opacity: 0.4,
+        duration: 0.35,
+        ease: "power3.inOut",
+      }, 0.55)
+      // Step 3: Collapse into unified structured line system
+      .to(unified, {
+        opacity: 1,
+        y: 0,
+        duration: 0.35,
+        ease: "power2.out",
+      }, 0.75);
     }, sec);
 
     return () => ctx.revert();
   }, []);
 
-  // 4. Observed vs Inferred Spatial Separation
+  // -------------------------------------------------------------
+  // 4. SCENE 5: OBSERVED VS INFERRED DEPTH SWAP (Zero Button, Scroll-driven 3D Swap)
+  // -------------------------------------------------------------
   useEffect(() => {
-    const sec = observedSectionRef.current;
-    const obs = observedPlaneRef.current;
-    const inf = inferredPlaneRef.current;
-    if (!sec || !obs || !inf) return;
+    const sec = depthSectionRef.current;
+    const obs = observedBlockRef.current;
+    const inf = inferredBlockRef.current;
+    const review = humanReviewBaselineRef.current;
+    if (!sec || !obs || !inf || !review) return;
 
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       return;
     }
 
     const ctx = gsap.context(() => {
-      gsap.set(obs, { z: 45, opacity: 1 });
-      gsap.set(inf, { z: -40, opacity: 0.55 });
+      // Start: OBSERVED foreground, INFERRED in deep background
+      gsap.set(obs, { z: 40, x: 0, opacity: 1 });
+      gsap.set(inf, { z: -260, x: 40, opacity: 0.35 });
+      gsap.set(review, { opacity: 0, y: 30 });
 
-      ScrollTrigger.create({
-        trigger: sec,
-        start: "top 75%",
-        end: "bottom 40%",
-        scrub: 0.8,
-        onUpdate: (self) => {
-          if (!inferredElevated) {
-            const p = self.progress;
-            gsap.set(obs, { z: 45 + p * 15 });
-            gsap.set(inf, { z: -40 + p * 20, opacity: 0.55 + p * 0.25 });
-          }
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: sec,
+          start: "top 68%",
+          end: "bottom 32%",
+          scrub: 0.8,
         },
       });
+
+      // 1. OBSERVED shifts aside and recedes slightly
+      tl.to(obs, {
+        x: -50,
+        z: -140,
+        opacity: 0.45,
+        duration: 0.45,
+        ease: "power2.inOut",
+      }, 0)
+      // 2. INFERRED surges forward into dominant focus
+      .to(inf, {
+        x: 0,
+        z: 40,
+        opacity: 1,
+        duration: 0.45,
+        ease: "power2.inOut",
+      }, 0)
+      // 3. HUMAN REVIEW baseline enters connecting both layers
+      .to(review, {
+        opacity: 1,
+        y: 0,
+        duration: 0.4,
+        ease: "power3.out",
+      }, 0.55);
     }, sec);
 
     return () => ctx.revert();
-  }, [inferredElevated]);
+  }, []);
 
-  // When user toggles Inferred plane elevation
-  useEffect(() => {
-    const inf = inferredPlaneRef.current;
-    if (!inf) return;
-    if (inferredElevated) {
-      gsap.to(inf, {
-        z: 70,
-        opacity: 1,
-        duration: 0.6,
-        ease: "power3.out",
-      });
-    } else {
-      gsap.to(inf, {
-        z: -20,
-        opacity: 0.65,
-        duration: 0.6,
-        ease: "power3.out",
-      });
-    }
-  }, [inferredElevated]);
-
-  // 5. Final Payoff: Headline Enters Large Outside Viewport, Line-by-Line Alignment, Visual Calm
+  // -------------------------------------------------------------
+  // 5. FINAL PAYOFF SECTION ANIMATION
+  // -------------------------------------------------------------
   useEffect(() => {
     const sec = payoffSectionRef.current;
     const headline = payoffHeadlineRef.current;
@@ -357,7 +409,9 @@ function InsurersContent() {
 
   return (
     <div className="w-full bg-[#FFFFFF] selection:bg-[#0E0F10] selection:text-white">
-      {/* 1. HERO SCENE: Fragmented Typography + Graphite Physical Claim Object (NO WHITE CARD) */}
+      {/* ----------------------------------------------------------- */}
+      {/* 1. SCENE 3: HERO COLLISION FIELD (No White Card, Spatial 3D Convergence) */}
+      {/* ----------------------------------------------------------- */}
       <section
         ref={heroRef}
         className="relative py-20 sm:py-32 lg:py-36 px-6 sm:px-12 lg:px-20 border-b border-[#E5E5E3] overflow-hidden bg-gradient-to-b from-[#FFFFFF] to-[#FBFBFA]"
@@ -367,12 +421,12 @@ function InsurersContent() {
           {/* Left Column: Authoritative Editorial Statement */}
           <div className="lg:col-span-6 space-y-6 sm:space-y-8">
             <span className="text-[11px] sm:text-xs uppercase tracking-[0.24em] font-semibold text-[#777777] block">
-              {t("insurersPage.heroTag")}
+              {isIt ? "OPERAZIONI SINISTRI E LIQUIDAZIONE" : "CLAIMS OPERATIONS & SETTLEMENT"}
             </span>
 
             <h1
               ref={headlineRef}
-              className="text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-[#0E0F10] leading-[1.02] uppercase"
+              className="text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-[#0E0F10] leading-[1.02] uppercase overflow-hidden"
               style={{ transformStyle: "preserve-3d" }}
             >
               <span className="hero-word inline-block mr-3">
@@ -383,15 +437,17 @@ function InsurersContent() {
               </span>
               <br />
               <span className="hero-word inline-block mr-3 text-[#555555]">
-                {isIt ? "LIQUIDAZIONE" : "FASTER,"}
+                {isIt ? "PRONTI PER" : "READY FOR"}
               </span>
               <span className="hero-word inline-block text-[#555555]">
-                {isIt ? "RAPIDA ED EQUA." : "EQUITABLE CLAIMS."}
+                {isIt ? "LA REVISIONE." : "REVIEW."}
               </span>
             </h1>
 
             <p className="text-base sm:text-xl text-[#555555] font-light leading-relaxed max-w-xl">
-              {t("insurersPage.heroSubtitle")}
+              {isIt
+                ? "Sostituisce i moduli CAI illeggibili e le dichiarazioni contraddittorie con fotografie georeferenziate, contesto stradale e fascicoli strutturati per il perito liquidatore."
+                : "Replaces illegible paper forms and contradictory statements with georeferenced photos, roadway context, and structured claim records ready for adjuster review."}
             </p>
 
             <div className="flex flex-wrap items-center gap-6 pt-2">
@@ -399,13 +455,13 @@ function InsurersContent() {
                 href="/console/login"
                 className="group inline-flex items-center gap-3 px-8 py-4 bg-[#0E0F10] text-white text-xs font-bold tracking-wider uppercase hover:bg-black transition-all shadow-sm active:scale-[0.99]"
               >
-                <span>{t("insurersPage.heroCta")}</span>
+                <span>{isIt ? "Accedi alla console sinistri" : "Open Claims Console"}</span>
                 <span className="inline-block transition-transform duration-300 group-hover:translate-x-1.5" aria-hidden="true">
                   →
                 </span>
               </Link>
               <a
-                href="#claims-continuum"
+                href="#claims-queue"
                 className="text-xs font-medium text-[#555555] hover:text-[#0E0F10] transition-colors uppercase tracking-wider"
               >
                 {isIt ? "Guarda la trasformazione spaziale ↓" : "Explore spatial transformation ↓"}
@@ -413,94 +469,115 @@ function InsurersContent() {
             </div>
           </div>
 
-          {/* Right Column: OPEN SPATIAL 3D COMPOSITION (Direct on Canvas, Zero Card Container) */}
+          {/* Right Column: SPATIAL COLLISION FIELD (No Rectangles, SVG Silhouettes + Converging Vectors) */}
           <div className="lg:col-span-6 flex justify-center lg:justify-end [transform-style:preserve-3d]">
-            <div className="w-full max-w-lg space-y-6 [transform-style:preserve-3d] select-none py-2">
-              {/* Spatial Plane A: Vehicle Profile A & Deceleration */}
-              <div
-                ref={planeARef}
-                className="border-l-2 border-[#0E0F10] pl-5 py-2 space-y-1.5 will-change-transform"
-                style={{ transformStyle: "preserve-3d" }}
+            <div className="relative w-full max-w-lg min-h-[440px] flex items-center justify-center [transform-style:preserve-3d] select-none py-2">
+              {/* Converging Trajectory SVG Overlay */}
+              <svg
+                ref={trajectorySvgRef}
+                viewBox="0 0 460 380"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                className="absolute inset-0 w-full h-full pointer-events-none"
               >
-                <div className="flex items-baseline justify-between">
-                  <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[#0E0F10]">
-                    {t("insurersPage.previewVehicleA")}
-                  </span>
-                  <span className="text-[11px] font-mono text-[#666666]">
-                    AB 123 CD
-                  </span>
+                {/* Vehicle A Trajectory (From lower-left to collision center) */}
+                <path
+                  className="traj-a"
+                  d="M 60 330 C 120 300, 180 230, 225 185"
+                  stroke="#0E0F10"
+                  strokeWidth="2"
+                  strokeDasharray="400"
+                  strokeDashoffset="0"
+                />
+                {/* Vehicle B Trajectory (From upper-right to collision center) */}
+                <path
+                  className="traj-b"
+                  d="M 400 50 C 350 90, 280 145, 225 185"
+                  stroke="#888888"
+                  strokeWidth="2"
+                  strokeDasharray="400"
+                  strokeDashoffset="0"
+                />
+                {/* Central Collision Focal Point Pulse */}
+                <circle
+                  ref={impactPulseRef}
+                  cx="225"
+                  cy="185"
+                  r="18"
+                  stroke="#DC2626"
+                  strokeWidth="2"
+                  strokeDasharray="4 4"
+                />
+                <circle cx="225" cy="185" r="5" fill="#DC2626" />
+              </svg>
+
+              {/* Vehicle A Silhouette Marker (Lower Left Depth) */}
+              <div
+                ref={vehicleARef}
+                className="absolute left-2 bottom-20 sm:bottom-24 max-w-[200px] border-l-2 border-[#0E0F10] pl-3 py-1 space-y-1 will-change-transform [transform-style:preserve-3d]"
+              >
+                <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#0E0F10] block">
+                  {isIt ? "VEICOLO A (ASSICURATO)" : "VEHICLE A (INSURED)"}
+                </span>
+                <div className="text-base font-bold uppercase text-[#0E0F10]">
+                  {isIt ? "Berlina • Corsia Diretta" : "Sedan • Straight Lane"}
                 </div>
-                <div className="text-xl sm:text-2xl font-bold uppercase tracking-tight text-[#0E0F10]">
-                  Audi A3 Sportback
-                </div>
-                <div className="text-xs text-[#555555] font-light">
-                  {isIt
-                    ? "Traiettoria rettilinea • Decelerazione misurata: 38 km/h → 0"
-                    : "Straight trajectory • Measured deceleration: 38 km/h → 0"}
+                <div className="text-[11px] text-[#555555] font-light">
+                  {isIt ? "Traiettoria rettilinea confermata" : "Confirmed linear heading"}
                 </div>
               </div>
 
-              {/* Spatial Plane B: Vehicle Profile B & Impact Zone (Offset in depth) */}
+              {/* Vehicle B Silhouette Marker (Upper Right Depth) */}
               <div
-                ref={planeBRef}
-                className="border-l-2 border-[#888888] pl-5 py-2 space-y-1.5 will-change-transform sm:translate-x-6"
-                style={{ transformStyle: "preserve-3d" }}
+                ref={vehicleBRef}
+                className="absolute right-2 top-6 max-w-[200px] border-l-2 border-[#888888] pl-3 py-1 space-y-1 will-change-transform [transform-style:preserve-3d]"
               >
-                <div className="flex items-baseline justify-between">
-                  <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[#777777]">
-                    {t("insurersPage.previewVehicleB")}
-                  </span>
-                  <span className="text-[11px] font-mono text-[#777777]">
-                    EF 456 GH
-                  </span>
+                <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#777777] block">
+                  {isIt ? "VEICOLO B (CONTROPARTE)" : "VEHICLE B (COUNTERPARTY)"}
+                </span>
+                <div className="text-base font-bold uppercase text-[#0E0F10]">
+                  {isIt ? "Compatta • Punto di Contatto" : "Compact • Contact Zone"}
                 </div>
-                <div className="text-xl sm:text-2xl font-bold uppercase tracking-tight text-[#0E0F10]">
-                  Volkswagen Golf
-                </div>
-                <div className="text-xs text-[#555555] font-light">
-                  {isIt
-                    ? "Punto d'impatto ant. sx • Corrispondenza visiva con deformazione lamierati"
-                    : "Front-left impact point • Optical match with sheet-metal deformation"}
+                <div className="text-[11px] text-[#555555] font-light">
+                  {isIt ? "Deformazione paraurti anteriore sx" : "Front-left bumper deformation"}
                 </div>
               </div>
 
-              {/* Spatial Plane C: Telemetry & CAI Circumstance */}
+              {/* Spatial Product Concept Badges (No Precision Theatre) */}
               <div
-                ref={planeTelemetryRef}
-                className="border-t border-[#E5E5E3] pt-5 space-y-3 will-change-transform"
-                style={{ transformStyle: "preserve-3d" }}
+                ref={heroConceptsRef}
+                className="absolute inset-x-4 bottom-0 border-t border-[#E5E5E3] pt-4 grid grid-cols-2 sm:grid-cols-4 gap-3 text-left [transform-style:preserve-3d]"
               >
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <span className="text-[10px] uppercase tracking-wider text-[#777777] font-semibold block">
-                      {isIt ? "ACCELERAZIONE PICCO" : "PEAK DECELERATION"}
-                    </span>
-                    <span className="font-mono text-base font-bold text-[#0E0F10]">
-                      3.4 G
-                    </span>
-                    <span className="text-[11px] text-[#777777] block font-light">
-                      {isIt ? "Vettore d'urto 42°" : "42° impact vector"}
-                    </span>
-                  </div>
-                  <div>
-                    <span className="text-[10px] uppercase tracking-wider text-[#777777] font-semibold block">
-                      {isIt ? "CONVENZIONE CAI" : "CAI CIRCUMSTANCE"}
-                    </span>
-                    <span className="text-base font-bold text-[#0E0F10] uppercase">
-                      {isIt ? "Casella 12" : "Box 12"}
-                    </span>
-                    <span className="text-[11px] text-[#777777] block font-light">
-                      {isIt ? "Stesso senso di marcia" : "Same travel direction"}
-                    </span>
-                  </div>
-                </div>
-
-                <div className="pt-2 border-t border-[#E5E5E3] flex items-center justify-between text-xs">
-                  <span className="text-[11px] uppercase tracking-wider font-semibold text-[#0E0F10]">
-                    {isIt ? "SUPERVISIONE PERITALE DIRETTA" : "DIRECT ADJUSTER ADJUDICATION"}
+                <div>
+                  <span className="text-[9px] uppercase tracking-wider text-[#888888] font-bold block">
+                    {isIt ? "DANNI VISIBILI" : "VISIBLE DAMAGE"}
                   </span>
-                  <span className="text-[11px] text-[#555555] font-medium">
-                    {isIt ? "Decisione umana sovrana" : "Sovereign human review"}
+                  <span className="text-xs font-semibold text-[#0E0F10]">
+                    {isIt ? "Deformazione Concorde" : "Consistent Impact"}
+                  </span>
+                </div>
+                <div>
+                  <span className="text-[9px] uppercase tracking-wider text-[#888888] font-bold block">
+                    {isIt ? "CONTESTO INCIDENTE" : "INCIDENT CONTEXT"}
+                  </span>
+                  <span className="text-xs font-semibold text-[#0E0F10]">
+                    {isIt ? "Corsia Ordinaria" : "Standard Roadway"}
+                  </span>
+                </div>
+                <div>
+                  <span className="text-[9px] uppercase tracking-wider text-[#888888] font-bold block">
+                    {isIt ? "CIRCOSTANZA CAI" : "CAI CIRCUMSTANCE"}
+                  </span>
+                  <span className="text-xs font-semibold text-[#0E0F10]">
+                    {isIt ? "Casella 12 Allineata" : "Box 12 Aligned"}
+                  </span>
+                </div>
+                <div>
+                  <span className="text-[9px] uppercase tracking-wider text-[#888888] font-bold block">
+                    {isIt ? "REVISIONE UMANA" : "HUMAN REVIEW"}
+                  </span>
+                  <span className="text-xs font-semibold text-emerald-800">
+                    {isIt ? "Pronto per Delibera" : "Ready for Decision"}
                   </span>
                 </div>
               </div>
@@ -509,275 +586,357 @@ function InsurersContent() {
         </div>
       </section>
 
-      {/* 2. CONTINUOUS OPERATIONAL QUEUE -> CLAIM EXPANSION */}
+      {/* ----------------------------------------------------------- */}
+      {/* 2. SCENE 2: QUEUE EXTRUSION (Full-Viewport Ledger Rails across 70-85vw) */}
+      {/* ----------------------------------------------------------- */}
       <section
-        id="claims-continuum"
-        ref={continuumSectionRef}
+        id="claims-queue"
+        ref={queueSectionRef}
         className="relative w-full h-[100vh] bg-[#F7F7F6] border-b border-[#E5E5E3] flex items-center justify-center overflow-hidden"
-        style={{ perspective: "1400px" }}
+        style={{ perspective: "1600px" }}
       >
-        <div className="w-full px-6 sm:px-12 lg:px-20 max-w-7xl mx-auto flex flex-col items-center">
-          <div className="text-center space-y-2 mb-8">
+        <div className="w-full px-6 sm:px-12 lg:px-20 max-w-6xl mx-auto flex flex-col items-center">
+          <div className="text-center space-y-2 mb-10">
             <span className="text-xs uppercase tracking-[0.24em] text-[#777777] font-semibold block">
-              {isIt ? "CONTINUUM OPERATIVO" : "OPERATIONAL CONTINUUM"}
+              {isIt ? "FLUSSO OPERATIVO" : "OPERATIONAL WORKFLOW"}
             </span>
-            <h2 className="text-2xl sm:text-4xl font-bold uppercase tracking-tight text-[#0E0F10]">
-              {isIt ? "Dalla Coda al Fascicolo Strutturato" : "From Queue Row to Physical Claim"}
+            <h2 className="text-3xl sm:text-5xl font-black uppercase tracking-tight text-[#0E0F10]">
+              {isIt ? "DALLA CODA ALLA REVISIONE." : "FROM QUEUE TO REVIEW."}
             </h2>
+            <p className="text-sm sm:text-base text-[#666666] font-light max-w-xl mx-auto">
+              {isIt
+                ? "Ogni sinistro evolve da riga operativa a fascicolo strutturato per la delibera peritale."
+                : "Every claim evolves from operational ledger row to a structured record ready for human adjuster sign-off."}
+            </p>
           </div>
 
-          {/* Perspective Stage with Queue Rows and Expanding Claim Stack */}
-          <div className="relative w-full max-w-2xl min-h-[340px] flex items-center justify-center [transform-style:preserve-3d]">
-            {/* Queue Row 1 (The selected row that advances & expands) */}
+          {/* Perspective Queue Ledger Stage (70-85vw wide lines, Zero floating cards) */}
+          <div
+            ref={queueContainerRef}
+            className="relative w-full max-w-4xl min-h-[380px] flex flex-col justify-center [transform-style:preserve-3d]"
+          >
+            {/* Row 0: Top ambient row */}
             <div
-              ref={queueRow1Ref}
-              className="absolute inset-x-0 bg-[#0E0F10] text-white p-5 flex items-center justify-between border border-white/20 shadow-lg will-change-transform z-20"
-              style={{ transformStyle: "preserve-3d" }}
+              ref={row0Ref}
+              className="w-full border-b border-[#E5E5E3] py-3 flex items-center justify-between text-xs text-[#888888] will-change-transform"
             >
-              <div className="space-y-0.5">
-                <span className="text-[10px] font-mono text-emerald-400 uppercase tracking-widest block">
-                  ACTIVE QUEUE • READY
-                </span>
-                <div className="font-mono text-base font-bold">IMP-260925-014</div>
-                <div className="text-xs text-white/70">Audi A3 Sportback vs Volkswagen Golf</div>
-              </div>
-              <div className="text-right">
-                <div className="text-xs font-mono text-white/50">14:22 UTC</div>
-                <span className="text-[11px] text-white underline tracking-wider uppercase font-semibold">
-                  {isIt ? "Espandi fascicolo →" : "Expand claim →"}
-                </span>
-              </div>
+              <span className="font-mono">IMP-260925-018</span>
+              <span className="uppercase font-medium">Veicolo A vs Veicolo B • Milano</span>
+              <span className="font-mono">16:05 UTC</span>
+              <span className="text-[10px] uppercase tracking-wider">{isIt ? "RILIEVO COMPLETATO" : "INTAKE COMPLETE"}</span>
             </div>
 
-            {/* Queue Row 2 (Recedes into depth) */}
+            {/* Row 1: SELECTED CLAIM — Extrudes Forward in Z-space */}
             <div
-              ref={queueRow2Ref}
-              className="absolute inset-x-0 translate-y-24 bg-white border border-[#E5E5E3] text-[#0E0F10] p-4 flex items-center justify-between opacity-50 will-change-transform z-10"
+              ref={row1Ref}
+              className="w-full bg-[#0E0F10] text-white p-5 sm:p-6 my-2 shadow-2xl border-l-4 border-emerald-400 will-change-transform z-20 [transform-style:preserve-3d]"
             >
-              <div>
-                <span className="text-[10px] font-mono text-[#888888] uppercase">IMP-260925-011</span>
-                <div className="text-sm font-bold">BMW 320d vs Fiat 500</div>
-              </div>
-              <div className="text-xs font-mono text-[#888888]">12:40 UTC</div>
-            </div>
-
-            {/* Queue Row 3 (Recedes further into depth) */}
-            <div
-              ref={queueRow3Ref}
-              className="absolute inset-x-0 translate-y-44 bg-white border border-[#E5E5E3] text-[#0E0F10] p-4 flex items-center justify-between opacity-25 will-change-transform z-0"
-            >
-              <div>
-                <span className="text-[10px] font-mono text-[#888888] uppercase">IMP-260925-008</span>
-                <div className="text-sm font-bold">Mercedes A-Class vs Toyota Yaris</div>
-              </div>
-              <div className="text-xs font-mono text-[#888888]">09:15 UTC</div>
-            </div>
-
-            {/* Expanded Claim Stack (Revealed when Row 1 expands) */}
-            <div
-              ref={expandedClaimRef}
-              className="absolute inset-0 bg-[#0E0F10] text-white p-6 sm:p-8 border border-white/20 shadow-2xl flex flex-col justify-between will-change-transform z-30"
-              style={{ transformStyle: "preserve-3d" }}
-            >
-              <div className="flex items-center justify-between pb-4 border-b border-white/10">
-                <span className="text-xs uppercase tracking-widest text-[#CCCCCC] font-semibold">
-                  {isIt ? "FASCICOLO STRUTTURATO" : "STRUCTURED CLAIM DOSSIER"}
-                </span>
-                <span className="font-mono text-sm font-bold text-white">IMP-260925-014</span>
-              </div>
-
-              <div className="grid grid-cols-3 gap-6 py-6 text-xs">
-                <div className="border-l border-white/20 pl-4 space-y-1">
-                  <span className="text-[10px] text-white/50 uppercase tracking-wider font-semibold block">TELEMETRY</span>
-                  <div className="font-bold text-sm text-white">3.4 G Peak</div>
-                  <div className="text-[11px] text-white/70">42° Vector</div>
+              <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/15 pb-4">
+                <div className="space-y-1">
+                  <div className="flex items-center gap-3">
+                    <span className="text-xs font-mono font-bold text-emerald-400">IMP-260925-014</span>
+                    <span className="text-[10px] uppercase tracking-widest text-white/60">
+                      {isIt ? "IN ATTESA DI REVISIONE PERITALE" : "PENDING ADJUSTER REVIEW"}
+                    </span>
+                  </div>
+                  <div className="text-base sm:text-lg font-bold uppercase tracking-tight">
+                    {isIt ? "Veicolo A vs Veicolo B • Collisione Laterale-Anteriore" : "Vehicle A vs Vehicle B • Lateral-Frontal Contact"}
+                  </div>
                 </div>
-                <div className="border-l border-white/20 pl-4 space-y-1">
-                  <span className="text-[10px] text-white/50 uppercase tracking-wider font-semibold block">OPTICS</span>
-                  <div className="font-bold text-sm text-white">{isIt ? "4 Rilievi" : "4 Verified"}</div>
-                  <div className="text-[11px] text-white/70">{isIt ? "Danni concordi" : "Damage Match"}</div>
-                </div>
-                <div className="border-l border-white/20 pl-4 space-y-1">
-                  <span className="text-[10px] text-white/50 uppercase tracking-wider font-semibold block">CAI BOX 12</span>
-                  <div className="font-bold text-sm text-white">{isIt ? "Casella 12" : "Clause 08"}</div>
-                  <div className="text-[11px] text-white/70">{isIt ? "Stesso senso" : "Same Direction"}</div>
+                <div className="text-right">
+                  <span className="text-xs font-mono text-white/50 block">14:22:08 UTC</span>
+                  <span className="text-xs uppercase font-semibold text-white tracking-wider underline">
+                    {isIt ? "Fascicolo Selezionato" : "Selected Claim"}
+                  </span>
                 </div>
               </div>
 
-              <div className="text-[11px] text-white/60 font-light flex items-center justify-between pt-3 border-t border-white/10">
-                <span>{isIt ? "Ricomposizione multilivello per il perito liquidatore" : "Multilevel reconstruction ready for claims adjuster review"}</span>
-                <span className="text-[11px] font-semibold text-white uppercase tracking-wider">
-                  {isIt ? "PERIZIA ABILITATA" : "READY FOR AUDIT"}
-                </span>
+              {/* Extruded Columns (Revealed as row steps forward) */}
+              <div ref={claimColumnsRef} className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-5 text-xs overflow-hidden">
+                <div className="border-l border-white/20 pl-4 space-y-1">
+                  <span className="text-[10px] uppercase tracking-wider text-white/50 font-bold block">
+                    {isIt ? "RILIEVI FOTOGRAFICI" : "PHOTO EVIDENCE"}
+                  </span>
+                  <div className="text-sm font-bold text-white">{isIt ? "4 prospetti acquisiti" : "4 viewpoints aligned"}</div>
+                  <div className="text-[11px] text-white/70 font-light">
+                    {isIt ? "Danni visivi coerenti" : "Damage zones consistent"}
+                  </div>
+                </div>
+
+                <div className="border-l border-white/20 pl-4 space-y-1">
+                  <span className="text-[10px] uppercase tracking-wider text-white/50 font-bold block">
+                    {isIt ? "CONTESTO STRADALE" : "ROADWAY CONTEXT"}
+                  </span>
+                  <div className="text-sm font-bold text-white">{isIt ? "Corsia a senso unico" : "Single-direction lane"}</div>
+                  <div className="text-[11px] text-white/70 font-light">
+                    {isIt ? "Coordinate GNSS verificate" : "GNSS coordinates aligned"}
+                  </div>
+                </div>
+
+                <div className="border-l border-white/20 pl-4 space-y-1">
+                  <span className="text-[10px] uppercase tracking-wider text-white/50 font-bold block">
+                    {isIt ? "CIRCOSTANZA CAI" : "CAI CIRCUMSTANCE"}
+                  </span>
+                  <div className="text-sm font-bold text-white">{isIt ? "Casella 12 Concorde" : "Box 12 Concordance"}</div>
+                  <div className="text-[11px] text-white/70 font-light">
+                    {isIt ? "Stesso senso di marcia" : "Same travel direction"}
+                  </div>
+                </div>
               </div>
+            </div>
+
+            {/* Row 2: Recedes into depth */}
+            <div
+              ref={row2Ref}
+              className="w-full border-b border-[#E5E5E3] py-3 flex items-center justify-between text-xs text-[#888888] will-change-transform"
+            >
+              <span className="font-mono">IMP-260925-011</span>
+              <span className="uppercase font-medium">Veicolo C vs Veicolo D • Roma</span>
+              <span className="font-mono">12:40 UTC</span>
+              <span className="text-[10px] uppercase tracking-wider">{isIt ? "ARCHIVIATO" : "ARCHIVED"}</span>
+            </div>
+
+            {/* Row 3: Recedes further */}
+            <div
+              ref={row3Ref}
+              className="w-full border-b border-[#E5E5E3] py-3 flex items-center justify-between text-xs text-[#888888] will-change-transform"
+            >
+              <span className="font-mono">IMP-260925-008</span>
+              <span className="uppercase font-medium">Veicolo E vs Veicolo F • Torino</span>
+              <span className="font-mono">09:15 UTC</span>
+              <span className="text-[10px] uppercase tracking-wider">{isIt ? "IN ELABORAZIONE" : "PROCESSING"}</span>
+            </div>
+
+            {/* Row 4: Deepest background row */}
+            <div
+              ref={row4Ref}
+              className="w-full border-b border-[#E5E5E3] py-3 flex items-center justify-between text-xs text-[#888888] will-change-transform"
+            >
+              <span className="font-mono">IMP-260925-003</span>
+              <span className="uppercase font-medium">Veicolo G vs Veicolo H • Bologna</span>
+              <span className="font-mono">08:30 UTC</span>
+              <span className="text-[10px] uppercase tracking-wider">{isIt ? "ARCHIVIATO" : "ARCHIVED"}</span>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 3. EVIDENCE FAN: 3 PHYSICAL DOCUMENT SURFACES FANNING IN 3D SPACE */}
+      {/* ----------------------------------------------------------- */}
+      {/* 3. SCENE 4: 3D EVIDENCE FAN (Three Actual Visual Planes, Zero Cards) */}
+      {/* ----------------------------------------------------------- */}
       <section
         ref={fanSectionRef}
         className="py-24 sm:py-36 bg-white border-b border-[#E5E5E3] overflow-hidden"
-        style={{ perspective: "1200px" }}
+        style={{ perspective: "1400px" }}
       >
         <div className="w-full px-6 sm:px-12 lg:px-20 max-w-7xl mx-auto space-y-16">
           <div className="max-w-3xl space-y-3">
             <span className="text-xs uppercase tracking-[0.24em] text-[#777777] font-semibold block">
-              {isIt ? "VENTAGLIO DELLE PROVE" : "EVIDENTIARY DECOMPOSITION"}
+              {isIt ? "STRUTTURAZIONE MULTILIVELLO" : "MULTI-SOURCE SYNTHESIS"}
             </span>
-            <h2 className="text-3xl sm:text-5xl font-bold uppercase tracking-tight text-[#0E0F10] leading-tight">
-              {isIt ? "Tre piani probatori fisici." : "Three physical evidence surfaces."}
+            <h2 className="text-3xl sm:text-5xl font-black uppercase tracking-tight text-[#0E0F10] leading-tight">
+              {isIt ? "TRE PIANI PROBATORI. UN UNICO RECORD." : "THREE EVIDENCE PLANES. ONE CLAIM RECORD."}
             </h2>
             <p className="text-base sm:text-xl text-[#555555] font-light leading-relaxed">
               {isIt
-                ? "Contesto stradale, deformazione lamierati e circostanza CAI si aprono a ventaglio per consentire un confronto immediato."
-                : "Road context, sheet-metal deformation, and CAI circumstances fan outward for instantaneous comparative inspection."}
+                ? "Contesto stradale, danni visibili e circostanze CAI si aprono nello spazio prima di ricomporsi in un'unica perizia."
+                : "Roadway context, visible damage, and CAI circumstances unfold spatially before collapsing into a single reviewable file."}
             </p>
           </div>
 
-          {/* Physical Document Planes Fanning in 3D */}
-          <div className="relative w-full min-h-[380px] sm:min-h-[420px] flex items-center justify-center [transform-style:preserve-3d]">
-            {/* Plane 1: ROAD CONTEXT (Left: translateX negative + rotateY) */}
+          {/* Three Visual Planes Stage in Perspective (Direct on page, Zero Box Cards) */}
+          <div className="relative w-full min-h-[440px] flex items-center justify-center [transform-style:preserve-3d]">
+            {/* Visual Plane 1: ROAD CONTEXT (Vector roadway geometry, clip reveal) */}
             <div
-              ref={fanLeftRef}
-              className="absolute w-[280px] sm:w-[320px] bg-[#0E0F10] text-white p-6 border border-white/20 shadow-xl space-y-3 select-none will-change-transform"
+              ref={planeRoadRef}
+              className="absolute w-[290px] sm:w-[340px] border-t-2 border-l-2 border-[#0E0F10] p-6 bg-white/95 select-none will-change-transform space-y-3"
               style={{ transformStyle: "preserve-3d" }}
             >
-              <span className="text-[10px] font-semibold text-white/60 uppercase tracking-widest block">
-                01 / {isIt ? "CONTESTO STRADALE" : "ROAD CONTEXT"}
-              </span>
-              <div className="text-lg font-bold uppercase">Via Colombo • Milan</div>
-              <p className="text-xs text-white/70 font-light leading-relaxed">
-                {isIt ? "Corsia a senso unico. Nessun ostacolo imprevisto registrato dal rilievo." : "Single-direction lane. Zero unexpected road obstacles documented on scene."}
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-[#0E0F10]" />
+                <span className="text-[10px] font-bold uppercase tracking-widest text-[#0E0F10]">
+                  {isIt ? "CONTESTO STRADALE" : "ROAD CONTEXT"}
+                </span>
+              </div>
+              <div className="text-lg font-bold uppercase text-[#0E0F10]">
+                Via Cristoforo Colombo
+              </div>
+              <p className="text-xs text-[#555555] font-light leading-relaxed">
+                {isIt ? "Carreggiata a doppio senso con corsia di marcia ordinata. Nessuna anomalia geometrica riscontrata." : "Standard roadway. No abnormal pavement obstructions documented."}
               </p>
-              <div className="text-[10px] font-mono text-emerald-400">GNSS 45.464° N • 9.190° E</div>
-            </div>
-
-            {/* Plane 2: VISIBLE DAMAGE (Center: translateZ forward) */}
-            <div
-              ref={fanCenterRef}
-              className="absolute w-[290px] sm:w-[340px] bg-[#16171B] text-white p-6 border-2 border-white/30 shadow-2xl space-y-3 select-none will-change-transform z-10"
-              style={{ transformStyle: "preserve-3d" }}
-            >
-              <span className="text-[10px] font-semibold text-white/80 uppercase tracking-widest block">
-                02 / {isIt ? "DANNO VISIBILE" : "VISIBLE DAMAGE"}
-              </span>
-              <div className="text-lg font-bold uppercase">{isIt ? "Impatto Paraurti Anteriore Sx" : "Front-Left Fender Contact"}</div>
-              <p className="text-xs text-white/70 font-light leading-relaxed">
-                {isIt ? "Punto d'urto ad altezza paraurti, coerente con decelerazione da 38 km/h." : "Bumper-height deformation zone consistent with 38 km/h deceleration vector."}
-              </p>
-              <div className="text-[10px] font-semibold text-white/70 tracking-wider uppercase">
-                {isIt ? "4 Rilievi Ottici Allineati" : "4 Photo Matches Aligned"}
+              <div className="text-[10px] font-mono text-[#777777] border-t border-[#E5E5E3] pt-2">
+                45.4642° N • 9.1900° E
               </div>
             </div>
 
-            {/* Plane 3: CAI CIRCUMSTANCE (Right: translateX positive + rotateY opposite) */}
+            {/* Visual Plane 2: VISIBLE DAMAGE (Automotive damage wireframe, forward Z) */}
             <div
-              ref={fanRightRef}
-              className="absolute w-[280px] sm:w-[320px] bg-[#0E0F10] text-white p-6 border border-white/20 shadow-xl space-y-3 select-none will-change-transform"
+              ref={planeDamageRef}
+              className="absolute w-[300px] sm:w-[360px] border-2 border-[#0E0F10] p-6 bg-[#FFFFFF] shadow-xl select-none will-change-transform z-10 space-y-3"
               style={{ transformStyle: "preserve-3d" }}
             >
-              <span className="text-[10px] font-semibold text-white/60 uppercase tracking-widest block">
-                03 / {isIt ? "CIRCOSTANZA CAI" : "CAI CIRCUMSTANCE"}
-              </span>
-              <div className="text-lg font-bold uppercase">{isIt ? "Concordanza Casella 12" : "Clause 08 Concordance"}</div>
-              <p className="text-xs text-white/70 font-light leading-relaxed">
-                {isIt ? "I veicoli procedevano nella medesima direzione senza sorpasso in corso." : "Vehicles were traveling in the same direction without ongoing overtake maneuvers."}
-              </p>
-              <div className="text-[10px] font-semibold text-emerald-400 tracking-wider uppercase">
-                {isIt ? "Nessun Conflitto Rilevato" : "No Conflict Detected"}
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-bold uppercase tracking-widest text-[#0E0F10]">
+                  {isIt ? "DANNO VISIBILE" : "VISIBLE DAMAGE"}
+                </span>
+                <span className="text-[10px] font-bold text-rose-600 uppercase tracking-wider">
+                  {isIt ? "PUNTO D'URTO" : "IMPACT ZONE"}
+                </span>
               </div>
+              <div className="text-lg font-bold uppercase text-[#0E0F10]">
+                {isIt ? "Paraurti Anteriore Sx" : "Front-Left Fender"}
+              </div>
+              <p className="text-xs text-[#555555] font-light leading-relaxed">
+                {isIt ? "Deformazione lamierati coerente con decelerazione progressiva e contatto ad angolo acuto." : "Sheet-metal deformation consistent with progressive deceleration and acute angle contact."}
+              </p>
+              <div className="text-[10px] font-semibold text-[#0E0F10] uppercase tracking-wider border-t border-[#E5E5E3] pt-2">
+                {isIt ? "4 prospetti fotografici allineati" : "4 photo viewpoints aligned"}
+              </div>
+            </div>
+
+            {/* Visual Plane 3: CAI CIRCUMSTANCE (Agreed statement schematic, opposite rotation) */}
+            <div
+              ref={planeCaiRef}
+              className="absolute w-[290px] sm:w-[340px] border-t-2 border-r-2 border-[#0E0F10] p-6 bg-white/95 select-none will-change-transform space-y-3"
+              style={{ transformStyle: "preserve-3d" }}
+            >
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-emerald-600" />
+                <span className="text-[10px] font-bold uppercase tracking-widest text-[#0E0F10]">
+                  {isIt ? "CIRCOSTANZA CAI" : "CAI CIRCUMSTANCE"}
+                </span>
+              </div>
+              <div className="text-lg font-bold uppercase text-[#0E0F10]">
+                {isIt ? "Casella 12 Concorde" : "Box 12 Concordance"}
+              </div>
+              <p className="text-xs text-[#555555] font-light leading-relaxed">
+                {isIt ? "I veicoli circolavano nello stesso senso di marcia. Nessun conflitto dichiarato tra le parti." : "Vehicles were traveling in the same direction. No conflict reported between drivers."}
+              </p>
+              <div className="text-[10px] font-semibold text-emerald-800 uppercase tracking-wider border-t border-[#E5E5E3] pt-2">
+                {isIt ? "Nessuna discordanza" : "Zero statement conflicts"}
+              </div>
+            </div>
+
+            {/* Unified Collapsed Rail (Appears when all 3 planes dock together) */}
+            <div
+              ref={unifiedRailRef}
+              className="absolute bottom-2 inset-x-4 max-w-3xl mx-auto border-t-2 border-b-2 border-[#0E0F10] py-3 flex flex-wrap items-center justify-between gap-4 text-xs font-semibold uppercase tracking-wider text-[#0E0F10] [transform-style:preserve-3d]"
+            >
+              <span>{isIt ? "FASCICOLO SINISTRO STRUTTURATO" : "STRUCTURED INCIDENT RECORD"}</span>
+              <span className="text-[#666666] font-normal">{isIt ? "Tutti i segnali allineati su un unico asse" : "All signals aligned on single operational axis"}</span>
+              <span className="text-emerald-800 font-bold">{isIt ? "PRONTO PER IL PERITO" : "READY FOR ADJUSTER"}</span>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 4. OBSERVED VS INFERRED: VISUAL COMPARISON WITHOUT CARDS (True Spatial Separation) */}
+      {/* ----------------------------------------------------------- */}
+      {/* 4. SCENE 5: OBSERVED VS INFERRED DEPTH SWAP (Zero Button, Scroll 3D Shift) */}
+      {/* ----------------------------------------------------------- */}
       <section
-        ref={observedSectionRef}
+        ref={depthSectionRef}
         className="py-24 sm:py-36 bg-[#F7F7F6] border-b border-[#E5E5E3] overflow-hidden"
-        style={{ perspective: "1400px" }}
+        style={{ perspective: "1600px" }}
       >
-        <div className="w-full px-6 sm:px-12 lg:px-20 max-w-7xl mx-auto space-y-12">
-          <div className="flex flex-col md:flex-row md:items-baseline justify-between gap-6">
-            <div className="space-y-2">
-              <span className="text-xs uppercase tracking-[0.24em] text-[#777777] font-semibold block">
-                {isIt ? "SEPARAZIONE ONTOLOGICA" : "EVIDENTIARY RIGOR"}
-              </span>
-              <h2 className="text-3xl sm:text-5xl font-bold uppercase tracking-tight text-[#0E0F10]">
-                {isIt ? "Osservato vs. Inferito" : "Observed vs. Inferred"}
-              </h2>
-            </div>
-
-            <button
-              type="button"
-              onClick={() => setInferredElevated(!inferredElevated)}
-              className="px-6 py-3 border border-[#0E0F10] text-xs font-bold uppercase tracking-wider text-[#0E0F10] hover:bg-[#0E0F10] hover:text-white transition-colors cursor-pointer self-start"
-            >
-              {inferredElevated
-                ? (isIt ? "Ripristina separazione di profondità" : "Restore depth separation")
-                : (isIt ? "Porta in primo piano per revisione umana ↑" : "Elevate for adjuster review ↑")}
-            </button>
+        <div className="w-full px-6 sm:px-12 lg:px-20 max-w-7xl mx-auto space-y-16">
+          <div className="space-y-3 max-w-3xl">
+            <span className="text-xs uppercase tracking-[0.24em] text-[#777777] font-semibold block">
+              {isIt ? "SEPARAZIONE DEI LIVELLI" : "SEPARATION OF SIGNALS"}
+            </span>
+            <h2 className="text-3xl sm:text-5xl font-black uppercase tracking-tight text-[#0E0F10]">
+              {isIt ? "CIÒ CHE OSSERVIAMO. CIÒ CHE INFERIAMO." : "WHAT WE SEE. WHAT WE INFER."}
+            </h2>
+            <p className="text-base sm:text-xl text-[#555555] font-light leading-relaxed">
+              {isIt
+                ? "I fatti fisici riscontrati restano rigidamente distinti dalle ricostruzioni probabilistiche. Nessun calcolo automatico sostituisce il giudizio peritale."
+                : "Physical evidence remains strictly distinguished from probabilistic inference. No automated computation overrides human adjuster deliberation."}
+            </p>
           </div>
 
-          {/* Spatial Planes Direct on Canvas (Zero Generic White Boxes) */}
-          <div className="relative w-full min-h-[380px] grid grid-cols-1 md:grid-cols-2 gap-8 items-center [transform-style:preserve-3d]">
-            {/* Plane 1: OBSERVED (Closer, High Contrast, Hard Facts) */}
+          {/* 3D Depth-Swap Stage: Observed in front, Inferred behind, Scroll swaps focus */}
+          <div className="relative w-full min-h-[400px] flex items-center justify-center [transform-style:preserve-3d]">
+            {/* Plane 1: OBSERVED (Direct factual evidence) */}
             <div
-              ref={observedPlaneRef}
-              className="border-l-4 border-[#0E0F10] pl-6 py-4 space-y-4 will-change-transform"
-              style={{ transformStyle: "preserve-3d" }}
+              ref={observedBlockRef}
+              className="absolute left-0 sm:left-8 top-4 max-w-lg border-l-4 border-[#0E0F10] pl-6 py-4 space-y-4 will-change-transform [transform-style:preserve-3d]"
             >
-              <div className="text-4xl sm:text-6xl font-black uppercase tracking-tight text-[#0E0F10]">
+              <div className="text-3xl sm:text-5xl font-black uppercase tracking-tight text-[#0E0F10]">
                 {isIt ? "OSSERVATO" : "OBSERVED"}
               </div>
-              <span className="text-xs font-semibold uppercase tracking-widest text-[#0E0F10] block">
-                {isIt ? "PROVENIENZA OTTICA E SENSORISTICA STRUMENTALE" : "EMPIRICAL SENSOR & OPTIC PROVENANCE"}
+              <span className="text-xs font-bold uppercase tracking-widest text-[#0E0F10] block">
+                {isIt ? "EVIDENZE DIRETTE RISCONTRATE" : "DIRECT FACTUAL EVIDENCE"}
               </span>
-              <p className="text-sm sm:text-base text-[#555555] font-light leading-relaxed max-w-md">
-                {isIt
-                  ? "Dati metrologici certi: picco 3.4G, 4 scatti fotografici georeferenziati, coordinate GNSS fisse e orientamento carreggiata."
-                  : "Certified metrological facts: 3.4G impact spike, 4 georeferenced camera angles, fixed GNSS coordinates, and roadway vector."}
-              </p>
-              <div className="text-xs uppercase tracking-wider font-semibold text-[#0E0F10] border-t border-[#E5E5E3] pt-2">
-                {isIt ? "TELEMETRIA STRUMENTALE DIRETTA • RILIEVO DETERMINISTICO" : "DIRECT INSTRUMENT TELEMETRY • DETERMINISTIC MEASUREMENT"}
-              </div>
+              <ul className="text-sm sm:text-base text-[#555555] font-light space-y-2 leading-relaxed">
+                <li className="flex items-start gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#0E0F10] mt-2 flex-shrink-0" />
+                  <span>{isIt ? "Danno visibile frontale sinistro documentato da 4 prospetti" : "Visible front-left damage documented across 4 photos"}</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#0E0F10] mt-2 flex-shrink-0" />
+                  <span>{isIt ? "Posizione dei veicoli nelle fotografie scattate in situ" : "Vehicle positions captured in scene photography"}</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#0E0F10] mt-2 flex-shrink-0" />
+                  <span>{isIt ? "Orario e coordinate rilevati all'acquisizione" : "Reported capture time and location coordinates"}</span>
+                </li>
+              </ul>
             </div>
 
-            {/* Plane 2: INFERRED (Recessed in Depth, Dotted Spatial Line, Narrative Declarations) */}
+            {/* Plane 2: INFERRED (Probabilistic reconstruction, requires confirmation) */}
             <div
-              ref={inferredPlaneRef}
-              className="border-l-4 border-dashed border-[#888888] pl-6 py-4 space-y-4 will-change-transform"
-              style={{ transformStyle: "preserve-3d" }}
+              ref={inferredBlockRef}
+              className="absolute right-0 sm:right-8 bottom-4 max-w-lg border-l-4 border-dashed border-[#888888] pl-6 py-4 space-y-4 will-change-transform [transform-style:preserve-3d]"
             >
-              <div className="text-4xl sm:text-6xl font-black uppercase tracking-tight text-[#777777]">
+              <div className="text-3xl sm:text-5xl font-black uppercase tracking-tight text-[#777777]">
                 {isIt ? "INFERITO" : "INFERRED"}
               </div>
-              <span className="text-xs font-semibold uppercase tracking-widest text-[#777777] block">
-                {isIt ? "NARRAZIONE DEI CONDUCENTI E CIRCOSTANZE CAI" : "DRIVER NARRATIVE & CAI CIRCUMSTANCES"}
+              <span className="text-xs font-bold uppercase tracking-widest text-[#777777] block">
+                {isIt ? "RICOSTRUZIONI SOGGETTE A VERIFICA" : "ITEMS REQUIRING HUMAN REVIEW"}
               </span>
-              <p className="text-sm sm:text-base text-[#666666] font-light leading-relaxed max-w-md">
-                {isIt
-                  ? "Dichiarazioni dei conducenti e stima dinamica CAI. Richiedono validazione e conferma da parte del perito assicurativo."
-                  : "Bilateral driver declarations and preliminary CAI mapping. Subject to final review and human adjuster validation."}
-              </p>
-              <div className="text-xs uppercase tracking-wider font-semibold text-[#777777] border-t border-[#E5E5E3] pt-2">
-                {isIt ? "SOGGETTO A CONFERMA DEL PERITO LIQUIDATORE" : "SUBJECT TO CERTIFIED ADJUSTER CONFIRMATION"}
-              </div>
+              <ul className="text-sm sm:text-base text-[#666666] font-light space-y-2 leading-relaxed">
+                <li className="flex items-start gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#888888] mt-2 flex-shrink-0" />
+                  <span>{isIt ? "Traiettoria d'impatto probabile prima del contatto" : "Probable vehicle approach trajectory before impact"}</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#888888] mt-2 flex-shrink-0" />
+                  <span>{isIt ? "Sequenza verosimile di decelerazione dei veicoli" : "Plausible vehicle deceleration sequence"}</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#888888] mt-2 flex-shrink-0" />
+                  <span>{isIt ? "Elementi da convalidare con la controparte" : "Items requiring adjuster cross-verification"}</span>
+                </li>
+              </ul>
             </div>
+          </div>
+
+          {/* Plane 3: HUMAN REVIEW BASELINE (Connects the two layers) */}
+          <div
+            ref={humanReviewBaselineRef}
+            className="pt-10 border-t border-[#0E0F10] space-y-3 text-center sm:text-left will-change-transform"
+          >
+            <div className="text-2xl sm:text-4xl font-black uppercase tracking-tight text-[#0E0F10]">
+              {isIt ? "IL GIUDIZIO UMANO CONNETTE I DUE LIVELLI." : "HUMAN REVIEW CONNECTS THE TWO."}
+            </div>
+            <p className="text-sm sm:text-base text-[#666666] font-light max-w-2xl">
+              {isIt
+                ? "La tecnologia organizza i fatti. La decisione appartiene al perito liquidatore."
+                : "Technology structures the evidence. The final determination belongs to the human adjuster."}
+            </p>
           </div>
         </div>
       </section>
 
-      {/* 5. FINAL PAYOFF: Headline Enters Large Outside Viewport, Line-by-Line Alignment, Visual Calm */}
+      {/* ----------------------------------------------------------- */}
+      {/* 5. FINAL PAYOFF SECTION */}
+      {/* ----------------------------------------------------------- */}
       <section
         ref={payoffSectionRef}
         className="py-28 sm:py-40 bg-white overflow-hidden relative"
       >
         <div className="w-full px-6 sm:px-12 lg:px-20 max-w-7xl mx-auto space-y-16">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-baseline">
-            {/* Left Headline: Enters Extremely Large Outside Viewport, Lines Align */}
+            {/* Left Headline: Enters Extremely Large Outside Viewport */}
             <div className="lg:col-span-8">
               <h2
                 ref={payoffHeadlineRef}

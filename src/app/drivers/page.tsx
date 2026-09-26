@@ -34,12 +34,14 @@ function DriversContent() {
 
   const [show112Modal, setShow112Modal] = useState(false);
 
-  // Evidence Constellation Refs
-  const constellationSectionRef = useRef<HTMLElement>(null);
-  const photoFragmentRef = useRef<HTMLDivElement>(null);
-  const geoFragmentRef = useRef<HTMLDivElement>(null);
-  const timeFragmentRef = useRef<HTMLDivElement>(null);
-  const vehicleTargetRef = useRef<HTMLDivElement>(null);
+  // Evidence Orbit Refs
+  const orbitSectionRef = useRef<HTMLElement>(null);
+  const headlineLine1Ref = useRef<HTMLSpanElement>(null);
+  const headlineLine2Ref = useRef<HTMLSpanElement>(null);
+  const photoSignalRef = useRef<HTMLDivElement>(null);
+  const geoSignalRef = useRef<HTMLDivElement>(null);
+  const timeSignalRef = useRef<HTMLDivElement>(null);
+  const vehicleSilhouetteRef = useRef<HTMLDivElement>(null);
 
   // Sticky Guided Journey Refs
   const stickyJourneyRef = useRef<HTMLElement>(null);
@@ -48,47 +50,58 @@ function DriversContent() {
   const step3Ref = useRef<HTMLDivElement>(null);
   const step4Ref = useRef<HTMLDivElement>(null);
 
-  // 1. Evidence Capture Constellation Animation (photo, geo, timestamp orbit & align)
+  // 1. Scene 1: Evidence Orbit Animation (Vehicle advances from Z, signals orbit and lock into structured record)
   useEffect(() => {
-    const sec = constellationSectionRef.current;
-    const photo = photoFragmentRef.current;
-    const geo = geoFragmentRef.current;
-    const time = timeFragmentRef.current;
-    const vehicle = vehicleTargetRef.current;
-    if (!sec || !photo || !geo || !time || !vehicle) return;
+    const sec = orbitSectionRef.current;
+    const l1 = headlineLine1Ref.current;
+    const l2 = headlineLine2Ref.current;
+    const photo = photoSignalRef.current;
+    const geo = geoSignalRef.current;
+    const time = timeSignalRef.current;
+    const vehicle = vehicleSilhouetteRef.current;
+    if (!sec || !photo || !geo || !time || !vehicle || !l1 || !l2) return;
 
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       return;
     }
 
     const ctx = gsap.context(() => {
-      // Photo arrives from left foreground, location from deep right, timestamp drops from above
-      gsap.set(photo, { x: -140, y: -20, z: 60, scale: 1.12, opacity: 0 });
-      gsap.set(geo, { x: 160, y: 30, z: -80, opacity: 0 });
-      gsap.set(time, { y: -90, z: -40, opacity: 0 });
+      gsap.set(vehicle, { z: -140, opacity: 0.25, scale: 0.92 });
+      gsap.set(photo, { x: -200, y: 30, z: 120, rotateY: 18, opacity: 0 });
+      gsap.set(geo, { x: 200, y: -20, z: -140, rotateY: -22, opacity: 0 });
+      gsap.set(time, { x: 60, y: -100, z: -80, opacity: 0 });
+      gsap.set(l1, { x: -36, z: 50, opacity: 0 });
+      gsap.set(l2, { x: 36, z: -30, opacity: 0 });
 
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: sec,
-          start: "top 75%",
-          end: "bottom 30%",
+          start: "top 72%",
+          end: "bottom 25%",
           scrub: 0.8,
         },
       });
 
-      // Orbit subtly around the vehicle scene then align into ordered output rail
-      tl.to(photo, { x: -40, y: 0, z: 20, scale: 1, opacity: 1, duration: 0.4 })
-        .to(geo, { x: 40, y: 0, z: 0, opacity: 1, duration: 0.4 }, "-=0.3")
-        .to(time, { y: 0, z: 0, opacity: 1, duration: 0.4 }, "-=0.3")
-        // Convergence into unified ordered line
+      const isMobile = window.innerWidth < 640;
+
+      // Headline enters with depth separation: line 1 closer/stronger, line 2 comes forward
+      tl.to(l1, { x: 0, z: 0, opacity: 1, duration: 0.35, ease: "power2.out" }, 0)
+        .to(l2, { x: 0, z: 0, opacity: 1, duration: 0.4, ease: "power2.out" }, 0.08)
+        // Vehicle comes forward from Z-depth
+        .to(vehicle, { z: 0, opacity: 1, scale: 1, duration: 0.45, ease: "power2.out" }, 0.1)
+        // Three signals orbit in from disparate trajectories (responsive offsets to prevent mobile clipping)
+        .to(photo, { x: isMobile ? -10 : -50, y: -10, z: 30, rotateY: isMobile ? 3 : 6, opacity: 1, duration: 0.45, ease: "power2.out" }, 0.2)
+        .to(geo, { x: isMobile ? 10 : 50, y: 12, z: -20, rotateY: isMobile ? -4 : -8, opacity: 1, duration: 0.45, ease: "power2.out" }, 0.25)
+        .to(time, { x: isMobile ? 8 : 30, y: -20, z: 0, opacity: 1, duration: 0.45, ease: "power2.out" }, 0.3)
+        // Lock into balanced alignment around the vehicle contour
         .to([photo, geo, time], {
           x: 0,
           y: 0,
           z: 0,
-          opacity: 1,
+          rotateY: 0,
           duration: 0.3,
-          ease: "power2.inOut",
-        });
+          ease: "power3.out",
+        }, 0.7);
     }, sec);
 
     return () => ctx.revert();
@@ -218,94 +231,148 @@ function DriversContent() {
         </FullBleedImage>
       </section>
 
-      {/* 3. EVIDENCE CAPTURE CONSTELLATION: ZERO CARDS. Free-Floating Fragments Orbiting & Aligning */}
+      {/* 3. SCENE 1: EVIDENCE ORBIT — ZERO CARDS, SPATIAL SIGNALS LOCKING AROUND VEHICLE OBJECT */}
       <section
-        ref={constellationSectionRef}
+        ref={orbitSectionRef}
         className="py-24 sm:py-36 bg-[#F7F7F6] border-b border-[#E5E5E3] overflow-hidden"
         style={{ perspective: "1400px" }}
       >
         <div className="w-full px-6 sm:px-12 lg:px-20 max-w-7xl mx-auto space-y-16">
-          <div className="max-w-3xl space-y-3">
+          <div className="max-w-3xl space-y-4">
             <span className="text-xs uppercase tracking-[0.24em] text-[#777777] font-semibold block">
-              {isIt ? "COSTELLAZIONE PROBATORIA" : "EVIDENCE CONSTELLATION"}
+              {isIt ? "RILIEVO PROBATORIO" : "INCIDENT CAPTURE"}
             </span>
-            <h2 className="text-3xl sm:text-5xl font-bold uppercase tracking-tight text-[#0E0F10] leading-tight">
-              {isIt ? "Elementi acquisiti in situ." : "Evidence captured on scene."}
+            <h2 className="text-4xl sm:text-6xl font-black uppercase tracking-tight text-[#0E0F10] leading-[0.98] [transform-style:preserve-3d]">
+              <span ref={headlineLine1Ref} className="block will-change-transform">
+                {isIt ? "CATTURA LA SCENA." : "CAPTURE THE SCENE."}
+              </span>
+              <span ref={headlineLine2Ref} className="block text-[#666666] will-change-transform">
+                {isIt ? "CONSERVA IL CONTESTO." : "KEEP THE CONTEXT."}
+              </span>
             </h2>
             <p className="text-base sm:text-xl text-[#555555] font-light leading-relaxed">
               {isIt
-                ? "Fotografia, coordinate GNSS e marcatura temporale si fondono direttamente nello spazio probatorio, senza maschere o moduli cartacei."
-                : "Optics, GNSS fixes, and temporal continuity fuse directly into the evidential space, eliminating disconnected forms."}
+                ? "Foto, posizione e orario confluiscono in un unico record strutturato dell'incidente."
+                : "Photos, location and time become one structured incident record."}
             </p>
           </div>
 
-          {/* Central Spatial Constellation Stage (No Background Cards) */}
-          <div className="relative w-full min-h-[380px] sm:min-h-[440px] flex items-center justify-center [transform-style:preserve-3d]">
-            {/* Ambient Center Anchor: Vehicle Outline Motif */}
+          {/* Central Spatial Stage: Vehicle Silhouette with Free-Floating 3D Signals (No Cards, No Box Frame) */}
+          <div className="relative w-full min-h-[440px] sm:min-h-[520px] flex items-center justify-center [transform-style:preserve-3d]">
+            {/* Center Vehicle Object: Stylized Automotive Vector Contour with Impact Zone */}
             <div
-              ref={vehicleTargetRef}
-              className="relative w-full max-w-md aspect-[16/10] border border-[#D5D7D6] flex items-center justify-center p-6 text-center select-none"
+              ref={vehicleSilhouetteRef}
+              className="relative w-full max-w-xl aspect-[16/9] flex items-center justify-center will-change-transform select-none [transform-style:preserve-3d]"
             >
-              <div className="space-y-2">
-                <span className="text-[10px] font-mono uppercase tracking-[0.24em] text-[#888888] block">
-                  VEHICLE CONTEXT A
+              <svg
+                viewBox="0 0 520 260"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                className="w-full h-full drop-shadow-sm"
+              >
+                {/* Road vector track lines */}
+                <line x1="20" y1="130" x2="500" y2="130" stroke="#E0E0DE" strokeWidth="1" strokeDasharray="6 6" />
+                <line x1="40" y1="40" x2="480" y2="40" stroke="#EBEBEA" strokeWidth="1" />
+                <line x1="40" y1="220" x2="480" y2="220" stroke="#EBEBEA" strokeWidth="1" />
+
+                {/* Automotive Overhead Silhouette Contour */}
+                <path
+                  d="M100 85 C140 65, 380 65, 420 85 C450 100, 460 130, 460 130 C460 130, 450 160, 420 175 C380 195, 140 195, 100 175 C70 160, 60 130, 60 130 C60 130, 70 100, 100 85 Z"
+                  stroke="#0E0F10"
+                  strokeWidth="2.5"
+                  fill="#FFFFFF"
+                  fillOpacity="0.85"
+                />
+
+                {/* Windshield & Rear Window Geometry */}
+                <path
+                  d="M150 90 L180 100 L180 160 L150 170 Z"
+                  stroke="#0E0F10"
+                  strokeWidth="1.5"
+                  strokeOpacity="0.7"
+                />
+                <path
+                  d="M340 98 L370 92 L370 168 L340 162 Z"
+                  stroke="#0E0F10"
+                  strokeWidth="1.5"
+                  strokeOpacity="0.7"
+                />
+
+                {/* Roof Ridge Lines */}
+                <line x1="180" y1="100" x2="340" y2="98" stroke="#0E0F10" strokeWidth="1" strokeOpacity="0.4" />
+                <line x1="180" y1="160" x2="340" y2="162" stroke="#0E0F10" strokeWidth="1" strokeOpacity="0.4" />
+
+                {/* Wheels Left/Right */}
+                <rect x="110" y="55" width="46" height="14" rx="3" fill="#0E0F10" />
+                <rect x="360" y="55" width="46" height="14" rx="3" fill="#0E0F10" />
+                <rect x="110" y="191" width="46" height="14" rx="3" fill="#0E0F10" />
+                <rect x="360" y="191" width="46" height="14" rx="3" fill="#0E0F10" />
+
+                {/* Impact Indicator Zone (Front Left) */}
+                <circle cx="102" cy="85" r="14" stroke="#DC2626" strokeWidth="1.5" strokeDasharray="3 3" />
+                <circle cx="102" cy="85" r="5" fill="#DC2626" />
+                <line x1="102" y1="60" x2="102" y2="80" stroke="#DC2626" strokeWidth="1.5" />
+                <text x="70" y="48" fill="#DC2626" fontSize="10" fontWeight="700" letterSpacing="0.1em">
+                  {isIt ? "PUNTO D'URTO" : "IMPACT POINT"}
+                </text>
+              </svg>
+            </div>
+
+            {/* Spatial Signal 1: PHOTOS (Left Foreground, Viewfinder Marks, Direct Typography) */}
+            <div
+              ref={photoSignalRef}
+              className="absolute left-2 sm:left-6 lg:left-12 top-2 sm:top-10 max-w-[230px] sm:max-w-[280px] pointer-events-none select-none will-change-transform space-y-1.5 [transform-style:preserve-3d]"
+            >
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-[#0E0F10]" />
+                <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#0E0F10]">
+                  {isIt ? "FOTOGRAFIE" : "PHOTOS"}
                 </span>
-                <div className="font-bold text-lg sm:text-xl uppercase text-[#0E0F10] tracking-tight">
-                  AUDI A3 SPORTBACK
-                </div>
-                <div className="text-xs font-mono text-[#666666]">AB 123 CD • IMPACT ANGLE 42°</div>
               </div>
-
-              {/* Viewfinder crosshairs at 4 corners of the vehicle outline */}
-              <div className="absolute top-2 left-2 w-3 h-3 border-t-2 border-l-2 border-[#0E0F10]" />
-              <div className="absolute top-2 right-2 w-3 h-3 border-t-2 border-r-2 border-[#0E0F10]" />
-              <div className="absolute bottom-2 left-2 w-3 h-2 border-b-2 border-l-2 border-[#0E0F10]" />
-              <div className="absolute bottom-2 right-2 w-3 h-2 border-b-2 border-r-2 border-[#0E0F10]" />
+              <div className="text-sm font-semibold text-[#0E0F10] uppercase tracking-tight">
+                {isIt ? "4 inquadrature coerenti" : "4 essential viewpoints"}
+              </div>
+              <p className="text-xs text-[#666666] font-light leading-relaxed">
+                {isIt ? "Panoramica, punto d'urto e controparte senza maschere cartacee." : "Overview, contact zone, and vehicle alignment without paper forms."}
+              </p>
             </div>
 
-            {/* Fragment 1: INQUADRATURE ESSENZIALI (Photo Frame Outline arriving from left foreground) */}
+            {/* Spatial Signal 2: LOCATION (Deep Right Orbit, Spatial Coordinates, No Card) */}
             <div
-              ref={photoFragmentRef}
-              className="absolute left-2 sm:left-12 lg:left-24 top-6 max-w-[260px] border border-[#0E0F10] p-4 bg-white/90 backdrop-blur-sm pointer-events-none select-none will-change-transform space-y-1 shadow-sm"
-              style={{ transformStyle: "preserve-3d" }}
+              ref={geoSignalRef}
+              className="absolute right-2 sm:right-6 lg:right-12 bottom-2 sm:bottom-10 max-w-[230px] sm:max-w-[280px] pointer-events-none select-none will-change-transform space-y-1.5 [transform-style:preserve-3d]"
             >
-              <span className="text-[10px] font-semibold tracking-widest text-[#0E0F10] uppercase block">
-                01 / {isIt ? "INQUADRATURE ESSENZIALI" : "ESSENTIAL FRAMES"}
-              </span>
-              <div className="text-xs font-semibold text-[#0E0F10]">
-                {isIt ? "Panoramica, punto d'urto, controparte" : "Overview, impact zone, counterparty"}
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-[#0E0F10]" />
+                <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#0E0F10]">
+                  {isIt ? "POSIZIONE" : "LOCATION"}
+                </span>
               </div>
-              <div className="text-[11px] text-[#777777] font-mono">4 PERSPECTIVES SAVED</div>
-            </div>
-
-            {/* Fragment 2: GEOLOCALIZZAZIONE (Location Line arriving from deep right) */}
-            <div
-              ref={geoFragmentRef}
-              className="absolute right-2 sm:right-12 lg:right-24 bottom-8 max-w-[260px] border-b-2 border-[#0E0F10] pb-3 bg-white/90 backdrop-blur-sm pointer-events-none select-none will-change-transform space-y-1 shadow-sm px-3 pt-2"
-              style={{ transformStyle: "preserve-3d" }}
-            >
-              <span className="text-[10px] font-semibold tracking-widest text-[#0E0F10] uppercase block">
-                02 / {isIt ? "GEOLOCALIZZAZIONE" : "GEOLOCATION FIX"}
-              </span>
-              <div className="text-xs font-semibold text-[#0E0F10]">
+              <div className="text-sm font-mono font-bold text-[#0E0F10]">
                 45.4642° N • 9.1900° E
               </div>
-              <div className="text-[11px] text-[#777777] font-mono">ROADWAY HEADING 142° SE</div>
+              <p className="text-xs text-[#666666] font-light leading-relaxed">
+                {isIt ? "Via Cristoforo Colombo, Milano • Orientamento carreggiata 142° SE." : "Via Cristoforo Colombo, Milan • Roadway heading 142° SE."}
+              </p>
             </div>
 
-            {/* Fragment 3: TIMESTAMP (Time/Data Strip dropping from above) */}
+            {/* Spatial Signal 3: TIME (Upper-Right Depth, Clean Timestamp, No Box) */}
             <div
-              ref={timeFragmentRef}
-              className="absolute top-2 sm:top-4 right-8 sm:right-36 border-t-2 border-[#0E0F10] pt-2 px-3 bg-white/90 backdrop-blur-sm pointer-events-none select-none will-change-transform space-y-0.5 shadow-sm"
-              style={{ transformStyle: "preserve-3d" }}
+              ref={timeSignalRef}
+              className="absolute top-2 sm:top-6 right-2 sm:right-32 max-w-[190px] sm:max-w-[220px] pointer-events-none select-none will-change-transform space-y-1 [transform-style:preserve-3d]"
             >
-              <span className="text-[10px] font-semibold tracking-widest text-[#0E0F10] uppercase block">
-                03 / TIMESTAMP
-              </span>
-              <div className="text-xs font-semibold text-[#0E0F10] font-mono">
-                2026-09-26 14:22:08 UTC
+              <div className="flex items-center gap-2">
+                <div className="w-1.5 h-1.5 rounded-full bg-emerald-600" />
+                <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#0E0F10]">
+                  {isIt ? "ORARIO" : "TIME"}
+                </span>
               </div>
-              <div className="text-[10px] text-emerald-800 font-mono">HARDWARE CLOCK SYNC</div>
+              <div className="text-sm font-mono font-bold text-[#0E0F10]">
+                14:22:08 UTC
+              </div>
+              <span className="text-[11px] text-[#777777] block font-light">
+                {isIt ? "Marcatura temporale acquisizione" : "Capture sequence record"}
+              </span>
             </div>
           </div>
         </div>

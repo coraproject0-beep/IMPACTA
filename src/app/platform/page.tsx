@@ -441,7 +441,7 @@ function PlatformContent() {
               {isIt ? "DELIBERA E PERIZIA" : "ADJUSTER DELIBERATION"}
             </span>
             <h2 className="text-3xl sm:text-5xl font-bold uppercase tracking-tight text-[#0E0F10] leading-tight">
-              {isIt ? "Supervisione umana abilitata." : "Licensed human adjuster adjudication."}
+              {isIt ? "Supervisione peritale abilitata." : "Governed by human adjuster review."}
             </h2>
             <p className="text-base sm:text-xl text-[#555555] font-light leading-relaxed">
               {isIt

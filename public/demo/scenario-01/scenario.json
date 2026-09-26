@@ -1,0 +1,38 @@
+﻿{
+  "scenarioId": "scenario-01",
+  "synthetic": true,
+  "driver": {
+    "name": "John Miller",
+    "vehicle": "Vehicle A",
+    "plate": "AB 123 CD"
+  },
+  "counterparty": {
+    "name": "Claire Anderson",
+    "vehicle": "Vehicle B",
+    "plate": "EF 456 GH"
+  },
+  "incident": {
+    "date": "2026-09-26",
+    "time": "14:22",
+    "location": "Milan metropolitan area, Italy",
+    "driverStatement": "I was travelling straight through the intersection when the other vehicle entered my path."
+  },
+  "expectedObservations": {
+    "vehicleA": [
+      "Visible damage around the front-left area"
+    ],
+    "vehicleB": [
+      "Visible damage around the front-right area"
+    ]
+  },
+  "expectedInference": [
+    "The images may be consistent with intersecting vehicle trajectories",
+    "The precise sequence requires human confirmation"
+  ],
+  "images": [
+    "/demo/scenario-01/01-overview.jpg",
+    "/demo/scenario-01/02-vehicle-a-damage.jpg",
+    "/demo/scenario-01/03-vehicle-b-damage.jpg",
+    "/demo/scenario-01/04-road-context.jpg"
+  ]
+}
