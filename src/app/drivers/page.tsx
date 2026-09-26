@@ -33,123 +33,159 @@ function DriversContent() {
   const reportLink = isDriverAuthenticated ? "/app/report" : "/login?redirect=/app/report";
 
   const [show112Modal, setShow112Modal] = useState(false);
+  const [activeStage, setActiveStage] = useState<number>(0);
 
-  // Evidence Orbit Refs
-  const orbitSectionRef = useRef<HTMLElement>(null);
-  const headlineLine1Ref = useRef<HTMLSpanElement>(null);
-  const headlineLine2Ref = useRef<HTMLSpanElement>(null);
-  const photoSignalRef = useRef<HTMLDivElement>(null);
-  const geoSignalRef = useRef<HTMLDivElement>(null);
-  const timeSignalRef = useRef<HTMLDivElement>(null);
-  const vehicleSilhouetteRef = useRef<HTMLDivElement>(null);
+  // Scene 1: Spatial Evidence Planes Refs
+  const captureSectionRef = useRef<HTMLElement>(null);
+  const planePhotoRef = useRef<HTMLDivElement>(null);
+  const planeRoadRef = useRef<HTMLDivElement>(null);
+  const planeTimeRef = useRef<HTMLDivElement>(null);
+  const centralAxisRef = useRef<HTMLDivElement>(null);
 
-  // Sticky Guided Journey Refs
-  const stickyJourneyRef = useRef<HTMLElement>(null);
-  const step1Ref = useRef<HTMLDivElement>(null);
-  const step2Ref = useRef<HTMLDivElement>(null);
-  const step3Ref = useRef<HTMLDivElement>(null);
-  const step4Ref = useRef<HTMLDivElement>(null);
+  // Guided Journey Transformation Stage Ref
+  const journeySectionRef = useRef<HTMLElement>(null);
 
-  // 1. Scene 1: Evidence Orbit Animation (Vehicle advances from Z, signals orbit and lock into structured record)
+  // -------------------------------------------------------------
+  // 1. Scene 1: 3 Spatial Evidence Planes with Time-Based GSAP Timeline
+  // -------------------------------------------------------------
   useEffect(() => {
-    const sec = orbitSectionRef.current;
-    const l1 = headlineLine1Ref.current;
-    const l2 = headlineLine2Ref.current;
-    const photo = photoSignalRef.current;
-    const geo = geoSignalRef.current;
-    const time = timeSignalRef.current;
-    const vehicle = vehicleSilhouetteRef.current;
-    if (!sec || !photo || !geo || !time || !vehicle || !l1 || !l2) return;
+    const sec = captureSectionRef.current;
+    const photo = planePhotoRef.current;
+    const road = planeRoadRef.current;
+    const time = planeTimeRef.current;
+    const axis = centralAxisRef.current;
+    if (!sec || !photo || !road || !time || !axis) return;
 
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      gsap.set([photo, road, time], { opacity: 1, x: 0, y: 0, z: 0, rotateY: 0 });
+      gsap.set(axis, { opacity: 1, scaleX: 1 });
       return;
     }
 
     const ctx = gsap.context(() => {
-      gsap.set(vehicle, { z: -140, opacity: 0.25, scale: 0.92 });
-      gsap.set(photo, { x: -200, y: 30, z: 120, rotateY: 18, opacity: 0 });
-      gsap.set(geo, { x: 200, y: -20, z: -140, rotateY: -22, opacity: 0 });
-      gsap.set(time, { x: 60, y: -100, z: -80, opacity: 0 });
-      gsap.set(l1, { x: -36, z: 50, opacity: 0 });
-      gsap.set(l2, { x: 36, z: -30, opacity: 0 });
+      // Initial 3D Spatial Stance
+      gsap.set(photo, { x: -60, y: 20, z: 40, rotateY: 10, opacity: 0 });
+      gsap.set(road, { y: 30, z: -30, opacity: 0 });
+      gsap.set(time, { x: 60, y: -20, z: 20, rotateY: -10, opacity: 0 });
+      gsap.set(axis, { scaleX: 0, opacity: 0 });
 
+      // Authored time-based timeline triggered once when section enters viewport
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: sec,
-          start: "top 72%",
-          end: "bottom 25%",
-          scrub: 0.8,
+          start: "top 75%",
+          once: true,
         },
       });
 
-      const isMobile = window.innerWidth < 640;
-
-      // Headline enters with depth separation: line 1 closer/stronger, line 2 comes forward
-      tl.to(l1, { x: 0, z: 0, opacity: 1, duration: 0.35, ease: "power2.out" }, 0)
-        .to(l2, { x: 0, z: 0, opacity: 1, duration: 0.4, ease: "power2.out" }, 0.08)
-        // Vehicle comes forward from Z-depth
-        .to(vehicle, { z: 0, opacity: 1, scale: 1, duration: 0.45, ease: "power2.out" }, 0.1)
-        // Three signals orbit in from disparate trajectories (responsive offsets to prevent mobile clipping)
-        .to(photo, { x: isMobile ? -10 : -50, y: -10, z: 30, rotateY: isMobile ? 3 : 6, opacity: 1, duration: 0.45, ease: "power2.out" }, 0.2)
-        .to(geo, { x: isMobile ? 10 : 50, y: 12, z: -20, rotateY: isMobile ? -4 : -8, opacity: 1, duration: 0.45, ease: "power2.out" }, 0.25)
-        .to(time, { x: isMobile ? 8 : 30, y: -20, z: 0, opacity: 1, duration: 0.45, ease: "power2.out" }, 0.3)
-        // Lock into balanced alignment around the vehicle contour
-        .to([photo, geo, time], {
-          x: 0,
-          y: 0,
-          z: 0,
-          rotateY: 0,
-          duration: 0.3,
-          ease: "power3.out",
-        }, 0.7);
+      // Three evidence planes converge smoothly in 3D perspective (~1.2s total)
+      tl.to(
+        axis,
+        {
+          scaleX: 1,
+          opacity: 1,
+          duration: 0.8,
+          ease: "power2.out",
+        },
+        0
+      )
+        .to(
+          photo,
+          {
+            x: 0,
+            y: 0,
+            z: 0,
+            rotateY: 0,
+            opacity: 1,
+            duration: 1.1,
+            ease: "power3.out",
+          },
+          0.1
+        )
+        .to(
+          road,
+          {
+            y: 0,
+            z: 0,
+            opacity: 1,
+            duration: 1.1,
+            ease: "power3.out",
+          },
+          0.2
+        )
+        .to(
+          time,
+          {
+            x: 0,
+            y: 0,
+            z: 0,
+            rotateY: 0,
+            opacity: 1,
+            duration: 1.1,
+            ease: "power3.out",
+          },
+          0.25
+        );
     }, sec);
 
     return () => ctx.revert();
   }, []);
 
-  // 2. Sticky Guided Journey Progression (One step dominant at a time)
-  useEffect(() => {
-    const container = stickyJourneyRef.current;
-    const s1 = step1Ref.current;
-    const s2 = step2Ref.current;
-    const s3 = step3Ref.current;
-    const s4 = step4Ref.current;
-    if (!container || !s1 || !s2 || !s3 || !s4) return;
-
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      return;
-    }
-
-    const ctx = gsap.context(() => {
-      // Initially step 1 is dominant; steps 2,3,4 are completely hidden with zero opacity and pointer-events disabled
-      gsap.set([s2, s3, s4], { opacity: 0, y: 24, scale: 0.98, pointerEvents: "none" });
-      gsap.set(s1, { opacity: 1, y: 0, scale: 1, pointerEvents: "auto" });
-
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: container,
-          start: "top top",
-          end: "+=240%",
-          pin: true,
-          scrub: 0.7,
-        },
-      });
-
-      // 01 -> 02 transition
-      tl.to(s1, { opacity: 0, y: -20, scale: 0.96, pointerEvents: "none", duration: 0.25 })
-        .to(s2, { opacity: 1, y: 0, scale: 1, pointerEvents: "auto", duration: 0.25 }, "-=0.08")
-
-        // 02 -> 03 transition
-        .to(s2, { opacity: 0, y: -20, scale: 0.96, pointerEvents: "none", duration: 0.25 }, "+=0.2")
-        .to(s3, { opacity: 1, y: 0, scale: 1, pointerEvents: "auto", duration: 0.25 }, "-=0.08")
-
-        // 03 -> 04 transition
-        .to(s3, { opacity: 0, y: -20, scale: 0.96, pointerEvents: "none", duration: 0.25 }, "+=0.2")
-        .to(s4, { opacity: 1, y: 0, scale: 1, pointerEvents: "auto", duration: 0.25 }, "-=0.08");
-    }, container);
-
-    return () => ctx.revert();
-  }, []);
+  // Guided Journey Stages Data: source form fragment -> semantic field -> extracted structured field -> normalized record
+  const journeyStages = [
+    {
+      num: "01",
+      badge: isIt ? "ACQUISIZIONE" : "INTAKE",
+      title: isIt ? "Frammento Sorgente" : "Source Form Fragment",
+      subtitle: isIt ? "Input non strutturato sul ciglio della strada" : "Raw roadside capture & input",
+      desc: isIt
+        ? "Fotografie dirette del danno, coordinate grezze del dispositivo e dichiarazione sul posto. Nessun modulo cartaceo da compilare sotto stress."
+        : "Direct photographic proof, raw device telemetry, and immediate on-scene notes without deciphering paper forms under acute stress.",
+      metaTitle: isIt ? "STATO INIZIALE" : "INITIAL PAYLOAD",
+      metaValue: isIt ? "Dati grezzi acquisiti in situ" : "Raw in-situ payload",
+      tag: isIt ? "Frammentazione" : "Raw Fragment",
+      tagColor: "text-amber-600 bg-amber-500/10 border-amber-500/20",
+    },
+    {
+      num: "02",
+      badge: isIt ? "INTERPRETAZIONE" : "PARSING",
+      title: isIt ? "Campo Semantico" : "Semantic Field",
+      subtitle: isIt ? "Riconoscimento e isolamento degli elementi" : "Entity recognition & isolation",
+      desc: isIt
+        ? "Il sistema identifica e isola automaticamente le entità: veicolo assicurato, controparte, targa e zona di contatto preliminare."
+        : "Automated entity separation isolating the insured vehicle, counterparty identifier, plate metadata, and primary impact zone.",
+      metaTitle: isIt ? "ENTITÀ ISOLATE" : "IDENTIFIED ENTITIES",
+      metaValue: isIt ? "2 Veicoli • Coordinate Localizzate" : "2 Vehicles • Localized Coordinates",
+      tag: isIt ? "Semantica" : "Semantic Entities",
+      tagColor: "text-sky-600 bg-sky-500/10 border-sky-500/20",
+    },
+    {
+      num: "03",
+      badge: isIt ? "CORRELAZIONE" : "ALIGNMENT",
+      title: isIt ? "Estrazione Strutturata" : "Extracted Structured Field",
+      subtitle: isIt ? "Allineamento alle clausole convenzionali CAI" : "Mapping to Agreed Statement clauses",
+      desc: isIt
+        ? "Associazione rigorosa tra la deformazione fotografata e le caselle standard di constatazione amichevole. Zero ricostruzioni arbitrarie."
+        : "Rigorous matching between photographed contact damage and standard European circumstance criteria. Zero arbitrary guesswork.",
+      metaTitle: isIt ? "CLAUSOLA APPLICATA" : "APPLIED CLAUSE",
+      metaValue: isIt ? "Allineamento Casella 12" : "Box 12 Circumstance Alignment",
+      tag: isIt ? "Allineamento" : "Structured Match",
+      tagColor: "text-indigo-600 bg-indigo-500/10 border-indigo-500/20",
+    },
+    {
+      num: "04",
+      badge: isIt ? "VALIDAZIONE" : "COMPLETION",
+      title: isIt ? "Record Normalizzato" : "Normalized Record",
+      subtitle: isIt ? "Fascicolo probatorio pronto per il perito" : "Verified file ready for human adjuster",
+      desc: isIt
+        ? "Un unico fascicolo cronologico, immutabile e verificabile, contenente fotografie, metadati e circostanze pronto per la delibera del liquidatore."
+        : "A single immutable chronological file containing photos, calibrated context, and objective circumstances ready for prompt adjuster review.",
+      metaTitle: isIt ? "FASCICOLO GENERATO" : "GENERATED DOSSIER",
+      metaValue: "CLM-IT-2026-001 • Pronto per Delibera",
+      tag: isIt ? "Verificabile" : "Normalized File",
+      tagColor: "text-emerald-600 bg-emerald-500/10 border-emerald-500/20",
+    },
+  ];
 
   return (
     <>
@@ -216,8 +252,8 @@ function DriversContent() {
             </span>
             <RevealText
               as="h2"
-              mode="word"
-              variant="rotate-plane"
+              mode="char"
+              variant="depth"
               className="text-3xl sm:text-5xl lg:text-6xl font-bold uppercase tracking-tight text-white leading-tight"
             >
               {isIt ? "Quattro inquadrature semplici e chiare" : "Four Simple, Reassuring Steps"}
@@ -231,9 +267,9 @@ function DriversContent() {
         </FullBleedImage>
       </section>
 
-      {/* 3. SCENE 1: EVIDENCE ORBIT — ZERO CARDS, SPATIAL SIGNALS LOCKING AROUND VEHICLE OBJECT */}
+      {/* 3. SCENE 1: INCIDENT CAPTURE — CHARACTER REVEAL & 3 SPATIAL EVIDENCE PLANES (TIME-BASED GSAP) */}
       <section
-        ref={orbitSectionRef}
+        ref={captureSectionRef}
         className="py-24 sm:py-36 bg-[#F7F7F6] border-b border-[#E5E5E3] overflow-hidden"
         style={{ perspective: "1400px" }}
       >
@@ -242,14 +278,21 @@ function DriversContent() {
             <span className="text-xs uppercase tracking-[0.24em] text-[#777777] font-semibold block">
               {isIt ? "RILIEVO PROBATORIO" : "INCIDENT CAPTURE"}
             </span>
-            <h2 className="text-4xl sm:text-6xl font-black uppercase tracking-tight text-[#0E0F10] leading-[0.98] [transform-style:preserve-3d]">
-              <span ref={headlineLine1Ref} className="block will-change-transform">
-                {isIt ? "CATTURA LA SCENA." : "CAPTURE THE SCENE."}
+
+            {/* Display Headline with Character-Level Reveal */}
+            <h2 className="text-4xl sm:text-6xl font-black uppercase tracking-tight text-[#0E0F10] leading-[0.98]">
+              <span className="block">
+                <RevealText as="span" mode="char" variant="depth">
+                  {isIt ? "CATTURA LA SCENA." : "CAPTURE THE SCENE."}
+                </RevealText>
               </span>
-              <span ref={headlineLine2Ref} className="block text-[#666666] will-change-transform">
-                {isIt ? "CONSERVA IL CONTESTO." : "KEEP THE CONTEXT."}
+              <span className="block text-[#666666]">
+                <RevealText as="span" mode="char" variant="depth" delay={0.25}>
+                  {isIt ? "CONSERVA IL CONTESTO." : "KEEP THE CONTEXT."}
+                </RevealText>
               </span>
             </h2>
+
             <p className="text-base sm:text-xl text-[#555555] font-light leading-relaxed">
               {isIt
                 ? "Foto, posizione e orario confluiscono in un unico record strutturato dell'incidente."
@@ -257,256 +300,228 @@ function DriversContent() {
             </p>
           </div>
 
-          {/* Central Spatial Stage: Vehicle Silhouette with Free-Floating 3D Signals (No Cards, No Box Frame) */}
-          <div className="relative w-full min-h-[440px] sm:min-h-[520px] flex items-center justify-center [transform-style:preserve-3d]">
-            {/* Center Vehicle Object: Stylized Automotive Vector Contour with Impact Zone */}
+          {/* Central Spatial Stage: 3 Evidentiary Planes with Time-Based GSAP Entrance */}
+          <div className="relative w-full min-h-[420px] sm:min-h-[480px] flex items-center justify-center [transform-style:preserve-3d]">
+            {/* Horizontal Alignment Rail Axis */}
             <div
-              ref={vehicleSilhouetteRef}
-              className="relative w-full max-w-xl aspect-[16/9] flex items-center justify-center will-change-transform select-none [transform-style:preserve-3d]"
-            >
-              <svg
-                viewBox="0 0 520 260"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                className="w-full h-full drop-shadow-sm"
-              >
-                {/* Road vector track lines */}
-                <line x1="20" y1="130" x2="500" y2="130" stroke="#E0E0DE" strokeWidth="1" strokeDasharray="6 6" />
-                <line x1="40" y1="40" x2="480" y2="40" stroke="#EBEBEA" strokeWidth="1" />
-                <line x1="40" y1="220" x2="480" y2="220" stroke="#EBEBEA" strokeWidth="1" />
+              ref={centralAxisRef}
+              className="absolute inset-x-8 h-[1px] bg-[#0E0F10]/20 pointer-events-none origin-center will-change-transform"
+            />
 
-                {/* Automotive Overhead Silhouette Contour */}
-                <path
-                  d="M100 85 C140 65, 380 65, 420 85 C450 100, 460 130, 460 130 C460 130, 450 160, 420 175 C380 195, 140 195, 100 175 C70 160, 60 130, 60 130 C60 130, 70 100, 100 85 Z"
-                  stroke="#0E0F10"
-                  strokeWidth="2.5"
-                  fill="#FFFFFF"
-                  fillOpacity="0.85"
-                />
-
-                {/* Windshield & Rear Window Geometry */}
-                <path
-                  d="M150 90 L180 100 L180 160 L150 170 Z"
-                  stroke="#0E0F10"
-                  strokeWidth="1.5"
-                  strokeOpacity="0.7"
-                />
-                <path
-                  d="M340 98 L370 92 L370 168 L340 162 Z"
-                  stroke="#0E0F10"
-                  strokeWidth="1.5"
-                  strokeOpacity="0.7"
-                />
-
-                {/* Roof Ridge Lines */}
-                <line x1="180" y1="100" x2="340" y2="98" stroke="#0E0F10" strokeWidth="1" strokeOpacity="0.4" />
-                <line x1="180" y1="160" x2="340" y2="162" stroke="#0E0F10" strokeWidth="1" strokeOpacity="0.4" />
-
-                {/* Wheels Left/Right */}
-                <rect x="110" y="55" width="46" height="14" rx="3" fill="#0E0F10" />
-                <rect x="360" y="55" width="46" height="14" rx="3" fill="#0E0F10" />
-                <rect x="110" y="191" width="46" height="14" rx="3" fill="#0E0F10" />
-                <rect x="360" y="191" width="46" height="14" rx="3" fill="#0E0F10" />
-
-                {/* Impact Indicator Zone (Front Left) */}
-                <circle cx="102" cy="85" r="14" stroke="#DC2626" strokeWidth="1.5" strokeDasharray="3 3" />
-                <circle cx="102" cy="85" r="5" fill="#DC2626" />
-                <line x1="102" y1="60" x2="102" y2="80" stroke="#DC2626" strokeWidth="1.5" />
-                <text x="70" y="48" fill="#DC2626" fontSize="10" fontWeight="700" letterSpacing="0.1em">
-                  {isIt ? "PUNTO D'URTO" : "IMPACT POINT"}
-                </text>
-              </svg>
-            </div>
-
-            {/* Spatial Signal 1: PHOTOS (Left Foreground, Viewfinder Marks, Direct Typography) */}
+            {/* Evidence Plane 1: PHOTOS (Left 3D Plane) */}
             <div
-              ref={photoSignalRef}
-              className="absolute left-2 sm:left-6 lg:left-12 top-2 sm:top-10 max-w-[230px] sm:max-w-[280px] pointer-events-none select-none will-change-transform space-y-1.5 [transform-style:preserve-3d]"
+              ref={planePhotoRef}
+              className="absolute left-2 sm:left-6 lg:left-10 w-[270px] sm:w-[320px] bg-white border border-[#0E0F10] p-6 shadow-lg will-change-transform space-y-3 [transform-style:preserve-3d]"
             >
-              <div className="flex items-center gap-2">
-                <div className="w-2 h-2 rounded-full bg-[#0E0F10]" />
-                <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#0E0F10]">
-                  {isIt ? "FOTOGRAFIE" : "PHOTOS"}
-                </span>
+              <div className="flex items-center justify-between border-b border-[#E5E5E3] pb-3">
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 rounded-full bg-[#0E0F10]" />
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-[#0E0F10]">
+                    {isIt ? "PROVE FOTOGRAFICHE" : "PHOTO EVIDENCE"}
+                  </span>
+                </div>
+                <span className="text-[10px] font-mono text-[#777777]">01 / 03</span>
               </div>
-              <div className="text-sm font-semibold text-[#0E0F10] uppercase tracking-tight">
-                {isIt ? "4 inquadrature coerenti" : "4 essential viewpoints"}
+              <div className="text-base font-bold uppercase text-[#0E0F10] tracking-tight">
+                {isIt ? "4 Prospetti Guidati" : "4 Guided Angles"}
               </div>
-              <p className="text-xs text-[#666666] font-light leading-relaxed">
-                {isIt ? "Panoramica, punto d'urto e controparte senza maschere cartacee." : "Overview, contact zone, and vehicle alignment without paper forms."}
+              <p className="text-xs text-[#555555] font-light leading-relaxed">
+                {isIt
+                  ? "Panoramica, punto d'urto, controparte e segnaletica acquisiti con mirini visivi a schermo."
+                  : "Wide overview, contact point, counterparty, and road signs framed with on-screen viewfinders."}
               </p>
+              <div className="pt-2 border-t border-[#E5E5E3] text-[10px] font-semibold text-[#0E0F10] uppercase tracking-wider">
+                {isIt ? "Coordinate e metadati integrati" : "Metadata & coordinates embedded"}
+              </div>
             </div>
 
-            {/* Spatial Signal 2: LOCATION (Deep Right Orbit, Spatial Coordinates, No Card) */}
+            {/* Evidence Plane 2: ROADWAY (Center 3D Plane) */}
             <div
-              ref={geoSignalRef}
-              className="absolute right-2 sm:right-6 lg:right-12 bottom-2 sm:bottom-10 max-w-[230px] sm:max-w-[280px] pointer-events-none select-none will-change-transform space-y-1.5 [transform-style:preserve-3d]"
+              ref={planeRoadRef}
+              className="w-[280px] sm:w-[340px] bg-[#0E0F10] text-white p-6 shadow-2xl z-10 will-change-transform space-y-3 [transform-style:preserve-3d]"
             >
-              <div className="flex items-center gap-2">
-                <div className="w-2 h-2 rounded-full bg-[#0E0F10]" />
-                <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#0E0F10]">
-                  {isIt ? "POSIZIONE" : "LOCATION"}
-                </span>
+              <div className="flex items-center justify-between border-b border-white/20 pb-3">
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 rounded-full bg-emerald-400" />
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-emerald-400">
+                    {isIt ? "CONTESTO STRADALE" : "ROADWAY CONTEXT"}
+                  </span>
+                </div>
+                <span className="text-[10px] font-mono text-white/50">02 / 03</span>
               </div>
-              <div className="text-sm font-mono font-bold text-[#0E0F10]">
-                45.4642° N • 9.1900° E
+              <div className="text-base font-bold uppercase text-white tracking-tight">
+                {isIt ? "Allineamento Carreggiata" : "Roadway Alignment"}
               </div>
-              <p className="text-xs text-[#666666] font-light leading-relaxed">
-                {isIt ? "Via Cristoforo Colombo, Milano • Orientamento carreggiata 142° SE." : "Via Cristoforo Colombo, Milan • Roadway heading 142° SE."}
+              <p className="text-xs text-white/70 font-light leading-relaxed">
+                {isIt
+                  ? "Geolocalizzazione verificata, direzione di marcia e conformazione della corsia documentate con certezza."
+                  : "Verified GNSS localization, travel direction, and roadway geometry documented without ambiguity."}
               </p>
+              <div className="pt-2 border-t border-white/15 flex items-center justify-between text-[10px] font-mono text-white/60 uppercase">
+                <span>{isIt ? "ROMA / MILANO" : "ROMA / MILANO"}</span>
+                <span className="text-emerald-400">{isIt ? "CERTIFICATO" : "CERTIFIED"}</span>
+              </div>
             </div>
 
-            {/* Spatial Signal 3: TIME (Upper-Right Depth, Clean Timestamp, No Box) */}
+            {/* Evidence Plane 3: TIME & SEQUENCE (Right 3D Plane) */}
             <div
-              ref={timeSignalRef}
-              className="absolute top-2 sm:top-6 right-2 sm:right-32 max-w-[190px] sm:max-w-[220px] pointer-events-none select-none will-change-transform space-y-1 [transform-style:preserve-3d]"
+              ref={planeTimeRef}
+              className="absolute right-2 sm:right-6 lg:right-10 w-[270px] sm:w-[320px] bg-white border border-[#0E0F10] p-6 shadow-lg will-change-transform space-y-3 [transform-style:preserve-3d]"
             >
-              <div className="flex items-center gap-2">
-                <div className="w-1.5 h-1.5 rounded-full bg-emerald-600" />
-                <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#0E0F10]">
-                  {isIt ? "ORARIO" : "TIME"}
-                </span>
+              <div className="flex items-center justify-between border-b border-[#E5E5E3] pb-3">
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 rounded-full bg-[#0E0F10]" />
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-[#0E0F10]">
+                    {isIt ? "MARCATURA TEMPORALE" : "TIME & SEQUENCE"}
+                  </span>
+                </div>
+                <span className="text-[10px] font-mono text-[#777777]">03 / 03</span>
               </div>
-              <div className="text-sm font-mono font-bold text-[#0E0F10]">
-                14:22:08 UTC
+              <div className="text-base font-bold uppercase text-[#0E0F10] tracking-tight">
+                {isIt ? "Sequenza Cronologica" : "Chronological Sequence"}
               </div>
-              <span className="text-[11px] text-[#777777] block font-light">
-                {isIt ? "Marcatura temporale acquisizione" : "Capture sequence record"}
-              </span>
+              <p className="text-xs text-[#555555] font-light leading-relaxed">
+                {isIt
+                  ? "Marcatura oraria certificata per ciascun elemento probatorio. Eliminazione delle contraddizioni temporali."
+                  : "Certified timestamp anchoring each evidentiary element, preventing contradictory timeline disputes."}
+              </p>
+              <div className="pt-2 border-t border-[#E5E5E3] text-[10px] font-mono text-[#0E0F10] font-semibold tracking-wider">
+                09:41:20 • SECURE PROTOCOL
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 4. STICKY KINETIC SEQUENCE: Only ONE Step Dominant at a Time */}
+      {/* 4. GUIDED JOURNEY: VISUAL TRANSFORMATION STAGE (WITHOUT PIN: TRUE / RUNWAY BUGS) */}
       <section
-        ref={stickyJourneyRef}
-        className="relative w-full h-[100vh] bg-white border-b border-[#E5E5E3] flex items-center overflow-hidden"
+        ref={journeySectionRef}
+        className="py-24 sm:py-36 bg-white border-b border-[#E5E5E3] overflow-hidden"
       >
-        <div className="w-full px-6 sm:px-12 lg:px-20 max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-center">
-          {/* Left Column: Persistent Sticky Heading */}
-          <div className="lg:col-span-5 space-y-4">
+        <div className="w-full px-6 sm:px-12 lg:px-20 max-w-7xl mx-auto space-y-16">
+          {/* Header */}
+          <div className="max-w-3xl space-y-4">
             <span className="text-xs uppercase tracking-[0.24em] text-[#777777] font-semibold block">
               {isIt ? "IL PERCORSO GUIDATO" : "GUIDED JOURNEY"}
             </span>
             <h2 className="text-3xl sm:text-5xl font-bold uppercase tracking-tight text-[#0E0F10] leading-tight">
               {isIt ? (
                 <>
-                  Semplice, umano
+                  Dalla frammentazione
                   <br />
-                  e rassicurante.
+                  al record normalizzato.
                 </>
               ) : (
                 <>
-                  Simple, calm,
+                  From raw fragments
                   <br />
-                  and reassuring.
+                  to normalized record.
                 </>
               )}
             </h2>
             <p className="text-base text-[#666666] font-light leading-relaxed">
               {isIt
-                ? "Ogni fase viene affrontata singolarmente, senza affollamento visivo o ansia da compilazione."
-                : "Each phase is addressed singularly, with zero visual crowding or cognitive strain."}
+                ? "Ogni fase trasforma l'informazione grezza in dato probatorio difendibile, senza ambiguità e senza costrizioni."
+                : "Each phase transforms raw input into defensible evidentiary proof, without ambiguity or friction."}
             </p>
           </div>
 
-          {/* Right Column: Dynamic Stage Sequence (Only 1 dominant, distinct visual cues) */}
-          <div className="lg:col-span-7 relative min-h-[300px]">
-            {/* Step 01: Physical Safety / 112 with EmergencyRadar pulse */}
-            <div
-              ref={step1Ref}
-              className="space-y-4 will-change-transform"
-            >
-              <div className="flex items-center gap-4">
-                <span className="text-3xl sm:text-4xl font-mono font-bold text-[#0E0F10]">01</span>
-                <EmergencyRadar size={28} showSweep={true} />
-                <span className="text-xs uppercase font-semibold tracking-widest text-rose-600">
-                  {isIt ? "PRIORITÀ SOCCORSO" : "EMERGENCY SAFETY"}
-                </span>
-              </div>
-              <h3 className="text-2xl sm:text-3xl font-bold uppercase tracking-tight text-[#0E0F10]">
-                {isIt ? "Sicurezza e Chiamata 112" : "Physical Safety & 112 Access"}
-              </h3>
-              <p className="text-base sm:text-lg text-[#555555] font-light max-w-xl leading-relaxed">
-                {isIt
-                  ? "Verifica immediata dell'incolumità delle persone, chiamata d'emergenza con un tocco e indicazioni per la collocazione del triangolo."
-                  : "Instant physical safety assessment, single-tap emergency connection, and safe roadway refuging before any documentation."}
-              </p>
+          {/* Four Interactive Transformation Steps (No Pin Spacers, Clean Step Architecture) */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            {/* Step Controls Column */}
+            <div className="lg:col-span-4 space-y-2">
+              {journeyStages.map((stage, idx) => {
+                const isActive = activeStage === idx;
+                return (
+                  <button
+                    key={stage.num}
+                    type="button"
+                    onClick={() => setActiveStage(idx)}
+                    className={`w-full text-left p-4 sm:p-5 border transition-all duration-300 flex items-start gap-4 cursor-pointer ${
+                      isActive
+                        ? "bg-[#0E0F10] text-white border-[#0E0F10] shadow-md"
+                        : "bg-[#FAFAFA] text-[#555555] border-[#EBEBEB] hover:border-[#0E0F10]/40 hover:bg-white"
+                    }`}
+                  >
+                    <span className={`text-base font-mono font-bold ${isActive ? "text-white" : "text-[#888888]"}`}>
+                      {stage.num}
+                    </span>
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2">
+                        <span className={`text-[10px] font-bold uppercase tracking-widest ${isActive ? "text-white/70" : "text-[#777777]"}`}>
+                          {stage.badge}
+                        </span>
+                      </div>
+                      <div className={`text-sm sm:text-base font-bold uppercase tracking-tight ${isActive ? "text-white" : "text-[#0E0F10]"}`}>
+                        {stage.title}
+                      </div>
+                    </div>
+                  </button>
+                );
+              })}
             </div>
 
-            {/* Step 02: Four Photos with Viewfinder Assembly Cue */}
-            <div
-              ref={step2Ref}
-              className="space-y-4 will-change-transform absolute top-0 inset-x-0"
-            >
-              <div className="flex items-center gap-4">
-                <span className="text-3xl sm:text-4xl font-mono font-bold text-[#0E0F10]">02</span>
-                <div className="w-7 h-7 border border-[#0E0F10] relative flex items-center justify-center">
-                  <div className="w-1.5 h-1.5 bg-[#0E0F10]" />
+            {/* Active Stage Transformation Workbench */}
+            <div className="lg:col-span-8 bg-[#F7F7F6] border border-[#E5E5E3] p-6 sm:p-10 shadow-sm min-h-[380px] flex flex-col justify-between">
+              <div className="space-y-6">
+                <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#E5E5E3] pb-4">
+                  <div className="flex items-center gap-3">
+                    <span className="text-2xl sm:text-3xl font-mono font-bold text-[#0E0F10]">
+                      {journeyStages[activeStage].num}
+                    </span>
+                    <span className="text-xs uppercase font-semibold tracking-widest text-[#777777]">
+                      {journeyStages[activeStage].badge}
+                    </span>
+                  </div>
+                  <span className={`text-xs px-2.5 py-1 border font-semibold uppercase tracking-wider ${journeyStages[activeStage].tagColor}`}>
+                    {journeyStages[activeStage].tag}
+                  </span>
                 </div>
-                <span className="text-xs uppercase font-semibold tracking-widest text-[#777777]">
-                  {isIt ? "ACQUISIZIONE FOTOGRAFICA" : "OPTICAL GUIDANCE"}
-                </span>
-              </div>
-              <h3 className="text-2xl sm:text-3xl font-bold uppercase tracking-tight text-[#0E0F10]">
-                {isIt ? "Quattro Inquadrature Guidate" : "Four Guided Perspectives"}
-              </h3>
-              <p className="text-base sm:text-lg text-[#555555] font-light max-w-xl leading-relaxed">
-                {isIt
-                  ? "I mirini visivi a schermo guidano l'orientamento dello smartphone: panoramica, punto d'urto, controparte e contesto stradale."
-                  : "On-screen framing brackets orient your camera cleanly: wide context, impact zone, registration plate, and road orientation."}
-              </p>
-            </div>
 
-            {/* Step 03: Counterparty Info with Aligned Row Cue */}
-            <div
-              ref={step3Ref}
-              className="space-y-4 will-change-transform absolute top-0 inset-x-0"
-            >
-              <div className="flex items-center gap-4">
-                <span className="text-3xl sm:text-4xl font-mono font-bold text-[#0E0F10]">03</span>
-                <div className="h-[2px] w-8 bg-[#0E0F10]" />
-                <span className="text-xs uppercase font-semibold tracking-widest text-[#777777]">
-                  {isIt ? "DATI CONTROPARTE" : "COUNTERPARTY"}
-                </span>
+                <div className="space-y-3">
+                  <h3 className="text-2xl sm:text-3xl font-bold uppercase tracking-tight text-[#0E0F10]">
+                    {journeyStages[activeStage].title}
+                  </h3>
+                  <div className="text-xs sm:text-sm font-semibold uppercase tracking-wider text-[#666666]">
+                    {journeyStages[activeStage].subtitle}
+                  </div>
+                  <p className="text-base sm:text-lg text-[#555555] font-light leading-relaxed max-w-2xl">
+                    {journeyStages[activeStage].desc}
+                  </p>
+                </div>
               </div>
-              <h3 className="text-2xl sm:text-3xl font-bold uppercase tracking-tight text-[#0E0F10]">
-                {isIt ? "Dati Controparte Semplificati" : "Streamlined Counterparty Info"}
-              </h3>
-              <p className="text-base sm:text-lg text-[#555555] font-light max-w-xl leading-relaxed">
-                {isIt
-                  ? "Inserimento o scansione rapida di targa, assicurazione e conducente senza dover compilare formulari cartacei indecifrabili."
-                  : "Quick plate, insurance, and contact capture without deciphering weathered paper forms on the roadside."}
-              </p>
-            </div>
 
-            {/* Step 04: Review Compression into Single Document */}
-            <div
-              ref={step4Ref}
-              className="space-y-4 will-change-transform absolute top-0 inset-x-0"
-            >
-              <div className="flex items-center gap-4">
-                <span className="text-3xl sm:text-4xl font-mono font-bold text-[#0E0F10]">04</span>
-                <div className="w-5 h-6 border-2 border-[#0E0F10] border-t-4" />
-                <span className="text-xs uppercase font-semibold tracking-widest text-emerald-800">
-                  {isIt ? "FASCICOLO PRONTO" : "DOSSIER GENERATED"}
-                </span>
+              {/* Transformation Status Card */}
+              <div className="pt-6 border-t border-[#E5E5E3] flex flex-wrap items-center justify-between gap-4 text-xs">
+                <div>
+                  <span className="text-[10px] text-[#777777] uppercase tracking-wider block font-semibold">
+                    {journeyStages[activeStage].metaTitle}
+                  </span>
+                  <span className="font-semibold text-[#0E0F10]">
+                    {journeyStages[activeStage].metaValue}
+                  </span>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  {journeyStages.map((_, i) => (
+                    <button
+                      key={i}
+                      type="button"
+                      onClick={() => setActiveStage(i)}
+                      className={`h-1.5 transition-all duration-300 ${
+                        activeStage === i ? "w-8 bg-[#0E0F10]" : "w-3 bg-[#D4D4D2] hover:bg-[#888888]"
+                      }`}
+                      aria-label={`Go to stage ${i + 1}`}
+                    />
+                  ))}
+                </div>
               </div>
-              <h3 className="text-2xl sm:text-3xl font-bold uppercase tracking-tight text-[#0E0F10]">
-                {isIt ? "Conferma e Fascicolo Pronto" : "Immediate Dossier Generation"}
-              </h3>
-              <p className="text-base sm:text-lg text-[#555555] font-light max-w-xl leading-relaxed">
-                {isIt
-                  ? "Tutti gli elementi vengono ordinati in un unico riepilogo verificabile, pronto per l'inoltro alla compagnia e per la perizia."
-                  : "All recorded evidence compresses into one unified chronological file ready for adjuster review."}
-              </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 5. HUMAN SAFETY PROTOCOL: 112 CTA WITH EMERGENCY RADAR DIRECTLY NEXT TO TEXT */}
+      {/* 5. HUMAN SAFETY PROTOCOL: MANDATORY 112 CTA WITH EMERGENCY RADAR */}
       <section id="emergency-112-cta" className="py-20 sm:py-28 bg-[#F7F7F6] border-b border-[#E5E5E3]">
         <div className="w-full px-6 sm:px-12 lg:px-20 max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
           <div className="lg:col-span-6 space-y-4">

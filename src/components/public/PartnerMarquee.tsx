@@ -1,14 +1,8 @@
 "use client";
 
-import React, { useRef, useEffect } from "react";
+import React from "react";
 import Link from "next/link";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useLanguage } from "@/context/LanguageContext";
-
-if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger);
-}
 
 interface FictionalEntity {
   name: string;
@@ -109,38 +103,6 @@ const ENTITIES: FictionalEntity[] = [
 export function PartnerMarquee() {
   const { language } = useLanguage();
   const isIt = language === "it";
-  const railContainerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const el = railContainerRef.current;
-    if (!el) return;
-
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      return;
-    }
-
-    // Velocity-linked subtle skew & depth response
-    const trigger = ScrollTrigger.create({
-      trigger: el,
-      start: "top bottom",
-      end: "bottom top",
-      onUpdate: (self) => {
-        const vel = self.getVelocity();
-        // subtle perspective skew clamped between -2.5 and +2.5 deg
-        const skew = Math.max(-2.5, Math.min(2.5, vel * 0.0015));
-        gsap.to(el, {
-          skewX: skew,
-          duration: 0.4,
-          ease: "power2.out",
-          overwrite: "auto",
-        });
-      },
-    });
-
-    return () => {
-      trigger.kill();
-    };
-  }, []);
 
   return (
     <section id="partner-marquee" className="relative w-full py-16 sm:py-24 bg-[#F7F7F6] overflow-hidden border-y border-[#E5E5E3]">
@@ -158,8 +120,8 @@ export function PartnerMarquee() {
         </h2>
       </div>
 
-      {/* Infinite Seamless Typographic + Vector Logo Rail with Scroll Velocity */}
-      <div ref={railContainerRef} className="relative w-full overflow-hidden select-none will-change-transform">
+      {/* Infinite Seamless Typographic + Vector Logo Rail */}
+      <div className="relative w-full overflow-hidden select-none">
         {/* Soft edge masks for seamless entry and exit */}
         <div className="absolute left-0 inset-y-0 w-24 sm:w-48 bg-gradient-to-r from-[#F7F7F6] to-transparent z-10 pointer-events-none" />
         <div className="absolute right-0 inset-y-0 w-24 sm:w-48 bg-gradient-to-l from-[#F7F7F6] to-transparent z-10 pointer-events-none" />

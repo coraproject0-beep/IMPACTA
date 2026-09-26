@@ -5,6 +5,7 @@ import Link from "next/link";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { PublicShell } from "@/components/public/PublicShell";
+import { RevealText } from "@/components/motion/RevealText";
 import { useLanguage } from "@/context/LanguageContext";
 
 if (typeof window !== "undefined") {
@@ -20,21 +21,19 @@ export default function InsurersPage() {
 }
 
 function InsurersContent() {
-  const { t, language } = useLanguage();
+  const { language } = useLanguage();
   const isIt = language === "it";
 
   // SCENE 3: Hero Collision Field Refs
   const heroRef = useRef<HTMLElement>(null);
-  const headlineRef = useRef<HTMLHeadingElement>(null);
   const vehicleARef = useRef<HTMLDivElement>(null);
   const vehicleBRef = useRef<HTMLDivElement>(null);
   const trajectorySvgRef = useRef<SVGSVGElement>(null);
   const impactPulseRef = useRef<SVGCircleElement>(null);
   const heroConceptsRef = useRef<HTMLDivElement>(null);
 
-  // SCENE 2: Queue Extrusion Refs
+  // SCENE 2: Queue Extrusion Refs (Time-based GSAP, NO pin: true)
   const queueSectionRef = useRef<HTMLElement>(null);
-  const queueContainerRef = useRef<HTMLDivElement>(null);
   const row0Ref = useRef<HTMLDivElement>(null);
   const row1Ref = useRef<HTMLDivElement>(null); // Selected claim
   const row2Ref = useRef<HTMLDivElement>(null);
@@ -42,14 +41,14 @@ function InsurersContent() {
   const row4Ref = useRef<HTMLDivElement>(null);
   const claimColumnsRef = useRef<HTMLDivElement>(null);
 
-  // SCENE 4: 3D Evidence Fan Refs (3 Visual Planes, Zero Cards)
+  // SCENE 4: 3D Evidence Fan Refs (3 Visual Planes, Time-based GSAP)
   const fanSectionRef = useRef<HTMLElement>(null);
   const planeRoadRef = useRef<HTMLDivElement>(null);
   const planeDamageRef = useRef<HTMLDivElement>(null);
   const planeCaiRef = useRef<HTMLDivElement>(null);
   const unifiedRailRef = useRef<HTMLDivElement>(null);
 
-  // SCENE 5: Observed vs Inferred Depth Swap Refs
+  // SCENE 5: Observed vs Inferred Depth Refs (Time-based GSAP)
   const depthSectionRef = useRef<HTMLElement>(null);
   const observedBlockRef = useRef<HTMLDivElement>(null);
   const inferredBlockRef = useRef<HTMLDivElement>(null);
@@ -62,49 +61,34 @@ function InsurersContent() {
   const horizonLineRef = useRef<HTMLDivElement>(null);
 
   // -------------------------------------------------------------
-  // 1. SCENE 3: HERO COLLISION FIELD ANIMATION
+  // 1. SCENE 3: HERO COLLISION FIELD ANIMATION (Time-based)
   // -------------------------------------------------------------
   useEffect(() => {
     const hero = heroRef.current;
-    const headline = headlineRef.current;
     const vehA = vehicleARef.current;
     const vehB = vehicleBRef.current;
     const traj = trajectorySvgRef.current;
     const pulse = impactPulseRef.current;
     const concepts = heroConceptsRef.current;
-    if (!hero || !headline || !vehA || !vehB || !traj || !pulse || !concepts) return;
+    if (!hero || !vehA || !vehB || !traj || !pulse || !concepts) return;
 
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      gsap.set([vehA, vehB, pulse, concepts.children], { opacity: 1 });
       return;
     }
 
     const ctx = gsap.context(() => {
-      // Word-by-word headline entrance with vertical mask
-      const words = headline.querySelectorAll(".hero-word");
-      gsap.fromTo(
-        words,
-        { y: 60, opacity: 0, scale: 0.94 },
-        {
-          y: 0,
-          opacity: 1,
-          scale: 1,
-          duration: 1.1,
-          stagger: 0.09,
-          ease: "power3.out",
-        }
-      );
-
       // Vehicles converge from depth
       gsap.fromTo(
         vehA,
-        { x: -90, y: 40, z: -140, rotateY: 18, opacity: 0 },
-        { x: 0, y: 0, z: 20, rotateY: -4, opacity: 1, duration: 1.3, ease: "power3.out", delay: 0.15 }
+        { x: -70, y: 30, z: -100, rotateY: 14, opacity: 0 },
+        { x: 0, y: 0, z: 20, rotateY: -3, opacity: 1, duration: 1.2, ease: "power3.out", delay: 0.1 }
       );
 
       gsap.fromTo(
         vehB,
-        { x: 90, y: -40, z: -180, rotateY: -18, opacity: 0 },
-        { x: 0, y: 0, z: -15, rotateY: 4, opacity: 1, duration: 1.3, ease: "power3.out", delay: 0.25 }
+        { x: 70, y: -30, z: -120, rotateY: -14, opacity: 0 },
+        { x: 0, y: 0, z: -10, rotateY: 3, opacity: 1, duration: 1.2, ease: "power3.out", delay: 0.2 }
       );
 
       // Trajectory lines draw
@@ -114,7 +98,7 @@ function InsurersContent() {
         gsap.fromTo(
           [pathA, pathB],
           { strokeDashoffset: 400, opacity: 0 },
-          { strokeDashoffset: 0, opacity: 1, duration: 1.2, ease: "power2.inOut", delay: 0.4 }
+          { strokeDashoffset: 0, opacity: 1, duration: 1.1, ease: "power2.inOut", delay: 0.3 }
         );
       }
 
@@ -122,14 +106,14 @@ function InsurersContent() {
       gsap.fromTo(
         pulse,
         { scale: 0, opacity: 0 },
-        { scale: 1.8, opacity: 0.9, duration: 0.8, ease: "back.out(2)", delay: 0.8 }
+        { scale: 1.6, opacity: 0.9, duration: 0.8, ease: "back.out(2)", delay: 0.7 }
       );
 
       // Product concept labels emerge
       gsap.fromTo(
         concepts.children,
-        { y: 20, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.8, stagger: 0.08, ease: "power2.out", delay: 0.9 }
+        { y: 16, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.8, stagger: 0.08, ease: "power2.out", delay: 0.8 }
       );
     }, hero);
 
@@ -137,7 +121,7 @@ function InsurersContent() {
   }, []);
 
   // -------------------------------------------------------------
-  // 2. SCENE 2: QUEUE EXTRUSION (Full-viewport ledger strips, 3D scroll extrusion)
+  // 2. SCENE 2: QUEUE EXTRUSION (TIME-BASED GSAP, ZERO PIN: TRUE)
   // -------------------------------------------------------------
   useEffect(() => {
     const sec = queueSectionRef.current;
@@ -150,69 +134,68 @@ function InsurersContent() {
     if (!sec || !r0 || !r1 || !r2 || !r3 || !r4 || !cols) return;
 
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      gsap.set(r1, { z: 40, opacity: 1 });
+      gsap.set(cols, { opacity: 1, y: 0, height: "auto" });
       return;
     }
 
     const ctx = gsap.context(() => {
-      gsap.set(cols, { opacity: 0, y: 30, height: 0 });
+      // Initial state
+      gsap.set([r0, r2, r3, r4], { z: 0, opacity: 0.85, y: 0 });
+      gsap.set(r1, { z: 0, scale: 1 });
+      gsap.set(cols, { opacity: 0, y: 16, height: 0 });
 
+      // Time-based timeline triggered once on viewport entrance
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: sec,
-          start: "top top",
-          end: "+=190%",
-          pin: true,
-          scrub: 0.7,
+          start: "top 72%",
+          once: true,
         },
       });
 
-      // 1. Non-selected rows recede in Z and separate vertically
-      tl.to([r0, r2, r3, r4], {
-        z: -180,
-        opacity: 0.12,
-        y: (i) => (i === 0 ? -60 : (i + 1) * 35),
-        duration: 0.4,
-        ease: "power2.inOut",
-      }, 0)
-      // 2. Selected row steps forward in Z and expands
-      .to(r1, {
-        z: 80,
-        scale: 1.04,
-        duration: 0.4,
-        ease: "power2.inOut",
-      }, 0)
-      // 3. Selected row reveals expanded structured claim columns
-      .to(cols, {
-        opacity: 1,
-        y: 0,
-        height: "auto",
-        duration: 0.5,
-        ease: "power3.out",
-      }, 0.35);
-
-      // Scroll velocity tilt response: 1-3 degrees tilt on fast scrolling
-      ScrollTrigger.create({
-        trigger: sec,
-        start: "top bottom",
-        end: "bottom top",
-        onUpdate: (self) => {
-          const vel = self.getVelocity();
-          const tilt = Math.max(-3, Math.min(3, vel * 0.002));
-          gsap.to([r0, r1, r2, r3, r4], {
-            rotateX: tilt,
-            duration: 0.4,
-            ease: "power2.out",
-            overwrite: "auto",
-          });
+      // 1. Ambient rows recede into Z-depth
+      tl.to(
+        [r0, r2, r3, r4],
+        {
+          z: -120,
+          opacity: 0.25,
+          y: (i) => (i === 0 ? -30 : (i + 1) * 18),
+          duration: 0.9,
+          ease: "power2.inOut",
         },
-      });
+        0
+      )
+        // 2. Selected row steps forward into crisp focus
+        .to(
+          r1,
+          {
+            z: 60,
+            scale: 1.02,
+            duration: 0.9,
+            ease: "power3.out",
+          },
+          0
+        )
+        // 3. Extruded structured claim columns unfold smoothly
+        .to(
+          cols,
+          {
+            opacity: 1,
+            y: 0,
+            height: "auto",
+            duration: 0.8,
+            ease: "power3.out",
+          },
+          0.3
+        );
     }, sec);
 
     return () => ctx.revert();
   }, []);
 
   // -------------------------------------------------------------
-  // 3. SCENE 4: 3D EVIDENCE FAN (3 Visual Planes, Clip reveals, Collapse into 1 Record)
+  // 3. SCENE 4: 3D EVIDENCE FAN (TIME-BASED GSAP, ZERO INVENTED DATA)
   // -------------------------------------------------------------
   useEffect(() => {
     const sec = fanSectionRef.current;
@@ -223,83 +206,85 @@ function InsurersContent() {
     if (!sec || !road || !damage || !cai || !unified) return;
 
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      gsap.set([road, damage, cai], { opacity: 0.7, x: 0, rotateY: 0, z: 0 });
+      gsap.set(unified, { opacity: 1, y: 0 });
       return;
     }
 
     const ctx = gsap.context(() => {
-      // Initial state: close together
-      gsap.set(road, { x: 0, rotateY: 0, z: 0, opacity: 0.7 });
-      gsap.set(damage, { z: 15, scale: 0.95, opacity: 0.9 });
-      gsap.set(cai, { x: 0, rotateY: 0, z: 0, opacity: 0.7 });
-      gsap.set(unified, { opacity: 0, y: 40 });
+      const isMobile = window.innerWidth < 768;
+      const fanSpread = isMobile ? 24 : 220;
+      const fanRotate = isMobile ? 4 : 16;
 
+      // Initial compact stance
+      gsap.set(road, { x: 0, rotateY: 0, z: -20, opacity: 0 });
+      gsap.set(damage, { z: 0, scale: 0.96, opacity: 0 });
+      gsap.set(cai, { x: 0, rotateY: 0, z: -20, opacity: 0 });
+      gsap.set(unified, { opacity: 0, y: 20 });
+
+      // Time-based timeline triggered once when section is scrolled into view
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: sec,
-          start: "top 65%",
-          end: "bottom 30%",
-          scrub: 0.8,
+          start: "top 70%",
+          once: true,
         },
       });
 
-      const isMobile = window.innerWidth < 768;
-      const fanSpread = isMobile ? 35 : 300;
-      const fanRotate = isMobile ? 6 : 22;
-
-      // Step 1: Unfold in wide 3D perspective
-      tl.to(road, {
-        x: -fanSpread,
-        rotateY: fanRotate,
-        z: isMobile ? -30 : -60,
-        opacity: 1,
-        duration: 0.45,
-        ease: "power2.out",
-      }, 0)
-      .to(damage, {
-        z: isMobile ? 40 : 70,
-        scale: isMobile ? 1.01 : 1.03,
-        opacity: 1,
-        duration: 0.45,
-        ease: "power2.out",
-      }, 0)
-      .to(cai, {
-        x: fanSpread,
-        rotateY: -fanRotate,
-        z: isMobile ? -30 : -60,
-        opacity: 1,
-        duration: 0.45,
-        ease: "power2.out",
-      }, 0)
-      // Step 2: Peak hold, then rotate towards 0 and collapse toward center line
-      .to([road, cai], {
-        x: 0,
-        rotateY: 0,
-        z: 0,
-        opacity: 0.4,
-        duration: 0.35,
-        ease: "power3.inOut",
-      }, 0.55)
-      .to(damage, {
-        z: 0,
-        scale: 1,
-        opacity: 0.4,
-        duration: 0.35,
-        ease: "power3.inOut",
-      }, 0.55)
-      // Step 3: Collapse into unified structured line system
-      .to(unified, {
-        opacity: 1,
-        y: 0,
-        duration: 0.35,
-        ease: "power2.out",
-      }, 0.75);
+      // Step 1: Unfold 3 visual planes into spatial fan (0.0 -> 0.8s)
+      tl.to(
+        damage,
+        {
+          z: 50,
+          scale: 1.02,
+          opacity: 1,
+          duration: 0.8,
+          ease: "power3.out",
+        },
+        0
+      )
+        .to(
+          road,
+          {
+            x: -fanSpread,
+            rotateY: fanRotate,
+            z: -30,
+            opacity: 1,
+            duration: 0.8,
+            ease: "power3.out",
+          },
+          0.1
+        )
+        .to(
+          cai,
+          {
+            x: fanSpread,
+            rotateY: -fanRotate,
+            z: -30,
+            opacity: 1,
+            duration: 0.8,
+            ease: "power3.out",
+          },
+          0.1
+        )
+        // Step 2: Settle and establish unified claim ledger (0.8 -> 1.4s)
+        .to(
+          unified,
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.6,
+            ease: "power2.out",
+          },
+          0.6
+        );
     }, sec);
 
     return () => ctx.revert();
   }, []);
 
   // -------------------------------------------------------------
-  // 4. SCENE 5: OBSERVED VS INFERRED DEPTH SWAP (Zero Button, Scroll-driven 3D Swap)
+  // 4. SCENE 5: OBSERVED VS INFERRED (TIME-BASED GSAP, ZERO UI TOYS)
   // -------------------------------------------------------------
   useEffect(() => {
     const sec = depthSectionRef.current;
@@ -309,47 +294,62 @@ function InsurersContent() {
     if (!sec || !obs || !inf || !review) return;
 
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      gsap.set(obs, { z: 40, opacity: 1 });
+      gsap.set(inf, { z: -80, opacity: 0.85 });
+      gsap.set(review, { opacity: 1, y: 0 });
       return;
     }
 
     const ctx = gsap.context(() => {
-      // Start: OBSERVED foreground, INFERRED in deep background
-      gsap.set(obs, { z: 40, x: 0, opacity: 1 });
-      gsap.set(inf, { z: -260, x: 40, opacity: 0.35 });
-      gsap.set(review, { opacity: 0, y: 30 });
+      // 3D Depth Setup: Observed in crisp foreground, Inferred behind
+      gsap.set(obs, { z: 40, x: -20, opacity: 0 });
+      gsap.set(inf, { z: -180, x: 20, opacity: 0 });
+      gsap.set(review, { opacity: 0, y: 20 });
 
+      // Time-based timeline triggered once on viewport entrance
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: sec,
-          start: "top 68%",
-          end: "bottom 32%",
-          scrub: 0.8,
+          start: "top 72%",
+          once: true,
         },
       });
 
-      // 1. OBSERVED shifts aside and recedes slightly
-      tl.to(obs, {
-        x: -50,
-        z: -140,
-        opacity: 0.45,
-        duration: 0.45,
-        ease: "power2.inOut",
-      }, 0)
-      // 2. INFERRED surges forward into dominant focus
-      .to(inf, {
-        x: 0,
-        z: 40,
-        opacity: 1,
-        duration: 0.45,
-        ease: "power2.inOut",
-      }, 0)
-      // 3. HUMAN REVIEW baseline enters connecting both layers
-      .to(review, {
-        opacity: 1,
-        y: 0,
-        duration: 0.4,
-        ease: "power3.out",
-      }, 0.55);
+      // 1. Observed enters into prominent front plane
+      tl.to(
+        obs,
+        {
+          x: 0,
+          z: 40,
+          opacity: 1,
+          duration: 1.0,
+          ease: "power3.out",
+        },
+        0
+      )
+        // 2. Inferred enters on deeper plane
+        .to(
+          inf,
+          {
+            x: 0,
+            z: -140,
+            opacity: 0.75,
+            duration: 1.0,
+            ease: "power3.out",
+          },
+          0.2
+        )
+        // 3. Human Review baseline locks in connecting both layers
+        .to(
+          review,
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.7,
+            ease: "power2.out",
+          },
+          0.6
+        );
     }, sec);
 
     return () => ctx.revert();
@@ -366,42 +366,52 @@ function InsurersContent() {
     if (!sec || !headline || !text || !line) return;
 
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      gsap.set(headline.querySelectorAll(".payoff-line"), { opacity: 1, x: 0 });
+      gsap.set(text, { opacity: 1, y: 0 });
+      gsap.set(line, { scaleX: 1 });
       return;
     }
 
     const ctx = gsap.context(() => {
       const lines = headline.querySelectorAll(".payoff-line");
-      gsap.set(lines, { x: -80, opacity: 0 });
-      gsap.set(text, { opacity: 0, y: 30 });
+      gsap.set(lines, { x: -40, opacity: 0 });
+      gsap.set(text, { opacity: 0, y: 20 });
       gsap.set(line, { scaleX: 0 });
 
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: sec,
-          start: "top 70%",
-          end: "bottom 40%",
-          toggleActions: "play none none reverse",
+          start: "top 72%",
+          once: true,
         },
       });
 
       tl.to(lines, {
         x: 0,
         opacity: 1,
-        duration: 1,
-        stagger: 0.14,
+        duration: 0.9,
+        stagger: 0.12,
         ease: "power3.out",
       })
-      .to(text, {
-        opacity: 1,
-        y: 0,
-        duration: 0.8,
-        ease: "power2.out",
-      }, "-=0.5")
-      .to(line, {
-        scaleX: 1,
-        duration: 1.2,
-        ease: "power3.inOut",
-      }, "-=0.6");
+        .to(
+          text,
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.8,
+            ease: "power2.out",
+          },
+          "-=0.4"
+        )
+        .to(
+          line,
+          {
+            scaleX: 1,
+            duration: 1.0,
+            ease: "power3.inOut",
+          },
+          "-=0.4"
+        );
     }, sec);
 
     return () => ctx.revert();
@@ -410,7 +420,7 @@ function InsurersContent() {
   return (
     <div className="w-full bg-[#FFFFFF] selection:bg-[#0E0F10] selection:text-white">
       {/* ----------------------------------------------------------- */}
-      {/* 1. SCENE 3: HERO COLLISION FIELD (No White Card, Spatial 3D Convergence) */}
+      {/* 1. SCENE 3: HERO COLLISION FIELD (Character Reveal, Spatial 3D Convergence) */}
       {/* ----------------------------------------------------------- */}
       <section
         ref={heroRef}
@@ -418,29 +428,23 @@ function InsurersContent() {
         style={{ perspective: "1400px" }}
       >
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
-          {/* Left Column: Authoritative Editorial Statement */}
+          {/* Left Column: Authoritative Editorial Statement with Character-Level Reveal */}
           <div className="lg:col-span-6 space-y-6 sm:space-y-8">
             <span className="text-[11px] sm:text-xs uppercase tracking-[0.24em] font-semibold text-[#777777] block">
               {isIt ? "OPERAZIONI SINISTRI E LIQUIDAZIONE" : "CLAIMS OPERATIONS & SETTLEMENT"}
             </span>
 
-            <h1
-              ref={headlineRef}
-              className="text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-[#0E0F10] leading-[1.02] uppercase overflow-hidden"
-              style={{ transformStyle: "preserve-3d" }}
-            >
-              <span className="hero-word inline-block mr-3">
-                {isIt ? "DATI" : "STRUCTURED"}
+            {/* Headline with Character-Level Reveal */}
+            <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-[#0E0F10] leading-[1.02] uppercase">
+              <span className="block">
+                <RevealText as="span" mode="char" variant="depth" triggerOnScroll={false}>
+                  {isIt ? "DATI OGGETTIVI." : "STRUCTURED EVIDENCE."}
+                </RevealText>
               </span>
-              <span className="hero-word inline-block text-[#0E0F10]">
-                {isIt ? "OGGETTIVI." : "EVIDENCE."}
-              </span>
-              <br />
-              <span className="hero-word inline-block mr-3 text-[#555555]">
-                {isIt ? "PRONTI PER" : "READY FOR"}
-              </span>
-              <span className="hero-word inline-block text-[#555555]">
-                {isIt ? "LA REVISIONE." : "REVIEW."}
+              <span className="block text-[#555555]">
+                <RevealText as="span" mode="char" variant="depth" delay={0.25} triggerOnScroll={false}>
+                  {isIt ? "PRONTI PER LA REVISIONE." : "READY FOR REVIEW."}
+                </RevealText>
               </span>
             </h1>
 
@@ -469,7 +473,7 @@ function InsurersContent() {
             </div>
           </div>
 
-          {/* Right Column: SPATIAL COLLISION FIELD (No Rectangles, SVG Silhouettes + Converging Vectors) */}
+          {/* Right Column: SPATIAL COLLISION FIELD */}
           <div className="lg:col-span-6 flex justify-center lg:justify-end [transform-style:preserve-3d]">
             <div className="relative w-full max-w-lg min-h-[440px] flex items-center justify-center [transform-style:preserve-3d] select-none py-2">
               {/* Converging Trajectory SVG Overlay */}
@@ -480,7 +484,7 @@ function InsurersContent() {
                 xmlns="http://www.w3.org/2000/svg"
                 className="absolute inset-0 w-full h-full pointer-events-none"
               >
-                {/* Vehicle A Trajectory (From lower-left to collision center) */}
+                {/* Vehicle A Trajectory */}
                 <path
                   className="traj-a"
                   d="M 60 330 C 120 300, 180 230, 225 185"
@@ -489,7 +493,7 @@ function InsurersContent() {
                   strokeDasharray="400"
                   strokeDashoffset="0"
                 />
-                {/* Vehicle B Trajectory (From upper-right to collision center) */}
+                {/* Vehicle B Trajectory */}
                 <path
                   className="traj-b"
                   d="M 400 50 C 350 90, 280 145, 225 185"
@@ -543,7 +547,7 @@ function InsurersContent() {
                 </div>
               </div>
 
-              {/* Spatial Product Concept Badges (No Precision Theatre) */}
+              {/* Spatial Product Concept Badges */}
               <div
                 ref={heroConceptsRef}
                 className="absolute inset-x-4 bottom-0 border-t border-[#E5E5E3] pt-4 grid grid-cols-2 sm:grid-cols-4 gap-3 text-left [transform-style:preserve-3d]"
@@ -587,12 +591,12 @@ function InsurersContent() {
       </section>
 
       {/* ----------------------------------------------------------- */}
-      {/* 2. SCENE 2: QUEUE EXTRUSION (Full-Viewport Ledger Rails across 70-85vw) */}
+      {/* 2. SCENE 2: QUEUE EXTRUSION (TIME-BASED GSAP, ZERO PIN: TRUE) */}
       {/* ----------------------------------------------------------- */}
       <section
         id="claims-queue"
         ref={queueSectionRef}
-        className="relative w-full h-[100vh] bg-[#F7F7F6] border-b border-[#E5E5E3] flex items-center justify-center overflow-hidden"
+        className="py-24 sm:py-36 bg-[#F7F7F6] border-b border-[#E5E5E3] flex items-center justify-center overflow-hidden"
         style={{ perspective: "1600px" }}
       >
         <div className="w-full px-6 sm:px-12 lg:px-20 max-w-6xl mx-auto flex flex-col items-center">
@@ -610,31 +614,28 @@ function InsurersContent() {
             </p>
           </div>
 
-          {/* Perspective Queue Ledger Stage (70-85vw wide lines, Zero floating cards) */}
-          <div
-            ref={queueContainerRef}
-            className="relative w-full max-w-4xl min-h-[380px] flex flex-col justify-center [transform-style:preserve-3d]"
-          >
+          {/* Perspective Queue Ledger Stage (Canonical Fixtures, Zero Invented Data) */}
+          <div className="relative w-full max-w-4xl flex flex-col justify-center [transform-style:preserve-3d]">
             {/* Row 0: Top ambient row */}
             <div
               ref={row0Ref}
               className="w-full border-b border-[#E5E5E3] py-3 flex items-center justify-between text-xs text-[#888888] will-change-transform"
             >
-              <span className="font-mono">IMP-260925-018</span>
+              <span className="font-mono">CLM-IT-2026-004</span>
               <span className="uppercase font-medium">Veicolo A vs Veicolo B • Milano</span>
-              <span className="font-mono">16:05 UTC</span>
+              <span className="font-mono">16:05</span>
               <span className="text-[10px] uppercase tracking-wider">{isIt ? "RILIEVO COMPLETATO" : "INTAKE COMPLETE"}</span>
             </div>
 
             {/* Row 1: SELECTED CLAIM — Extrudes Forward in Z-space */}
             <div
               ref={row1Ref}
-              className="w-full bg-[#0E0F10] text-white p-5 sm:p-6 my-2 shadow-2xl border-l-4 border-emerald-400 will-change-transform z-20 [transform-style:preserve-3d]"
+              className="w-full bg-[#0E0F10] text-white p-5 sm:p-6 my-3 shadow-2xl border-l-4 border-emerald-400 will-change-transform z-20 [transform-style:preserve-3d]"
             >
               <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/15 pb-4">
                 <div className="space-y-1">
                   <div className="flex items-center gap-3">
-                    <span className="text-xs font-mono font-bold text-emerald-400">IMP-260925-014</span>
+                    <span className="text-xs font-mono font-bold text-emerald-400">CLM-IT-2026-001</span>
                     <span className="text-[10px] uppercase tracking-widest text-white/60">
                       {isIt ? "IN ATTESA DI REVISIONE PERITALE" : "PENDING ADJUSTER REVIEW"}
                     </span>
@@ -644,14 +645,14 @@ function InsurersContent() {
                   </div>
                 </div>
                 <div className="text-right">
-                  <span className="text-xs font-mono text-white/50 block">14:22:08 UTC</span>
-                  <span className="text-xs uppercase font-semibold text-white tracking-wider underline">
+                  <span className="text-xs font-mono text-white/50 block">09:41:20 • ROMA / MILANO</span>
+                  <span className="text-xs uppercase font-semibold text-emerald-400 tracking-wider">
                     {isIt ? "Fascicolo Selezionato" : "Selected Claim"}
                   </span>
                 </div>
               </div>
 
-              {/* Extruded Columns (Revealed as row steps forward) */}
+              {/* Extruded Columns (Unfolded smoothly) */}
               <div ref={claimColumnsRef} className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-5 text-xs overflow-hidden">
                 <div className="border-l border-white/20 pl-4 space-y-1">
                   <span className="text-[10px] uppercase tracking-wider text-white/50 font-bold block">
@@ -669,7 +670,7 @@ function InsurersContent() {
                   </span>
                   <div className="text-sm font-bold text-white">{isIt ? "Corsia a senso unico" : "Single-direction lane"}</div>
                   <div className="text-[11px] text-white/70 font-light">
-                    {isIt ? "Coordinate GNSS verificate" : "GNSS coordinates aligned"}
+                    {isIt ? "Coordinate verificate" : "Coordinates verified"}
                   </div>
                 </div>
 
@@ -677,7 +678,7 @@ function InsurersContent() {
                   <span className="text-[10px] uppercase tracking-wider text-white/50 font-bold block">
                     {isIt ? "CIRCOSTANZA CAI" : "CAI CIRCUMSTANCE"}
                   </span>
-                  <div className="text-sm font-bold text-white">{isIt ? "Casella 12 Concorde" : "Box 12 Concordance"}</div>
+                  <div className="text-sm font-bold text-white">{isIt ? "Allineamento Casella 12" : "Box 12 Alignment"}</div>
                   <div className="text-[11px] text-white/70 font-light">
                     {isIt ? "Stesso senso di marcia" : "Same travel direction"}
                   </div>
@@ -690,9 +691,9 @@ function InsurersContent() {
               ref={row2Ref}
               className="w-full border-b border-[#E5E5E3] py-3 flex items-center justify-between text-xs text-[#888888] will-change-transform"
             >
-              <span className="font-mono">IMP-260925-011</span>
+              <span className="font-mono">CLM-IT-2026-002</span>
               <span className="uppercase font-medium">Veicolo C vs Veicolo D • Roma</span>
-              <span className="font-mono">12:40 UTC</span>
+              <span className="font-mono">12:40</span>
               <span className="text-[10px] uppercase tracking-wider">{isIt ? "ARCHIVIATO" : "ARCHIVED"}</span>
             </div>
 
@@ -701,9 +702,9 @@ function InsurersContent() {
               ref={row3Ref}
               className="w-full border-b border-[#E5E5E3] py-3 flex items-center justify-between text-xs text-[#888888] will-change-transform"
             >
-              <span className="font-mono">IMP-260925-008</span>
+              <span className="font-mono">CLM-IT-2026-003</span>
               <span className="uppercase font-medium">Veicolo E vs Veicolo F • Torino</span>
-              <span className="font-mono">09:15 UTC</span>
+              <span className="font-mono">09:15</span>
               <span className="text-[10px] uppercase tracking-wider">{isIt ? "IN ELABORAZIONE" : "PROCESSING"}</span>
             </div>
 
@@ -712,9 +713,9 @@ function InsurersContent() {
               ref={row4Ref}
               className="w-full border-b border-[#E5E5E3] py-3 flex items-center justify-between text-xs text-[#888888] will-change-transform"
             >
-              <span className="font-mono">IMP-260925-003</span>
+              <span className="font-mono">CLM-IT-2026-005</span>
               <span className="uppercase font-medium">Veicolo G vs Veicolo H • Bologna</span>
-              <span className="font-mono">08:30 UTC</span>
+              <span className="font-mono">08:30</span>
               <span className="text-[10px] uppercase tracking-wider">{isIt ? "ARCHIVIATO" : "ARCHIVED"}</span>
             </div>
           </div>
@@ -722,7 +723,7 @@ function InsurersContent() {
       </section>
 
       {/* ----------------------------------------------------------- */}
-      {/* 3. SCENE 4: 3D EVIDENCE FAN (Three Actual Visual Planes, Zero Cards) */}
+      {/* 3. SCENE 4: 3D EVIDENCE FAN (TIME-BASED GSAP, ZERO INVENTED DATA) */}
       {/* ----------------------------------------------------------- */}
       <section
         ref={fanSectionRef}
@@ -744,12 +745,12 @@ function InsurersContent() {
             </p>
           </div>
 
-          {/* Three Visual Planes Stage in Perspective (Direct on page, Zero Box Cards) */}
+          {/* Three Visual Planes Stage in Perspective */}
           <div className="relative w-full min-h-[440px] flex items-center justify-center [transform-style:preserve-3d]">
-            {/* Visual Plane 1: ROAD CONTEXT (Vector roadway geometry, clip reveal) */}
+            {/* Visual Plane 1: ROAD CONTEXT */}
             <div
               ref={planeRoadRef}
-              className="absolute w-[290px] sm:w-[340px] border-t-2 border-l-2 border-[#0E0F10] p-6 bg-white/95 select-none will-change-transform space-y-3"
+              className="absolute w-[280px] sm:w-[330px] border-t-2 border-l-2 border-[#0E0F10] p-6 bg-white/95 select-none will-change-transform space-y-3 shadow-md"
               style={{ transformStyle: "preserve-3d" }}
             >
               <div className="flex items-center gap-2">
@@ -758,21 +759,21 @@ function InsurersContent() {
                   {isIt ? "CONTESTO STRADALE" : "ROAD CONTEXT"}
                 </span>
               </div>
-              <div className="text-lg font-bold uppercase text-[#0E0F10]">
-                Via Cristoforo Colombo
+              <div className="text-base sm:text-lg font-bold uppercase text-[#0E0F10]">
+                {isIt ? "Tratto Urbano Principale" : "Main Urban Arterial"}
               </div>
               <p className="text-xs text-[#555555] font-light leading-relaxed">
                 {isIt ? "Carreggiata a doppio senso con corsia di marcia ordinata. Nessuna anomalia geometrica riscontrata." : "Standard roadway. No abnormal pavement obstructions documented."}
               </p>
               <div className="text-[10px] font-mono text-[#777777] border-t border-[#E5E5E3] pt-2">
-                45.4642° N • 9.1900° E
+                ROMA / MILANO • VERIFIED GNSS
               </div>
             </div>
 
-            {/* Visual Plane 2: VISIBLE DAMAGE (Automotive damage wireframe, forward Z) */}
+            {/* Visual Plane 2: VISIBLE DAMAGE */}
             <div
               ref={planeDamageRef}
-              className="absolute w-[300px] sm:w-[360px] border-2 border-[#0E0F10] p-6 bg-[#FFFFFF] shadow-xl select-none will-change-transform z-10 space-y-3"
+              className="absolute w-[290px] sm:w-[350px] border-2 border-[#0E0F10] p-6 bg-[#FFFFFF] shadow-2xl select-none will-change-transform z-10 space-y-3"
               style={{ transformStyle: "preserve-3d" }}
             >
               <div className="flex items-center justify-between">
@@ -783,7 +784,7 @@ function InsurersContent() {
                   {isIt ? "PUNTO D'URTO" : "IMPACT ZONE"}
                 </span>
               </div>
-              <div className="text-lg font-bold uppercase text-[#0E0F10]">
+              <div className="text-base sm:text-lg font-bold uppercase text-[#0E0F10]">
                 {isIt ? "Paraurti Anteriore Sx" : "Front-Left Fender"}
               </div>
               <p className="text-xs text-[#555555] font-light leading-relaxed">
@@ -794,10 +795,10 @@ function InsurersContent() {
               </div>
             </div>
 
-            {/* Visual Plane 3: CAI CIRCUMSTANCE (Agreed statement schematic, opposite rotation) */}
+            {/* Visual Plane 3: CAI CIRCUMSTANCE */}
             <div
               ref={planeCaiRef}
-              className="absolute w-[290px] sm:w-[340px] border-t-2 border-r-2 border-[#0E0F10] p-6 bg-white/95 select-none will-change-transform space-y-3"
+              className="absolute w-[280px] sm:w-[330px] border-t-2 border-r-2 border-[#0E0F10] p-6 bg-white/95 select-none will-change-transform space-y-3 shadow-md"
               style={{ transformStyle: "preserve-3d" }}
             >
               <div className="flex items-center gap-2">
@@ -806,8 +807,8 @@ function InsurersContent() {
                   {isIt ? "CIRCOSTANZA CAI" : "CAI CIRCUMSTANCE"}
                 </span>
               </div>
-              <div className="text-lg font-bold uppercase text-[#0E0F10]">
-                {isIt ? "Casella 12 Concorde" : "Box 12 Concordance"}
+              <div className="text-base sm:text-lg font-bold uppercase text-[#0E0F10]">
+                {isIt ? "Allineamento Casella 12" : "Box 12 Alignment"}
               </div>
               <p className="text-xs text-[#555555] font-light leading-relaxed">
                 {isIt ? "I veicoli circolavano nello stesso senso di marcia. Nessun conflitto dichiarato tra le parti." : "Vehicles were traveling in the same direction. No conflict reported between drivers."}
@@ -817,7 +818,7 @@ function InsurersContent() {
               </div>
             </div>
 
-            {/* Unified Collapsed Rail (Appears when all 3 planes dock together) */}
+            {/* Unified Collapsed Rail */}
             <div
               ref={unifiedRailRef}
               className="absolute bottom-2 inset-x-4 max-w-3xl mx-auto border-t-2 border-b-2 border-[#0E0F10] py-3 flex flex-wrap items-center justify-between gap-4 text-xs font-semibold uppercase tracking-wider text-[#0E0F10] [transform-style:preserve-3d]"
@@ -831,7 +832,7 @@ function InsurersContent() {
       </section>
 
       {/* ----------------------------------------------------------- */}
-      {/* 4. SCENE 5: OBSERVED VS INFERRED DEPTH SWAP (Zero Button, Scroll 3D Shift) */}
+      {/* 4. SCENE 5: OBSERVED VS INFERRED DEPTH (CHARACTER REVEAL & TIME-BASED GSAP) */}
       {/* ----------------------------------------------------------- */}
       <section
         ref={depthSectionRef}
@@ -839,13 +840,25 @@ function InsurersContent() {
         style={{ perspective: "1600px" }}
       >
         <div className="w-full px-6 sm:px-12 lg:px-20 max-w-7xl mx-auto space-y-16">
-          <div className="space-y-3 max-w-3xl">
+          <div className="space-y-4 max-w-3xl">
             <span className="text-xs uppercase tracking-[0.24em] text-[#777777] font-semibold block">
               {isIt ? "SEPARAZIONE DEI LIVELLI" : "SEPARATION OF SIGNALS"}
             </span>
-            <h2 className="text-3xl sm:text-5xl font-black uppercase tracking-tight text-[#0E0F10]">
-              {isIt ? "CIÒ CHE OSSERVIAMO. CIÒ CHE INFERIAMO." : "WHAT WE SEE. WHAT WE INFER."}
+
+            {/* Headline with Character-Level Reveal */}
+            <h2 className="text-3xl sm:text-5xl font-black uppercase tracking-tight text-[#0E0F10] leading-tight">
+              <span className="block">
+                <RevealText as="span" mode="char" variant="depth">
+                  {isIt ? "CIÒ CHE OSSERVIAMO." : "WHAT WE SEE."}
+                </RevealText>
+              </span>
+              <span className="block text-[#777777]">
+                <RevealText as="span" mode="char" variant="depth" delay={0.25}>
+                  {isIt ? "CIÒ CHE INFERIAMO." : "WHAT WE INFER."}
+                </RevealText>
+              </span>
             </h2>
+
             <p className="text-base sm:text-xl text-[#555555] font-light leading-relaxed">
               {isIt
                 ? "I fatti fisici riscontrati restano rigidamente distinti dalle ricostruzioni probabilistiche. Nessun calcolo automatico sostituisce il giudizio peritale."
@@ -853,9 +866,9 @@ function InsurersContent() {
             </p>
           </div>
 
-          {/* 3D Depth-Swap Stage: Observed in front, Inferred behind, Scroll swaps focus */}
+          {/* 3D Depth Separation Stage */}
           <div className="relative w-full min-h-[400px] flex items-center justify-center [transform-style:preserve-3d]">
-            {/* Plane 1: OBSERVED (Direct factual evidence) */}
+            {/* Plane 1: OBSERVED (Direct factual evidence, Front Plane) */}
             <div
               ref={observedBlockRef}
               className="absolute left-0 sm:left-8 top-4 max-w-lg border-l-4 border-[#0E0F10] pl-6 py-4 space-y-4 will-change-transform [transform-style:preserve-3d]"
@@ -882,7 +895,7 @@ function InsurersContent() {
               </ul>
             </div>
 
-            {/* Plane 2: INFERRED (Probabilistic reconstruction, requires confirmation) */}
+            {/* Plane 2: INFERRED (Probabilistic reconstruction, Deeper Plane) */}
             <div
               ref={inferredBlockRef}
               className="absolute right-0 sm:right-8 bottom-4 max-w-lg border-l-4 border-dashed border-[#888888] pl-6 py-4 space-y-4 will-change-transform [transform-style:preserve-3d]"
@@ -910,7 +923,7 @@ function InsurersContent() {
             </div>
           </div>
 
-          {/* Plane 3: HUMAN REVIEW BASELINE (Connects the two layers) */}
+          {/* Plane 3: HUMAN REVIEW BASELINE */}
           <div
             ref={humanReviewBaselineRef}
             className="pt-10 border-t border-[#0E0F10] space-y-3 text-center sm:text-left will-change-transform"
@@ -936,7 +949,7 @@ function InsurersContent() {
       >
         <div className="w-full px-6 sm:px-12 lg:px-20 max-w-7xl mx-auto space-y-16">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-baseline">
-            {/* Left Headline: Enters Extremely Large Outside Viewport */}
+            {/* Left Headline: Large Outside Viewport */}
             <div className="lg:col-span-8">
               <h2
                 ref={payoffHeadlineRef}
@@ -957,7 +970,7 @@ function InsurersContent() {
               </h2>
             </div>
 
-            {/* Right Explanatory Text: Staggered Depth Entry */}
+            {/* Right Explanatory Text */}
             <div ref={payoffTextRef} className="lg:col-span-4 space-y-6">
               <p className="text-base sm:text-lg text-[#555555] font-light leading-relaxed">
                 {isIt
@@ -979,7 +992,7 @@ function InsurersContent() {
             </div>
           </div>
 
-          {/* Thin Horizon Line: Previous Claim Layers Flatten into Single Horizon */}
+          {/* Thin Horizon Line */}
           <div
             ref={horizonLineRef}
             className="w-full h-[1.5px] bg-[#0E0F10] origin-left will-change-transform mt-12"

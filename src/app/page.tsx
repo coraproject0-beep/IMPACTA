@@ -159,7 +159,7 @@ function HomeContent() {
               </span>
               <RevealText
                 as="h3"
-                mode="word"
+                mode="char"
                 variant="depth"
                 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-[#0E0F10] tracking-tight leading-tight"
               >
@@ -209,7 +209,7 @@ function HomeContent() {
                 </span>
                 <RevealText
                   as="h2"
-                  mode="word"
+                  mode="char"
                   variant="depth"
                   className="text-3xl sm:text-5xl lg:text-6xl font-bold uppercase tracking-tight text-white leading-[1.05]"
                 >
@@ -296,7 +296,7 @@ function HomeContent() {
                 <div className="flex flex-wrap items-center justify-between gap-4 pb-5 border-b border-[#E5E5E3]">
                   <div className="space-y-0.5">
                     <span className="text-xs text-[#777777] uppercase tracking-wider block">
-                      DOSSIER #CLM-2026-0894
+                      DOSSIER #CLM-IT-2026-001
                     </span>
                     <h4 className="text-base sm:text-lg font-bold text-[#0E0F10] uppercase tracking-tight">
                       {isIt ? "Riepilogo Fatti & Ricostruzione Dinamica" : "Accident Summary & Facts"}
@@ -320,7 +320,7 @@ function HomeContent() {
                       </span>
                     </div>
                     <span className="text-[11px] text-[#555555]">
-                      14:22:04
+                      09:41:20
                     </span>
                   </div>
 
@@ -343,7 +343,7 @@ function HomeContent() {
                   <div className="p-3.5 rounded-lg bg-[#FAFAFA] border border-[#EBEBEB] flex flex-wrap items-center justify-between gap-3">
                     <div className="space-y-0.5">
                       <span className="text-[11px] text-[#777777] uppercase block">
-                        {isIt ? "Circostanza CAI Casella 12" : "European CAI Box 12"}
+                        {isIt ? "Allineamento Modulo CAI" : "European Agreed Statement"}
                       </span>
                       <span className="font-semibold text-[#0E0F10]">
                         {isIt ? "Circolava nello stesso senso e su fila diversa" : "Circumstance 12 - Changing lanes in same direction"}
@@ -371,7 +371,7 @@ function HomeContent() {
                 </span>
                 <RevealText
                   as="h2"
-                  mode="word"
+                  mode="char"
                   variant="depth"
                   className="text-3xl sm:text-5xl lg:text-6xl font-bold uppercase tracking-tight text-[#0E0F10] leading-[1.05]"
                 >

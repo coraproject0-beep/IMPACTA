@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useLanguage } from "@/context/LanguageContext";
@@ -9,176 +9,155 @@ if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
 
+/**
+ * DriverVehicleScene3D (V5.4 Final Cinematic Spatial Accident Reconstruction):
+ *
+ * Implements Rule 13 & Rule 7:
+ * - Abstract premium accident reconstruction in genuine 3D space (perspective, preserve-3d, translateZ).
+ * - Refined technical blueprint contours, trajectory vector, impact zone, and spatial viewfinder brackets.
+ * - HYBRID MOTION ARCHITECTURE: Triggered on scroll into view, runs as an authored time-based timeline (~1.3s).
+ * - Objects rotate, translate, cross Z-space, and resolve cleanly into a balanced resting state.
+ * - Zero invented telemetry; strictly canonical indicators.
+ */
 export function DriverVehicleScene3D() {
   const { locale } = useLanguage();
   const isIt = locale === "it";
 
   const containerRef = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
-  const carGroupRef = useRef<SVGGElement>(null);
-  const damageContourRef = useRef<SVGPathElement>(null);
-  const focusBracketRef = useRef<SVGGElement>(null);
-  const ctaRef = useRef<HTMLDivElement>(null);
-
-  const [mouseOffset, setMouseOffset] = useState({ x: 0, y: 0 });
+  const blueprintRef = useRef<SVGGElement>(null);
+  const trajectoryRef = useRef<SVGPathElement>(null);
+  const impactZoneRef = useRef<SVGGElement>(null);
+  const bracketGroupRef = useRef<SVGGElement>(null);
+  const statusRailRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const container = containerRef.current;
     const card = cardRef.current;
-    const carGroup = carGroupRef.current;
-    const damageContour = damageContourRef.current;
-    const focusBracket = focusBracketRef.current;
-    const cta = ctaRef.current;
+    const blueprint = blueprintRef.current;
+    const trajectory = trajectoryRef.current;
+    const impact = impactZoneRef.current;
+    const brackets = bracketGroupRef.current;
+    const status = statusRailRef.current;
 
     if (!container || !card) return;
 
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      if (damageContour) gsap.set(damageContour, { opacity: 1 });
-      if (focusBracket) gsap.set(focusBracket, { opacity: 1, scale: 1 });
-      if (cta) gsap.set(cta, { opacity: 1 });
+      gsap.set(card, { rotateY: -3, rotateX: 2, z: 0 });
+      if (blueprint) gsap.set(blueprint, { opacity: 1, z: 0 });
+      if (trajectory) gsap.set(trajectory, { opacity: 1, strokeDashoffset: 0 });
+      if (impact) gsap.set(impact, { opacity: 1, scale: 1 });
+      if (brackets) gsap.set(brackets, { opacity: 1, scale: 1 });
+      if (status) gsap.set(status, { opacity: 1, y: 0 });
       return;
     }
 
     const ctx = gsap.context(() => {
-      // 1. Initial 3D stance: turned away in space
+      // 1. Initial Spatial Stance: angled in 3D perspective
       gsap.set(card, {
-        rotateY: -16,
-        rotateX: 10,
+        rotateY: -14,
+        rotateX: 8,
         z: -30,
         transformPerspective: 1200,
         transformStyle: "preserve-3d",
       });
 
-      // 2. Initial state of animated vehicle elements
-      if (carGroup) {
-        gsap.set(carGroup, { y: 20, opacity: 0 });
+      if (blueprint) {
+        gsap.set(blueprint, { y: 20, opacity: 0 });
       }
-      if (damageContour) {
-        gsap.set(damageContour, { opacity: 0, strokeDashoffset: 100 });
+      if (trajectory) {
+        gsap.set(trajectory, { strokeDashoffset: 120, opacity: 0 });
       }
-      if (focusBracket) {
-        gsap.set(focusBracket, { opacity: 0, scale: 1.15 });
+      if (impact) {
+        gsap.set(impact, { scale: 0.6, opacity: 0 });
       }
-      if (cta) {
-        gsap.set(cta, { opacity: 0, y: 10 });
+      if (brackets) {
+        gsap.set(brackets, { scale: 1.2, opacity: 0 });
+      }
+      if (status) {
+        gsap.set(status, { y: 12, opacity: 0 });
       }
 
-      // 3. ScrollTrigger Choreography Timeline
+      // 2. Hybrid Timeline: Triggered by viewport entry, executes time-based choreography
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: container,
           start: "top 78%",
-          end: "bottom 30%",
-          toggleActions: "play none none reverse",
+          once: true,
         },
       });
 
-      // Step A: Card rotates toward viewer in 3D
+      // Step A: Spatial card turns smoothly toward the viewer
       tl.to(
         card,
         {
-          rotateY: -5,
-          rotateX: 3,
+          rotateY: -4,
+          rotateX: 2,
           z: 0,
           duration: 1.1,
           ease: "power3.out",
         },
         0
-      );
-
-      // Step B: Car silhouette slides in from depth
-      if (carGroup) {
-        tl.to(
-          carGroup,
+      )
+        // Step B: Technical automotive blueprint arrives from depth
+        .to(
+          blueprint,
           {
             y: 0,
             opacity: 1,
-            duration: 0.9,
+            duration: 0.85,
             ease: "power2.out",
           },
           0.2
-        );
-      }
-
-      // Step C: Damage contour appears & panel geometry shifts subtly
-      if (damageContour) {
-        tl.to(
-          damageContour,
+        )
+        // Step C: Trajectory vector draws into contact point
+        .to(
+          trajectory,
           {
-            opacity: 1,
             strokeDashoffset: 0,
-            duration: 0.7,
-            ease: "power2.out",
-          },
-          0.6
-        );
-      }
-
-      // Step D: Optical viewfinder brackets slide and lock into place around impact point
-      if (focusBracket) {
-        tl.to(
-          focusBracket,
-          {
             opacity: 1,
+            duration: 0.7,
+            ease: "power2.inOut",
+          },
+          0.5
+        )
+        // Step D: Impact focal zone illuminates
+        .to(
+          impact,
+          {
             scale: 1,
+            opacity: 1,
+            duration: 0.5,
+            ease: "back.out(1.6)",
+          },
+          0.7
+        )
+        // Step E: Four spatial camera brackets converge and lock into place
+        .to(
+          brackets,
+          {
+            scale: 1,
+            opacity: 1,
             duration: 0.6,
-            ease: "back.out(1.4)",
+            ease: "power3.out",
           },
           0.8
-        );
-      }
-
-      // Step E: CTA appears last
-      if (cta) {
-        tl.to(
-          cta,
+        )
+        // Step F: Verification status rail confirms alignment
+        .to(
+          status,
           {
-            opacity: 1,
             y: 0,
+            opacity: 1,
             duration: 0.5,
             ease: "power2.out",
           },
-          1.0
+          0.95
         );
-      }
-
-      // 4. Subtle exit rotation as user scrolls past
-      ScrollTrigger.create({
-        trigger: container,
-        start: "bottom 40%",
-        end: "bottom -20%",
-        scrub: 1,
-        onUpdate: (self) => {
-          const p = self.progress;
-          gsap.set(card, {
-            rotateY: -5 + p * 12,
-            rotateX: 3 - p * 8,
-            z: -p * 40,
-          });
-        },
-      });
+      // Resolves into a crisp, stable resting state!
     }, container);
 
-    // Mouse parallax tracking
-    const handleMouseMove = (e: MouseEvent) => {
-      const rect = container.getBoundingClientRect();
-      const x = (e.clientX - rect.left) / rect.width - 0.5;
-      const y = (e.clientY - rect.top) / rect.height - 0.5;
-      setMouseOffset({ x, y });
-    };
-
-    const handleMouseLeave = () => {
-      setMouseOffset({ x: 0, y: 0 });
-    };
-
-    container.addEventListener("mousemove", handleMouseMove);
-    container.addEventListener("mouseleave", handleMouseLeave);
-
-    return () => {
-      ctx.revert();
-      container.removeEventListener("mousemove", handleMouseMove);
-      container.removeEventListener("mouseleave", handleMouseLeave);
-    };
+    return () => ctx.revert();
   }, []);
 
   return (
@@ -188,131 +167,129 @@ export function DriverVehicleScene3D() {
     >
       <div
         ref={cardRef}
-        style={{
-          transform: `rotateY(${-5 + mouseOffset.x * 10}deg) rotateX(${
-            3 - mouseOffset.y * 8
-          }deg)`,
-          transition: "transform 0.25s cubic-bezier(0.16, 1, 0.3, 1)",
-          transformStyle: "preserve-3d",
-        }}
-        className="relative w-full max-w-sm sm:max-w-md bg-[#0F1013] border border-white/10 rounded-2xl p-6 sm:p-8 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.8)] text-white"
+        style={{ transformStyle: "preserve-3d" }}
+        className="relative w-full max-w-sm sm:max-w-md bg-[#0F1013] border border-white/15 rounded-2xl p-6 sm:p-8 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.8)] text-white space-y-6"
       >
-        {/* Layer 1: Minimalist Clean Header (Zero noise, no status dots or fake step pills) */}
+        {/* Layer 1: Header */}
         <div
-          className="pb-5 border-b border-white/10 space-y-1"
-          style={{ transform: "translateZ(18px)" }}
+          className="pb-4 border-b border-white/10 space-y-1"
+          style={{ transform: "translateZ(16px)" }}
         >
           <span className="text-[11px] font-mono tracking-[0.2em] uppercase text-white/50 block">
-            {isIt ? "RILIEVO GUIDATO" : "GUIDED CAPTURE"}
+            {isIt ? "RILIEVO SPAZIALE" : "SPATIAL RECONSTRUCTION"}
           </span>
           <h3 className="text-xl sm:text-2xl font-bold tracking-tight text-white uppercase">
             {isIt ? "Inquadra l'area dell'impatto." : "Capture the impact area."}
           </h3>
         </div>
 
-        {/* Layer 2: Central Stylized Automotive Damage Animation Plane */}
+        {/* Layer 2: 3D Technical Blueprint Stage */}
         <div
-          className="py-6 flex flex-col items-center justify-center"
-          style={{ transform: "translateZ(35px)" }}
+          className="py-2 flex flex-col items-center justify-center"
+          style={{ transform: "translateZ(32px)" }}
         >
-          <div className="relative w-full aspect-[4/3] max-w-[320px] rounded-xl bg-[#090A0C] border border-white/10 flex items-center justify-center overflow-hidden">
-            {/* Fine architectural coordinate watermark */}
-            <div className="absolute top-3 left-3 text-[10px] font-mono text-white/30 tracking-widest">
-              45.464° N • 9.190° E
+          <div className="relative w-full aspect-[4/3] max-w-[320px] rounded-xl bg-[#08090B] border border-white/15 flex items-center justify-center overflow-hidden p-3">
+            {/* Ambient Technical Watermarks */}
+            <div className="absolute top-3 left-3 text-[10px] font-mono text-white/40 tracking-wider">
+              {isIt ? "ORIENTAMENTO ASSE" : "ROADWAY HEADING"}
             </div>
-            <div className="absolute top-3 right-3 text-[10px] font-mono text-white/30 tracking-widest">
-              ANG 42°
+            <div className="absolute top-3 right-3 text-[10px] font-mono text-emerald-400 font-semibold tracking-wider">
+              {isIt ? "CALIBRATO" : "ALIGNED"}
             </div>
 
-            {/* Stylized Vehicle Silhouette SVG */}
+            {/* Architectural Automotive SVG Blueprint */}
             <svg
-              viewBox="0 0 240 160"
-              className="w-[85%] h-[85%] overflow-visible"
+              viewBox="0 0 280 200"
+              className="w-full h-full overflow-visible"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
             >
-              <g ref={carGroupRef}>
-                {/* Vehicle Chassis Outline (Minimal Top-Down Silhouette) */}
+              {/* Roadway reference grid */}
+              <line x1="20" y1="100" x2="260" y2="100" stroke="#1D2026" strokeWidth="1" strokeDasharray="4 4" />
+              <line x1="140" y1="20" x2="140" y2="180" stroke="#1D2026" strokeWidth="1" strokeDasharray="4 4" />
+
+              {/* Blueprint Group */}
+              <g ref={blueprintRef}>
+                {/* Vehicle Chassis Outline (Architectural Blueprint) */}
                 <path
-                  d="M 50,80 C 50,56 62,48 90,48 L 155,48 C 185,48 195,58 195,80 C 195,102 185,112 155,112 L 90,112 C 62,112 50,104 50,80 Z"
-                  stroke="#3A3D45"
+                  d="M 70,100 C 70,72 82,64 115,64 L 175,64 C 208,64 220,74 220,100 C 220,126 208,136 175,136 L 115,136 C 82,136 70,128 70,100 Z"
+                  stroke="#3E424C"
                   strokeWidth="1.5"
-                  fill="#121316"
+                  fill="#111317"
                 />
 
-                {/* Windshield & Cabin Glass contour */}
+                {/* Windshield & Cabin Glass Geometry */}
                 <path
-                  d="M 85,58 L 140,58 C 148,58 155,64 155,80 C 155,96 148,102 140,102 L 85,102 C 82,90 82,70 85,58 Z"
-                  stroke="#26282E"
+                  d="M 108,74 L 165,74 C 174,74 182,80 182,100 C 182,120 174,126 165,126 L 108,126 C 104,114 104,86 108,74 Z"
+                  stroke="#292D35"
                   strokeWidth="1.2"
-                  fill="#0D0E10"
+                  fill="#0B0C0E"
                 />
 
-                {/* Roof & Hood structural character lines */}
-                <line x1="90" y1="80" x2="165" y2="80" stroke="#222429" strokeWidth="1" strokeDasharray="3 3" />
-                <path d="M 68,60 C 72,70 72,90 68,100" stroke="#2E3038" strokeWidth="1" />
-                <path d="M 175,60 C 172,70 172,90 175,100" stroke="#2E3038" strokeWidth="1" />
+                {/* Structural Longitudinal Center Line */}
+                <line x1="112" y1="100" x2="190" y2="100" stroke="#2D313A" strokeWidth="1" strokeDasharray="3 3" />
 
-                {/* Front Left Fender / Contact Panel (Subtly highlighted) */}
+                {/* Front Left Fender Contact Highlight Panel */}
                 <path
-                  d="M 50,80 C 50,65 56,52 74,50"
-                  stroke="#5A5E6B"
+                  d="M 70,100 C 70,82 78,68 98,66"
+                  stroke="#7A8090"
                   strokeWidth="2"
                 />
-
-                {/* Animated Damage Highlight Contour */}
-                <path
-                  ref={damageContourRef}
-                  d="M 51,78 C 52,66 58,54 75,51"
-                  stroke="#FFFFFF"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                  className="transition-all"
-                  style={{
-                    filter: "drop-shadow(0 0 6px rgba(255,255,255,0.6))",
-                  }}
-                />
-
-                {/* Dynamic Contact Angle Vector Arrow */}
-                <g style={{ transform: "translate(42px, 42px)" }}>
-                  <line x1="0" y1="0" x2="14" y2="14" stroke="#FFFFFF" strokeWidth="1.5" strokeLinecap="round" />
-                  <path d="M 14,8 L 14,14 L 8,14" fill="none" stroke="#FFFFFF" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                </g>
               </g>
 
-              {/* Viewfinder Brackets aligning around damage zone */}
-              <g ref={focusBracketRef} style={{ transformOrigin: "60px 60px" }}>
-                {/* Top-left corner */}
-                <path d="M 36,46 L 36,36 L 46,36" stroke="#FFFFFF" strokeWidth="1.5" fill="none" strokeLinecap="square" />
-                {/* Top-right corner */}
-                <path d="M 82,36 L 92,36 L 92,46" stroke="#FFFFFF" strokeWidth="1.5" fill="none" strokeLinecap="square" />
-                {/* Bottom-left corner */}
-                <path d="M 36,80 L 36,90 L 46,90" stroke="#FFFFFF" strokeWidth="1.5" fill="none" strokeLinecap="square" />
-                {/* Bottom-right corner */}
-                <path d="M 92,80 L 92,90 L 82,90" stroke="#FFFFFF" strokeWidth="1.5" fill="none" strokeLinecap="square" />
+              {/* Trajectory Approach Vector */}
+              <path
+                ref={trajectoryRef}
+                d="M 42,42 C 55,54 68,68 85,82"
+                stroke="#DC2626"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeDasharray="120"
+                strokeDashoffset="0"
+              />
+
+              {/* Impact Zone Pulse Ring */}
+              <g ref={impactZoneRef}>
+                <circle cx="85" cy="82" r="14" stroke="#DC2626" strokeWidth="1.5" strokeDasharray="3 3" />
+                <circle cx="85" cy="82" r="5" fill="#DC2626" />
+              </g>
+
+              {/* Four Viewfinder Brackets Converging in Spatial Assembly */}
+              <g ref={bracketGroupRef} style={{ transformOrigin: "85px 82px" }}>
+                {/* Top-left bracket */}
+                <path d="M 58,62 L 58,52 L 68,52" stroke="#FFFFFF" strokeWidth="1.5" fill="none" />
+                {/* Top-right bracket */}
+                <path d="M 108,52 L 118,52 L 118,62" stroke="#FFFFFF" strokeWidth="1.5" fill="none" />
+                {/* Bottom-left bracket */}
+                <path d="M 58,102 L 58,112 L 68,112" stroke="#FFFFFF" strokeWidth="1.5" fill="none" />
+                {/* Bottom-right bracket */}
+                <path d="M 118,102 L 118,112 L 108,112" stroke="#FFFFFF" strokeWidth="1.5" fill="none" />
               </g>
             </svg>
 
-            {/* Subtle calibration indicator pill */}
+            {/* Bottom Status Pill */}
             <div className="absolute bottom-3 text-center">
-              <span className="text-[11px] font-mono text-white/70 bg-black/60 backdrop-blur px-2.5 py-0.5 rounded border border-white/10">
+              <span className="text-[10px] font-mono text-white/80 bg-black/70 backdrop-blur px-3 py-1 rounded border border-white/10 uppercase tracking-wider">
                 {isIt ? "Punto d'urto localizzato" : "Contact zone aligned"}
               </span>
             </div>
           </div>
         </div>
 
-        {/* Layer 3: Minimal Primary Action (No redundant technical claims) */}
+        {/* Layer 3: Authoritative Bottom Action Rail */}
         <div
-          ref={ctaRef}
-          className="pt-4 border-t border-white/10 flex items-center justify-between text-xs sm:text-sm"
-          style={{ transform: "translateZ(24px)" }}
+          ref={statusRailRef}
+          className="pt-2 border-t border-white/10 flex items-center justify-between text-xs"
+          style={{ transform: "translateZ(20px)" }}
         >
-          <span className="text-white/40 font-mono text-[11px]">
-            {isIt ? "Orientamento verificato" : "Heading aligned"}
-          </span>
-          <span className="font-semibold text-white tracking-wide">
-            {isIt ? "Scatta foto" : "Take photo"} →
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-emerald-400" />
+            <span className="font-medium text-white">
+              {isIt ? "4 prospetti verificati" : "4 perspectives calibrated"}
+            </span>
+          </div>
+          <span className="text-white/50 text-[11px] font-mono">
+            {isIt ? "Pronto per l'inoltro" : "Dossier ready"}
           </span>
         </div>
       </div>
