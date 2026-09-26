@@ -13,6 +13,14 @@
   --background: var(--off-white);
   --foreground: var(--impacta-black);
   --border: var(--hairline);
+
+  --public-header-height: 76px;
+}
+
+@media (max-width: 1023px) {
+  :root {
+    --public-header-height: 80px;
+  }
 }
 
 html {

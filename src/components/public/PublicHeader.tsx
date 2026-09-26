@@ -37,7 +37,7 @@ export function PublicHeader() {
             : "bg-[#F7F7F6]/95 backdrop-blur-md text-[#0E0F10] border-b border-[#E5E5E3]"
         }`}
       >
-        <div className="w-full px-8 sm:px-12 lg:px-20 h-20 lg:h-[76px] flex items-center justify-between">
+        <div className="w-full px-8 sm:px-12 lg:px-20 h-20 lg:h-[var(--public-header-height,76px)] flex items-center justify-between">
           {/* Left: Brand Wordmark */}
           <div className="flex items-center">
             <Link
@@ -83,7 +83,7 @@ export function PublicHeader() {
             <button
               type="button"
               onClick={() => setLocale(locale === "en" ? "it" : "en")}
-              className={`text-xs sm:text-sm tracking-wider font-mono uppercase transition-colors ${
+              className={`text-xs sm:text-sm tracking-wider uppercase transition-colors ${
                 isDarkHero ? "text-white/80 hover:text-white" : "text-[#444444] hover:text-[#0E0F10]"
               }`}
               title="Toggle language English / Italiano"

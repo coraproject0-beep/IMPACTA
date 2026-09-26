@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
 import { Locale, Translations, translations } from "@/i18n/translations";
 
 export type TranslationFunction = {
@@ -53,14 +53,20 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
-  const setLocale = (newLocale: Locale) => {
+  const setLocale = useCallback((newLocale: Locale) => {
     setLocaleState(newLocale);
     try {
       localStorage.setItem("impacta_language_preference", newLocale);
     } catch {
       // Ignore write errors
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      (window as any).__impactaSetLocale = setLocale;
+    }
+  }, [setLocale]);
 
   const t = createTranslationProxy(locale);
 

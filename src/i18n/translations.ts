@@ -144,6 +144,40 @@ export interface Translations {
     assistanceHotline: string;
     assistanceHotlineDesc: string;
     callAssistance: string;
+    contractDetails: string;
+    coverageType: string;
+    coverageTypeVal: string;
+    paymentSchedule: string;
+    annualSettled: string;
+    coverageLimits: string;
+    mandatoryRCA: string;
+    rcaCeiling: string;
+    included: string;
+    assistance247: string;
+    legalProtection: string;
+    legalProtectionDesc: string;
+    legalLimit: string;
+    immediateAssistance: string;
+    accidentNowQuestion: string;
+    accidentNowGuidance: string;
+    emergencyDemoCta: string;
+    generaliHotlineLabel: string;
+    associatedVehicle: string;
+    vehicleDetails: string;
+    guidanceTitle: string;
+    guidanceSubtitle: string;
+    stageBeforeTab: string;
+    stageBeforeTitle: string;
+    stageBeforeDesc: string;
+    stageBeforeAction: string;
+    stageAtSceneTab: string;
+    stageAtSceneTitle: string;
+    stageAtSceneDesc: string;
+    stageAtSceneAction: string;
+    stageAfterTab: string;
+    stageAfterTitle: string;
+    stageAfterDesc: string;
+    stageAfterAction: string;
   };
   wizard: {
     phase1Title: string;
@@ -472,6 +506,40 @@ export const translations: Record<Locale, Translations> = {
       assistanceHotline: "24/7 Dedicated Assistance Hotline",
       assistanceHotlineDesc: "Toll-free emergency dispatch from anywhere in Italy and the European Union.",
       callAssistance: "Call Roadside Assistance",
+      contractDetails: "Contract Details",
+      coverageType: "Coverage Formula",
+      coverageTypeVal: "Full Kasko + Standard RCA",
+      paymentSchedule: "Payment Schedule",
+      annualSettled: "Annual, fully settled",
+      coverageLimits: "Included Guarantees & Ceilings",
+      mandatoryRCA: "Compulsory RCA Liability",
+      rcaCeiling: "€ 6,450,000",
+      included: "Included",
+      assistance247: "24/7 Included",
+      legalProtection: "Legal & Forensic Defense",
+      legalProtectionDesc: "Legal expenses and certified technical appraisal assistance.",
+      legalLimit: "€ 25,000",
+      immediateAssistance: "Roadside & Emergency Support",
+      accidentNowQuestion: "Involved in a collision right now?",
+      accidentNowGuidance: "Prioritize physical safety first. Move behind barriers before attempting any intake.",
+      emergencyDemoCta: "Emergency Call Simulation (112)",
+      generaliHotlineLabel: "Carrier Operations Center",
+      associatedVehicle: "Insured Vehicle",
+      vehicleDetails: "Audi A3 • AB 123 CD • Sportback",
+      guidanceTitle: "Roadside Incident Protocol",
+      guidanceSubtitle: "Step-by-step guidance designed to protect your physical safety and legal rights.",
+      stageBeforeTab: "Before Driving",
+      stageBeforeTitle: "Digital Readiness & Verification",
+      stageBeforeDesc: "Your digital insurance certificate, policy dossier, and certified emergency contacts are permanently synced and available offline on this device.",
+      stageBeforeAction: "Verify Onboard Documents",
+      stageAtSceneTab: "At the Scene",
+      stageAtSceneTitle: "Physical Refuge & Calibrated Intake",
+      stageAtSceneDesc: "Put on your high-visibility vest, move behind the roadway guardrail, and verify everyone is uninjured before taking 4 orthogonal photos of the collision.",
+      stageAtSceneAction: "Launch Roadside Emergency Protocol",
+      stageAfterTab: "After the Report",
+      stageAfterTitle: "Direct Carrier Dossier Handover",
+      stageAfterDesc: "The compiled CAI report, verified timestamps, and encrypted photo evidence are delivered directly to your claims adjuster without postal paperwork delays.",
+      stageAfterAction: "Open Driver Claims Workspace",
     },
     wizard: {
       phase1Title: "Safety Check",
@@ -801,6 +869,40 @@ export const translations: Record<Locale, Translations> = {
       assistanceHotline: "Centrale Operativa Emergenze 24/7",
       assistanceHotlineDesc: "Numero verde gratuito dall'Italia e paesi dell'Unione Europea.",
       callAssistance: "Chiama Soccorso Stradale",
+      contractDetails: "Dettagli del Contratto",
+      coverageType: "Tipologia Formula",
+      coverageTypeVal: "Kasko Completa + RCA Standard",
+      paymentSchedule: "Frazionamento",
+      annualSettled: "Annuale con quietanza regolare",
+      coverageLimits: "Garanzie e Massimali Inclusi",
+      mandatoryRCA: "RCA Obbligatoria (Responsabilità Civile Auto)",
+      rcaCeiling: "€ 6.450.000",
+      included: "Inclusa",
+      assistance247: "Incluso 24/7",
+      legalProtection: "Tutela Legale e Peritale",
+      legalProtectionDesc: "Spese legali e assistenza peritale specializzata stragiudiziale.",
+      legalLimit: "€ 25.000",
+      immediateAssistance: "Assistenza Immediata",
+      accidentNowQuestion: "Hai avuto un incidente adesso?",
+      accidentNowGuidance: "Verifica prima che tutti siano al sicuro. Mettiti al riparo dietro le barriere stradali prima di scattare foto.",
+      emergencyDemoCta: "Simulazione Emergenza (112)",
+      generaliHotlineLabel: "Centrale Operativa Generali",
+      associatedVehicle: "Veicolo Assicurato",
+      vehicleDetails: "Audi A3 • AB 123 CD • Sportback",
+      guidanceTitle: "Protocollo di Gestione Sinistro",
+      guidanceSubtitle: "Una sequenza guidata per proteggere la tua incolumità fisica e le tue ragioni assicurative.",
+      stageBeforeTab: "Prima di partire",
+      stageBeforeTitle: "Verifica e Dotazione di Bordo",
+      stageBeforeDesc: "Il certificato assicurativo digitale, i massimali e i numeri di emergenza sono sincronizzati e sempre accessibili offline su questo dispositivo.",
+      stageBeforeAction: "Verifica Dotazione di Bordo",
+      stageAtSceneTab: "Sul luogo del sinistro",
+      stageAtSceneTitle: "Protezione Attiva e Rilievo Guidato",
+      stageAtSceneDesc: "Indossa il giubbotto catarifrangente, posizionati dietro il guardrail e verifica l'assenza di feriti prima di scattare i 4 rilievi fotografici ortogonali.",
+      stageAtSceneAction: "Avvia Protocollo di Emergenza",
+      stageAfterTab: "Dopo la segnalazione",
+      stageAfterTitle: "Consegna Diretta al Liquidatore",
+      stageAfterDesc: "Il modulo CAI generato, i rilievi fotografici e i dati telemetrici vengono trasmessi all'ufficio sinistri della compagnia, senza code né attese postali.",
+      stageAfterAction: "Visualizza i tuoi Sinistri",
     },
     wizard: {
       phase1Title: "Verifica Sicurezza",

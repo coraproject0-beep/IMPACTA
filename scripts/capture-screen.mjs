@@ -102,33 +102,67 @@ async function capture() {
       console.log("EVAL RES:", JSON.stringify(evalRes));
       await wait(1500);
     } else if (action === "open-112") {
-      await sendCommand("Runtime.evaluate", {
+      const openRes = await sendCommand("Runtime.evaluate", {
         expression: `
           (function() {
+            const testidBtn = document.querySelector('[data-testid="trigger-112-demo"]');
+            if (testidBtn) {
+              testidBtn.click();
+              return 'CLICKED_TESTID';
+            }
             const buttons = Array.from(document.querySelectorAll('button'));
             const alertBtn = buttons.find(b => b.textContent && (b.textContent.includes('112') || b.textContent.includes('soccorsi') || b.textContent.includes('aiuto')));
-            if (alertBtn) alertBtn.click();
-            setTimeout(() => {
-              const buttons2 = Array.from(document.querySelectorAll('button'));
-              const startDemoBtn = buttons2.find(b => b.textContent && (b.textContent.includes('simulazione') || b.textContent.includes('Demo') || b.textContent.includes('112')));
-              if (startDemoBtn) startDemoBtn.click();
-            }, 500);
+            if (alertBtn) {
+              alertBtn.click();
+              return 'CLICKED_ALERT';
+            }
+            return 'NO_BTN_FOUND';
           })()
         `,
       });
+      console.log('OPEN 112 RESULT:', JSON.stringify(openRes));
       await wait(2500);
     } else if (action === "it") {
-      await sendCommand("Runtime.evaluate", {
+      const evalRes = await sendCommand("Runtime.evaluate", {
         expression: `
           (function() {
-            localStorage.setItem('impacta_locale', 'it');
-            const buttons = Array.from(document.querySelectorAll('button'));
-            const itBtn = buttons.find(b => b.textContent && b.textContent.trim() === 'IT');
-            if (itBtn) itBtn.click();
-            return 'SWITCHED_TO_IT';
+            if (window.__impactaSetLocale) {
+              window.__impactaSetLocale('it');
+              return 'SET_LOCALE_IT';
+            }
+            localStorage.setItem('impacta_language_preference', 'it');
+            const btns = Array.from(document.querySelectorAll('button'));
+            const toggle = btns.find(b => b.textContent && b.textContent.includes('EN') && b.textContent.includes('IT'));
+            if (toggle) {
+              toggle.click();
+              return 'CLICKED_TOGGLE: ' + toggle.textContent;
+            }
+            return 'NO_OP';
           })()
         `,
       });
+      console.log('IT TOGGLE RESULT:', JSON.stringify(evalRes));
+      await wait(1500);
+    } else if (action === "en") {
+      const evalRes = await sendCommand("Runtime.evaluate", {
+        expression: `
+          (function() {
+            if (window.__impactaSetLocale) {
+              window.__impactaSetLocale('en');
+              return 'SET_LOCALE_EN';
+            }
+            localStorage.setItem('impacta_language_preference', 'en');
+            const btns = Array.from(document.querySelectorAll('button'));
+            const toggle = btns.find(b => b.textContent && b.textContent.includes('EN') && b.textContent.includes('IT'));
+            if (toggle) {
+              toggle.click();
+              return 'CLICKED_TOGGLE: ' + toggle.textContent;
+            }
+            return 'NO_OP';
+          })()
+        `,
+      });
+      console.log('EN TOGGLE RESULT:', JSON.stringify(evalRes));
       await wait(1500);
     } else if (action === "scroll-to-fragments") {
       await sendCommand("Runtime.evaluate", {
@@ -136,9 +170,9 @@ async function capture() {
           (function() {
             const el = document.getElementById('fragments');
             if (el) {
-              el.scrollIntoView();
+              el.scrollIntoView({ behavior: 'instant', block: 'start' });
             } else {
-              window.scrollTo(0, 850);
+              window.scrollTo(0, 950);
             }
           })()
         `,

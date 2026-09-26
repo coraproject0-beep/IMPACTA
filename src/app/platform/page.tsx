@@ -92,12 +92,12 @@ export default function PlatformPage() {
             className="w-full border-b border-[#E5E5E3] py-24 lg:py-32"
           >
             <div className="w-full px-6 sm:px-12 lg:px-20 max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-baseline">
-              {/* Left Column: Giant Step Identifier */}
-              <div className="lg:col-span-4 space-y-3">
-                <span className="text-7xl sm:text-8xl lg:text-9xl font-black font-mono tracking-tighter text-[#0E0F10] block leading-none">
+              {/* Left Column: Stage Identifier & Role */}
+              <div className="lg:col-span-4 space-y-2">
+                <span className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-[#0E0F10] block leading-none">
                   {stage.step}
                 </span>
-                <span className="text-xs font-mono font-medium text-[#555555] block">
+                <span className="text-xs font-medium text-[#666666] block">
                   {stage.actor}
                 </span>
               </div>
@@ -111,8 +111,8 @@ export default function PlatformPage() {
                   {stage.description}
                 </p>
                 <div className="pt-4 border-t border-[#E5E5E3] flex items-center justify-between text-xs text-[#555555]">
-                  <span>{isIt ? "Specifica tecnica" : "Technical specification"}</span>
-                  <span className="font-mono font-semibold text-[#0E0F10]">{stage.spec}</span>
+                  <span>{isIt ? "Riferimento" : "Standard reference"}</span>
+                  <span className="font-medium text-[#0E0F10]">{stage.spec}</span>
                 </div>
               </div>
             </div>
