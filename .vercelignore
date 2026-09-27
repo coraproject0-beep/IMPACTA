@@ -1,0 +1,8 @@
+.agents/
+docs/
+screenshot-*.png
+*.log
+walkthrough.md
+README.md
+public/audit-*
+public/screenshot-*
