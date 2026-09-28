@@ -4,7 +4,7 @@ import React, { useState, useRef } from "react";
 import Image from "next/image";
 import { DriverDraft, EvidenceDraftItem } from "@/types/driver";
 import { useLanguage } from "@/context/LanguageContext";
-import { ArrowRightIcon, CameraIcon } from "@/components/icons/Icons";
+import { ArrowRightIcon, CameraIcon, ChevronLeftIcon, ChevronRightIcon } from "@/components/icons/Icons";
 import { ImpactaAnalysisLoader } from "@/components/ui/ImpactaAnalysisLoader";
 
 interface Phase3CaptureProps {
@@ -28,13 +28,28 @@ export function Phase3Capture({
   const [isUploading, setIsUploading] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysisStatusText, setAnalysisStatusText] = useState<string>("");
+  const [activePhotoIndex, setActivePhotoIndex] = useState(0);
 
   const evidenceItems = draft.evidenceItems || [];
   const evidenceCount = evidenceItems.length;
-  const latestPhotoUrl =
-    evidenceItems.length > 0
-      ? evidenceItems[evidenceItems.length - 1].previewUrl
-      : null;
+
+  // Safe clamped index guaranteeing valid bounds
+  const currentIndex =
+    evidenceCount > 0 ? Math.min(Math.max(0, activePhotoIndex), evidenceCount - 1) : 0;
+  const currentPhoto = evidenceCount > 0 ? evidenceItems[currentIndex] : null;
+  const currentPhotoUrl = currentPhoto?.previewUrl || null;
+
+  const handlePrevPhoto = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (evidenceCount <= 1) return;
+    setActivePhotoIndex((prev) => (prev === 0 ? evidenceCount - 1 : prev - 1));
+  };
+
+  const handleNextPhoto = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (evidenceCount <= 1) return;
+    setActivePhotoIndex((prev) => (prev >= evidenceCount - 1 ? 0 : prev + 1));
+  };
 
   const handleTriggerUpload = () => {
     if (fileInputRef.current) {
@@ -84,6 +99,7 @@ export function Phase3Capture({
       };
 
       await onAddEvidence(newItem, file);
+      setActivePhotoIndex(evidenceCount);
     } finally {
       setIsUploading(false);
     }
@@ -139,6 +155,7 @@ export function Phase3Capture({
       for (const item of canonicalItems) {
         await onAddEvidence(item);
       }
+      setActivePhotoIndex(0);
 
       const hasCustomLocation = Boolean(
         draft.location &&
@@ -359,15 +376,76 @@ export function Phase3Capture({
         {/* RIGHT COLUMN: Evidence Viewport */}
         <div className="lg:col-span-7 space-y-3 order-first lg:order-last">
           <div className="relative aspect-[16/11] lg:aspect-[16/10] w-full overflow-hidden rounded-2xl bg-neutral-100 border border-[#E5E5E3] shadow-xs">
-            {latestPhotoUrl ? (
-              <Image
-                src={latestPhotoUrl}
-                alt="Collision scene documentation"
-                fill
-                priority
-                className="object-cover"
-                sizes="(max-width: 1024px) 100vw, 700px"
-              />
+            {currentPhotoUrl ? (
+              <>
+                <Image
+                  key={currentPhoto?.id || currentIndex}
+                  src={currentPhotoUrl}
+                  alt={currentPhoto?.categoryLabel || "Collision scene documentation"}
+                  fill
+                  priority
+                  className="object-cover transition-opacity duration-200"
+                  sizes="(max-width: 1024px) 100vw, 700px"
+                />
+
+                {/* Subtle Position Indicator (e.g. 1 / 4) */}
+                {evidenceCount > 1 && (
+                  <div className="absolute top-3 right-3 px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-xs text-white text-[11px] font-mono font-medium z-10 select-none">
+                    {currentIndex + 1} / {evidenceCount}
+                  </div>
+                )}
+
+                {/* Photo Category overlay */}
+                {currentPhoto?.categoryLabel && (
+                  <div className="absolute bottom-3 left-3 px-3 py-1 rounded-lg bg-black/60 backdrop-blur-xs text-white text-xs font-medium z-10 max-w-[70%] truncate select-none">
+                    {currentPhoto.categoryLabel}
+                  </div>
+                )}
+
+                {/* Lateral Navigation Arrows */}
+                {evidenceCount > 1 && (
+                  <>
+                    <button
+                      type="button"
+                      onClick={handlePrevPhoto}
+                      aria-label={isIt ? "Foto precedente" : "Previous photo"}
+                      className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/50 hover:bg-black/75 text-white flex items-center justify-center backdrop-blur-xs transition-colors focus:outline-none focus:ring-2 focus:ring-white z-10 cursor-pointer"
+                    >
+                      <ChevronLeftIcon size={18} />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleNextPhoto}
+                      aria-label={isIt ? "Foto successiva" : "Next photo"}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/50 hover:bg-black/75 text-white flex items-center justify-center backdrop-blur-xs transition-colors focus:outline-none focus:ring-2 focus:ring-white z-10 cursor-pointer"
+                    >
+                      <ChevronRightIcon size={18} />
+                    </button>
+                  </>
+                )}
+
+                {/* Small Dots Indicator */}
+                {evidenceCount > 1 && (
+                  <div className="absolute bottom-3 right-3 flex items-center gap-1.5 z-10">
+                    {evidenceItems.map((_, dotIdx) => (
+                      <button
+                        key={dotIdx}
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setActivePhotoIndex(dotIdx);
+                        }}
+                        aria-label={`${isIt ? "Vai alla foto" : "Go to photo"} ${dotIdx + 1}`}
+                        className={`h-1.5 rounded-full transition-all cursor-pointer ${
+                          dotIdx === currentIndex
+                            ? "bg-white w-3"
+                            : "bg-white/50 hover:bg-white/80 w-1.5"
+                        }`}
+                      />
+                    ))}
+                  </div>
+                )}
+              </>
             ) : (
               <div className="w-full h-full flex flex-col items-center justify-center p-8 text-center bg-[#F9F9F8]">
                 <div className="w-12 h-12 rounded-full bg-white border border-[#E5E5E3] flex items-center justify-center text-[#666666] mb-3 shadow-2xs">
@@ -384,7 +462,7 @@ export function Phase3Capture({
               </div>
             )}
             {isUploading && (
-              <div className="absolute inset-0 bg-[#0E0F10]/60 flex items-center justify-center text-white text-xs font-medium backdrop-blur-xs">
+              <div className="absolute inset-0 bg-[#0E0F10]/60 flex items-center justify-center text-white text-xs font-medium backdrop-blur-xs z-20">
                 {isIt ? "Caricamento archivio protetto..." : "Uploading to secure storage..."}
               </div>
             )}
@@ -401,6 +479,11 @@ export function Phase3Capture({
                 : evidenceCount === 1
                 ? "photo registered"
                 : "photos registered"}
+              {evidenceCount > 1 && (
+                <span className="font-mono text-xs text-[#888888] ml-2">
+                  ({currentIndex + 1} / {evidenceCount})
+                </span>
+              )}
             </span>
             <span className="text-xs text-neutral-400">
               {isIt ? "Archiviazione sicura" : "Secure storage"}
