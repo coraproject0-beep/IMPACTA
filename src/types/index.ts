@@ -105,6 +105,9 @@ export interface EvidenceItem {
   provenance: ProvenanceType;
   extractionStatus: "EXTRACTED" | "PARTIALLY_EXTRACTED" | "FAILED";
   thumbnailUrl?: string;
+  signedUrl?: string;
+  previewUrl?: string;
+  url?: string;
   description: string;
   metadata: {
     sourceDevice?: string;
@@ -231,5 +234,7 @@ export interface Claim {
   reviewerNotes: string;
   tags: string[];
   reviewed_data?: any;
+  reviewedData?: any;
   humanCorrections?: any[];
+  updatedAt?: string;
 }

@@ -114,28 +114,49 @@ export function DriverDraftProvider({ children }: { children: React.ReactNode })
   }, []);
 
   const startNewReport = useCallback(() => {
+    if (typeof window !== "undefined") {
+      try {
+        localStorage.removeItem(DRAFT_STORAGE_KEY);
+      } catch (e) {
+        console.warn("Could not clear draft storage", e);
+      }
+    }
     const blank = createInitialBlankDraft();
     setDraft(blank);
   }, []);
 
   const loadDemoIncident = useCallback(() => {
-    setDraft(JSON.parse(JSON.stringify(CANONICAL_DEMO_DRAFT)));
+    const demo = JSON.parse(JSON.stringify(CANONICAL_DEMO_DRAFT));
+    demo.aiAnalysisOutput = undefined;
+    setDraft(demo);
   }, []);
 
   const addEvidenceItem = useCallback(async (item: EvidenceDraftItem, blob?: Blob) => {
     if (blob) {
       await storeMediaBlob(item.id, blob);
     }
-    setDraft((prev) => ({
-      ...prev,
-      evidenceItems: [...prev.evidenceItems.filter((e) => e.id !== item.id), item],
-    }));
+    setDraft((prev) => {
+      // If adding a custom upload and current items are canonical sample assets, replace them
+      const isSampleSet =
+        prev.evidenceItems.length > 0 &&
+        prev.evidenceItems.every(
+          (e) => e.id.startsWith("EVD-DEMO") || e.previewUrl.includes("scenario-01")
+        );
+      const baseItems = isSampleSet && item.isRealUpload ? [] : prev.evidenceItems;
+      return {
+        ...prev,
+        isDemoIncident: item.isRealUpload ? false : prev.isDemoIncident,
+        aiAnalysisOutput: undefined, // Invalidate stale analysis whenever evidence changes
+        evidenceItems: [...baseItems.filter((e) => e.id !== item.id), item],
+      };
+    });
   }, []);
 
   const removeEvidenceItem = useCallback(async (id: string) => {
     await deleteMediaBlob(id);
     setDraft((prev) => ({
       ...prev,
+      aiAnalysisOutput: undefined, // Invalidate stale analysis whenever evidence changes
       evidenceItems: prev.evidenceItems.filter((e) => e.id !== id),
     }));
   }, []);

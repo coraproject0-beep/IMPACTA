@@ -15,7 +15,7 @@ interface Phase5SubmittedProps {
 export function Phase5Submitted({ draft, onReturnHome }: Phase5SubmittedProps) {
   const { t, language } = useLanguage();
   const isIt = language === "it";
-  const claimId = draft.submittedClaimId || "IMP-260925-014";
+  const claimId = draft.submittedClaimId || "CLM-APP-001";
   const nowFormatted = draft.submittedAt
     ? new Date(draft.submittedAt).toLocaleString(isIt ? "it-IT" : "en-GB", {
         day: "2-digit",

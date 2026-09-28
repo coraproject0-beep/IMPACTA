@@ -29,7 +29,7 @@ export function Phase4Review({
   const defaultAiDamage =
     ai?.caiFields?.apparentDamageA ||
     ai?.visibleDamage?.find((d) => d.vehicle === "A")?.description ||
-    "Front-right corner and wing deformation";
+    (isIt ? "Nessun danno evidente rilevato" : "No evident damage detected");
 
   const existingCorrection = draft.humanCorrections?.find(
     (c) => c.fieldKey === "vehicle_a_damage"
@@ -205,10 +205,10 @@ export function Phase4Review({
             <div className="flex items-center justify-between border-b border-[#E5E5E3] pb-3">
               <div>
                 <span className="text-xs uppercase tracking-wider font-semibold text-[#555555] block">
-                  {isIt ? "Rilievi Forensi Assistiti da AI" : "AI-Assisted Forensic Analysis"}
+                  {isIt ? "Analisi Multimodale Assistita da AI" : "AI-Assisted Multimodal Analysis"}
                 </span>
                 <span className="text-sm font-semibold text-[#0E0F10]">
-                  {isIt ? "Verifica strutturata delle prove" : "Structured evidence verification"}
+                  {isIt ? "Revisione strutturata delle prove" : "Structured evidence review"}
                 </span>
               </div>
 
@@ -228,50 +228,47 @@ export function Phase4Review({
                 </span>
               </div>
               <div className="space-y-2 text-xs">
-                {(ai?.observedFacts || [
-                  {
-                    statement: "Due veicoli a contatto all'intersezione stradale.",
-                    source: "image" as const,
-                    evidenceRefs: ["01-overview.png"],
-                  },
-                  {
-                    statement: "Veicolo A presenta deformazione al parafango anteriore destro.",
-                    source: "image" as const,
-                    evidenceRefs: ["02-vehicle-a-damage.png"],
-                  },
-                ]).map((fact, idx) => (
-                  <div key={idx} className="p-3.5 rounded-xl bg-[#F7F7F6] border border-[#E5E5E3] space-y-1.5">
-                    <div className="flex items-center justify-between">
-                      <span className="text-[11px] text-[#666666]">
-                        {isIt ? "Rilievo fotografico" : "Visual inspection"}
-                      </span>
-                      {fact.evidenceRefs?.length > 0 && (
-                        <div className="flex flex-wrap gap-1">
-                          {fact.evidenceRefs.map((ref, rIdx) => {
-                            const lower = ref.toLowerCase();
-                            const label =
-                              lower.includes("01") || lower.includes("overview")
-                                ? isIt ? "Foto 1 (Panoramica)" : "Photo 1 (Overview)"
-                                : lower.includes("02") || lower.includes("vehicle-a")
-                                ? isIt ? "Foto 2 (Danno Polo)" : "Photo 2 (Polo Damage)"
-                                : lower.includes("03") || lower.includes("vehicle-b")
-                                ? isIt ? "Foto 3 (Danno Golf)" : "Photo 3 (Golf Damage)"
-                                : lower.includes("04") || lower.includes("road")
-                                ? isIt ? "Foto 4 (Contesto stradale)" : "Photo 4 (Road Context)"
-                                : ref.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " ");
-
-                            return (
-                              <span key={rIdx} className="text-[10px] px-2 py-0.5 bg-white border border-[#E5E5E3] rounded-md text-[#0E0F10]">
-                                {label}
-                              </span>
-                            );
-                          })}
-                        </div>
-                      )}
-                    </div>
-                    <p className="text-xs text-[#0E0F10] leading-relaxed">{fact.statement}</p>
+                {(!ai?.observedFacts || ai.observedFacts.length === 0) ? (
+                  <div className="p-3.5 rounded-xl bg-[#F7F7F6] border border-[#E5E5E3] text-xs text-[#666666]">
+                    {isIt
+                      ? "Nessun danno evidente da impatto rilevato nelle prove fornite."
+                      : "No evident collision damage detected in the provided evidence."}
                   </div>
-                ))}
+                ) : (
+                  ai.observedFacts.map((fact, idx) => (
+                    <div key={idx} className="p-3.5 rounded-xl bg-[#F7F7F6] border border-[#E5E5E3] space-y-1.5">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[11px] text-[#666666]">
+                          {isIt ? "Rilievo fotografico" : "Visual inspection"}
+                        </span>
+                        {fact.evidenceRefs?.length > 0 && (
+                          <div className="flex flex-wrap gap-1">
+                            {fact.evidenceRefs.map((ref, rIdx) => {
+                              const lower = ref.toLowerCase();
+                              const label =
+                                lower.includes("01") || lower.includes("overview")
+                                  ? isIt ? "Foto 1 (Panoramica)" : "Photo 1 (Overview)"
+                                  : lower.includes("02") || lower.includes("vehicle-a")
+                                  ? isIt ? "Foto 2 (Danno Polo)" : "Photo 2 (Polo Damage)"
+                                  : lower.includes("03") || lower.includes("vehicle-b")
+                                  ? isIt ? "Foto 3 (Danno Golf)" : "Photo 3 (Golf Damage)"
+                                  : lower.includes("04") || lower.includes("road")
+                                  ? isIt ? "Foto 4 (Contesto stradale)" : "Photo 4 (Road Context)"
+                                  : ref.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " ");
+
+                              return (
+                                <span key={rIdx} className="text-[10px] px-2 py-0.5 bg-white border border-[#E5E5E3] rounded-md text-[#0E0F10]">
+                                  {label}
+                                </span>
+                              );
+                            })}
+                          </div>
+                        )}
+                      </div>
+                      <p className="text-xs text-[#0E0F10] leading-relaxed">{fact.statement}</p>
+                    </div>
+                  ))
+                )}
               </div>
             </div>
 
@@ -284,29 +281,31 @@ export function Phase4Review({
                 </span>
               </div>
               <div className="space-y-2 text-xs">
-                {(ai?.inferredDynamics || [
-                  {
-                    statement: "Dinamica compatibile con traiettorie perpendicolari all'intersezione.",
-                    rationale: "Disposizione dei detriti e altezze di contatto concordanti.",
-                    confidenceLabel: "medium" as const,
-                  },
-                ]).map((inf, idx) => (
-                  <div key={idx} className="p-3.5 rounded-xl bg-amber-50/40 border border-amber-200/60 space-y-1.5">
-                    <div className="flex items-center justify-between">
-                      <span className="font-semibold text-[#0E0F10]">{inf.statement}</span>
-                      <span className="text-[10px] font-medium px-2 py-0.5 rounded bg-amber-100 text-amber-900">
-                        {inf.confidenceLabel === "high"
-                          ? isIt ? "Alta confidenza" : "High confidence"
-                          : inf.confidenceLabel === "medium"
-                          ? isIt ? "Media confidenza" : "Medium confidence"
-                          : isIt ? "Bassa confidenza" : "Low confidence"}
-                      </span>
-                    </div>
-                    <p className="text-[11px] text-[#666666] leading-relaxed">
-                      <em>{isIt ? "Motivazione:" : "Rationale:"}</em> {inf.rationale}
-                    </p>
+                {(!ai?.inferredDynamics || ai.inferredDynamics.length === 0) ? (
+                  <div className="p-3.5 rounded-xl bg-neutral-50 border border-[#E5E5E3] text-xs text-[#666666]">
+                    {isIt
+                      ? "Nessuna dinamica di collisione dedotta dalle prove visive fornite."
+                      : "No collision dynamics inferred from the supplied visual evidence."}
                   </div>
-                ))}
+                ) : (
+                  ai.inferredDynamics.map((inf, idx) => (
+                    <div key={idx} className="p-3.5 rounded-xl bg-amber-50/40 border border-amber-200/60 space-y-1.5">
+                      <div className="flex items-center justify-between">
+                        <span className="font-semibold text-[#0E0F10]">{inf.statement}</span>
+                        <span className="text-[10px] font-medium px-2 py-0.5 rounded bg-amber-100 text-amber-900">
+                          {inf.confidenceLabel === "high"
+                            ? isIt ? "Alta confidenza" : "High confidence"
+                            : inf.confidenceLabel === "medium"
+                            ? isIt ? "Media confidenza" : "Medium confidence"
+                            : isIt ? "Bassa confidenza" : "Low confidence"}
+                        </span>
+                      </div>
+                      <p className="text-[11px] text-[#666666] leading-relaxed">
+                        <em>{isIt ? "Motivazione:" : "Rationale:"}</em> {inf.rationale}
+                      </p>
+                    </div>
+                  ))
+                )}
               </div>
             </div>
 
@@ -319,12 +318,15 @@ export function Phase4Review({
                 </span>
               </div>
               <ul className="list-disc list-inside text-xs text-[#666666] space-y-1 bg-[#F7F7F6] p-3.5 rounded-xl border border-[#E5E5E3]">
-                {(ai?.missingInformation || [
-                  "Stato delle lanterne semaforiche al momento dell'ingresso",
-                  "Dichiarazioni di testimoni terzi indipendenti",
-                ]).map((m, idx) => (
-                  <li key={idx} className="text-[11px] leading-relaxed">{m}</li>
-                ))}
+                {(!ai?.missingInformation || ai.missingInformation.length === 0) ? (
+                  <li className="text-[11px] leading-relaxed list-none text-[#888888]">
+                    {isIt ? "Nessuna informazione critica mancante segnalata." : "No critical missing information noted."}
+                  </li>
+                ) : (
+                  ai.missingInformation.map((m, idx) => (
+                    <li key={idx} className="text-[11px] leading-relaxed">{m}</li>
+                  ))
+                )}
               </ul>
             </div>
           </div>
@@ -334,7 +336,7 @@ export function Phase4Review({
             <div className="flex items-center justify-between">
               <div>
                 <span className="text-xs font-bold uppercase tracking-wider text-[#0E0F10] block">
-                  {isIt ? "Revisione Umana del Conducente" : "Driver Human Review & Verification"}
+                  {isIt ? "Revisione e Conferma del Conducente" : "Driver Human Review & Confirmation"}
                 </span>
                 <span className="text-xs text-[#666666]">
                   {isIt

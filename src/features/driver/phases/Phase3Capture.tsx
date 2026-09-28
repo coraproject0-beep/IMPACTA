@@ -28,6 +28,7 @@ export function Phase3Capture({
   const [isUploading, setIsUploading] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysisStatusText, setAnalysisStatusText] = useState<string>("");
+  const [analysisError, setAnalysisError] = useState<string | null>(null);
   const [activePhotoIndex, setActivePhotoIndex] = useState(0);
 
   const evidenceItems = draft.evidenceItems || [];
@@ -98,6 +99,7 @@ export function Phase3Capture({
         notes: "Uploaded by driver at scene",
       };
 
+      onUpdate({ isDemoIncident: false });
       await onAddEvidence(newItem, file);
       setActivePhotoIndex(evidenceCount);
     } finally {
@@ -108,6 +110,7 @@ export function Phase3Capture({
   // One-click loader for Canonical Scenario 01 evidence
   const handleLoadCanonicalScenario = async () => {
     setIsUploading(true);
+    setAnalysisError(null);
     try {
       const canonicalItems: EvidenceDraftItem[] = [
         {
@@ -116,7 +119,7 @@ export function Phase3Capture({
           categoryLabel: isIt ? "Panoramica intersezione" : "Intersection Overview",
           previewUrl: "/demo/scenario-01/01-overview.png",
           timestamp: "2026-09-26T14:23:00Z",
-          isRealUpload: true,
+          isRealUpload: false,
           notes: "Posizione di quiete finale all'intersezione (01-overview.png)",
         },
         {
@@ -125,7 +128,7 @@ export function Phase3Capture({
           categoryLabel: isIt ? "Danno Veicolo A (Polo)" : "Vehicle A Damage Detail",
           previewUrl: "/demo/scenario-01/02-vehicle-a-damage.png",
           timestamp: "2026-09-26T14:23:45Z",
-          isRealUpload: true,
+          isRealUpload: false,
           notes: isIt
             ? "Danno parafango e paraurti anteriore destro su VW Polo"
             : "Front right wing and bumper damage on VW Polo",
@@ -136,7 +139,7 @@ export function Phase3Capture({
           categoryLabel: isIt ? "Danno Veicolo B (Golf)" : "Vehicle B Damage Detail",
           previewUrl: "/demo/scenario-01/03-vehicle-b-damage.png",
           timestamp: "2026-09-26T14:24:20Z",
-          isRealUpload: true,
+          isRealUpload: false,
           notes: isIt
             ? "Danno parafango e fiancata anteriore sinistra su VW Golf argento"
             : "Front left wing and side panel damage on VW Golf",
@@ -147,7 +150,7 @@ export function Phase3Capture({
           categoryLabel: isIt ? "Segnaletica e contesto stradale" : "Road Signs & Context",
           previewUrl: "/demo/scenario-01/04-road-context.png",
           timestamp: "2026-09-26T14:25:00Z",
-          isRealUpload: true,
+          isRealUpload: false,
           notes: isIt ? "Segnaletica verticale e orizzontale incrocio" : "Vertical and horizontal intersection signs",
         },
       ];
@@ -168,7 +171,7 @@ export function Phase3Capture({
       const hasCustomStatement = Boolean(draft.statement && draft.statement.trim().length > 0);
 
       const patch: Partial<DriverDraft> = {
-        isDemoIncident: false,
+        isDemoIncident: true,
       };
 
       if (!hasCustomDate) patch.incidentDate = "2026-09-26";
@@ -206,7 +209,9 @@ export function Phase3Capture({
   };
 
   const handleContinue = async () => {
+    if (evidenceCount === 0) return;
     setIsAnalyzing(true);
+    setAnalysisError(null);
     setAnalysisStatusText(
       isIt
         ? "Analisi multimodale assistita da AI in corso..."
@@ -214,40 +219,65 @@ export function Phase3Capture({
     );
 
     try {
-      const imagesToAnalyze =
-        evidenceItems.length > 0
-          ? evidenceItems.map((e, idx) => ({
-              name: e.previewUrl.split("/").pop() || `evidence-${idx + 1}.png`,
-              mimeType: "image/png",
-              url: e.previewUrl,
-            }))
-          : [
-              {
-                name: "01-overview.png",
-                mimeType: "image/png",
-                url: "/demo/scenario-01/01-overview.png",
-              },
-              {
-                name: "02-vehicle-a-damage.png",
-                mimeType: "image/png",
-                url: "/demo/scenario-01/02-vehicle-a-damage.png",
-              },
-            ];
+      // 1. Resolve base64 for each evidence item directly on client
+      const imagesToAnalyze = await Promise.all(
+        evidenceItems.map(async (e, idx) => {
+          let base64 = "";
+          let mimeType = "image/png";
+          try {
+            const res = await fetch(e.previewUrl);
+            if (res.ok) {
+              const blob = await res.blob();
+              mimeType = blob.type || "image/png";
+              base64 = await new Promise<string>((resolve) => {
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                  const resStr = (reader.result as string) || "";
+                  resolve(resStr.split(",")[1] || "");
+                };
+                reader.readAsDataURL(blob);
+              });
+            }
+          } catch (readErr) {
+            console.warn(`Could not read base64 for ${e.id} on client:`, readErr);
+          }
+
+          const rawName = e.previewUrl.split("/").pop()?.split("?")[0] || `evidence-${idx + 1}.png`;
+          return {
+            name: rawName,
+            mimeType,
+            base64: base64 || undefined,
+            url: e.previewUrl,
+            isSample: Boolean(draft.isDemoIncident),
+          };
+        })
+      );
+
+      const isSample = Boolean(draft.isDemoIncident);
 
       const analyzePayload = {
         images: imagesToAnalyze,
-        driverStatement:
-          draft.statement ||
-          "I was travelling straight through the intersection when the other vehicle entered my path.",
+        isSample,
+        driverStatement: draft.statement ? draft.statement.trim() : "",
         scenarioMetadata: {
-          locationText: `${draft.location.city || "Milan"}, ${draft.location.street || "Milan metropolitan area, Italy"}`,
-          incidentDatetime: `${draft.incidentDate || "2026-09-26"}T${draft.incidentTime || "14:22"}:00Z`,
-          vehicleA: { make: "Volkswagen", model: "Polo", plate: "AB 123 CD" },
-          vehicleB: {
+          locationText: draft.location?.street
+            ? `${draft.location.city ? draft.location.city + ", " : ""}${draft.location.street}`
+            : draft.location?.city || undefined,
+          incidentDatetime: draft.incidentDate
+            ? `${draft.incidentDate}T${draft.incidentTime || "12:00"}:00Z`
+            : undefined,
+          vehicleA: {
             make: "Volkswagen",
-            model: "Golf VII",
-            plate: draft.counterparty.plate || "EF 456 GH",
+            model: "Polo",
+            plate: "AB 123 CD",
           },
+          vehicleB: draft.counterparty?.plate || draft.counterparty?.makeModel
+            ? {
+                make: draft.counterparty.makeModel || "Other Vehicle",
+                model: "",
+                plate: draft.counterparty.plate || undefined,
+              }
+            : undefined,
         },
       };
 
@@ -258,39 +288,50 @@ export function Phase3Capture({
       });
 
       const data = await res.json();
-      if (data.analysis) {
+      if (res.ok && data.analysis) {
         onUpdate({ aiAnalysisOutput: data.analysis });
         onNext();
       } else {
         throw new Error(data.error || "Analysis failed");
       }
     } catch (err: any) {
-      console.warn("AI analysis request encountered issue, using deterministic fallback:", err);
-      try {
-        const fallbackRes = await fetch("/api/analyze", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            images: [
-              {
-                name: "01-overview.png",
-                mimeType: "image/png",
-                url: "/demo/scenario-01/01-overview.png",
-              },
-            ],
-            forceFallback: true,
-          }),
-        });
-        const fallbackData = await fallbackRes.json();
-        if (fallbackData.analysis) {
-          onUpdate({ aiAnalysisOutput: fallbackData.analysis });
-          onNext();
-          return;
+      console.error("AI analysis error:", err);
+      // For explicit sample demo incident, try deterministic backup fallback
+      if (draft.isDemoIncident) {
+        try {
+          const fallbackRes = await fetch("/api/analyze", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              images: [
+                {
+                  name: "01-overview.png",
+                  mimeType: "image/png",
+                  url: "/demo/scenario-01/01-overview.png",
+                  isSample: true,
+                },
+              ],
+              isSample: true,
+              forceFallback: true,
+            }),
+          });
+          const fallbackData = await fallbackRes.json();
+          if (fallbackData.analysis) {
+            onUpdate({ aiAnalysisOutput: fallbackData.analysis });
+            onNext();
+            return;
+          }
+        } catch (fErr) {
+          console.error("Sample fallback error:", fErr);
         }
-      } catch (fErr) {
-        console.error("Fallback error:", fErr);
       }
-      onNext();
+
+      // For custom uploads, NEVER silently load Golden Demo fallback!
+      setAnalysisError(
+        isIt
+          ? "Impossibile completare l'analisi AI sulle immagini caricate. Riprova tra qualche istante."
+          : "Unable to complete AI analysis on the uploaded images. Please retry in a few moments."
+      );
     } finally {
       setIsAnalyzing(false);
     }
@@ -318,8 +359,8 @@ export function Phase3Capture({
             </h1>
             <p className="text-base sm:text-lg text-[#666666] font-normal leading-relaxed">
               {isIt
-                ? "Scatta o carica le foto dei veicoli e della strada per l'analisi forense multimodale."
-                : "Capture or upload photos of the vehicles and road context for multimodal forensic analysis."}
+                ? "Scatta o carica le foto dei veicoli e della strada per l'analisi multimodale delle prove."
+                : "Capture or upload photos of the vehicles and road context for multimodal evidence analysis."}
             </p>
           </div>
 
@@ -344,6 +385,13 @@ export function Phase3Capture({
             </button>
 
             <div className="border-t border-[#E5E5E3] pt-6" />
+
+            {/* Error banner if live analysis fails */}
+            {analysisError && (
+              <div className="p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs leading-relaxed">
+                {analysisError}
+              </div>
+            )}
 
             {/* Primary Continue Action with Analysis invocation */}
             <button
@@ -457,8 +505,8 @@ export function Phase3Capture({
                 </p>
                 <p className="text-xs text-[#888888] mt-1 max-w-xs leading-relaxed">
                   {isIt
-                    ? "Scatta una foto o scegli dalla galleria per iniziare l'analisi forense."
-                    : "Take a photo or choose from library to begin forensic analysis."}
+                    ? "Scatta una foto o scegli dalla galleria per iniziare l'analisi delle prove."
+                    : "Take a photo or choose from library to begin evidence analysis."}
                 </p>
               </div>
             )}
