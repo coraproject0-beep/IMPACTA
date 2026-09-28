@@ -172,8 +172,8 @@ export default function ReportWizardPage() {
             <Phase4Review
               draft={draft}
               onUpdate={updateDraft}
-              onSubmit={async () => {
-                await submitReport();
+              onSubmit={async (overrides) => {
+                await submitReport(overrides);
               }}
               onEditSection={(section) => {
                 if (section === "accident") {

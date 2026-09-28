@@ -17,7 +17,7 @@ interface NavItem {
 
 export function Sidebar({ onCloseMobile }: { onCloseMobile?: () => void }) {
   const pathname = usePathname();
-  const { stats, resetDemoData } = useClaims();
+  const { claims, stats, resetDemoData } = useClaims();
   const { logoutInsurer } = useAuth();
   const { language } = useLanguage();
   const isIt = language === "it";
@@ -34,7 +34,7 @@ export function Sidebar({ onCloseMobile }: { onCloseMobile?: () => void }) {
       name: "Claims",
       nameIt: "Sinistri",
       href: "/console/claims",
-      badgeCount: stats.openClaims,
+      badgeCount: claims.length,
     },
     {
       name: "Review",

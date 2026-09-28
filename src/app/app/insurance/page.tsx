@@ -167,7 +167,7 @@ export default function DriverInsurancePage() {
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
                 <div className="absolute bottom-3 left-4 right-4 text-white flex items-center justify-between">
                   <div>
-                    <div className="font-bold text-lg">Audi A3 Sportback</div>
+                    <div className="font-bold text-lg">Volkswagen Polo</div>
                     <div className="font-mono text-xs text-white/80">AB 123 CD</div>
                   </div>
                   <ChevronRightIcon size={18} className="text-white group-hover:translate-x-1 transition-transform" />

@@ -13,8 +13,10 @@ const AnalyzeRequestSchema = z.object({
       base64: z.string().optional(),
       storagePath: z.string().optional(),
       url: z.string().optional(),
+      isSample: z.boolean().optional(),
     })
   ).min(1, "At least one evidence image is required"),
+  isSample: z.boolean().optional().default(false),
   driverStatement: z.string().default(""),
   scenarioMetadata: z
     .object({
@@ -196,39 +198,67 @@ export async function POST(req: NextRequest) {
 
   const {
     images,
+    isSample,
     driverStatement,
     scenarioMetadata,
     telemetry,
     forceFallback,
   } = parseResult.data;
 
+  // Safe server-side telemetry logging (Part E & X)
+  const scenario01Files = images.filter(
+    (i) => i.name.includes("01-overview") || i.url?.includes("scenario-01")
+  );
+  console.log(
+    `[ANALYZE] Total images: ${images.length} | isSample: ${isSample} | Scenario 01 files sent to Gemini: ${isSample ? scenario01Files.length : 0}`
+  );
+  for (const img of images) {
+    console.log(
+      ` - Evidence: ${img.name} | mime: ${img.mimeType} | hasBase64: ${Boolean(img.base64)} | hasUrl: ${Boolean(img.url)}`
+    );
+  }
+
   if (forceFallback) {
+    if (!isSample) {
+      return NextResponse.json(
+        { error: "Deterministic demo fallback is only available for canonical demo scenarios." },
+        { status: 400 }
+      );
+    }
     const backup = getBackupAnalysis("Manual fallback requested");
-    return NextResponse.json({ success: true, analysis: backup });
+    return NextResponse.json({ success: true, analysis: { ...backup, fallbackUsed: true } });
   }
 
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
-    console.warn("GEMINI_API_KEY is not set. Returning deterministic demo backup.");
-    const backup = getBackupAnalysis("GEMINI_API_KEY missing in environment");
-    return NextResponse.json({ success: true, analysis: backup });
+    if (isSample) {
+      console.warn("GEMINI_API_KEY missing in environment. Returning deterministic demo backup.");
+      const backup = getBackupAnalysis("GEMINI_API_KEY missing in environment");
+      return NextResponse.json({ success: true, analysis: { ...backup, fallbackUsed: true } });
+    }
+    return NextResponse.json(
+      { error: "GEMINI_API_KEY is not configured on the server." },
+      { status: 500 }
+    );
   }
 
   const modelName = process.env.GEMINI_MODEL || "gemini-3.8-flash";
 
   // System instruction with STRICT EPISTEMIC SAFETY RULES
-  const systemInstruction = `You are IMPACTA's multimodal forensic analysis assistant for automotive accident documentation.
+  const systemInstruction = `You are IMPACTA's multimodal evidence analysis assistant for automotive accident documentation.
 Your role is to strictly analyze physical evidence and statements according to these non-negotiable rules:
 1. Describe ONLY what is directly observable and supported by the visual and physical evidence.
-2. Explicitly distinguish direct visual observations from inferences.
-3. Label uncertainty where evidence is ambiguous, partial, or occluded.
-4. Identify missing critical information needed for a full reconstruction.
-5. NEVER assign fault or blame to any driver or party.
-6. NEVER determine legal liability or claim responsibility.
-7. NEVER allege or claim insurance fraud.
-8. NEVER approve or reject claims.
-9. NEVER claim legal validity or adjudicate rights.
-10. Treat all driver and party statements strictly as REPORTED STATEMENTS, not verified physical facts.
+2. If the supplied images show an intact vehicle with no visible collision damage, or only a single vehicle with no visible crash counterpart, state this clearly as an observed fact.
+3. NEVER assume a collision occurred unless directly evident from damage, debris, or position in the provided images.
+4. Explicitly distinguish direct visual observations from inferences.
+5. Label uncertainty where evidence is ambiguous, partial, or occluded.
+6. Identify missing critical information needed for a full reconstruction.
+7. NEVER assign fault or blame to any driver or party.
+8. NEVER determine legal liability or claim responsibility.
+9. NEVER allege or claim insurance fraud.
+10. NEVER approve or reject claims.
+11. NEVER claim legal validity or adjudicate rights.
+12. Treat all driver and party statements strictly as REPORTED STATEMENTS, not verified physical facts.
 
 You must output a single valid JSON object strictly matching this schema:
 {
@@ -265,65 +295,111 @@ You must output a single valid JSON object strictly matching this schema:
   "epistemicNotice": string
 }`;
 
-  // Assemble contextual prompt (NEVER include expectedObservations or expectedInference)
-  let userPrompt = `Accident Context:
-- Location: ${scenarioMetadata?.locationText || "Unspecified location"}
-- Date & Time: ${scenarioMetadata?.incidentDatetime || "Unspecified date/time"}
-- Vehicle A: ${scenarioMetadata?.vehicleA?.make || "Vehicle A"} ${scenarioMetadata?.vehicleA?.model || ""} (Plate: ${scenarioMetadata?.vehicleA?.plate || "Unknown"})
-- Vehicle B: ${scenarioMetadata?.vehicleB?.make || "Vehicle B"} ${scenarioMetadata?.vehicleB?.model || ""} (Plate: ${scenarioMetadata?.vehicleB?.plate || "Unknown"})
-- Reported Driver Statement: "${driverStatement || "No driver statement provided."}"
-`;
+  // 1. Resolve image bytes for all images (base64 -> remote fetch -> local disk)
+  const resolvedImages: Array<{ name: string; mimeType: string; base64: string }> = [];
 
-  if (telemetry) {
-    userPrompt += `\nVehicle A Telemetry:
-- Speed before impact: ${telemetry.speedBeforeImpactKmh ?? "Unknown"} km/h
-- Braking detected: ${telemetry.brakingDetected ? "Yes" : "No"}
-- Impact detected: ${telemetry.impactDetected ? "Yes" : "No"}
-- Sensor impact area: ${telemetry.impactArea ?? "Unknown"}
-`;
-  }
-
-  userPrompt += `\nAttached Evidence Files:
-${images.map((img, idx) => `- Image ${idx + 1}: ${img.name} (${img.mimeType})`).join("\n")}
-
-Analyze the physical evidence and statement according to the epistemic safety guidelines and return the JSON response.`;
-
-  // Prepare Gemini content parts
-  const contentParts: Array<{ text: string } | { inlineData: { mimeType: string; data: string } }> = [
-    { text: `${systemInstruction}\n\n${userPrompt}` },
-  ];
-
-  // Resolve image bytes
   for (const img of images) {
     let base64Data = img.base64;
 
-    // If no base64 was sent, check if it exists on disk in public/demo
-    if (!base64Data && img.url) {
+    // A. Fetch remote signed URL if http/https
+    if (!base64Data && img.url && (img.url.startsWith("http://") || img.url.startsWith("https://"))) {
+      try {
+        const remoteRes = await fetch(img.url);
+        if (remoteRes.ok) {
+          const ab = await remoteRes.arrayBuffer();
+          base64Data = Buffer.from(ab).toString("base64");
+        }
+      } catch (err) {
+        console.warn(`Could not fetch remote image from ${img.url}:`, err);
+      }
+    }
+
+    // B. Read local disk file if path starts with /
+    if (!base64Data && img.url && img.url.startsWith("/")) {
       try {
         const cleanPath = img.url.replace(/^\//, "");
         const localPath = path.join(process.cwd(), "public", cleanPath);
         if (fs.existsSync(localPath)) {
           base64Data = fs.readFileSync(localPath).toString("base64");
         }
-      } catch (e) {
-        console.warn(`Could not read image from disk for ${img.url}:`, e);
+      } catch (err) {
+        console.warn(`Could not read local image from ${img.url}:`, err);
       }
     }
 
-    if (base64Data) {
-      contentParts.push({
-        inlineData: {
-          mimeType: img.mimeType || "image/png",
-          data: base64Data,
-        },
-      });
+    if (!base64Data) {
+      console.error(`Failed to resolve image bytes for evidence: ${img.name}`);
+      return NextResponse.json(
+        { error: `Could not resolve image bytes for ${img.name}. Please re-upload.` },
+        { status: 400 }
+      );
     }
+
+    resolvedImages.push({
+      name: img.name,
+      mimeType: img.mimeType || "image/png",
+      base64: base64Data,
+    });
+  }
+
+  // Assemble contextual prompt
+  let userPrompt = `Accident Context:
+- Attached Evidence Files (${resolvedImages.length} image(s)):
+${resolvedImages.map((img, idx) => `  * Image ${idx + 1}: ${img.name} (${img.mimeType})`).join("\n")}
+`;
+
+  if (scenarioMetadata?.locationText) {
+    userPrompt += `- Location: ${scenarioMetadata.locationText}\n`;
+  }
+  if (scenarioMetadata?.incidentDatetime) {
+    userPrompt += `- Date & Time: ${scenarioMetadata.incidentDatetime}\n`;
+  }
+  if (scenarioMetadata?.vehicleA?.make) {
+    userPrompt += `- Vehicle A (Reported): ${scenarioMetadata.vehicleA.make} ${scenarioMetadata.vehicleA.model || ""} (Plate: ${scenarioMetadata.vehicleA.plate || "Unknown"})\n`;
+  }
+  if (scenarioMetadata?.vehicleB?.make) {
+    userPrompt += `- Vehicle B (Reported Counterparty): ${scenarioMetadata.vehicleB.make} ${scenarioMetadata.vehicleB.model || ""} (Plate: ${scenarioMetadata.vehicleB.plate || "Unknown"})\n`;
+  }
+  if (driverStatement && driverStatement.trim().length > 0) {
+    userPrompt += `- Reported Driver Statement: "${driverStatement.trim()}"\n`;
+  } else {
+    userPrompt += `- Reported Driver Statement: (None provided)\n`;
+  }
+
+  if (telemetry && isSample) {
+    userPrompt += `\nVehicle A Telemetry:
+- Speed before impact: ${telemetry.speedBeforeImpactKmh ?? "Unknown"} km/h
+- Braking detected: ${telemetry.brakingDetected ? "Yes" : "No"}
+- Impact detected: ${telemetry.impactDetected ? "Yes" : "No"}
+- Sensor impact area: ${telemetry.impactArea ?? "Unknown"}\n`;
+  } else if (telemetry && !isSample) {
+    userPrompt += `\nVehicle Telemetry:
+- Speed before impact: ${telemetry.speedBeforeImpactKmh ?? "Unknown"} km/h
+- Braking detected: ${telemetry.brakingDetected ? "Yes" : "No"}
+- Impact detected: ${telemetry.impactDetected ? "Yes" : "No"}
+- Sensor impact area: ${telemetry.impactArea ?? "Unknown"}\n`;
+  }
+
+  userPrompt += `\nAnalyze the physical evidence and statement according to the epistemic safety guidelines and return the JSON response.`;
+
+  // Prepare Gemini content parts
+  const contentParts: Array<{ text: string } | { inlineData: { mimeType: string; data: string } }> = [
+    { text: `${systemInstruction}\n\n${userPrompt}` },
+  ];
+
+  for (const img of resolvedImages) {
+    contentParts.push({
+      inlineData: {
+        mimeType: img.mimeType,
+        data: img.base64,
+      },
+    });
   }
 
   const ai = new GoogleGenAI({ apiKey });
 
   // Exponential backoff retry loop for high-demand 503, rate-limit 429, timeouts
-  const maxRetries = 4;
+  const maxRetries = 5;
   let lastError: any = null;
 
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
@@ -369,6 +445,7 @@ Analyze the physical evidence and statement according to the epistemic safety gu
           model: modelName,
           analyzedAt: new Date().toISOString(),
           isBackup: false,
+          fallbackUsed: false,
         },
       });
     } catch (err: any) {
@@ -376,7 +453,6 @@ Analyze the physical evidence and statement according to the epistemic safety gu
       const errMsg = err?.message || String(err);
       console.warn(`Gemini analysis attempt ${attempt}/${maxRetries} failed:`, errMsg);
 
-      // Check if retryable (503, 429, timeout, network error)
       const isRetryable =
         errMsg.includes("503") ||
         errMsg.includes("429") ||
@@ -387,7 +463,11 @@ Analyze the physical evidence and statement according to the epistemic safety gu
         errMsg.includes("ETIMEDOUT");
 
       if (isRetryable && attempt < maxRetries) {
-        const waitMs = 2500 * attempt;
+        const delayMatch = errMsg.match(/retry in ([0-9.]+)s/i);
+        const waitMs = delayMatch
+          ? (Math.ceil(parseFloat(delayMatch[1])) + 4) * 1000
+          : 2000 * Math.pow(2, attempt);
+        console.log(`Waiting ${waitMs}ms before retry attempt ${attempt + 1}...`);
         await new Promise((r) => setTimeout(r, waitMs));
         continue;
       }
@@ -395,18 +475,31 @@ Analyze the physical evidence and statement according to the epistemic safety gu
     }
   }
 
-  // If retries failed, return deterministic backup clearly marked as DEMO FALLBACK
-  console.warn("Live Gemini analysis could not complete. Providing DEMO FALLBACK / BACKUP ANALYSIS.");
-  const backup = getBackupAnalysis(
-    `Live Gemini API unavailable (${lastError?.message || "Transient timeout/demand error"})`
-  );
+  // If retries failed:
+  if (isSample) {
+    console.warn("Live Gemini analysis failed for canonical sample. Returning DEMO FALLBACK.");
+    const backup = getBackupAnalysis(
+      `Live Gemini API unavailable (${lastError?.message || "Transient timeout/demand error"})`
+    );
+    return NextResponse.json({
+      success: true,
+      analysis: {
+        ...backup,
+        fallbackUsed: true,
+      },
+      liveError: lastError?.message || "Live API unavailable",
+    });
+  }
 
+  // For custom uploads, NEVER return Golden Demo backup!
+  console.error("Live Gemini analysis failed for custom evidence:", lastError?.message);
   return NextResponse.json(
     {
-      success: true,
-      analysis: backup,
-      liveError: lastError?.message || "Live API unavailable",
+      success: false,
+      error: `Live Gemini analysis unavailable: ${lastError?.message || "Internal error"}`,
+      fallbackUsed: false,
+      liveError: lastError?.message,
     },
-    { status: 200 }
+    { status: 503 }
   );
 }

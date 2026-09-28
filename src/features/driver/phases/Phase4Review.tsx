@@ -8,7 +8,7 @@ import { ArrowRightIcon, CheckCircleIcon, AlertTriangleIcon, InfoIcon } from "@/
 interface Phase4ReviewProps {
   draft: DriverDraft;
   onUpdate: (patch: Partial<DriverDraft>) => void;
-  onSubmit: () => Promise<void>;
+  onSubmit: (overrides?: Partial<DriverDraft>) => Promise<void>;
   onEditSection: (section: "accident" | "capture") => void;
 }
 
@@ -29,7 +29,7 @@ export function Phase4Review({
   const defaultAiDamage =
     ai?.caiFields?.apparentDamageA ||
     ai?.visibleDamage?.find((d) => d.vehicle === "A")?.description ||
-    "Front-right corner and wing deformation";
+    (isIt ? "Nessun danno evidente rilevato" : "No evident damage detected");
 
   const existingCorrection = draft.humanCorrections?.find(
     (c) => c.fieldKey === "vehicle_a_damage"
@@ -55,7 +55,7 @@ export function Phase4Review({
       originalValue: defaultAiDamage,
       correctedValue: damageFieldValue.trim(),
       reviewType: (isCorrected ? "driver_correction" : "driver_confirmation") as any,
-      actor: "John Miller (Driver)",
+      actor: draft.isDemoIncident ? "John Miller (Driver)" : "Driver",
       reviewedAt: new Date().toISOString(),
     };
 
@@ -84,9 +84,42 @@ export function Phase4Review({
     e.preventDefault();
     if (!hasConfirmedDeclaration) return;
     setIsSubmitting(true);
-    onUpdate({ statement });
+
+    const isCorrected = damageFieldValue.trim() !== defaultAiDamage.trim();
+    const newCorrection = {
+      fieldKey: "vehicle_a_damage",
+      fieldLabel: isIt ? "Danno e Punto di Impatto Veicolo A" : "Vehicle A Damage & Impact Point",
+      originalValue: defaultAiDamage,
+      correctedValue: damageFieldValue.trim(),
+      reviewType: (isCorrected ? "driver_correction" : "driver_confirmation") as
+        | "driver_correction"
+        | "driver_confirmation",
+      actor: draft.isDemoIncident ? "John Miller (Driver)" : "Driver",
+      reviewedAt: new Date().toISOString(),
+    };
+
+    const updatedCorrections = [
+      ...(draft.humanCorrections || []).filter((c) => c.fieldKey !== "vehicle_a_damage"),
+      newCorrection,
+    ];
+
+    const overrides: Partial<DriverDraft> = {
+      statement: draft.statement || statement,
+      additionalNotes: statement,
+      humanCorrections: updatedCorrections,
+      caiConfirmedFields: {
+        ...draft.caiConfirmedFields,
+        "10A": true,
+      },
+      caiManualOverrides: {
+        ...draft.caiManualOverrides,
+        "10A": damageFieldValue.trim(),
+      },
+    };
+
+    onUpdate(overrides);
     try {
-      await onSubmit();
+      await onSubmit(overrides);
     } finally {
       setIsSubmitting(false);
     }
@@ -129,25 +162,31 @@ export function Phase4Review({
             <div className="space-y-2.5 text-sm text-[#0E0F10]">
               <div>
                 <span className="text-[#666666] text-xs block">{isIt ? "Luogo e data:" : "Location & date:"}</span>
-                <span className="font-semibold block">{draft.location.street || "Milan metropolitan area, Italy"}</span>
+                <span className="font-semibold block">{draft.location.street || (draft.isDemoIncident ? "Milan metropolitan area, Italy" : (isIt ? "Posizione non specificata" : "Location not provided"))}</span>
                 <span className="text-[#666666] block font-mono text-xs">
-                  {draft.incidentDate || "2026-09-26"} · {draft.incidentTime || "14:22"}
+                  {draft.incidentDate || (draft.isDemoIncident ? "2026-09-26" : "—")} · {draft.incidentTime || (draft.isDemoIncident ? "14:22" : "—")}
                 </span>
               </div>
 
               <div className="pt-2.5 border-t border-[#E5E5E3]">
                 <span className="text-[#666666] text-xs block">{isIt ? "Veicolo Assicurato:" : "Your Vehicle:"}</span>
-                <span className="font-semibold">Volkswagen Golf VII</span>
-                <span className="font-mono text-xs text-[#666666] block">AB 123 CD • Generali Italia</span>
-              </div>
-
-              <div className="pt-2.5 border-t border-[#E5E5E3]">
-                <span className="text-[#666666] text-xs block">{isIt ? "Controparte:" : "Counterparty:"}</span>
-                <span className="font-semibold">{draft.counterparty.driverName || "Claire Anderson"}</span>
+                <span className="font-semibold">
+                  {draft.isDemoIncident ? "Volkswagen Polo" : (isIt ? "Dettagli veicolo non specificati" : "Vehicle details not provided")}
+                </span>
                 <span className="font-mono text-xs text-[#666666] block">
-                  {draft.counterparty.plate || "EF 456 GH"} • {draft.counterparty.makeModel || "Volkswagen Golf VII"}
+                  {draft.isDemoIncident ? "AB 123 CD • Aura Mutua Assicurazioni" : "—"}
                 </span>
               </div>
+
+              {(draft.isDemoIncident || Boolean(draft.counterparty?.driverName || draft.counterparty?.plate || draft.counterparty?.makeModel)) && (
+                <div className="pt-2.5 border-t border-[#E5E5E3]">
+                  <span className="text-[#666666] text-xs block">{isIt ? "Controparte:" : "Counterparty:"}</span>
+                  <span className="font-semibold">{draft.counterparty.driverName || (draft.isDemoIncident ? "Claire Anderson" : (isIt ? "Non indicata" : "Not specified"))}</span>
+                  <span className="font-mono text-xs text-[#666666] block">
+                    {draft.counterparty.plate || (draft.isDemoIncident ? "EF 456 GH" : "—")} • {draft.counterparty.makeModel || (draft.isDemoIncident ? "Volkswagen Golf VII" : "—")}
+                  </span>
+                </div>
+              )}
             </div>
           </div>
 
@@ -172,111 +211,132 @@ export function Phase4Review({
             <div className="flex items-center justify-between border-b border-[#E5E5E3] pb-3">
               <div>
                 <span className="text-xs uppercase tracking-wider font-semibold text-[#555555] block">
-                  {isIt ? "Analisi Multimodale Forense" : "Multimodal Forensic Analysis"}
+                  {isIt ? "Analisi Multimodale Assistita da AI" : "AI-Assisted Multimodal Analysis"}
                 </span>
                 <span className="text-sm font-semibold text-[#0E0F10]">
-                  {isBackup ? "Backup Analysis" : "Live Gemini Multimodal"}
+                  {isIt ? "Revisione strutturata delle prove" : "Structured evidence review"}
                 </span>
               </div>
 
               <div className="flex items-center gap-2">
-                <span
-                  className={`text-[10px] font-mono font-semibold px-2 py-0.5 rounded-full border ${
-                    isBackup
-                      ? "bg-amber-50 text-amber-800 border-amber-300"
-                      : "bg-emerald-50 text-emerald-800 border-emerald-300"
-                  }`}
-                >
-                  {isBackup ? "DEMO FALLBACK" : modelName}
+                <span className="text-[11px] font-medium px-2.5 py-0.5 rounded-full bg-neutral-100 text-[#0E0F10] border border-[#E5E5E3]">
+                  {isIt ? "Revisione assistita da AI" : "AI-assisted review"}
                 </span>
               </div>
             </div>
 
             {/* 1. OBSERVED FACTS */}
             <div className="space-y-2">
-              <div className="flex items-center justify-between text-xs font-bold text-[#0E0F10]">
-                <span>1. {isIt ? "FATTI OSSERVATI (AI Observation)" : "OBSERVED FACTS (AI Observation)"}</span>
-                <span className="text-[10px] font-mono text-[#666666] bg-neutral-100 px-1.5 py-0.5 rounded">
-                  EVIDENZA DIRETTA
+              <div className="flex items-center justify-between text-xs font-semibold text-[#0E0F10]">
+                <span>{isIt ? "1. Fatti osservati direttamente" : "1. Direct visual observations"}</span>
+                <span className="text-[11px] font-medium text-[#555555] bg-neutral-100 px-2 py-0.5 rounded">
+                  {isIt ? "Evidenza diretta" : "Direct evidence"}
                 </span>
               </div>
               <div className="space-y-2 text-xs">
-                {(ai?.observedFacts || [
-                  {
-                    statement: "Due veicoli a contatto all'intersezione stradale.",
-                    source: "image" as const,
-                    evidenceRefs: ["01-overview.png"],
-                  },
-                  {
-                    statement: "Veicolo A presenta deformazione al parafango anteriore destro.",
-                    source: "image" as const,
-                    evidenceRefs: ["02-vehicle-a-damage.png"],
-                  },
-                ]).map((fact, idx) => (
-                  <div key={idx} className="p-3 rounded-xl bg-[#F7F7F6] border border-[#E5E5E3] space-y-1">
-                    <div className="flex items-center justify-between">
-                      <span className="font-mono text-[10px] text-[#666666] uppercase">
-                        Origine: {fact.source}
-                      </span>
-                      {fact.evidenceRefs?.length > 0 && (
-                        <div className="flex gap-1">
-                          {fact.evidenceRefs.map((ref, rIdx) => (
-                            <span key={rIdx} className="text-[9px] font-mono px-1 bg-white border border-[#E5E5E3] rounded text-[#0E0F10]">
-                              {ref}
-                            </span>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                    <p className="text-xs text-[#0E0F10]">{fact.statement}</p>
+                {(!ai?.observedFacts || ai.observedFacts.length === 0) ? (
+                  <div className="p-3.5 rounded-xl bg-[#F7F7F6] border border-[#E5E5E3] text-xs text-[#666666]">
+                    {isIt
+                      ? "Nessun danno evidente da impatto rilevato nelle prove fornite."
+                      : "No evident collision damage detected in the provided evidence."}
                   </div>
-                ))}
+                ) : (
+                  ai.observedFacts.map((fact, idx) => (
+                    <div key={idx} className="p-3.5 rounded-xl bg-[#F7F7F6] border border-[#E5E5E3] space-y-1.5">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[11px] text-[#666666]">
+                          {isIt ? "Rilievo fotografico" : "Visual inspection"}
+                        </span>
+                        {fact.evidenceRefs?.length > 0 && (
+                          <div className="flex flex-wrap gap-1">
+                            {fact.evidenceRefs.map((ref, rIdx) => {
+                              const lower = ref.toLowerCase();
+                              const label =
+                                lower.includes("01") || lower.includes("overview")
+                                  ? isIt ? "Foto 1 (Panoramica)" : "Photo 1 (Overview)"
+                                  : lower.includes("02") || lower.includes("vehicle-a")
+                                  ? isIt
+                                    ? draft.isDemoIncident ? "Foto 2 (Danno Polo)" : "Foto 2 (Danno Veicolo)"
+                                    : draft.isDemoIncident ? "Photo 2 (Polo Damage)" : "Photo 2 (Vehicle Damage)"
+                                  : lower.includes("03") || lower.includes("vehicle-b")
+                                  ? isIt
+                                    ? draft.isDemoIncident ? "Foto 3 (Danno Golf)" : "Foto 3 (Danno Controparte)"
+                                    : draft.isDemoIncident ? "Photo 3 (Golf Damage)" : "Photo 3 (Counterparty Damage)"
+                                  : lower.includes("04") || lower.includes("road")
+                                  ? isIt ? "Foto 4 (Contesto stradale)" : "Photo 4 (Road Context)"
+                                  : ref.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " ");
+
+                              return (
+                                <span key={rIdx} className="text-[10px] px-2 py-0.5 bg-white border border-[#E5E5E3] rounded-md text-[#0E0F10]">
+                                  {label}
+                                </span>
+                              );
+                            })}
+                          </div>
+                        )}
+                      </div>
+                      <p className="text-xs text-[#0E0F10] leading-relaxed">{fact.statement}</p>
+                    </div>
+                  ))
+                )}
               </div>
             </div>
 
             {/* 2. INFERRED DYNAMICS */}
             <div className="space-y-2 pt-2 border-t border-[#E5E5E3]">
-              <div className="flex items-center justify-between text-xs font-bold text-[#0E0F10]">
-                <span>2. {isIt ? "DINAMICA DEDOTTA (AI Inference)" : "INFERRED DYNAMICS (AI Inference)"}</span>
-                <span className="text-[10px] font-mono text-amber-800 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-200">
-                  DEDUZIONE DINAMICA
+              <div className="flex items-center justify-between text-xs font-semibold text-[#0E0F10]">
+                <span>{isIt ? "2. Dinamica dedotta" : "2. Inferred dynamics"}</span>
+                <span className="text-[11px] font-medium text-amber-900 bg-amber-50 px-2 py-0.5 rounded border border-amber-200">
+                  {isIt ? "Deduzione dinamica" : "Dynamic inference"}
                 </span>
               </div>
               <div className="space-y-2 text-xs">
-                {(ai?.inferredDynamics || [
-                  {
-                    statement: "Dinamica compatibile con traiettorie perpendicolari all'intersezione.",
-                    rationale: "Disposizione dei detriti e altezze di contatto concordanti.",
-                    confidenceLabel: "medium" as const,
-                  },
-                ]).map((inf, idx) => (
-                  <div key={idx} className="p-3 rounded-xl bg-amber-50/40 border border-amber-200/60 space-y-1">
-                    <div className="flex items-center justify-between">
-                      <span className="font-semibold text-[#0E0F10]">{inf.statement}</span>
-                      <span className="text-[10px] font-mono font-semibold uppercase px-1.5 py-0.2 rounded bg-amber-100 text-amber-800">
-                        {inf.confidenceLabel} conf.
-                      </span>
-                    </div>
-                    <p className="text-[11px] text-[#666666]">
-                      <em>{isIt ? "Motivazione:" : "Rationale:"}</em> {inf.rationale}
-                    </p>
+                {(!ai?.inferredDynamics || ai.inferredDynamics.length === 0) ? (
+                  <div className="p-3.5 rounded-xl bg-neutral-50 border border-[#E5E5E3] text-xs text-[#666666]">
+                    {isIt
+                      ? "Nessuna dinamica di collisione dedotta dalle prove visive fornite."
+                      : "No collision dynamics inferred from the supplied visual evidence."}
                   </div>
-                ))}
+                ) : (
+                  ai.inferredDynamics.map((inf, idx) => (
+                    <div key={idx} className="p-3.5 rounded-xl bg-amber-50/40 border border-amber-200/60 space-y-1.5">
+                      <div className="flex items-center justify-between">
+                        <span className="font-semibold text-[#0E0F10]">{inf.statement}</span>
+                        <span className="text-[10px] font-medium px-2 py-0.5 rounded bg-amber-100 text-amber-900">
+                          {inf.confidenceLabel === "high"
+                            ? isIt ? "Alta confidenza" : "High confidence"
+                            : inf.confidenceLabel === "medium"
+                            ? isIt ? "Media confidenza" : "Medium confidence"
+                            : isIt ? "Bassa confidenza" : "Low confidence"}
+                        </span>
+                      </div>
+                      <p className="text-[11px] text-[#666666] leading-relaxed">
+                        <em>{isIt ? "Motivazione:" : "Rationale:"}</em> {inf.rationale}
+                      </p>
+                    </div>
+                  ))
+                )}
               </div>
             </div>
 
             {/* 3. MISSING INFORMATION */}
             <div className="space-y-2 pt-2 border-t border-[#E5E5E3]">
-              <div className="text-xs font-bold text-[#0E0F10]">
-                3. {isIt ? "INFORMAZIONI MANCANTI (Missing Information)" : "MISSING INFORMATION"}
+              <div className="flex items-center justify-between text-xs font-semibold text-[#0E0F10]">
+                <span>{isIt ? "3. Informazioni mancanti o da verificare" : "3. Missing or unverified information"}</span>
+                <span className="text-[11px] font-medium text-neutral-600 bg-neutral-100 px-2 py-0.5 rounded">
+                  {isIt ? "Da integrare" : "To be confirmed"}
+                </span>
               </div>
-              <ul className="list-disc list-inside text-xs text-[#666666] space-y-1 bg-[#F7F7F6] p-3 rounded-xl border border-[#E5E5E3]">
-                {(ai?.missingInformation || [
-                  "Stato delle lanterne semaforiche al momento dell'ingresso",
-                  "Dichiarazioni di testimoni terzi indipendenti",
-                ]).map((m, idx) => (
-                  <li key={idx} className="text-[11px]">{m}</li>
-                ))}
+              <ul className="list-disc list-inside text-xs text-[#666666] space-y-1 bg-[#F7F7F6] p-3.5 rounded-xl border border-[#E5E5E3]">
+                {(!ai?.missingInformation || ai.missingInformation.length === 0) ? (
+                  <li className="text-[11px] leading-relaxed list-none text-[#888888]">
+                    {isIt ? "Nessuna informazione critica mancante segnalata." : "No critical missing information noted."}
+                  </li>
+                ) : (
+                  ai.missingInformation.map((m, idx) => (
+                    <li key={idx} className="text-[11px] leading-relaxed">{m}</li>
+                  ))
+                )}
               </ul>
             </div>
           </div>
@@ -286,7 +346,7 @@ export function Phase4Review({
             <div className="flex items-center justify-between">
               <div>
                 <span className="text-xs font-bold uppercase tracking-wider text-[#0E0F10] block">
-                  {isIt ? "Revisione Umana del Conducente" : "Driver Human Review & Verification"}
+                  {isIt ? "Revisione e Conferma del Conducente" : "Driver Human Review & Confirmation"}
                 </span>
                 <span className="text-xs text-[#666666]">
                   {isIt
@@ -299,17 +359,17 @@ export function Phase4Review({
               <div>
                 {isDamageConfirmed ? (
                   damageFieldValue.trim() !== defaultAiDamage.trim() ? (
-                    <span className="px-2.5 py-1 text-xs font-mono font-bold rounded-full bg-blue-100 text-blue-900 border border-blue-300">
-                      DRIVER-CORRECTED
+                    <span className="px-2.5 py-1 text-xs font-medium rounded-full bg-blue-50 text-blue-900 border border-blue-200">
+                      {isIt ? "Corretto dal conducente" : "Driver-corrected"}
                     </span>
                   ) : (
-                    <span className="px-2.5 py-1 text-xs font-mono font-bold rounded-full bg-emerald-100 text-emerald-900 border border-emerald-300">
-                      DRIVER-CONFIRMED
+                    <span className="px-2.5 py-1 text-xs font-medium rounded-full bg-emerald-50 text-emerald-900 border border-emerald-200">
+                      {isIt ? "Confermato dal conducente" : "Driver-confirmed"}
                     </span>
                   )
                 ) : (
-                  <span className="px-2.5 py-1 text-xs font-mono font-bold rounded-full bg-amber-100 text-amber-900 border border-amber-300">
-                    PENDING REVIEW
+                  <span className="px-2.5 py-1 text-xs font-medium rounded-full bg-amber-50 text-amber-900 border border-amber-200">
+                    {isIt ? "Da verificare" : "Pending review"}
                   </span>
                 )}
               </div>
@@ -363,8 +423,10 @@ export function Phase4Review({
                   </span>
                   <span className="text-xs font-bold text-[#0E0F10]">{damageFieldValue}</span>
                   {damageFieldValue.trim() !== defaultAiDamage.trim() && (
-                    <span className="text-[10px] text-blue-700 block font-mono mt-0.5">
-                      ✓ Corretto manualmente da John Miller (Conducente)
+                    <span className="text-[11px] text-blue-700 block mt-0.5">
+                      ✓ {draft.isDemoIncident
+                        ? (isIt ? "Corretto manualmente da John Miller (Conducente)" : "Manually corrected by John Miller (Driver)")
+                        : (isIt ? "Corretto manualmente dal conducente" : "Manually corrected by driver")}
                     </span>
                   )}
                 </div>
@@ -394,13 +456,13 @@ export function Phase4Review({
           {/* Statement Textarea */}
           <div className="space-y-2">
             <label className="text-xs font-semibold text-[#555555] block">
-              {isIt ? "Dichiarazione del conducente (Reported Statement)" : "Driver Reported Statement"}
+              {isIt ? "Dichiarazione e note del conducente (Note per l'assicuratore)" : "Driver Statement & Additional Notes (For Insurer Review)"}
             </label>
             <textarea
               rows={3}
               value={statement}
               onChange={(e) => setStatement(e.target.value)}
-              placeholder={isIt ? "Dichiarazione..." : "Driver statement..."}
+              placeholder={isIt ? "Aggiungi eventuali osservazioni o note integrative sulla dinamica del sinistro..." : "Add any additional driver remarks, comments, or notes on the incident dynamics..."}
               className="w-full p-4 rounded-xl border border-[#E5E5E3] bg-white text-sm text-[#0E0F10] focus:border-[#0E0F10] focus:outline-none"
             />
           </div>
@@ -436,8 +498,8 @@ export function Phase4Review({
               <span>
                 {isSubmitting
                   ? isIt
-                    ? "Salvataggio e trasmissione su Supabase..."
-                    : "Submitting to Supabase..."
+                    ? "Inoltro in corso..."
+                    : "Submitting report..."
                   : isIt
                   ? "Invia rapporto incidente"
                   : "Submit accident report"}

@@ -21,14 +21,14 @@ function createInitialBlankDraft(): DriverDraft {
     incidentDate: dateStr,
     incidentTime: timeStr,
     location: {
-      city: "Roma",
+      city: "",
       street: "",
       postalCode: "",
       latitude: 41.9028,
       longitude: 12.4964,
       junctionType: "STRAIGHT_ROAD",
     },
-    vehiclesCount: 2,
+    vehiclesCount: 1,
     anyInjured: false,
     policePresent: false,
     evidenceItems: [],
@@ -39,18 +39,12 @@ function createInitialBlankDraft(): DriverDraft {
       makeModel: "",
       insurer: "",
       policyNumber: "",
-      hasInfo: true,
+      hasInfo: false,
     },
     statement: "",
+    additionalNotes: "",
     reconstructionConfirmed: false,
-    caiConfirmedFields: {
-      "1": true,
-      "2": true,
-      "3": true,
-      "6A": true,
-      "7A": true,
-      "8A": true,
-    },
+    caiConfirmedFields: {},
     caiManualOverrides: {},
   };
 }
@@ -63,7 +57,7 @@ interface DriverDraftContextType {
   addEvidenceItem: (item: EvidenceDraftItem, blob?: Blob) => Promise<void>;
   removeEvidenceItem: (id: string) => Promise<void>;
   goToStep: (step: ReportingStep) => void;
-  submitReport: () => Promise<string>;
+  submitReport: (overrides?: Partial<DriverDraft>) => Promise<string>;
   resetDraft: () => void;
 }
 
@@ -113,28 +107,49 @@ export function DriverDraftProvider({ children }: { children: React.ReactNode })
   }, []);
 
   const startNewReport = useCallback(() => {
+    if (typeof window !== "undefined") {
+      try {
+        localStorage.removeItem(DRAFT_STORAGE_KEY);
+      } catch (e) {
+        console.warn("Could not clear draft storage", e);
+      }
+    }
     const blank = createInitialBlankDraft();
     setDraft(blank);
   }, []);
 
   const loadDemoIncident = useCallback(() => {
-    setDraft(JSON.parse(JSON.stringify(CANONICAL_DEMO_DRAFT)));
+    const demo = JSON.parse(JSON.stringify(CANONICAL_DEMO_DRAFT));
+    demo.aiAnalysisOutput = undefined;
+    setDraft(demo);
   }, []);
 
   const addEvidenceItem = useCallback(async (item: EvidenceDraftItem, blob?: Blob) => {
     if (blob) {
       await storeMediaBlob(item.id, blob);
     }
-    setDraft((prev) => ({
-      ...prev,
-      evidenceItems: [...prev.evidenceItems.filter((e) => e.id !== item.id), item],
-    }));
+    setDraft((prev) => {
+      // If adding a custom upload and current items are canonical sample assets, replace them
+      const isSampleSet =
+        prev.evidenceItems.length > 0 &&
+        prev.evidenceItems.every(
+          (e) => e.id.startsWith("EVD-DEMO") || e.previewUrl.includes("scenario-01")
+        );
+      const baseItems = isSampleSet && item.isRealUpload ? [] : prev.evidenceItems;
+      return {
+        ...prev,
+        isDemoIncident: item.isRealUpload ? false : prev.isDemoIncident,
+        aiAnalysisOutput: undefined, // Invalidate stale analysis whenever evidence changes
+        evidenceItems: [...baseItems.filter((e) => e.id !== item.id), item],
+      };
+    });
   }, []);
 
   const removeEvidenceItem = useCallback(async (id: string) => {
     await deleteMediaBlob(id);
     setDraft((prev) => ({
       ...prev,
+      aiAnalysisOutput: undefined, // Invalidate stale analysis whenever evidence changes
       evidenceItems: prev.evidenceItems.filter((e) => e.id !== id),
     }));
   }, []);
@@ -146,16 +161,21 @@ export function DriverDraftProvider({ children }: { children: React.ReactNode })
     }
   }, []);
 
-  const submitReport = useCallback(async (): Promise<string> => {
-    const createdClaim = await createClaimFromDriverDraft(draft);
-    setDraft((prev) => ({
-      ...prev,
-      step: "SUBMITTED",
-      submittedClaimId: createdClaim.id,
-      submittedAt: new Date().toISOString(),
-    }));
-    return createdClaim.id;
-  }, [createClaimFromDriverDraft, draft]);
+  const submitReport = useCallback(
+    async (overrides?: Partial<DriverDraft>): Promise<string> => {
+      const finalDraft = overrides ? { ...draft, ...overrides } : draft;
+      const createdClaim = await createClaimFromDriverDraft(finalDraft);
+      setDraft((prev) => ({
+        ...prev,
+        ...(overrides || {}),
+        step: "SUBMITTED",
+        submittedClaimId: createdClaim.id,
+        submittedAt: new Date().toISOString(),
+      }));
+      return createdClaim.id;
+    },
+    [createClaimFromDriverDraft, draft]
+  );
 
   const resetDraft = useCallback(() => {
     if (typeof window !== "undefined") {

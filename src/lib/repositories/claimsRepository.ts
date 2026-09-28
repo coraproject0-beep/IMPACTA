@@ -39,22 +39,21 @@ class PersistentClaimsRepository implements ClaimsRepository {
     if (typeof window !== "undefined") {
       try {
         const stored = localStorage.getItem(STORAGE_KEY);
-        if (stored) {
+        if (stored !== null) {
           const parsed = JSON.parse(stored);
-          if (Array.isArray(parsed) && parsed.length > 0) {
+          if (Array.isArray(parsed)) {
             this.claims = parsed;
             this.initialized = true;
             return;
           }
         }
       } catch (err) {
-        console.warn("Could not read localStorage for claims, using default fixtures", err);
+        console.warn("Could not read localStorage for claims", err);
       }
     }
 
-    // Default fallback
-    this.claims = JSON.parse(JSON.stringify(MOCK_CLAIMS));
-    this.saveToStorage();
+    // Default fallback to empty list until loaded from server
+    this.claims = [];
     this.initialized = true;
   }
 
@@ -75,10 +74,12 @@ class PersistentClaimsRepository implements ClaimsRepository {
         const res = await fetch("/api/claims");
         if (res.ok) {
           const data = await res.json();
-          if (data.claims && Array.isArray(data.claims) && data.claims.length > 0) {
-            const serverIds = new Set(data.claims.map((c: Claim) => c.id.toLowerCase()));
-            const localOnly = this.claims.filter((c) => !serverIds.has(c.id.toLowerCase()));
-            this.claims = [...data.claims, ...localOnly];
+          if (data.source === "supabase") {
+            // When Supabase is connected, the server is the single source of truth
+            this.claims = Array.isArray(data.claims) ? data.claims : [];
+            this.saveToStorage();
+          } else if (data.claims && Array.isArray(data.claims)) {
+            this.claims = data.claims;
             this.saveToStorage();
           }
         }
@@ -135,11 +136,24 @@ class PersistentClaimsRepository implements ClaimsRepository {
 
     if (typeof window !== "undefined") {
       try {
-        await fetch("/api/claims", {
+        const res = await fetch("/api/claims", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(claim),
         });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.claim) {
+            const idx = this.claims.findIndex((c) => c.id.toLowerCase() === claim.id.toLowerCase());
+            if (idx >= 0) {
+              this.claims[idx] = data.claim;
+            } else {
+              this.claims.unshift(data.claim);
+            }
+            this.saveToStorage();
+            return JSON.parse(JSON.stringify(data.claim));
+          }
+        }
       } catch (e) {
         console.warn("Could not sync added claim to /api/claims:", e);
       }
@@ -150,9 +164,19 @@ class PersistentClaimsRepository implements ClaimsRepository {
 
   async createFromDriverDraft(draft: DriverDraft): Promise<Claim> {
     this.initIfNeeded();
-    const claim = mapDriverDraftToClaim(draft, this.claims.length);
-    await this.addClaim(claim);
-    return claim;
+    let maxNum = 0;
+    for (const c of this.claims) {
+      const match = c.id.match(/(?:CLM-(?:IT-\d{4}-|APP-)?|CLM-)(\d+)/i);
+      if (match) {
+        const num = parseInt(match[1], 10);
+        if (!isNaN(num) && num > maxNum) {
+          maxNum = num;
+        }
+      }
+    }
+    const claim = mapDriverDraftToClaim(draft, maxNum);
+    const saved = await this.addClaim(claim);
+    return saved;
   }
 
   private async syncPatch(id: string, patch: any) {
@@ -354,7 +378,7 @@ class PersistentClaimsRepository implements ClaimsRepository {
         console.error("Error clearing local storage", err);
       }
     }
-    this.claims = JSON.parse(JSON.stringify(MOCK_CLAIMS));
+    this.claims = [];
     this.saveToStorage();
   }
 }

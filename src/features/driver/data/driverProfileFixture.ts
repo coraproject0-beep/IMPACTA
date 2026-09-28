@@ -1,19 +1,19 @@
 import { DriverProfile } from "@/types/driver";
 
 export const SYNTHETIC_DRIVER_PROFILE: DriverProfile = {
-  fullName: "Matteo Bianchi",
-  fiscalCode: "BNCMTT84M15H501Z",
+  fullName: "John Miller",
+  fiscalCode: "MLLJHN84M15H501Z",
   licenseNumber: "RM9482014L",
   phone: "+39 06 8492 1102",
-  email: "matteo.bianchi@demo-driver.it",
+  email: "john.miller@impacta-demo.eu",
   vehicle: {
     role: "VEHICLE_A",
-    plate: "GF492XP",
+    plate: "AB 123 CD",
     make: "Volkswagen",
-    model: "Golf VIII 1.5 eTSI",
-    year: 2022,
+    model: "Polo",
+    year: 2023,
     color: "Deep Black Pearl",
-    vin: "WVWZZZCDZNW082914",
+    vin: "WVWZZZAWZPW082914",
     damageDescription: "Front-right bumper and headlight deformation",
     impactZone: "Front-Right",
     drivable: true,

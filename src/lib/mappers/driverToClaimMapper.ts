@@ -7,17 +7,23 @@ export function mapDriverDraftToClaim(
   existingClaimsCount: number
 ): Claim {
   const claimSeq = String(existingClaimsCount + 1).padStart(3, "0");
-  const claimId = draft.isDemoIncident
-    ? "CLM-DEMO-001"
-    : `CLM-APP-${claimSeq}`;
+  const claimId = draft.submittedClaimId || `CLM-APP-${claimSeq}`;
   const nowIso = new Date().toISOString();
   const incidentIso = new Date(
     `${draft.incidentDate}T${draft.incidentTime || "12:00"}:00Z`
   ).toISOString();
 
+  const hasVehicleB =
+    draft.isDemoIncident ||
+    Boolean(
+      (draft.vehiclesCount && draft.vehiclesCount > 1) ||
+      draft.counterparty?.driverName ||
+      draft.counterparty?.plate
+    );
+
   // Map evidence items
   const evidence: EvidenceItem[] = draft.evidenceItems.map((e, idx) => ({
-    id: `EVD-${claimSeq}-${idx + 1}`,
+    id: `EVD-${claimId}-${idx + 1}`,
     title: e.categoryLabel,
     type: e.category === "DOCUMENT" ? "DOCUMENT" : "VEHICLE_DAMAGE_PHOTO",
     timestamp: e.timestamp || nowIso,
@@ -82,7 +88,7 @@ export function mapDriverDraftToClaim(
       code: "6A",
       label: "Assicurato Veicolo A",
       section: "VEHICLE_A",
-      value: SYNTHETIC_DRIVER_PROFILE.fullName,
+      value: draft.isDemoIncident ? SYNTHETIC_DRIVER_PROFILE.fullName : "Policyholder",
       provenance: "PROFILE",
       requiresConfirmation: false,
       isConfirmed: true,
@@ -93,7 +99,7 @@ export function mapDriverDraftToClaim(
       code: "7A",
       label: "Targa Veicolo A",
       section: "VEHICLE_A",
-      value: SYNTHETIC_DRIVER_PROFILE.vehicle.plate,
+      value: draft.isDemoIncident ? SYNTHETIC_DRIVER_PROFILE.vehicle.plate : (draft.caiManualOverrides?.["7A"] || "—"),
       provenance: "PROFILE",
       requiresConfirmation: false,
       isConfirmed: true,
@@ -104,7 +110,20 @@ export function mapDriverDraftToClaim(
       code: "8A",
       label: "Compagnia Assicuratrice A",
       section: "VEHICLE_A",
-      value: SYNTHETIC_DRIVER_PROFILE.policy.insurerName,
+      value: draft.isDemoIncident ? SYNTHETIC_DRIVER_PROFILE.policy.insurerName : "—",
+      provenance: "PROFILE",
+      requiresConfirmation: false,
+      isConfirmed: true,
+      confidence: 100,
+    },
+    {
+      id: "cai-6b",
+      code: "9A",
+      label: "Conducente A",
+      section: "VEHICLE_A",
+      value: draft.isDemoIncident
+        ? `${SYNTHETIC_DRIVER_PROFILE.fullName} (Pat. ${SYNTHETIC_DRIVER_PROFILE.licenseNumber})`
+        : "Driver",
       provenance: "PROFILE",
       requiresConfirmation: false,
       isConfirmed: true,
@@ -115,11 +134,25 @@ export function mapDriverDraftToClaim(
       code: "10A",
       label: "Punto d'urto iniziale A",
       section: "DAMAGE",
-      value: SYNTHETIC_DRIVER_PROFILE.vehicle.impactZone,
-      provenance: draft.isDemoIncident ? "AI_OBSERVATION" : "MANUAL",
+      value:
+        draft.caiManualOverrides["10A"] ||
+        draft.humanCorrections?.find((c) => c.fieldKey === "vehicle_a_damage")?.correctedValue ||
+        (draft.isDemoIncident
+          ? SYNTHETIC_DRIVER_PROFILE.vehicle.impactZone
+          : (draft.aiAnalysisOutput?.caiFields?.pointOfImpactA || "None observable")),
+      provenance:
+        draft.caiManualOverrides["10A"] ||
+        draft.humanCorrections?.some(
+          (c) => c.fieldKey === "vehicle_a_damage" && c.reviewType === "driver_correction"
+        )
+          ? "MANUAL"
+          : (draft.isDemoIncident ? "AI_OBSERVATION" : "MANUAL"),
       requiresConfirmation: false,
       isConfirmed: true,
       confidence: 92,
+      originalExtractedValue:
+        draft.humanCorrections?.find((c) => c.fieldKey === "vehicle_a_damage")?.originalValue ||
+        (draft.isDemoIncident ? SYNTHETIC_DRIVER_PROFILE.vehicle.impactZone : "None observable"),
     },
     {
       id: "cai-8",
@@ -136,67 +169,83 @@ export function mapDriverDraftToClaim(
       isConfirmed: Boolean(draft.caiConfirmedFields["12A"]),
       confidence: 88,
     },
-    // Vehicle B fields
+    // Vehicle B fields (only if counterparty / 2nd vehicle reported)
+    ...(hasVehicleB
+      ? [
+          {
+            id: "cai-9",
+            code: "6B",
+            label: "Assicurato Veicolo B",
+            section: "VEHICLE_B" as const,
+            value: draft.counterparty.driverName || "[Non comunicato]",
+            provenance: "MANUAL" as const,
+            requiresConfirmation: !draft.counterparty.driverName,
+            isConfirmed: Boolean(draft.counterparty.driverName),
+            confidence: draft.counterparty.driverName ? 90 : 0,
+          },
+          {
+            id: "cai-10",
+            code: "7B",
+            label: "Targa Veicolo B",
+            section: "VEHICLE_B" as const,
+            value: draft.counterparty.plate || "[Non comunicata]",
+            provenance: "MANUAL" as const,
+            requiresConfirmation: !draft.counterparty.plate,
+            isConfirmed: Boolean(draft.counterparty.plate),
+            confidence: draft.counterparty.plate ? 95 : 0,
+          },
+          {
+            id: "cai-11",
+            code: "8B",
+            label: "Compagnia Assicuratrice B",
+            section: "VEHICLE_B" as const,
+            value: draft.counterparty.insurer || "[In attesa visura ANIA]",
+            provenance: "MANUAL" as const,
+            requiresConfirmation: !draft.counterparty.insurer,
+            isConfirmed: Boolean(draft.counterparty.insurer),
+            confidence: draft.counterparty.insurer ? 90 : 0,
+          },
+          {
+            id: "cai-12",
+            code: "10B",
+            label: "Punto d'urto iniziale B",
+            section: "DAMAGE" as const,
+            value: draft.isDemoIncident
+              ? "Parte anteriore sinistra"
+              : "Zona anteriore / fiancata",
+            provenance: draft.isDemoIncident ? ("AI_OBSERVATION" as const) : ("MANUAL" as const),
+            requiresConfirmation: false,
+            isConfirmed: true,
+            confidence: 85,
+          },
+          {
+            id: "cai-13",
+            code: "12B",
+            label: "Circostanza Veicolo B",
+            section: "CIRCUMSTANCES" as const,
+            value:
+              draft.caiManualOverrides["12B"] ||
+              (draft.isDemoIncident
+                ? "Si immetteva in una piazza a senso rotatorio"
+                : "Proveniva da strada laterale"),
+            provenance: draft.isDemoIncident ? ("AI_INFERENCE" as const) : ("MANUAL" as const),
+            requiresConfirmation: !draft.caiConfirmedFields["12B"],
+            isConfirmed: Boolean(draft.caiConfirmedFields["12B"]),
+            confidence: 85,
+          },
+        ]
+      : []),
+    // Box 14: Driver Remarks / Comments
     {
-      id: "cai-9",
-      code: "6B",
-      label: "Assicurato Veicolo B",
-      section: "VEHICLE_B",
-      value: draft.counterparty.driverName || "[Non comunicato]",
+      id: "cai-14",
+      code: "14",
+      label: "Osservazioni del Conducente (Box 14)",
+      section: "CIRCUMSTANCES",
+      value: draft.additionalNotes || draft.statement || "Nessuna osservazione aggiuntiva",
       provenance: "MANUAL",
-      requiresConfirmation: !draft.counterparty.driverName,
-      isConfirmed: Boolean(draft.counterparty.driverName),
-      confidence: draft.counterparty.driverName ? 90 : 0,
-    },
-    {
-      id: "cai-10",
-      code: "7B",
-      label: "Targa Veicolo B",
-      section: "VEHICLE_B",
-      value: draft.counterparty.plate || "[Non comunicata]",
-      provenance: "MANUAL",
-      requiresConfirmation: !draft.counterparty.plate,
-      isConfirmed: Boolean(draft.counterparty.plate),
-      confidence: draft.counterparty.plate ? 95 : 0,
-    },
-    {
-      id: "cai-11",
-      code: "8B",
-      label: "Compagnia Assicuratrice B",
-      section: "VEHICLE_B",
-      value: draft.counterparty.insurer || "[In attesa visura ANIA]",
-      provenance: "MANUAL",
-      requiresConfirmation: !draft.counterparty.insurer,
-      isConfirmed: Boolean(draft.counterparty.insurer),
-      confidence: draft.counterparty.insurer ? 90 : 0,
-    },
-    {
-      id: "cai-12",
-      code: "10B",
-      label: "Punto d'urto iniziale B",
-      section: "DAMAGE",
-      value: draft.isDemoIncident
-        ? "Parte anteriore sinistra"
-        : "Zona anteriore / fiancata",
-      provenance: draft.isDemoIncident ? "AI_OBSERVATION" : "MANUAL",
       requiresConfirmation: false,
       isConfirmed: true,
-      confidence: 85,
-    },
-    {
-      id: "cai-13",
-      code: "12B",
-      label: "Circostanza Veicolo B",
-      section: "CIRCUMSTANCES",
-      value:
-        draft.caiManualOverrides["12B"] ||
-        (draft.isDemoIncident
-          ? "Si immetteva in una piazza a senso rotatorio"
-          : "Proveniva da strada laterale"),
-      provenance: draft.isDemoIncident ? "AI_INFERENCE" : "MANUAL",
-      requiresConfirmation: !draft.caiConfirmedFields["12B"],
-      isConfirmed: Boolean(draft.caiConfirmedFields["12B"]),
-      confidence: 85,
+      confidence: 100,
     },
   ];
 
@@ -218,11 +267,20 @@ export function mapDriverDraftToClaim(
       action: "CAI workspace initialized from mobile submission",
       objectAffected: "CAIWorkspace",
     },
+    {
+      id: `aud-${Date.now()}-confirmed`,
+      timestamp: nowIso,
+      actor: "REVIEWER" as const,
+      actorName: draft.isDemoIncident ? SYNTHETIC_DRIVER_PROFILE.fullName : "Driver",
+      action: "CAI Draft confirmed and signed by driver",
+      objectAffected: `Claim ${claimId}`,
+      details: draft.statement ? `Driver Statement: "${draft.statement}"` : "Signed and submitted via IMPACTA Driver Mobile Web",
+    },
     ...(draft.humanCorrections || []).map((c, idx) => ({
       id: `aud-corr-${idx + 1}`,
       timestamp: c.reviewedAt || nowIso,
       actor: "REVIEWER" as const,
-      actorName: c.actor || "Driver (John Miller)",
+      actorName: c.actor || (draft.isDemoIncident ? "Driver (John Miller)" : "Driver"),
       action: `Human field review [${c.fieldLabel || c.fieldKey}]: "${c.originalValue}" -> "${c.correctedValue}" (${c.reviewType})`,
       objectAffected: `Field:${c.fieldKey}`,
       details: `Provenance preserved. Original AI value: "${c.originalValue}". Corrected value: "${c.correctedValue}". Status: ${c.reviewType}`,
@@ -233,14 +291,20 @@ export function mapDriverDraftToClaim(
     id: claimId,
     incidentDate: incidentIso,
     createdAt: nowIso,
-    status: draft.isDemoIncident ? "CAI_READY" : "NEW",
+    status: "CAI_READY",
     severity: draft.anyInjured ? "HIGH" : "MEDIUM",
     assignee: null,
-    policyholder: {
-      fullName: SYNTHETIC_DRIVER_PROFILE.fullName,
-      fiscalCode: SYNTHETIC_DRIVER_PROFILE.fiscalCode,
-      phone: SYNTHETIC_DRIVER_PROFILE.phone,
-    },
+    policyholder: draft.isDemoIncident
+      ? {
+          fullName: SYNTHETIC_DRIVER_PROFILE.fullName,
+          fiscalCode: SYNTHETIC_DRIVER_PROFILE.fiscalCode,
+          phone: SYNTHETIC_DRIVER_PROFILE.phone,
+        }
+      : {
+          fullName: "Driver",
+          fiscalCode: "—",
+          phone: "—",
+        },
     incident: {
       timestamp: incidentIso,
       location: draft.location,
@@ -249,54 +313,101 @@ export function mapDriverDraftToClaim(
       policeIntervention: draft.policePresent,
       summary: draft.statement,
     },
-    driverA: {
-      role: "DRIVER_A",
-      fullName: SYNTHETIC_DRIVER_PROFILE.fullName,
-      taxCode: SYNTHETIC_DRIVER_PROFILE.fiscalCode,
-      drivingLicenseNumber: SYNTHETIC_DRIVER_PROFILE.licenseNumber,
-      phone: SYNTHETIC_DRIVER_PROFILE.phone,
-      email: SYNTHETIC_DRIVER_PROFILE.email,
-      statement: draft.statement,
-      injured: draft.anyInjured,
-    },
-    vehicleA: SYNTHETIC_DRIVER_PROFILE.vehicle,
-    policyA: SYNTHETIC_DRIVER_PROFILE.policy,
-    driverB: draft.counterparty.driverName
+    driverA: draft.isDemoIncident
       ? {
-          role: "DRIVER_B",
-          fullName: draft.counterparty.driverName,
-          taxCode: "GLLNDR79T02H501Y",
-          drivingLicenseNumber: "RM5829104A",
-          phone: draft.counterparty.phone || "+39 347 1829 044",
-          statement: draft.isDemoIncident
-            ? "Mi stavo immettendo nella rotatoria da Via Merulana."
-            : "Dichiarazione controparte non raccolta sul posto.",
-          injured: false,
+          role: "DRIVER_A",
+          fullName: SYNTHETIC_DRIVER_PROFILE.fullName,
+          taxCode: SYNTHETIC_DRIVER_PROFILE.fiscalCode,
+          drivingLicenseNumber: SYNTHETIC_DRIVER_PROFILE.licenseNumber,
+          phone: SYNTHETIC_DRIVER_PROFILE.phone,
+          email: SYNTHETIC_DRIVER_PROFILE.email,
+          statement: draft.statement,
+          injured: draft.anyInjured,
         }
-      : undefined,
-    vehicleB: draft.counterparty.plate
-      ? {
-          role: "VEHICLE_B",
-          plate: draft.counterparty.plate,
-          make: draft.counterparty.makeModel.split(" ")[0] || "Counterparty",
-          model: draft.counterparty.makeModel.split(" ").slice(1).join(" ") || "Vehicle",
-          year: 2020,
-          color: "Grigio Moda",
-          damageDescription: "Front-left angle scuffs",
-          impactZone: "Front-Left",
+      : {
+          role: "DRIVER_A",
+          fullName: "Driver",
+          taxCode: "—",
+          drivingLicenseNumber: "—",
+          phone: "—",
+          email: "—",
+          statement: draft.statement || "",
+          injured: draft.anyInjured,
+        },
+    vehicleA: draft.isDemoIncident
+      ? SYNTHETIC_DRIVER_PROFILE.vehicle
+      : {
+          role: "VEHICLE_A",
+          plate: "—",
+          make: "Vehicle details not provided",
+          model: "",
+          year: new Date().getFullYear(),
+          color: "—",
+          damageDescription:
+            draft.humanCorrections?.find((c) => c.fieldKey === "vehicle_a_damage")?.correctedValue ||
+            "Damage under inspection",
+          impactZone:
+            draft.humanCorrections?.find((c) => c.fieldKey === "vehicle_a_damage")?.correctedValue ||
+            "Under inspection",
           drivable: true,
-        }
-      : undefined,
-    policyB: draft.counterparty.insurer
-      ? {
-          insurerName: draft.counterparty.insurer,
-          policyNumber: draft.counterparty.policyNumber || "TIR-4412-98102",
+        },
+    policyA: draft.isDemoIncident
+      ? SYNTHETIC_DRIVER_PROFILE.policy
+      : {
+          insurerName: "Insurance Policy on file",
+          policyNumber: "POL-PENDING",
           coverageType: "RCA_BASE",
-          validUntil: "2026-11-30",
-          agencyCode: "AG-RM-12",
+          validUntil: "—",
+          agencyCode: "—",
           policyholderMatch: true,
-        }
-      : undefined,
+        },
+    driverB:
+      hasVehicleB && (draft.counterparty.driverName || draft.isDemoIncident)
+        ? {
+            role: "DRIVER_B",
+            fullName: draft.counterparty.driverName || (draft.isDemoIncident ? "Claire Anderson" : "Counterparty Driver"),
+            taxCode: draft.isDemoIncident ? "GLLNDR79T02H501Y" : "—",
+            drivingLicenseNumber: draft.isDemoIncident ? "RM5829104A" : "—",
+            phone: draft.counterparty.phone || (draft.isDemoIncident ? "+39 347 1829 044" : "—"),
+            statement: draft.isDemoIncident
+              ? "Mi stavo immettendo nella rotatoria da Via Merulana."
+              : "Dichiarazione controparte non raccolta sul posto.",
+            injured: false,
+          }
+        : undefined,
+    vehicleB:
+      hasVehicleB && (draft.counterparty.plate || draft.isDemoIncident)
+        ? {
+            role: "VEHICLE_B",
+            plate: draft.counterparty.plate || (draft.isDemoIncident ? "EF 456 GH" : "—"),
+            make: draft.isDemoIncident
+              ? "Volkswagen"
+              : draft.counterparty.makeModel
+              ? draft.counterparty.makeModel.split(" ")[0] || "Counterparty"
+              : "Counterparty",
+            model: draft.isDemoIncident
+              ? "Golf VII"
+              : draft.counterparty.makeModel
+              ? draft.counterparty.makeModel.split(" ").slice(1).join(" ") || "Vehicle"
+              : "Vehicle",
+            year: draft.isDemoIncident ? 2020 : new Date().getFullYear(),
+            color: draft.isDemoIncident ? "Grigio Moda" : "—",
+            damageDescription: draft.isDemoIncident ? "Front-left angle scuffs" : "Damage under inspection",
+            impactZone: draft.isDemoIncident ? "Front-Left" : "Under inspection",
+            drivable: true,
+          }
+        : undefined,
+    policyB:
+      hasVehicleB && (draft.counterparty.insurer || draft.isDemoIncident)
+        ? {
+            insurerName: draft.counterparty.insurer || (draft.isDemoIncident ? "Allianz Italia" : "—"),
+            policyNumber: draft.counterparty.policyNumber || (draft.isDemoIncident ? "TIR-4412-98102" : "—"),
+            coverageType: "RCA_BASE",
+            validUntil: draft.isDemoIncident ? "2026-11-30" : "—",
+            agencyCode: draft.isDemoIncident ? "AG-RM-12" : "—",
+            policyholderMatch: true,
+          }
+        : undefined,
     evidence,
     telemetry: draft.isDemoIncident
       ? {
@@ -347,22 +458,30 @@ export function mapDriverDraftToClaim(
             epistemicStatus: "INFERRED" as const,
             alternativeHypothesis: inf.rationale,
           })),
-          probableSequence: [
-            {
-              stepNumber: 1,
-              timeOffset: "T - 2.0s",
-              description: "Vehicles approaching intersection on perpendicular travel vectors",
-              supportingEvidenceIds: ["01-overview.png"],
-              confidence: 85,
-            },
-            {
-              stepNumber: 2,
-              timeOffset: "T = 0.0s",
-              description: "Front-right contact between Vehicle A and Vehicle B in intersection",
-              supportingEvidenceIds: ["02-vehicle-a-damage.png", "03-vehicle-b-damage.png"],
-              confidence: 92,
-            },
-          ],
+          probableSequence: draft.isDemoIncident
+            ? [
+                {
+                  stepNumber: 1,
+                  timeOffset: "T - 2.0s",
+                  description: "Vehicles approaching intersection on perpendicular travel vectors",
+                  supportingEvidenceIds: ["01-overview.png"],
+                  confidence: 85,
+                },
+                {
+                  stepNumber: 2,
+                  timeOffset: "T = 0.0s",
+                  description: "Front-right contact between Vehicle A and Vehicle B in intersection",
+                  supportingEvidenceIds: ["02-vehicle-a-damage.png", "03-vehicle-b-damage.png"],
+                  confidence: 92,
+                },
+              ]
+            : (draft.aiAnalysisOutput.inferredDynamics || []).map((inf, idx) => ({
+                stepNumber: idx + 1,
+                timeOffset: `Step ${idx + 1}`,
+                description: inf.statement,
+                supportingEvidenceIds: [],
+                confidence: inf.confidenceLabel === "high" ? 90 : inf.confidenceLabel === "medium" ? 75 : 60,
+              })),
           uncertaintiesAndLimitations: [
             ...(draft.aiAnalysisOutput.missingInformation || []),
             "Epistemic notice: Direct visual observations strictly separated from dynamic inferences. Driver statements handled as reported statements, not objective facts. No legal liability assigned.",
@@ -428,9 +547,14 @@ export function mapDriverDraftToClaim(
     caiDraftGenerated: true,
     caiDraftGeneratedAt: nowIso,
     auditTrail,
-    reviewerNotes: draft.isDemoIncident
-      ? "Report submitted through IMPACTA Driver (Canonical Demo). Ready for adjuster sign-off."
-      : "Report submitted through IMPACTA Driver (Real upload flow). Review of uploaded files required.",
+    reviewerNotes: draft.additionalNotes || (draft.statement ? `Dichiarazione Conducente: ${draft.statement}` : ""),
+    reviewed_data: {
+      confirmedByDriver: true,
+      location: draft.location,
+      humanCorrections: draft.humanCorrections || [],
+      additionalNotes: draft.additionalNotes || "",
+    },
+    humanCorrections: draft.humanCorrections || [],
     tags: [
       "Driver App Ingest",
       draft.isDemoIncident ? "Demo Incident" : "Real User Intake",

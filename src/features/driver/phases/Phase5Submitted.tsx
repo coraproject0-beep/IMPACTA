@@ -5,6 +5,7 @@ import Link from "next/link";
 import { DriverDraft } from "@/types/driver";
 import { useLanguage } from "@/context/LanguageContext";
 import { CheckCircleIcon, ArrowRightIcon } from "@/components/icons/Icons";
+import { SYNTHETIC_DRIVER_PROFILE } from "@/features/driver/data/driverProfileFixture";
 
 interface Phase5SubmittedProps {
   draft: DriverDraft;
@@ -14,7 +15,7 @@ interface Phase5SubmittedProps {
 export function Phase5Submitted({ draft, onReturnHome }: Phase5SubmittedProps) {
   const { t, language } = useLanguage();
   const isIt = language === "it";
-  const claimId = draft.submittedClaimId || "IMP-260925-014";
+  const claimId = draft.submittedClaimId || "CLM-APP-001";
   const nowFormatted = draft.submittedAt
     ? new Date(draft.submittedAt).toLocaleString(isIt ? "it-IT" : "en-GB", {
         day: "2-digit",
@@ -72,13 +73,23 @@ export function Phase5Submitted({ draft, onReturnHome }: Phase5SubmittedProps) {
         <div className="space-y-3 text-xs text-[#0E0F10]">
           <div>
             <span className="text-[#666666] block">{isIt ? "Veicolo:" : "Vehicle:"}</span>
-            <span className="font-bold text-sm">Audi A3</span>
-            <span className="font-mono text-[#666666] block">AB 123 CD</span>
+            <span className="font-bold text-sm">
+              {draft.isDemoIncident
+                ? `${SYNTHETIC_DRIVER_PROFILE.vehicle.make} ${SYNTHETIC_DRIVER_PROFILE.vehicle.model}`
+                : (isIt ? "Dettagli veicolo non specificati" : "Vehicle details not provided")}
+            </span>
+            <span className="font-mono text-[#666666] block">
+              {draft.isDemoIncident ? SYNTHETIC_DRIVER_PROFILE.vehicle.plate : "—"}
+            </span>
           </div>
 
           <div className="pt-2 border-t border-[#E5E5E3]">
             <span className="text-[#666666] block">{isIt ? "Compagnia:" : "Insurer:"}</span>
-            <span className="font-medium text-sm">Generali Italia</span>
+            <span className="font-medium text-sm">
+              {draft.isDemoIncident
+                ? SYNTHETIC_DRIVER_PROFILE.policy.insurerName
+                : (isIt ? "Dati assicurativi non specificati" : "Insurance details not provided")}
+            </span>
           </div>
         </div>
       </div>

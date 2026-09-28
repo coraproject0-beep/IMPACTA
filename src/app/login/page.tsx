@@ -17,7 +17,7 @@ function LoginForm() {
   const { language, t } = useLanguage();
   const isIt = language === "it";
 
-  const [email, setEmail] = useState("luca.moretti@impacta-demo.eu");
+  const [email, setEmail] = useState("john.miller@impacta-demo.eu");
   const [password, setPassword] = useState("••••••••••••");
   const [forgotNotice, setForgotNotice] = useState(false);
 
@@ -76,7 +76,7 @@ function LoginForm() {
                   : "Your roadside safety, secured and verified."}
               </h2>
               <p className="text-sm text-white/80 font-normal">
-                Luca Moretti · Audi A3 (<span className="font-mono">AB 123 CD</span>)
+                John Miller · Volkswagen Polo (<span className="font-mono">AB 123 CD</span>)
               </p>
             </div>
           </div>
@@ -107,7 +107,7 @@ function LoginForm() {
                 {isIt
                   ? "Accedi istantaneamente come assicurato"
                   : "Sign in instantly as policyholder"}{" "}
-                <strong>Luca Moretti</strong> (Audi A3).
+                <strong>John Miller</strong> (Volkswagen Polo).
               </p>
               <button
                 type="button"

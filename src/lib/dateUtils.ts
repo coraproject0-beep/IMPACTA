@@ -134,19 +134,21 @@ export function formatRelativeTime(
   const d = parseDate(input);
   if (!d) return typeof input === "string" ? input : "";
 
-  const anchor = baseDate || new Date("2026-09-25T12:00:00Z");
+  const anchor = baseDate || new Date();
   const diffMs = anchor.getTime() - d.getTime();
-  const diffMinutes = Math.round(diffMs / (1000 * 60));
-  const diffHours = Math.round(diffMs / (1000 * 60 * 60));
-  const diffDays = Math.round(diffMs / (1000 * 60 * 60 * 24));
+  const diffMinutes = Math.floor(diffMs / (1000 * 60));
+  const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+  if (diffMinutes < 1) {
+    return locale === "it" ? "Adesso" : "Just now";
+  }
 
   if (locale === "it") {
-    if (diffMinutes < 1) return "Adesso";
     if (diffMinutes < 60) return `${diffMinutes} min fa`;
     if (diffHours < 24) return `${diffHours} ${diffHours === 1 ? "ora" : "ore"} fa`;
     return `${diffDays} ${diffDays === 1 ? "giorno" : "giorni"} fa`;
   } else {
-    if (diffMinutes < 1) return "Just now";
     if (diffMinutes < 60) return `${diffMinutes} min ago`;
     if (diffHours < 24) return `${diffHours} ${diffHours === 1 ? "hour" : "hours"} ago`;
     return `${diffDays} ${diffDays === 1 ? "day" : "days"} ago`;

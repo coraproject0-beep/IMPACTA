@@ -252,22 +252,28 @@ export default function ConsoleClaimsPage() {
               <FilterIcon size={20} />
             </div>
             <h3 className="text-sm font-bold text-[#0E0F10]">
-              {isIt ? "Nessun sinistro corrispondente" : "No matching claims found"}
+              {claims.length === 0
+                ? isIt ? "Nessun sinistro registrato" : "No claims registered"
+                : isIt ? "Nessun sinistro corrispondente" : "No matching claims found"}
             </h3>
             <p className="mt-1 text-xs text-[#666666] max-w-sm mx-auto">
-              {isIt
+              {claims.length === 0
+                ? isIt ? "Il registro sinistri è attualmente vuoto." : "The claims directory is currently empty."
+                : isIt
                 ? "Nessun sinistro corrisponde ai filtri selezionati. Prova a modificare la ricerca."
                 : "No claims match your active search filters. Try adjusting your query."}
             </p>
-            <div className="mt-4">
-              <button
-                type="button"
-                onClick={handleClearFilters}
-                className="px-3.5 py-1.5 text-xs font-semibold bg-[#0E0F10] text-white rounded-lg hover:bg-[#1A1B1C] transition-colors"
-              >
-                {isIt ? "Azzera filtri" : "Reset All Filters"}
-              </button>
-            </div>
+            {hasActiveFilters && (
+              <div className="mt-4">
+                <button
+                  type="button"
+                  onClick={handleClearFilters}
+                  className="px-3.5 py-1.5 text-xs font-semibold bg-[#0E0F10] text-white rounded-lg hover:bg-[#1A1B1C] transition-colors"
+                >
+                  {isIt ? "Azzera filtri" : "Reset All Filters"}
+                </button>
+              </div>
+            )}
           </div>
         ) : (
           <div className="overflow-x-auto">
@@ -321,10 +327,14 @@ export default function ConsoleClaimsPage() {
                     {/* Vehicles */}
                     <td className="py-3.5 px-5 whitespace-nowrap">
                       <div className="font-mono text-[11px] text-[#0E0F10] font-medium">
-                        {claim.vehicleA.plate} vs {claim.vehicleB?.plate || "N/A"}
+                        {claim.vehicleB?.plate && claim.vehicleB.plate !== "—"
+                          ? `${claim.vehicleA.plate} vs ${claim.vehicleB.plate}`
+                          : claim.vehicleA.plate}
                       </div>
                       <div className="text-[11px] text-[#666666]">
-                        {claim.vehicleA.make} {claim.vehicleA.model}
+                        {claim.vehicleA.make === "Vehicle details not provided"
+                          ? (language === "it" ? "Dettagli veicolo non specificati" : "Vehicle details not provided")
+                          : `${claim.vehicleA.make} ${claim.vehicleA.model}`.trim()}
                       </div>
                     </td>
 

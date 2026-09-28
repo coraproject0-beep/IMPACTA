@@ -237,25 +237,39 @@ export function Header({ onOpenMobile }: HeaderProps) {
 
         {/* Insurer Account Menu */}
         <div ref={accountMenuRef} className="relative">
-          <button
-            type="button"
-            onClick={() => setAccountMenuOpen((prev) => !prev)}
-            className="flex items-center gap-2 pl-2 py-1 text-left rounded hover:bg-[#E5E5E3]/40 transition-colors focus:outline-none"
-            aria-expanded={accountMenuOpen}
-            aria-haspopup="true"
-          >
-            <div className="w-8 h-8 rounded-full bg-[#0E0F10] text-white flex items-center justify-center text-xs font-bold font-mono">
-              {currentReviewer.avatarInitials}
-            </div>
-            <div className="hidden lg:block">
-              <div className="text-xs font-bold text-[#0E0F10] leading-tight">
-                {insurerUser?.name || currentReviewer.name}
-              </div>
-              <div className="text-[11px] text-[#666666] leading-tight">
-                {insurerUser?.organization || "Aura Mutua"}
-              </div>
-            </div>
-          </button>
+          {(() => {
+            const displayName = insurerUser?.name || currentReviewer.name;
+            const displayInitials =
+              displayName
+                .split(" ")
+                .map((p) => p[0])
+                .filter(Boolean)
+                .slice(0, 2)
+                .join("")
+                .toUpperCase() || "ER";
+
+            return (
+              <button
+                type="button"
+                onClick={() => setAccountMenuOpen((prev) => !prev)}
+                className="flex items-center gap-2 pl-2 py-1 text-left rounded hover:bg-[#E5E5E3]/40 transition-colors focus:outline-none"
+                aria-expanded={accountMenuOpen}
+                aria-haspopup="true"
+              >
+                <div className="w-8 h-8 rounded-full bg-[#0E0F10] text-white flex items-center justify-center text-xs font-bold font-mono">
+                  {displayInitials}
+                </div>
+                <div className="hidden lg:block">
+                  <div className="text-xs font-bold text-[#0E0F10] leading-tight">
+                    {displayName}
+                  </div>
+                  <div className="text-[11px] text-[#666666] leading-tight">
+                    {insurerUser?.organization || "Aura Mutua"}
+                  </div>
+                </div>
+              </button>
+            );
+          })()}
 
           {accountMenuOpen && (
             <div className="absolute right-0 mt-2 w-64 bg-white rounded-xl shadow-xl border border-[#E5E5E3] py-2 z-50 text-xs">

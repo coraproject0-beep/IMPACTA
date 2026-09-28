@@ -8,7 +8,9 @@ import { useLanguage } from "@/context/LanguageContext";
 import { useClaims } from "@/context/ClaimsContext";
 import { useDriverDraft } from "@/context/DriverDraftContext";
 import { ArrowRightIcon } from "@/components/icons/Icons";
-import { formatDate } from "@/lib/dateUtils";
+import { formatDate, getStatusLabel } from "@/lib/dateUtils";
+
+import { SYNTHETIC_DRIVER_PROFILE } from "@/features/driver/data/driverProfileFixture";
 
 export default function DriverHomePage() {
   const router = useRouter();
@@ -17,8 +19,14 @@ export default function DriverHomePage() {
   const { claims } = useClaims();
   const { draft, resetDraft, startNewReport } = useDriverDraft();
 
+  // Single source of truth for driver identity and registered vehicle
+  const driverFirstName = SYNTHETIC_DRIVER_PROFILE.fullName.split(" ")[0] || "John";
+  const vehicleName = `${SYNTHETIC_DRIVER_PROFILE.vehicle.make} ${SYNTHETIC_DRIVER_PROFILE.vehicle.model}`;
+  const vehiclePlate = SYNTHETIC_DRIVER_PROFILE.vehicle.plate;
+
   // Check if an in-progress unsubmitted draft exists
   const hasInProgressDraft = draft.step !== "SAFETY" && draft.step !== "SUBMITTED";
+  const latestClaim = claims.length > 0 ? claims[0] : null;
 
   const handleStartReport = () => {
     startNewReport();
@@ -42,7 +50,7 @@ export default function DriverHomePage() {
           {/* 1. Calm Human Greeting matching driver-home-reference.png */}
           <div className="space-y-2 pt-2">
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-tight text-[#0E0F10] leading-[1.08]">
-              {isIt ? "Buongiorno, Luca." : "Good morning, Luca."}
+              {isIt ? `Buongiorno, ${driverFirstName}.` : `Good morning, ${driverFirstName}.`}
             </h1>
             <p className="text-base sm:text-lg text-[#666666] font-normal leading-relaxed max-w-md">
               {isIt
@@ -105,26 +113,28 @@ export default function DriverHomePage() {
           </div>
 
           {/* Desktop-only: Recent Report placed in left column under CTA */}
-          <div className="hidden lg:block pt-4 space-y-4">
-            <div className="border-t border-[#E5E5E3]" />
-            <div className="space-y-2">
-              <span className="text-xs text-[#555555] font-medium block">
-                {isIt ? "Rapporto recente" : "Recent report"}
-              </span>
-              <div className="text-xl font-bold text-[#0E0F10]">
-                {formatDate("2026-09-24", language)}
-              </div>
-              <div className="text-sm text-[#666666]">
-                Milano, Via della Moscova
-              </div>
-              <div className="font-mono text-xs text-[#666666]">
-                IMP-260924-001
-              </div>
-              <div className="text-sm font-medium text-[#0E0F10] pt-1">
-                {isIt ? "Pronto per la revisione" : "Ready for review"}
+          {latestClaim && (
+            <div className="hidden lg:block pt-4 space-y-4">
+              <div className="border-t border-[#E5E5E3]" />
+              <div className="space-y-2">
+                <span className="text-xs text-[#555555] font-medium block">
+                  {isIt ? "Rapporto recente" : "Recent report"}
+                </span>
+                <div className="text-xl font-bold text-[#0E0F10]">
+                  {formatDate(latestClaim.incidentDate, language)}
+                </div>
+                <div className="text-sm text-[#666666]">
+                  {latestClaim.incident?.location?.street || latestClaim.incident?.location?.city || "—"}
+                </div>
+                <div className="font-mono text-xs text-[#666666]">
+                  {latestClaim.id}
+                </div>
+                <div className="text-sm font-medium text-[#0E0F10] pt-1">
+                  {getStatusLabel(latestClaim.status, language)}
+                </div>
               </div>
             </div>
-          </div>
+          )}
         </div>
 
         {/* RIGHT / SECONDARY COLUMN (Desktop: 6 or 7 cols) */}
@@ -134,7 +144,7 @@ export default function DriverHomePage() {
             <div className="relative aspect-[16/9] lg:aspect-[16/10] w-full overflow-hidden rounded-2xl bg-neutral-200 border border-[#E5E5E3]">
               <Image
                 src="/images/hero-car.jpg"
-                alt="Audi A3 vehicle context"
+                alt={`${vehicleName} vehicle context`}
                 fill
                 priority
                 className="object-cover"
@@ -147,10 +157,10 @@ export default function DriverHomePage() {
                 {isIt ? "Il tuo veicolo" : "Your vehicle"}
               </span>
               <div className="text-lg sm:text-xl font-bold text-[#0E0F10]">
-                Audi A3
+                {vehicleName}
               </div>
               <div className="font-mono text-sm tracking-wider text-[#666666]">
-                AB 123 CD
+                {vehiclePlate}
               </div>
             </div>
           </section>
@@ -172,26 +182,28 @@ export default function DriverHomePage() {
           </section>
 
           {/* Mobile-only: Recent Report rendered in original vertical position */}
-          <div className="lg:hidden">
-            <div className="border-t border-[#E5E5E3] my-8" />
-            <section className="space-y-1 pb-6">
-              <span className="text-xs text-[#555555] font-medium block">
-                {isIt ? "Rapporto recente" : "Recent report"}
-              </span>
-              <div className="text-lg sm:text-xl font-bold text-[#0E0F10]">
-                {formatDate("2026-09-24", language)}
-              </div>
-              <div className="text-sm text-[#666666]">
-                Milano, Via della Moscova
-              </div>
-              <div className="font-mono text-xs text-[#666666]">
-                IMP-260924-001
-              </div>
-              <div className="text-sm font-medium text-[#0E0F10] pt-1">
-                {isIt ? "Pronto per la revisione" : "Ready for review"}
-              </div>
-            </section>
-          </div>
+          {latestClaim && (
+            <div className="lg:hidden">
+              <div className="border-t border-[#E5E5E3] my-8" />
+              <section className="space-y-1 pb-6">
+                <span className="text-xs text-[#555555] font-medium block">
+                  {isIt ? "Rapporto recente" : "Recent report"}
+                </span>
+                <div className="text-lg sm:text-xl font-bold text-[#0E0F10]">
+                  {formatDate(latestClaim.incidentDate, language)}
+                </div>
+                <div className="text-sm text-[#666666]">
+                  {latestClaim.incident?.location?.street || latestClaim.incident?.location?.city || "—"}
+                </div>
+                <div className="font-mono text-xs text-[#666666]">
+                  {latestClaim.id}
+                </div>
+                <div className="text-sm font-medium text-[#0E0F10] pt-1">
+                  {getStatusLabel(latestClaim.status, language)}
+                </div>
+              </section>
+            </div>
+          )}
         </div>
       </div>
     </div>

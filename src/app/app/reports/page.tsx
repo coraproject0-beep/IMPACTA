@@ -27,9 +27,8 @@ export default function DriverReportsPage() {
   const driverClaims = claims.filter(
     (c) =>
       c.driverA?.fullName === SYNTHETIC_DRIVER_PROFILE.fullName ||
-      c.policyholder?.fiscalCode === SYNTHETIC_DRIVER_PROFILE.fiscalCode ||
-      c.id.includes("CLM-IT-2026-001") ||
-      c.id.includes("IMP-260924-001")
+      c.id.includes("CLM-APP") ||
+      c.id.includes("CLM-DEMO")
   );
 
   const displayClaims = driverClaims.length > 0 ? driverClaims : claims.slice(0, 4);
@@ -154,7 +153,7 @@ export default function DriverReportsPage() {
                 </div>
                 <div className="pt-2.5 flex justify-between">
                   <span className="text-[#555555]">{isIt ? "Targa veicolo:" : "License plate:"}</span>
-                  <span className="font-mono text-[#0E0F10]">{selectedClaim.vehicleA?.plate || "AB 123 CD"}</span>
+                  <span className="font-mono text-[#0E0F10]">{selectedClaim.vehicleA?.plate || "—"}</span>
                 </div>
               </div>
 
