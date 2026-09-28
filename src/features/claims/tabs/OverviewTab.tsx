@@ -10,6 +10,17 @@ interface OverviewTabProps {
   claim: Claim;
 }
 
+function formatIncidentLocation(loc?: { city?: string; street?: string }): string {
+  if (!loc) return "Milano, Via Lorenteggio";
+  const city = (loc.city || "").trim();
+  const street = (loc.street || "").trim();
+  if (!city && !street) return "Milano, Via Lorenteggio";
+  if (!city) return street;
+  if (!street) return city;
+  if (street.toLowerCase().includes(city.toLowerCase())) return street;
+  return `${city}, ${street}`;
+}
+
 export function OverviewTab({ claim }: OverviewTabProps) {
   const { language, t } = useLanguage();
   const isIt = language === "it";
@@ -64,7 +75,7 @@ export function OverviewTab({ claim }: OverviewTabProps) {
             <div className="flex items-center justify-between sm:pr-8">
               <span className="text-[#666666]">{isIt ? "Luogo" : "Location"}</span>
               <span className="font-medium text-[#0E0F10]">
-                {claim.incident?.location?.city || "Milano"}, {claim.incident?.location?.street || "Via Lorenteggio"}
+                {formatIncidentLocation(claim.incident?.location)}
               </span>
             </div>
             <div className="flex items-center justify-between sm:pl-8 sm:border-l sm:border-[#E5E5E3]">
@@ -143,22 +154,69 @@ export function OverviewTab({ claim }: OverviewTabProps) {
         </div>
       </div>
 
-      {/* 2b. Driver Statement & Remarks (Box 14 CAI) */}
-      {(claim.driverA?.statement || claim.reviewerNotes) && (
-        <div className="p-4 rounded-xl border border-[#E5E5E3] bg-[#FBFBFA] space-y-2">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-[#0E0F10] uppercase tracking-wider">
-              {isIt ? "Dichiarazione Conducente & Note (Box 14 CAI)" : "Driver Statement & Remarks (CAI Box 14)"}
-            </span>
-            <span className="text-[10px] font-mono text-[#666666] bg-neutral-100 px-2 py-0.5 rounded border border-[#E5E5E3]">
-              {isIt ? "Dichiarazione verificata" : "Verified draft"}
-            </span>
-          </div>
-          <p className="text-xs text-[#222222] leading-relaxed italic">
-            &ldquo;{claim.driverA?.statement || claim.reviewerNotes}&rdquo;
-          </p>
+      {/* 2b. Driver-Submitted Input & AI Review (Statement, Box 14, Human Corrections) */}
+      <div className="p-4 rounded-xl border border-[#E5E5E3] bg-[#FBFBFA] space-y-3.5">
+        <div className="flex items-center justify-between">
+          <span className="text-xs font-semibold text-[#0E0F10] uppercase tracking-wider">
+            {isIt ? "Riepilogo Conducente & Revisione" : "Driver Submission & Review"}
+          </span>
+          <span className="text-[10px] font-mono text-[#0E0F10] bg-neutral-100 px-2 py-0.5 rounded border border-[#E5E5E3]">
+            {isIt ? "Inviato dal conducente" : "Driver-submitted"}
+          </span>
         </div>
-      )}
+
+        {/* Dynamic Statement */}
+        {(claim.driverA?.statement || claim.incident?.summary) && (
+          <div className="space-y-1">
+            <span className="text-[10px] font-mono text-[#666666] uppercase block">
+              {isIt ? "Dinamica Sinistro Dichiarata:" : "Reported Incident Dynamics:"}
+            </span>
+            <p className="text-xs text-[#222222] leading-relaxed italic">
+              &ldquo;{claim.driverA?.statement || claim.incident?.summary}&rdquo;
+            </p>
+          </div>
+        )}
+
+        {/* Additional Remarks / Notes (Box 14) */}
+        {claim.reviewerNotes && claim.reviewerNotes !== claim.driverA?.statement && (
+          <div className="space-y-1 border-t border-[#E5E5E3] pt-2.5">
+            <span className="text-[10px] font-mono text-[#666666] uppercase block">
+              {isIt ? "Osservazioni Aggiuntive Conducente (Box 14 CAI):" : "Driver Additional Remarks (CAI Box 14):"}
+            </span>
+            <p className="text-xs text-[#222222] leading-relaxed font-medium">
+              {claim.reviewerNotes}
+            </p>
+          </div>
+        )}
+
+        {/* Human AI Field Corrections */}
+        {(() => {
+          const corrections =
+            claim.humanCorrections ||
+            claim.auditTrail
+              ?.filter((a) => a.action?.includes("Human field review"))
+              ?.map((a) => ({
+                details: a.details || a.action,
+              })) ||
+            [];
+          if (corrections.length === 0) return null;
+          return (
+            <div className="space-y-1.5 border-t border-[#E5E5E3] pt-2.5">
+              <span className="text-[10px] font-mono text-[#666666] uppercase block">
+                {isIt ? "Correzioni Manuali ai Rilievi IA:" : "Driver Corrections to AI Inferences:"}
+              </span>
+              <div className="space-y-1 text-xs">
+                {corrections.map((corr: any, idx: number) => (
+                  <div key={idx} className="p-2 rounded bg-white border border-[#E5E5E3] font-mono text-[11px] text-[#0E0F10]">
+                    {corr.details ||
+                      `${corr.fieldLabel || corr.fieldKey}: "${corr.originalValue}" → "${corr.correctedValue}"`}
+                  </div>
+                ))}
+              </div>
+            </div>
+          );
+        })()}
+      </div>
 
       {/* 3. Evidence Section matching console-claim-detail-reference.png */}
       <div className="space-y-4">
@@ -192,7 +250,7 @@ export function OverviewTab({ claim }: OverviewTabProps) {
           {claim.evidence?.length || 4}{" "}
           {isIt ? "fotografie ad alta risoluzione archiviate" : "high-resolution photographs stored"} &nbsp;|&nbsp;{" "}
           {isIt ? "Dichiarazione conducente" : "Driver statement"} &nbsp;|&nbsp;{" "}
-          {isIt ? "Analisi forense multimodale" : "Multimodal forensic analysis"}
+          {isIt ? "Analisi multimodale assistita da AI" : "AI-assisted multimodal analysis"}
         </p>
       </div>
 

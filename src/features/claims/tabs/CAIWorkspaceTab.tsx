@@ -29,12 +29,66 @@ export function CAIWorkspaceTab({ claim }: CAIWorkspaceTabProps) {
 
   // Group fields by CAI section
   const sections: { key: CAIField["section"]; label: string }[] = [
-    { key: "CIRCUMSTANCES", label: "Circostanze dell'Incidente (Boxes 1-5, 12, 14)" },
-    { key: "VEHICLE_A", label: "Veicolo A • Assicurato / Conducente (Boxes 6-9)" },
-    { key: "VEHICLE_B", label: "Veicolo B • Controparte (Boxes 6-9)" },
-    { key: "DAMAGE", label: "Punti d'Urto e Danni Visibili (Box 10)" },
-    { key: "ADMIN", label: "Dati Amministrativi / Polizze" },
+    {
+      key: "CIRCUMSTANCES",
+      label: isIt
+        ? "Circostanze dell'Incidente (Riquadri 1-5, 12, 14)"
+        : "Accident Circumstances (Boxes 1-5, 12, 14)",
+    },
+    {
+      key: "VEHICLE_A",
+      label: isIt
+        ? "Veicolo A • Assicurato / Conducente (Riquadri 6-9)"
+        : "Vehicle A • Policyholder / Driver (Boxes 6-9)",
+    },
+    {
+      key: "VEHICLE_B",
+      label: isIt
+        ? "Veicolo B • Controparte (Riquadri 6-9)"
+        : "Vehicle B • Counterparty (Boxes 6-9)",
+    },
+    {
+      key: "DAMAGE",
+      label: isIt
+        ? "Punti d'Urto e Danni Visibili (Riquadro 10)"
+        : "Impact Points & Visible Damage (Box 10)",
+    },
+    {
+      key: "ADMIN",
+      label: isIt
+        ? "Dati Amministrativi / Polizze"
+        : "Administrative & Policy Data",
+    },
   ];
+
+  const getFieldDisplayLabel = (field: CAIField): string => {
+    if (isIt) return field.label;
+    const itToEn: Record<string, string> = {
+      "Data e Ora Incidente": "Incident Date and Time",
+      "Luogo Incidente": "Incident Location",
+      "Feriti (anche lievi)": "Injuries (even slight)",
+      "Danni materiali altri veicoli": "Material Damage to Other Vehicles",
+      "Danni a cose diverse da veicoli": "Damage to Property Other than Vehicles",
+      "Testimoni dell'incidente": "Witnesses to Accident",
+      "Contraente/Assicurato A": "Policyholder / Insured A",
+      "Veicolo A (Marca, Modello, Targa)": "Vehicle A (Make, Model, Plate)",
+      "Compagnia Assicuratrice A": "Insurance Company A",
+      "Conducente Veicolo A": "Driver Vehicle A",
+      "Punto d'urto iniziale A": "Initial Impact Point A",
+      "Circostanza Veicolo A": "Vehicle A Circumstance",
+      "Assicurato Veicolo B": "Policyholder / Insured B",
+      "Targa Veicolo B": "Vehicle B License Plate",
+      "Compagnia Assicuratrice B": "Insurance Company B",
+      "Punto d'urto iniziale B": "Initial Impact Point B",
+      "Circostanza Veicolo B": "Vehicle B Circumstance",
+      "Osservazioni del Conducente (Box 14)": "Driver Remarks (Box 14)",
+      "Numero Polizza A": "Policy Number A",
+      "Numero Polizza B": "Policy Number B",
+      "Agenzia A": "Agency A",
+      "Agenzia B": "Agency B",
+    };
+    return itToEn[field.label] || field.label;
+  };
 
   // Calculated metrics
   const totalFields = claim.caiFields.length;
@@ -122,7 +176,9 @@ export function CAIWorkspaceTab({ claim }: CAIWorkspaceTabProps) {
         {/* Four Status Counters */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-4">
           <div className="p-3 bg-slate-50 rounded border border-slate-200">
-            <div className="text-[10px] font-semibold text-slate-400 uppercase">Completion Rate</div>
+            <div className="text-[10px] font-semibold text-slate-400 uppercase">
+              {isIt ? "Tasso di completamento" : "Completion Rate"}
+            </div>
             <div className="text-xl font-bold font-mono text-slate-900 mt-0.5">{completionPct}%</div>
             <div className="w-full bg-slate-200 h-1.5 rounded-full mt-1.5 overflow-hidden">
               <div className="bg-blue-600 h-full" style={{ width: `${completionPct}%` }} />
@@ -130,27 +186,39 @@ export function CAIWorkspaceTab({ claim }: CAIWorkspaceTabProps) {
           </div>
 
           <div className="p-3 bg-slate-50 rounded border border-slate-200">
-            <div className="text-[10px] font-semibold text-slate-400 uppercase">Confirmed Fields</div>
+            <div className="text-[10px] font-semibold text-slate-400 uppercase">
+              {isIt ? "Campi confermati" : "Confirmed Fields"}
+            </div>
             <div className="text-xl font-bold font-mono text-emerald-700 mt-0.5">
               {confirmedFields} <span className="text-xs text-slate-400 font-normal">/ {totalFields}</span>
             </div>
-            <div className="text-[10px] text-slate-500 mt-1">Adjuster or verified document</div>
+            <div className="text-[10px] text-slate-500 mt-1">
+              {isIt ? "Perito o documento verificato" : "Adjuster or verified document"}
+            </div>
           </div>
 
           <div className="p-3 bg-slate-50 rounded border border-slate-200">
-            <div className="text-[10px] font-semibold text-slate-400 uppercase">Requiring Confirmation</div>
+            <div className="text-[10px] font-semibold text-slate-400 uppercase">
+              {isIt ? "Richiede conferma" : "Requiring Confirmation"}
+            </div>
             <div className="text-xl font-bold font-mono text-amber-700 mt-0.5">
               {requiringConfirmFields}
             </div>
-            <div className="text-[10px] text-slate-500 mt-1">AI Inferences needing check</div>
+            <div className="text-[10px] text-slate-500 mt-1">
+              {isIt ? "Inferenze IA da verificare" : "AI Inferences needing check"}
+            </div>
           </div>
 
           <div className="p-3 bg-slate-50 rounded border border-slate-200">
-            <div className="text-[10px] font-semibold text-slate-400 uppercase">Missing Evidentiary Fields</div>
+            <div className="text-[10px] font-semibold text-slate-400 uppercase">
+              {isIt ? "Campi probatori mancanti" : "Missing Evidentiary Fields"}
+            </div>
             <div className="text-xl font-bold font-mono text-rose-700 mt-0.5">
               {missingFields}
             </div>
-            <div className="text-[10px] text-slate-500 mt-1">Requires user or SITA lookup</div>
+            <div className="text-[10px] text-slate-500 mt-1">
+              {isIt ? "Richiede verifica utente o visura" : "Requires user or database lookup"}
+            </div>
           </div>
         </div>
       </div>
@@ -168,13 +236,14 @@ export function CAIWorkspaceTab({ claim }: CAIWorkspaceTabProps) {
                   {sec.label}
                 </h4>
                 <span className="text-[10px] font-mono text-slate-400">
-                  {secFields.filter((f) => f.isConfirmed).length}/{secFields.length} confirmed
+                  {secFields.filter((f) => f.isConfirmed).length}/{secFields.length} {isIt ? "confermati" : "confirmed"}
                 </span>
               </div>
 
               <div className="divide-y divide-slate-100">
                 {secFields.map((field) => {
                   const prov = getProvenanceBadge(field.provenance);
+                  const displayLabel = getFieldDisplayLabel(field);
 
                   return (
                     <div
@@ -188,7 +257,7 @@ export function CAIWorkspaceTab({ claim }: CAIWorkspaceTabProps) {
                             Box {field.code}
                           </span>
                           <span className="text-xs font-semibold text-slate-900 truncate">
-                            {field.label}
+                            {displayLabel}
                           </span>
                         </div>
                         <div className="mt-1 flex items-center gap-2">
@@ -222,7 +291,7 @@ export function CAIWorkspaceTab({ claim }: CAIWorkspaceTabProps) {
                             title="Click to toggle unconfirmed"
                           >
                             <CheckCircleIcon size={12} />
-                            <span>Confirmed</span>
+                            <span>{isIt ? "Confermato" : "Confirmed"}</span>
                           </button>
                         ) : field.requiresConfirmation ? (
                           <button
@@ -231,7 +300,7 @@ export function CAIWorkspaceTab({ claim }: CAIWorkspaceTabProps) {
                             className="inline-flex items-center gap-1 text-[11px] font-medium text-amber-800 bg-amber-50 hover:bg-amber-100 border border-amber-300 px-2 py-1 rounded transition-colors"
                           >
                             <AlertTriangleIcon size={12} />
-                            <span>Confirm</span>
+                            <span>{isIt ? "Conferma" : "Confirm"}</span>
                           </button>
                         ) : (
                           <button
@@ -239,14 +308,14 @@ export function CAIWorkspaceTab({ claim }: CAIWorkspaceTabProps) {
                             onClick={() => handleToggleConfirm(field)}
                             className="inline-flex items-center gap-1 text-[11px] font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 border border-slate-300 px-2 py-1 rounded transition-colors"
                           >
-                            <span>Validate</span>
+                            <span>{isIt ? "Valida" : "Validate"}</span>
                           </button>
                         )}
 
                         <button
                           type="button"
                           onClick={() => setEditingField(field)}
-                          aria-label={`Edit ${field.label}`}
+                          aria-label={`Edit ${displayLabel}`}
                           className="p-1 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded border border-transparent hover:border-slate-300 transition-colors"
                         >
                           <EditIcon size={14} />

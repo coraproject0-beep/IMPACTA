@@ -26,9 +26,20 @@ export function mapRowToClaim(row: any): Claim {
     },
     incident: {
       timestamp: row.incident_datetime || new Date().toISOString(),
-      location: {
-        city: row.location_text ? row.location_text.split(",")[0].trim() : "Milan",
-        street: row.location_text || "Milan metropolitan area, Italy",
+      location: row.reviewed_data?.location || {
+        city: (() => {
+          if (!row.location_text) return "Milano";
+          const parts = row.location_text.split(",");
+          return parts[0].trim();
+        })(),
+        street: (() => {
+          if (!row.location_text) return "Via Lorenteggio";
+          const parts = row.location_text.split(",");
+          if (parts.length > 1) {
+            return parts.slice(1).join(",").trim();
+          }
+          return parts[0].trim();
+        })(),
         postalCode: "20100",
         latitude: 45.4642,
         longitude: 9.19,
@@ -163,11 +174,49 @@ export function mapRowToClaim(row: any): Claim {
       reviewReason: "AI-ASSISTED REVIEW",
       lastAnalyzedAt: row.ai_analysis?.analyzedAt || new Date().toISOString(),
     },
-    caiFields: row.cai_fields || [],
+    caiFields: (() => {
+      const rawCai = row.cai_fields || [];
+      const humanCorrections = row.reviewed_data?.humanCorrections || [];
+      return rawCai.map((f: any) => {
+        if (f.code === "10A" || f.code === "10") {
+          const corr = humanCorrections.find((c: any) => c.fieldKey === "vehicle_a_damage");
+          if (corr) {
+            return {
+              ...f,
+              value: corr.correctedValue,
+              originalExtractedValue: corr.originalValue,
+              provenance: corr.reviewType === "driver_correction" ? "MANUAL" : f.provenance,
+            };
+          }
+        }
+        return f;
+      });
+    })(),
     caiDraftGenerated: Boolean(row.submitted_at),
     caiDraftGeneratedAt: row.submitted_at,
-    auditTrail: row.audit_trail || [],
-    reviewerNotes: row.reviewer_notes || row.driver_statement || "",
+    auditTrail: (() => {
+      const trail = [...(row.audit_trail || [])];
+      const humanCorrections = row.reviewed_data?.humanCorrections || [];
+      for (let idx = 0; idx < humanCorrections.length; idx++) {
+        const c = humanCorrections[idx];
+        const exists = trail.some(
+          (a) => a.action?.includes(c.fieldKey) || a.details?.includes(c.correctedValue)
+        );
+        if (!exists) {
+          trail.push({
+            id: `aud-corr-db-${idx + 1}`,
+            timestamp: c.reviewedAt || row.created_at || new Date().toISOString(),
+            actor: "REVIEWER",
+            actorName: c.actor || "Driver (John Miller)",
+            action: `Human field review [${c.fieldLabel || c.fieldKey}]: "${c.originalValue}" -> "${c.correctedValue}" (${c.reviewType})`,
+            objectAffected: `Field:${c.fieldKey}`,
+            details: `Provenance preserved. Original AI value: "${c.originalValue}". Corrected value: "${c.correctedValue}". Status: ${c.reviewType}`,
+          });
+        }
+      }
+      return trail;
+    })(),
+    reviewerNotes: row.reviewer_notes || row.reviewed_data?.additionalNotes || "",
     tags: [
       row.status?.toUpperCase() || "SUBMITTED",
       row.is_demo ? "CANONICAL_DEMO" : "LIVE_APP",

@@ -75,13 +75,28 @@ export async function POST(req: NextRequest) {
       dbStatus = "submitted";
     }
 
+    // Cleanly format location without duplicating city name
+    const locObj = claimData.incident?.location;
+    const formatLoc = (loc?: { city?: string; street?: string }) => {
+      if (!loc) return "Milano, Via Lorenteggio";
+      const city = (loc.city || "").trim();
+      const street = (loc.street || "").trim();
+      if (!city && !street) return "Milano, Via Lorenteggio";
+      if (!city) return street;
+      if (!street) return city;
+      if (street.toLowerCase().includes(city.toLowerCase())) return street;
+      return `${city}, ${street}`;
+    };
+
+    const locationText = claimData.location_text || formatLoc(locObj);
+
     // Upsert into Supabase claims table
     const dbPayload = {
       id: claimData.id,
       status: dbStatus,
       driver_name: claimData.driver_name || claimData.driverA?.fullName || "John Miller",
       counterparty_name: claimData.counterparty_name || claimData.driverB?.fullName || "Claire Anderson",
-      location_text: claimData.location_text || (claimData.incident?.location ? `${claimData.incident.location.city}, ${claimData.incident.location.street}` : "Milano, Via Lorenteggio"),
+      location_text: locationText,
       incident_datetime: claimData.incident_datetime || claimData.incident?.timestamp || claimData.incidentDate || new Date().toISOString(),
       driver_statement: claimData.driver_statement || claimData.driverA?.statement || claimData.incident?.summary || "",
       vehicle_a: claimData.vehicle_a || claimData.vehicleA || {
@@ -103,7 +118,13 @@ export async function POST(req: NextRequest) {
         damageArea: "Front-Left",
       },
       ai_analysis: claimData.ai_analysis || claimData.aiAnalysis || {},
-      reviewed_data: claimData.reviewed_data || claimData.reviewedData || { confirmedByDriver: true },
+      reviewed_data: {
+        confirmedByDriver: true,
+        location: locObj,
+        humanCorrections: claimData.humanCorrections || (claimData as any).reviewed_data?.humanCorrections || [],
+        additionalNotes: claimData.reviewer_notes || claimData.reviewerNotes || "",
+        ...(claimData.reviewed_data || claimData.reviewedData || {}),
+      },
       cai_fields: claimData.cai_fields || claimData.caiFields || [],
       audit_trail: claimData.audit_trail || claimData.auditTrail || [],
       reviewer_notes: claimData.reviewer_notes || claimData.reviewerNotes || claimData.driverA?.statement || "",
@@ -123,15 +144,39 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    // Also persist evidence items into claim_evidence if provided
-    const evidenceItems = Array.isArray(claimData.evidence) ? claimData.evidence : [];
+    // Also persist evidence items into claim_evidence if provided (with strict deduplication)
+    const rawEvidenceItems = Array.isArray(claimData.evidence) ? claimData.evidence : [];
+    const seenPaths = new Set<string>();
+    const evidenceItems = [];
+    for (const ev of rawEvidenceItems) {
+      const p = (ev.thumbnailUrl || ev.file_path || ev.filePath || "").trim();
+      if (!p || !seenPaths.has(p)) {
+        if (p) seenPaths.add(p);
+        evidenceItems.push(ev);
+      }
+    }
+
     const evidenceWithUrls = [];
 
     if (evidenceItems.length > 0) {
+      // Fetch existing evidence for this claim to reuse canonical IDs and avoid duplicates
+      const { data: existingEvs } = await admin
+        .from("claim_evidence")
+        .select("id, file_path")
+        .eq("claim_id", savedClaimRow.id);
+
+      const savedIds = new Set<string>();
+
       for (let idx = 0; idx < evidenceItems.length; idx++) {
         const ev = evidenceItems[idx];
-        const evId = ev.id || `EVD-${savedClaimRow.id}-${idx + 1}`;
         const filePath = ev.thumbnailUrl || ev.file_path || ev.filePath || `evidence/${savedClaimRow.id}/${idx + 1}.png`;
+
+        // Match existing row with same file path if present
+        const matchedExisting = existingEvs?.find(
+          (ex) => ex.file_path === filePath || (ex.file_path && filePath.endsWith(ex.file_path))
+        );
+        const evId = matchedExisting ? matchedExisting.id : (ev.id || `EVD-${savedClaimRow.id}-${idx + 1}`);
+        savedIds.add(evId);
 
         const evPayload = {
           id: evId,
@@ -156,6 +201,16 @@ export async function POST(req: NextRequest) {
           ...(savedEv || evPayload),
           signedUrl: filePath,
         });
+      }
+
+      // Delete any obsolete evidence rows for this claim not in incoming set
+      if (existingEvs && existingEvs.length > 0) {
+        const obsoleteIds = existingEvs
+          .filter((ex) => !savedIds.has(ex.id))
+          .map((ex) => ex.id);
+        if (obsoleteIds.length > 0) {
+          await admin.from("claim_evidence").delete().in("id", obsoleteIds);
+        }
       }
     }
 

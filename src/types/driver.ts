@@ -58,6 +58,7 @@ export interface DriverDraft {
     hasInfo: boolean;
   };
   statement: string;
+  additionalNotes?: string;
   reconstructionConfirmed: boolean;
   caiConfirmedFields: Record<string, boolean>; // CAI field code -> confirmed
   caiManualOverrides: Record<string, string>; // CAI field code -> override value

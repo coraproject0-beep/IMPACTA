@@ -163,7 +163,17 @@ class PersistentClaimsRepository implements ClaimsRepository {
 
   async createFromDriverDraft(draft: DriverDraft): Promise<Claim> {
     this.initIfNeeded();
-    const claim = mapDriverDraftToClaim(draft, this.claims.length);
+    let maxNum = 20;
+    for (const c of this.claims) {
+      const match = c.id.match(/(?:CLM-(?:IT-\d{4}-|APP-)?|CLM-)(\d+)/i);
+      if (match) {
+        const num = parseInt(match[1], 10);
+        if (!isNaN(num) && num > maxNum) {
+          maxNum = num;
+        }
+      }
+    }
+    const claim = mapDriverDraftToClaim(draft, maxNum);
     const saved = await this.addClaim(claim);
     return saved;
   }

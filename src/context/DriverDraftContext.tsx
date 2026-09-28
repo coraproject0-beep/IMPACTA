@@ -42,6 +42,7 @@ function createInitialBlankDraft(): DriverDraft {
       hasInfo: true,
     },
     statement: "",
+    additionalNotes: "",
     reconstructionConfirmed: false,
     caiConfirmedFields: {
       "1": true,
@@ -63,7 +64,7 @@ interface DriverDraftContextType {
   addEvidenceItem: (item: EvidenceDraftItem, blob?: Blob) => Promise<void>;
   removeEvidenceItem: (id: string) => Promise<void>;
   goToStep: (step: ReportingStep) => void;
-  submitReport: () => Promise<string>;
+  submitReport: (overrides?: Partial<DriverDraft>) => Promise<string>;
   resetDraft: () => void;
 }
 
@@ -146,16 +147,21 @@ export function DriverDraftProvider({ children }: { children: React.ReactNode })
     }
   }, []);
 
-  const submitReport = useCallback(async (): Promise<string> => {
-    const createdClaim = await createClaimFromDriverDraft(draft);
-    setDraft((prev) => ({
-      ...prev,
-      step: "SUBMITTED",
-      submittedClaimId: createdClaim.id,
-      submittedAt: new Date().toISOString(),
-    }));
-    return createdClaim.id;
-  }, [createClaimFromDriverDraft, draft]);
+  const submitReport = useCallback(
+    async (overrides?: Partial<DriverDraft>): Promise<string> => {
+      const finalDraft = overrides ? { ...draft, ...overrides } : draft;
+      const createdClaim = await createClaimFromDriverDraft(finalDraft);
+      setDraft((prev) => ({
+        ...prev,
+        ...(overrides || {}),
+        step: "SUBMITTED",
+        submittedClaimId: createdClaim.id,
+        submittedAt: new Date().toISOString(),
+      }));
+      return createdClaim.id;
+    },
+    [createClaimFromDriverDraft, draft]
+  );
 
   const resetDraft = useCallback(() => {
     if (typeof window !== "undefined") {

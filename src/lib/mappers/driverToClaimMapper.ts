@@ -7,9 +7,7 @@ export function mapDriverDraftToClaim(
   existingClaimsCount: number
 ): Claim {
   const claimSeq = String(existingClaimsCount + 1).padStart(3, "0");
-  const claimId = draft.submittedClaimId || (draft.isDemoIncident
-    ? "CLM-DEMO-001"
-    : `CLM-APP-${claimSeq}`);
+  const claimId = draft.submittedClaimId || `CLM-APP-${claimSeq}`;
   const nowIso = new Date().toISOString();
   const incidentIso = new Date(
     `${draft.incidentDate}T${draft.incidentTime || "12:00"}:00Z`
@@ -17,7 +15,7 @@ export function mapDriverDraftToClaim(
 
   // Map evidence items
   const evidence: EvidenceItem[] = draft.evidenceItems.map((e, idx) => ({
-    id: `EVD-${claimSeq}-${idx + 1}`,
+    id: `EVD-${claimId}-${idx + 1}`,
     title: e.categoryLabel,
     type: e.category === "DOCUMENT" ? "DOCUMENT" : "VEHICLE_DAMAGE_PHOTO",
     timestamp: e.timestamp || nowIso,
@@ -126,11 +124,23 @@ export function mapDriverDraftToClaim(
       code: "10A",
       label: "Punto d'urto iniziale A",
       section: "DAMAGE",
-      value: SYNTHETIC_DRIVER_PROFILE.vehicle.impactZone,
-      provenance: draft.isDemoIncident ? "AI_OBSERVATION" : "MANUAL",
+      value:
+        draft.caiManualOverrides["10A"] ||
+        draft.humanCorrections?.find((c) => c.fieldKey === "vehicle_a_damage")?.correctedValue ||
+        SYNTHETIC_DRIVER_PROFILE.vehicle.impactZone,
+      provenance:
+        draft.caiManualOverrides["10A"] ||
+        draft.humanCorrections?.some(
+          (c) => c.fieldKey === "vehicle_a_damage" && c.reviewType === "driver_correction"
+        )
+          ? "MANUAL"
+          : (draft.isDemoIncident ? "AI_OBSERVATION" : "MANUAL"),
       requiresConfirmation: false,
       isConfirmed: true,
       confidence: 92,
+      originalExtractedValue:
+        draft.humanCorrections?.find((c) => c.fieldKey === "vehicle_a_damage")?.originalValue ||
+        SYNTHETIC_DRIVER_PROFILE.vehicle.impactZone,
     },
     {
       id: "cai-8",
@@ -215,7 +225,7 @@ export function mapDriverDraftToClaim(
       code: "14",
       label: "Osservazioni del Conducente (Box 14)",
       section: "CIRCUMSTANCES",
-      value: draft.statement || "Nessuna osservazione aggiuntiva",
+      value: draft.additionalNotes || draft.statement || "Nessuna osservazione aggiuntiva",
       provenance: "MANUAL",
       requiresConfirmation: false,
       isConfirmed: true,
@@ -460,11 +470,14 @@ export function mapDriverDraftToClaim(
     caiDraftGenerated: true,
     caiDraftGeneratedAt: nowIso,
     auditTrail,
-    reviewerNotes: draft.statement
-      ? `Dichiarazione Conducente: ${draft.statement}`
-      : (draft.isDemoIncident
-          ? "Report submitted through IMPACTA Driver (Canonical Demo). Ready for adjuster sign-off."
-          : "Report submitted through IMPACTA Driver (Real upload flow). Review of uploaded files required."),
+    reviewerNotes: draft.additionalNotes || (draft.statement ? `Dichiarazione Conducente: ${draft.statement}` : ""),
+    reviewed_data: {
+      confirmedByDriver: true,
+      location: draft.location,
+      humanCorrections: draft.humanCorrections || [],
+      additionalNotes: draft.additionalNotes || "",
+    },
+    humanCorrections: draft.humanCorrections || [],
     tags: [
       "Driver App Ingest",
       draft.isDemoIncident ? "Demo Incident" : "Real User Intake",

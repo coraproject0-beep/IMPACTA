@@ -8,7 +8,7 @@ import { ArrowRightIcon, CheckCircleIcon, AlertTriangleIcon, InfoIcon } from "@/
 interface Phase4ReviewProps {
   draft: DriverDraft;
   onUpdate: (patch: Partial<DriverDraft>) => void;
-  onSubmit: () => Promise<void>;
+  onSubmit: (overrides?: Partial<DriverDraft>) => Promise<void>;
   onEditSection: (section: "accident" | "capture") => void;
 }
 
@@ -84,9 +84,42 @@ export function Phase4Review({
     e.preventDefault();
     if (!hasConfirmedDeclaration) return;
     setIsSubmitting(true);
-    onUpdate({ statement });
+
+    const isCorrected = damageFieldValue.trim() !== defaultAiDamage.trim();
+    const newCorrection = {
+      fieldKey: "vehicle_a_damage",
+      fieldLabel: isIt ? "Danno e Punto di Impatto Veicolo A" : "Vehicle A Damage & Impact Point",
+      originalValue: defaultAiDamage,
+      correctedValue: damageFieldValue.trim(),
+      reviewType: (isCorrected ? "driver_correction" : "driver_confirmation") as
+        | "driver_correction"
+        | "driver_confirmation",
+      actor: "John Miller (Driver)",
+      reviewedAt: new Date().toISOString(),
+    };
+
+    const updatedCorrections = [
+      ...(draft.humanCorrections || []).filter((c) => c.fieldKey !== "vehicle_a_damage"),
+      newCorrection,
+    ];
+
+    const overrides: Partial<DriverDraft> = {
+      statement: draft.statement || statement,
+      additionalNotes: statement,
+      humanCorrections: updatedCorrections,
+      caiConfirmedFields: {
+        ...draft.caiConfirmedFields,
+        "10A": true,
+      },
+      caiManualOverrides: {
+        ...draft.caiManualOverrides,
+        "10A": damageFieldValue.trim(),
+      },
+    };
+
+    onUpdate(overrides);
     try {
-      await onSubmit();
+      await onSubmit(overrides);
     } finally {
       setIsSubmitting(false);
     }

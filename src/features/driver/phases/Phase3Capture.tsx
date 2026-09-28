@@ -51,7 +51,7 @@ export function Phase3Capture({
     try {
       const formData = new FormData();
       formData.append("file", file);
-      formData.append("claimId", draft.isDemoIncident ? "CLM-DEMO-001" : "CLM-APP-DRAFT");
+      formData.append("claimId", draft.submittedClaimId || "CLM-APP-DRAFT");
       formData.append("category", "SCENE_OVERVIEW");
       formData.append("categoryLabel", isIt ? "Scena incidente" : "Incident scene");
       formData.append("notes", "Uploaded by driver at scene");
@@ -139,19 +139,35 @@ export function Phase3Capture({
       for (const item of canonicalItems) {
         await onAddEvidence(item);
       }
-      onUpdate({
-        isDemoIncident: true,
-        incidentDate: "2026-09-26",
-        incidentTime: "14:22",
-        location: {
+
+      const hasCustomLocation = Boolean(
+        draft.location &&
+          (draft.location.street ||
+            (draft.location.city && draft.location.city !== "Roma" && draft.location.city !== "Milano"))
+      );
+      const hasCustomDate = Boolean(draft.incidentDate);
+      const hasCustomTime = Boolean(draft.incidentTime);
+      const hasCustomCounterparty = Boolean(draft.counterparty?.plate || draft.counterparty?.driverName);
+      const hasCustomStatement = Boolean(draft.statement && draft.statement.trim().length > 0);
+
+      const patch: Partial<DriverDraft> = {
+        isDemoIncident: false,
+      };
+
+      if (!hasCustomDate) patch.incidentDate = "2026-09-26";
+      if (!hasCustomTime) patch.incidentTime = "14:22";
+      if (!hasCustomLocation) {
+        patch.location = {
           city: "Milano",
           street: "Milan metropolitan area, Italy (Intersection)",
           postalCode: "20100",
           latitude: 45.4642,
           longitude: 9.19,
           junctionType: "INTERSECTION",
-        },
-        counterparty: {
+        };
+      }
+      if (!hasCustomCounterparty) {
+        patch.counterparty = {
           driverName: "Claire Anderson",
           phone: "+39 347 9876 543",
           plate: "EF 456 GH",
@@ -159,10 +175,14 @@ export function Phase3Capture({
           insurer: "Allianz Italia",
           policyNumber: "ALZ-9912-38410",
           hasInfo: true,
-        },
-        statement:
-          "I was travelling straight through the intersection when the other vehicle entered my path.",
-      });
+        };
+      }
+      if (!hasCustomStatement) {
+        patch.statement =
+          "I was travelling straight through the intersection when the other vehicle entered my path.";
+      }
+
+      onUpdate(patch);
     } finally {
       setIsUploading(false);
     }
@@ -172,8 +192,8 @@ export function Phase3Capture({
     setIsAnalyzing(true);
     setAnalysisStatusText(
       isIt
-        ? "Analisi forense multimodale in corso..."
-        : "Multimodal forensic analysis in progress..."
+        ? "Analisi multimodale assistita da AI in corso..."
+        : "AI-assisted multimodal analysis in progress..."
     );
 
     try {

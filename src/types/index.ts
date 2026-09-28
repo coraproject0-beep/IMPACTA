@@ -230,4 +230,6 @@ export interface Claim {
   auditTrail: AuditEvent[];
   reviewerNotes: string;
   tags: string[];
+  reviewed_data?: any;
+  humanCorrections?: any[];
 }
