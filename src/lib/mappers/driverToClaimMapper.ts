@@ -111,6 +111,17 @@ export function mapDriverDraftToClaim(
       confidence: 100,
     },
     {
+      id: "cai-6b",
+      code: "9A",
+      label: "Conducente A",
+      section: "VEHICLE_A",
+      value: `${SYNTHETIC_DRIVER_PROFILE.fullName} (Pat. ${SYNTHETIC_DRIVER_PROFILE.licenseNumber})`,
+      provenance: "PROFILE",
+      requiresConfirmation: false,
+      isConfirmed: true,
+      confidence: 100,
+    },
+    {
       id: "cai-7",
       code: "10A",
       label: "Punto d'urto iniziale A",

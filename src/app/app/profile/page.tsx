@@ -13,6 +13,7 @@ import {
   CheckCircleIcon,
   ChevronRightIcon,
 } from "@/components/icons/Icons";
+import { SYNTHETIC_DRIVER_PROFILE } from "@/features/driver/data/driverProfileFixture";
 
 export default function DriverProfilePage() {
   const router = useRouter();
@@ -54,7 +55,7 @@ export default function DriverProfilePage() {
       <div className="flex flex-col sm:flex-row sm:items-baseline justify-between pb-6 border-b border-[#E5E5E3] gap-4">
         <div>
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-[#0E0F10]">
-            Luca Rossi
+            {SYNTHETIC_DRIVER_PROFILE.fullName}
           </h1>
           <p className="text-sm text-[#555555] font-normal mt-1">
             {isIt ? "Profilo assicurato attivo / Generali Italia" : "Active policyholder / Generali Italia"}
@@ -83,27 +84,27 @@ export default function DriverProfilePage() {
             <div className="border-t border-[#E5E5E3] divide-y divide-[#E5E5E3] text-xs">
               <div className="py-3.5 flex items-center justify-between">
                 <span className="text-[#555555] font-medium">{isIt ? "Nome e cognome" : "Full name"}</span>
-                <span className="font-semibold text-[#0E0F10]">Luca Rossi</span>
+                <span className="font-semibold text-[#0E0F10]">{SYNTHETIC_DRIVER_PROFILE.fullName}</span>
               </div>
 
               <div className="py-3.5 flex items-center justify-between">
                 <span className="text-[#555555] font-medium">{isIt ? "Codice Fiscale" : "Fiscal Code"}</span>
-                <span className="font-mono font-medium text-[#0E0F10]">RSSLUC86M12F205Z</span>
+                <span className="font-mono font-medium text-[#0E0F10]">{SYNTHETIC_DRIVER_PROFILE.fiscalCode}</span>
               </div>
 
               <div className="py-3.5 flex items-center justify-between">
                 <span className="text-[#555555] font-medium">{isIt ? "Numero patente" : "Driver license"}</span>
-                <span className="font-mono text-[#0E0F10]">MI9482014L</span>
+                <span className="font-mono text-[#0E0F10]">{SYNTHETIC_DRIVER_PROFILE.licenseNumber}</span>
               </div>
 
               <div className="py-3.5 flex items-center justify-between">
                 <span className="text-[#555555] font-medium">{isIt ? "Telefono" : "Phone"}</span>
-                <span className="font-mono text-[#0E0F10]">+39 02 8921 4410</span>
+                <span className="font-mono text-[#0E0F10]">{SYNTHETIC_DRIVER_PROFILE.phone}</span>
               </div>
 
               <div className="py-3.5 flex items-center justify-between">
                 <span className="text-[#555555] font-medium">{isIt ? "Email" : "Email"}</span>
-                <span className="text-[#0E0F10]">luca.rossi@example.com</span>
+                <span className="text-[#0E0F10]">{SYNTHETIC_DRIVER_PROFILE.email}</span>
               </div>
             </div>
           </div>
@@ -147,8 +148,12 @@ export default function DriverProfilePage() {
                   <ChevronRightIcon size={16} className="text-[#888888] group-hover:text-[#0E0F10] transition-colors" />
                 </div>
                 <div>
-                  <div className="text-lg font-bold text-[#0E0F10]">Audi A3</div>
-                  <div className="font-mono text-xs text-[#555555] mt-0.5">AB 123 CD (2024)</div>
+                  <div className="text-lg font-bold text-[#0E0F10]">
+                    {SYNTHETIC_DRIVER_PROFILE.vehicle.make} {SYNTHETIC_DRIVER_PROFILE.vehicle.model}
+                  </div>
+                  <div className="font-mono text-xs text-[#555555] mt-0.5">
+                    {SYNTHETIC_DRIVER_PROFILE.vehicle.plate} ({SYNTHETIC_DRIVER_PROFILE.vehicle.year})
+                  </div>
                 </div>
               </Link>
 

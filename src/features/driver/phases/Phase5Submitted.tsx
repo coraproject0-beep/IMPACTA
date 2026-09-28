@@ -5,6 +5,7 @@ import Link from "next/link";
 import { DriverDraft } from "@/types/driver";
 import { useLanguage } from "@/context/LanguageContext";
 import { CheckCircleIcon, ArrowRightIcon } from "@/components/icons/Icons";
+import { SYNTHETIC_DRIVER_PROFILE } from "@/features/driver/data/driverProfileFixture";
 
 interface Phase5SubmittedProps {
   draft: DriverDraft;
@@ -72,13 +73,15 @@ export function Phase5Submitted({ draft, onReturnHome }: Phase5SubmittedProps) {
         <div className="space-y-3 text-xs text-[#0E0F10]">
           <div>
             <span className="text-[#666666] block">{isIt ? "Veicolo:" : "Vehicle:"}</span>
-            <span className="font-bold text-sm">Audi A3</span>
-            <span className="font-mono text-[#666666] block">AB 123 CD</span>
+            <span className="font-bold text-sm">
+              {SYNTHETIC_DRIVER_PROFILE.vehicle.make} {SYNTHETIC_DRIVER_PROFILE.vehicle.model}
+            </span>
+            <span className="font-mono text-[#666666] block">{SYNTHETIC_DRIVER_PROFILE.vehicle.plate}</span>
           </div>
 
           <div className="pt-2 border-t border-[#E5E5E3]">
             <span className="text-[#666666] block">{isIt ? "Compagnia:" : "Insurer:"}</span>
-            <span className="font-medium text-sm">Generali Italia</span>
+            <span className="font-medium text-sm">{SYNTHETIC_DRIVER_PROFILE.policy.insurerName}</span>
           </div>
         </div>
       </div>

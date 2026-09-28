@@ -10,12 +10,19 @@ import { useDriverDraft } from "@/context/DriverDraftContext";
 import { ArrowRightIcon } from "@/components/icons/Icons";
 import { formatDate } from "@/lib/dateUtils";
 
+import { SYNTHETIC_DRIVER_PROFILE } from "@/features/driver/data/driverProfileFixture";
+
 export default function DriverHomePage() {
   const router = useRouter();
   const { t, language } = useLanguage();
   const isIt = language === "it";
   const { claims } = useClaims();
   const { draft, resetDraft, startNewReport } = useDriverDraft();
+
+  // Single source of truth for driver identity and registered vehicle
+  const driverFirstName = SYNTHETIC_DRIVER_PROFILE.fullName.split(" ")[0] || "John";
+  const vehicleName = `${SYNTHETIC_DRIVER_PROFILE.vehicle.make} ${SYNTHETIC_DRIVER_PROFILE.vehicle.model}`;
+  const vehiclePlate = SYNTHETIC_DRIVER_PROFILE.vehicle.plate;
 
   // Check if an in-progress unsubmitted draft exists
   const hasInProgressDraft = draft.step !== "SAFETY" && draft.step !== "SUBMITTED";
@@ -42,7 +49,7 @@ export default function DriverHomePage() {
           {/* 1. Calm Human Greeting matching driver-home-reference.png */}
           <div className="space-y-2 pt-2">
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-tight text-[#0E0F10] leading-[1.08]">
-              {isIt ? "Buongiorno, Luca." : "Good morning, Luca."}
+              {isIt ? `Buongiorno, ${driverFirstName}.` : `Good morning, ${driverFirstName}.`}
             </h1>
             <p className="text-base sm:text-lg text-[#666666] font-normal leading-relaxed max-w-md">
               {isIt
@@ -134,7 +141,7 @@ export default function DriverHomePage() {
             <div className="relative aspect-[16/9] lg:aspect-[16/10] w-full overflow-hidden rounded-2xl bg-neutral-200 border border-[#E5E5E3]">
               <Image
                 src="/images/hero-car.jpg"
-                alt="Audi A3 vehicle context"
+                alt={`${vehicleName} vehicle context`}
                 fill
                 priority
                 className="object-cover"
@@ -147,10 +154,10 @@ export default function DriverHomePage() {
                 {isIt ? "Il tuo veicolo" : "Your vehicle"}
               </span>
               <div className="text-lg sm:text-xl font-bold text-[#0E0F10]">
-                Audi A3
+                {vehicleName}
               </div>
               <div className="font-mono text-sm tracking-wider text-[#666666]">
-                AB 123 CD
+                {vehiclePlate}
               </div>
             </div>
           </section>

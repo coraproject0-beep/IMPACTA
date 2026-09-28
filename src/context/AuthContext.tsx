@@ -18,10 +18,10 @@ export interface InsurerUser {
 }
 
 const DEFAULT_DRIVER: DriverUser = {
-  name: "Matteo Bianchi",
-  email: "matteo.bianchi@impacta-demo.eu",
-  plate: "GF492XP",
-  policyNumber: "AUR-8921-00412",
+  name: "John Miller",
+  email: "john.miller@impacta-demo.eu",
+  plate: "AB 123 CD",
+  policyNumber: "GEN-2026-9812",
 };
 
 const DEFAULT_INSURER: InsurerUser = {

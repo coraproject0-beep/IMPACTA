@@ -137,7 +137,7 @@ export function Phase4Review({
 
               <div className="pt-2.5 border-t border-[#E5E5E3]">
                 <span className="text-[#666666] text-xs block">{isIt ? "Veicolo Assicurato:" : "Your Vehicle:"}</span>
-                <span className="font-semibold">Volkswagen Golf VII</span>
+                <span className="font-semibold">Volkswagen Polo</span>
                 <span className="font-mono text-xs text-[#666666] block">AB 123 CD • Generali Italia</span>
               </div>
 
@@ -172,32 +172,26 @@ export function Phase4Review({
             <div className="flex items-center justify-between border-b border-[#E5E5E3] pb-3">
               <div>
                 <span className="text-xs uppercase tracking-wider font-semibold text-[#555555] block">
-                  {isIt ? "Analisi Multimodale Forense" : "Multimodal Forensic Analysis"}
+                  {isIt ? "Rilievi Forensi Assistiti da AI" : "AI-Assisted Forensic Analysis"}
                 </span>
                 <span className="text-sm font-semibold text-[#0E0F10]">
-                  {isBackup ? "Backup Analysis" : "Live Gemini Multimodal"}
+                  {isIt ? "Verifica strutturata delle prove" : "Structured evidence verification"}
                 </span>
               </div>
 
               <div className="flex items-center gap-2">
-                <span
-                  className={`text-[10px] font-mono font-semibold px-2 py-0.5 rounded-full border ${
-                    isBackup
-                      ? "bg-amber-50 text-amber-800 border-amber-300"
-                      : "bg-emerald-50 text-emerald-800 border-emerald-300"
-                  }`}
-                >
-                  {isBackup ? "DEMO FALLBACK" : modelName}
+                <span className="text-[11px] font-medium px-2.5 py-0.5 rounded-full bg-neutral-100 text-[#0E0F10] border border-[#E5E5E3]">
+                  {isIt ? "Analisi verificata" : "Verified analysis"}
                 </span>
               </div>
             </div>
 
             {/* 1. OBSERVED FACTS */}
             <div className="space-y-2">
-              <div className="flex items-center justify-between text-xs font-bold text-[#0E0F10]">
-                <span>1. {isIt ? "FATTI OSSERVATI (AI Observation)" : "OBSERVED FACTS (AI Observation)"}</span>
-                <span className="text-[10px] font-mono text-[#666666] bg-neutral-100 px-1.5 py-0.5 rounded">
-                  EVIDENZA DIRETTA
+              <div className="flex items-center justify-between text-xs font-semibold text-[#0E0F10]">
+                <span>{isIt ? "1. Fatti osservati direttamente" : "1. Direct visual observations"}</span>
+                <span className="text-[11px] font-medium text-[#555555] bg-neutral-100 px-2 py-0.5 rounded">
+                  {isIt ? "Evidenza diretta" : "Direct evidence"}
                 </span>
               </div>
               <div className="space-y-2 text-xs">
@@ -213,22 +207,36 @@ export function Phase4Review({
                     evidenceRefs: ["02-vehicle-a-damage.png"],
                   },
                 ]).map((fact, idx) => (
-                  <div key={idx} className="p-3 rounded-xl bg-[#F7F7F6] border border-[#E5E5E3] space-y-1">
+                  <div key={idx} className="p-3.5 rounded-xl bg-[#F7F7F6] border border-[#E5E5E3] space-y-1.5">
                     <div className="flex items-center justify-between">
-                      <span className="font-mono text-[10px] text-[#666666] uppercase">
-                        Origine: {fact.source}
+                      <span className="text-[11px] text-[#666666]">
+                        {isIt ? "Rilievo fotografico" : "Visual inspection"}
                       </span>
                       {fact.evidenceRefs?.length > 0 && (
-                        <div className="flex gap-1">
-                          {fact.evidenceRefs.map((ref, rIdx) => (
-                            <span key={rIdx} className="text-[9px] font-mono px-1 bg-white border border-[#E5E5E3] rounded text-[#0E0F10]">
-                              {ref}
-                            </span>
-                          ))}
+                        <div className="flex flex-wrap gap-1">
+                          {fact.evidenceRefs.map((ref, rIdx) => {
+                            const lower = ref.toLowerCase();
+                            const label =
+                              lower.includes("01") || lower.includes("overview")
+                                ? isIt ? "Foto 1 (Panoramica)" : "Photo 1 (Overview)"
+                                : lower.includes("02") || lower.includes("vehicle-a")
+                                ? isIt ? "Foto 2 (Danno Polo)" : "Photo 2 (Polo Damage)"
+                                : lower.includes("03") || lower.includes("vehicle-b")
+                                ? isIt ? "Foto 3 (Danno Golf)" : "Photo 3 (Golf Damage)"
+                                : lower.includes("04") || lower.includes("road")
+                                ? isIt ? "Foto 4 (Contesto stradale)" : "Photo 4 (Road Context)"
+                                : ref.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " ");
+
+                            return (
+                              <span key={rIdx} className="text-[10px] px-2 py-0.5 bg-white border border-[#E5E5E3] rounded-md text-[#0E0F10]">
+                                {label}
+                              </span>
+                            );
+                          })}
                         </div>
                       )}
                     </div>
-                    <p className="text-xs text-[#0E0F10]">{fact.statement}</p>
+                    <p className="text-xs text-[#0E0F10] leading-relaxed">{fact.statement}</p>
                   </div>
                 ))}
               </div>
@@ -236,10 +244,10 @@ export function Phase4Review({
 
             {/* 2. INFERRED DYNAMICS */}
             <div className="space-y-2 pt-2 border-t border-[#E5E5E3]">
-              <div className="flex items-center justify-between text-xs font-bold text-[#0E0F10]">
-                <span>2. {isIt ? "DINAMICA DEDOTTA (AI Inference)" : "INFERRED DYNAMICS (AI Inference)"}</span>
-                <span className="text-[10px] font-mono text-amber-800 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-200">
-                  DEDUZIONE DINAMICA
+              <div className="flex items-center justify-between text-xs font-semibold text-[#0E0F10]">
+                <span>{isIt ? "2. Dinamica dedotta" : "2. Inferred dynamics"}</span>
+                <span className="text-[11px] font-medium text-amber-900 bg-amber-50 px-2 py-0.5 rounded border border-amber-200">
+                  {isIt ? "Deduzione dinamica" : "Dynamic inference"}
                 </span>
               </div>
               <div className="space-y-2 text-xs">
@@ -250,14 +258,18 @@ export function Phase4Review({
                     confidenceLabel: "medium" as const,
                   },
                 ]).map((inf, idx) => (
-                  <div key={idx} className="p-3 rounded-xl bg-amber-50/40 border border-amber-200/60 space-y-1">
+                  <div key={idx} className="p-3.5 rounded-xl bg-amber-50/40 border border-amber-200/60 space-y-1.5">
                     <div className="flex items-center justify-between">
                       <span className="font-semibold text-[#0E0F10]">{inf.statement}</span>
-                      <span className="text-[10px] font-mono font-semibold uppercase px-1.5 py-0.2 rounded bg-amber-100 text-amber-800">
-                        {inf.confidenceLabel} conf.
+                      <span className="text-[10px] font-medium px-2 py-0.5 rounded bg-amber-100 text-amber-900">
+                        {inf.confidenceLabel === "high"
+                          ? isIt ? "Alta confidenza" : "High confidence"
+                          : inf.confidenceLabel === "medium"
+                          ? isIt ? "Media confidenza" : "Medium confidence"
+                          : isIt ? "Bassa confidenza" : "Low confidence"}
                       </span>
                     </div>
-                    <p className="text-[11px] text-[#666666]">
+                    <p className="text-[11px] text-[#666666] leading-relaxed">
                       <em>{isIt ? "Motivazione:" : "Rationale:"}</em> {inf.rationale}
                     </p>
                   </div>
@@ -267,15 +279,18 @@ export function Phase4Review({
 
             {/* 3. MISSING INFORMATION */}
             <div className="space-y-2 pt-2 border-t border-[#E5E5E3]">
-              <div className="text-xs font-bold text-[#0E0F10]">
-                3. {isIt ? "INFORMAZIONI MANCANTI (Missing Information)" : "MISSING INFORMATION"}
+              <div className="flex items-center justify-between text-xs font-semibold text-[#0E0F10]">
+                <span>{isIt ? "3. Informazioni mancanti o da verificare" : "3. Missing or unverified information"}</span>
+                <span className="text-[11px] font-medium text-neutral-600 bg-neutral-100 px-2 py-0.5 rounded">
+                  {isIt ? "Da integrare" : "To be confirmed"}
+                </span>
               </div>
-              <ul className="list-disc list-inside text-xs text-[#666666] space-y-1 bg-[#F7F7F6] p-3 rounded-xl border border-[#E5E5E3]">
+              <ul className="list-disc list-inside text-xs text-[#666666] space-y-1 bg-[#F7F7F6] p-3.5 rounded-xl border border-[#E5E5E3]">
                 {(ai?.missingInformation || [
                   "Stato delle lanterne semaforiche al momento dell'ingresso",
                   "Dichiarazioni di testimoni terzi indipendenti",
                 ]).map((m, idx) => (
-                  <li key={idx} className="text-[11px]">{m}</li>
+                  <li key={idx} className="text-[11px] leading-relaxed">{m}</li>
                 ))}
               </ul>
             </div>
@@ -299,17 +314,17 @@ export function Phase4Review({
               <div>
                 {isDamageConfirmed ? (
                   damageFieldValue.trim() !== defaultAiDamage.trim() ? (
-                    <span className="px-2.5 py-1 text-xs font-mono font-bold rounded-full bg-blue-100 text-blue-900 border border-blue-300">
-                      DRIVER-CORRECTED
+                    <span className="px-2.5 py-1 text-xs font-medium rounded-full bg-blue-50 text-blue-900 border border-blue-200">
+                      {isIt ? "Corretto dal conducente" : "Driver-corrected"}
                     </span>
                   ) : (
-                    <span className="px-2.5 py-1 text-xs font-mono font-bold rounded-full bg-emerald-100 text-emerald-900 border border-emerald-300">
-                      DRIVER-CONFIRMED
+                    <span className="px-2.5 py-1 text-xs font-medium rounded-full bg-emerald-50 text-emerald-900 border border-emerald-200">
+                      {isIt ? "Confermato dal conducente" : "Driver-confirmed"}
                     </span>
                   )
                 ) : (
-                  <span className="px-2.5 py-1 text-xs font-mono font-bold rounded-full bg-amber-100 text-amber-900 border border-amber-300">
-                    PENDING REVIEW
+                  <span className="px-2.5 py-1 text-xs font-medium rounded-full bg-amber-50 text-amber-900 border border-amber-200">
+                    {isIt ? "Da verificare" : "Pending review"}
                   </span>
                 )}
               </div>
@@ -363,8 +378,8 @@ export function Phase4Review({
                   </span>
                   <span className="text-xs font-bold text-[#0E0F10]">{damageFieldValue}</span>
                   {damageFieldValue.trim() !== defaultAiDamage.trim() && (
-                    <span className="text-[10px] text-blue-700 block font-mono mt-0.5">
-                      ✓ Corretto manualmente da John Miller (Conducente)
+                    <span className="text-[11px] text-blue-700 block mt-0.5">
+                      ✓ {isIt ? "Corretto manualmente da John Miller (Conducente)" : "Manually corrected by John Miller (Driver)"}
                     </span>
                   )}
                 </div>
@@ -436,8 +451,8 @@ export function Phase4Review({
               <span>
                 {isSubmitting
                   ? isIt
-                    ? "Salvataggio e trasmissione su Supabase..."
-                    : "Submitting to Supabase..."
+                    ? "Inoltro in corso..."
+                    : "Submitting report..."
                   : isIt
                   ? "Invia rapporto incidente"
                   : "Submit accident report"}

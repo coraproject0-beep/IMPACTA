@@ -4,7 +4,8 @@ import React, { useState, useRef } from "react";
 import Image from "next/image";
 import { DriverDraft, EvidenceDraftItem } from "@/types/driver";
 import { useLanguage } from "@/context/LanguageContext";
-import { ArrowRightIcon } from "@/components/icons/Icons";
+import { ArrowRightIcon, CameraIcon } from "@/components/icons/Icons";
+import { ImpactaAnalysisLoader } from "@/components/ui/ImpactaAnalysisLoader";
 
 interface Phase3CaptureProps {
   draft: DriverDraft;
@@ -29,11 +30,11 @@ export function Phase3Capture({
   const [analysisStatusText, setAnalysisStatusText] = useState<string>("");
 
   const evidenceItems = draft.evidenceItems || [];
-  const evidenceCount = evidenceItems.length > 0 ? evidenceItems.length : 1;
+  const evidenceCount = evidenceItems.length;
   const latestPhotoUrl =
     evidenceItems.length > 0
       ? evidenceItems[evidenceItems.length - 1].previewUrl
-      : "/demo/scenario-01/01-overview.png";
+      : null;
 
   const handleTriggerUpload = () => {
     if (fileInputRef.current) {
@@ -105,20 +106,24 @@ export function Phase3Capture({
         {
           id: "EVD-DEMO-002",
           category: "DAMAGE_A",
-          categoryLabel: isIt ? "Danno Veicolo A (Golf scura)" : "Vehicle A Damage Detail",
+          categoryLabel: isIt ? "Danno Veicolo A (Polo)" : "Vehicle A Damage Detail",
           previewUrl: "/demo/scenario-01/02-vehicle-a-damage.png",
           timestamp: "2026-09-26T14:23:45Z",
           isRealUpload: true,
-          notes: "Danno parafango e paraurti anteriore destro su VW Golf scura",
+          notes: isIt
+            ? "Danno parafango e paraurti anteriore destro su VW Polo"
+            : "Front right wing and bumper damage on VW Polo",
         },
         {
           id: "EVD-DEMO-003",
           category: "DAMAGE_B",
-          categoryLabel: isIt ? "Danno Veicolo B (Golf argento)" : "Vehicle B Damage Detail",
+          categoryLabel: isIt ? "Danno Veicolo B (Golf)" : "Vehicle B Damage Detail",
           previewUrl: "/demo/scenario-01/03-vehicle-b-damage.png",
           timestamp: "2026-09-26T14:24:20Z",
           isRealUpload: true,
-          notes: "Danno parafango e fiancata anteriore sinistra su VW Golf argento",
+          notes: isIt
+            ? "Danno parafango e fiancata anteriore sinistra su VW Golf argento"
+            : "Front left wing and side panel damage on VW Golf",
         },
         {
           id: "EVD-DEMO-004",
@@ -127,7 +132,7 @@ export function Phase3Capture({
           previewUrl: "/demo/scenario-01/04-road-context.png",
           timestamp: "2026-09-26T14:25:00Z",
           isRealUpload: true,
-          notes: "Segnaletica verticale e orizzontale incrocio",
+          notes: isIt ? "Segnaletica verticale e orizzontale incrocio" : "Vertical and horizontal intersection signs",
         },
       ];
 
@@ -167,8 +172,8 @@ export function Phase3Capture({
     setIsAnalyzing(true);
     setAnalysisStatusText(
       isIt
-        ? "Invocazione server-side Gemini 3.8 Flash..."
-        : "Invoking Gemini 3.8 Flash multimodal analysis server-side..."
+        ? "Analisi forense multimodale in corso..."
+        : "Multimodal forensic analysis in progress..."
     );
 
     try {
@@ -200,7 +205,7 @@ export function Phase3Capture({
         scenarioMetadata: {
           locationText: `${draft.location.city || "Milan"}, ${draft.location.street || "Milan metropolitan area, Italy"}`,
           incidentDatetime: `${draft.incidentDate || "2026-09-26"}T${draft.incidentTime || "14:22"}:00Z`,
-          vehicleA: { make: "Volkswagen", model: "Golf VII", plate: "AB 123 CD" },
+          vehicleA: { make: "Volkswagen", model: "Polo", plate: "AB 123 CD" },
           vehicleB: {
             make: "Volkswagen",
             model: "Golf VII",
@@ -281,24 +286,6 @@ export function Phase3Capture({
             </p>
           </div>
 
-          {/* Canonical Scenario 01 Quick Button */}
-          <div className="pt-2">
-            <button
-              type="button"
-              onClick={handleLoadCanonicalScenario}
-              className="w-full text-left p-3.5 rounded-xl border border-[#0E0F10]/20 bg-[#0E0F10]/5 hover:bg-[#0E0F10]/10 transition-colors flex items-center justify-between text-xs font-semibold text-[#0E0F10]"
-            >
-              <span>
-                {isIt
-                  ? "⚡ Carica prove canoniche Scenario 01 (4 foto)"
-                  : "⚡ Load Scenario 01 Canonical Evidence (4 photos)"}
-              </span>
-              <span className="font-mono text-[10px] uppercase px-1.5 py-0.5 rounded bg-[#0E0F10] text-white">
-                Golden Demo
-              </span>
-            </button>
-          </div>
-
           {/* Action Rows */}
           <div className="space-y-4 pt-2 border-t border-[#E5E5E3]">
             <button
@@ -312,8 +299,9 @@ export function Phase3Capture({
 
             <button
               type="button"
-              onClick={handleTriggerUpload}
-              className="w-full text-left py-2 text-base font-normal text-[#0E0F10] hover:text-[#666666] transition-colors"
+              onClick={handleLoadCanonicalScenario}
+              disabled={isUploading || isAnalyzing}
+              className="w-full text-left py-2 text-base font-normal text-[#0E0F10] hover:text-[#666666] transition-colors disabled:opacity-50"
             >
               {isIt ? "Scegli dalla galleria" : "Choose from library"}
             </button>
@@ -324,21 +312,25 @@ export function Phase3Capture({
             <button
               type="button"
               onClick={handleContinue}
-              disabled={isAnalyzing}
-              className="w-full text-left py-2 flex items-center justify-between text-lg font-semibold text-[#0E0F10] hover:text-[#666666] transition-colors group disabled:opacity-50"
+              disabled={isAnalyzing || evidenceCount === 0}
+              className={`w-full text-left py-2 flex items-center justify-between text-lg font-semibold transition-colors group ${
+                evidenceCount === 0 || isAnalyzing
+                  ? "opacity-40 cursor-not-allowed text-[#888888]"
+                  : "text-[#0E0F10] hover:text-[#666666] cursor-pointer"
+              }`}
             >
               <span>
                 {isAnalyzing
                   ? isIt
-                    ? "Analisi Gemini in corso..."
-                    : "Analyzing with Gemini..."
+                    ? "Verifica in corso..."
+                    : "Reviewing evidence..."
                   : isIt
                   ? "Continua all'analisi"
                   : "Continue to Analysis"}
               </span>
               <ArrowRightIcon
                 size={20}
-                className="text-[#0E0F10] group-hover:translate-x-1 transition-transform"
+                className={`text-[#0E0F10] ${evidenceCount > 0 && !isAnalyzing ? "group-hover:translate-x-1" : ""} transition-transform`}
               />
             </button>
           </div>
@@ -346,29 +338,37 @@ export function Phase3Capture({
 
         {/* RIGHT COLUMN: Evidence Viewport */}
         <div className="lg:col-span-7 space-y-3 order-first lg:order-last">
-          <div className="relative aspect-[16/11] lg:aspect-[16/10] w-full overflow-hidden rounded-2xl bg-neutral-200 border border-[#E5E5E3] shadow-xs">
-            <Image
-              src={latestPhotoUrl}
-              alt="Collision scene documentation"
-              fill
-              priority
-              className="object-cover"
-              sizes="(max-width: 1024px) 100vw, 700px"
-            />
+          <div className="relative aspect-[16/11] lg:aspect-[16/10] w-full overflow-hidden rounded-2xl bg-neutral-100 border border-[#E5E5E3] shadow-xs">
+            {latestPhotoUrl ? (
+              <Image
+                src={latestPhotoUrl}
+                alt="Collision scene documentation"
+                fill
+                priority
+                className="object-cover"
+                sizes="(max-width: 1024px) 100vw, 700px"
+              />
+            ) : (
+              <div className="w-full h-full flex flex-col items-center justify-center p-8 text-center bg-[#F9F9F8]">
+                <div className="w-12 h-12 rounded-full bg-white border border-[#E5E5E3] flex items-center justify-center text-[#666666] mb-3 shadow-2xs">
+                  <CameraIcon size={22} className="text-[#666666]" />
+                </div>
+                <p className="text-sm font-medium text-[#0E0F10]">
+                  {isIt ? "Nessuna foto registrata" : "No photos registered"}
+                </p>
+                <p className="text-xs text-[#888888] mt-1 max-w-xs leading-relaxed">
+                  {isIt
+                    ? "Scatta una foto o scegli dalla galleria per iniziare l'analisi forense."
+                    : "Take a photo or choose from library to begin forensic analysis."}
+                </p>
+              </div>
+            )}
             {isUploading && (
               <div className="absolute inset-0 bg-[#0E0F10]/60 flex items-center justify-center text-white text-xs font-medium backdrop-blur-xs">
-                {isIt ? "Caricamento archivio privato..." : "Uploading to private storage..."}
+                {isIt ? "Caricamento archivio protetto..." : "Uploading to secure storage..."}
               </div>
             )}
-            {isAnalyzing && (
-              <div className="absolute inset-0 bg-[#0E0F10]/80 flex flex-col items-center justify-center text-white text-xs space-y-2 p-6 text-center backdrop-blur-sm">
-                <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                <span className="font-semibold text-sm">
-                  {isIt ? "Analisi Multimodale Gemini 3.8 Flash" : "Gemini 3.8 Flash Multimodal Analysis"}
-                </span>
-                <span className="text-neutral-300 text-xs font-mono">{analysisStatusText}</span>
-              </div>
-            )}
+            {isAnalyzing && <ImpactaAnalysisLoader isIt={isIt} />}
           </div>
 
           <div className="flex items-center justify-between text-sm text-[#666666] pt-1">
@@ -382,8 +382,8 @@ export function Phase3Capture({
                 ? "photo registered"
                 : "photos registered"}
             </span>
-            <span className="font-mono text-xs text-neutral-500">
-              Supabase Storage: <strong className="text-emerald-700">claim-evidence (private)</strong>
+            <span className="text-xs text-neutral-400">
+              {isIt ? "Archiviazione sicura crittografata" : "Secure encrypted storage"}
             </span>
           </div>
         </div>

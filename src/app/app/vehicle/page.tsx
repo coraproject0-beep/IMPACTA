@@ -18,7 +18,7 @@ export default function DriverVehiclePage() {
       <div className="flex flex-col sm:flex-row sm:items-baseline justify-between pb-6 border-b border-[#E5E5E3] gap-4">
         <div>
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-[#0E0F10]">
-            Audi A3
+            Volkswagen Polo
           </h1>
           <p className="text-sm text-[#555555] font-normal mt-1">
             {isIt
@@ -40,7 +40,7 @@ export default function DriverVehiclePage() {
           <div className="relative rounded-2xl overflow-hidden aspect-[16/10] bg-neutral-200 border border-[#E5E5E3]">
             <Image
               src="/images/hero-car.jpg"
-              alt="Audi A3 context"
+              alt="Volkswagen Polo context"
               fill
               priority
               className="object-cover"
@@ -98,7 +98,7 @@ export default function DriverVehiclePage() {
             <div className="border-t border-[#E5E5E3] divide-y divide-[#E5E5E3] text-xs">
               <div className="py-3.5 flex items-center justify-between">
                 <span className="text-[#555555] font-medium">{isIt ? "Marca e modello" : "Make & model"}</span>
-                <span className="font-semibold text-[#0E0F10]">Audi A3 Sportback</span>
+                <span className="font-semibold text-[#0E0F10]">Volkswagen Polo</span>
               </div>
 
               <div className="py-3.5 flex items-center justify-between">
@@ -113,7 +113,7 @@ export default function DriverVehiclePage() {
 
               <div className="py-3.5 flex items-center justify-between">
                 <span className="text-[#555555] font-medium">{isIt ? "Colore carrozzeria" : "Exterior color"}</span>
-                <span className="text-[#0E0F10]">Manhattan Gray Metallic</span>
+                <span className="text-[#0E0F10]">Deep Black Pearl</span>
               </div>
 
               <div className="py-3.5 flex items-center justify-between">
@@ -135,7 +135,7 @@ export default function DriverVehiclePage() {
                   {isIt ? "Numero di telaio (VIN)" : "Chassis number (VIN)"}
                 </span>
                 <span className="font-mono font-bold text-[#0E0F10] text-sm block mt-0.5">
-                  WAUZZZGY5PA089214
+                  WVWZZZAWZPW082914
                 </span>
               </div>
 
@@ -144,7 +144,7 @@ export default function DriverVehiclePage() {
                   {isIt ? "Motorizzazione" : "Powertrain"}
                 </span>
                 <span className="text-[#0E0F10] font-medium block mt-0.5">
-                  35 TFSI 1.5 l Mild Hybrid (110 kW / 150 CV)
+                  1.0 TSI (70 kW / 95 CV)
                 </span>
               </div>
 

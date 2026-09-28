@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { Claim, CAIField } from "@/types";
 import { useClaims } from "@/context/ClaimsContext";
+import { useLanguage } from "@/context/LanguageContext";
 import { CAIEditModal } from "../components/CAIEditModal";
 import { Button } from "@/components/ui/Button";
 import {
@@ -19,6 +20,8 @@ interface CAIWorkspaceTabProps {
 }
 
 export function CAIWorkspaceTab({ claim }: CAIWorkspaceTabProps) {
+  const { language } = useLanguage();
+  const isIt = language === "it";
   const { confirmCAIField, updateCAIField, generateCAIDraft, updateStatus } = useClaims();
   const [editingField, setEditingField] = useState<CAIField | null>(null);
   const [draftGeneratedNotice, setDraftGeneratedNotice] = useState(false);
@@ -81,7 +84,7 @@ export function CAIWorkspaceTab({ claim }: CAIWorkspaceTabProps) {
               className="text-xs"
             >
               <FileTextIcon size={14} />
-              <span>Generate Demo CAI Draft</span>
+              <span>{isIt ? "Genera bozza CAI" : "Generate CAI Draft"}</span>
             </Button>
             <Button
               size="sm"
@@ -91,7 +94,7 @@ export function CAIWorkspaceTab({ claim }: CAIWorkspaceTabProps) {
               className="text-xs"
             >
               <CheckCircleIcon size={14} />
-              <span>{claim.status === "REVIEWED" ? "Already Reviewed" : "Mark as Reviewed"}</span>
+              <span>{claim.status === "REVIEWED" ? (isIt ? "Già esaminato" : "Already Reviewed") : (isIt ? "Segna come esaminato" : "Mark as Reviewed")}</span>
             </Button>
           </div>
         </div>
@@ -100,10 +103,10 @@ export function CAIWorkspaceTab({ claim }: CAIWorkspaceTabProps) {
         {draftGeneratedNotice && (
           <div className="mt-3 p-2.5 bg-blue-50 border border-blue-200 rounded text-xs text-blue-900 flex items-center justify-between animate-in fade-in duration-150">
             <span>
-              <strong>Demo CAI Draft Dossier Generated:</strong> Status updated to <code>CAI_READY</code>. Audit event appended to claim log.
+              <strong>{isIt ? "Bozza fascicolo CAI generata:" : "CAI Draft Dossier Generated:"}</strong> {isIt ? "Stato aggiornato a " : "Status updated to "}<code>CAI_READY</code>. {isIt ? "Evento registrato nel registro audit." : "Audit event appended to claim log."}
             </span>
             <span className="text-[10px] uppercase font-mono px-1.5 py-0.5 bg-blue-100 rounded text-blue-800">
-              Prototype action
+              {isIt ? "Fascicolo CAI" : "CAI Dossier"}
             </span>
           </div>
         )}
@@ -111,7 +114,7 @@ export function CAIWorkspaceTab({ claim }: CAIWorkspaceTabProps) {
         {markedReviewedNotice && (
           <div className="mt-3 p-2.5 bg-emerald-50 border border-emerald-200 rounded text-xs text-emerald-900 flex items-center justify-between animate-in fade-in duration-150">
             <span>
-              <strong>Claim Validated:</strong> Claim status transitioned to <code>REVIEWED</code>. Reviewer sign-off logged.
+              <strong>{isIt ? "Sinistro validato:" : "Claim Validated:"}</strong> {isIt ? "Stato passato a " : "Claim status transitioned to "}<code>REVIEWED</code>. {isIt ? "Approvazione del perito registrata." : "Reviewer sign-off logged."}
             </span>
           </div>
         )}

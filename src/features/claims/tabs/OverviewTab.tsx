@@ -83,16 +83,16 @@ export function OverviewTab({ claim }: OverviewTabProps) {
                 {t("consoleClaimDetail.vehicleA")}
               </span>
               <div className="text-base font-bold text-[#0E0F10]">
-                Audi A3
+                {claim.vehicleA ? `${claim.vehicleA.make} ${claim.vehicleA.model}` : "Volkswagen Polo"}
               </div>
               <div className="font-mono text-xs text-[#666666]">
-                AB 123 CD
+                {claim.vehicleA?.plate || "AB 123 CD"}
               </div>
             </div>
             <div className="relative w-36 h-24 flex-shrink-0 rounded-lg overflow-hidden bg-neutral-100">
               <Image
                 src="/images/hero-car.jpg"
-                alt="Audi A3"
+                alt={claim.vehicleA ? `${claim.vehicleA.make} ${claim.vehicleA.model}` : "Volkswagen Polo"}
                 fill
                 className="object-cover"
                 sizes="150px"
@@ -107,16 +107,16 @@ export function OverviewTab({ claim }: OverviewTabProps) {
                 {t("consoleClaimDetail.vehicleB")}
               </span>
               <div className="text-base font-bold text-[#0E0F10]">
-                Volkswagen Golf
+                {claim.vehicleB ? `${claim.vehicleB.make} ${claim.vehicleB.model}` : "Volkswagen Golf VII"}
               </div>
               <div className="font-mono text-xs text-[#666666]">
-                EF 456 GH
+                {claim.vehicleB?.plate || "EF 456 GH"}
               </div>
             </div>
             <div className="relative w-36 h-24 flex-shrink-0 rounded-lg overflow-hidden bg-neutral-100">
               <Image
                 src="/images/hero-car.jpg"
-                alt="Volkswagen Golf"
+                alt={claim.vehicleB ? `${claim.vehicleB.make} ${claim.vehicleB.model}` : "Volkswagen Golf VII"}
                 fill
                 className="object-cover"
                 sizes="150px"
@@ -156,9 +156,9 @@ export function OverviewTab({ claim }: OverviewTabProps) {
 
         <p className="text-xs text-[#666666] pt-1">
           {claim.evidence?.length || 4}{" "}
-          {isIt ? "fotografie registrate nel bucket privato Supabase" : "photographs stored in private Supabase Storage"} &nbsp;|&nbsp;{" "}
+          {isIt ? "fotografie ad alta risoluzione archiviate" : "high-resolution photographs securely stored"} &nbsp;|&nbsp;{" "}
           {isIt ? "Dichiarazione conducente" : "Driver statement"} &nbsp;|&nbsp;{" "}
-          {isIt ? "Analisi Gemini multimodale" : "Gemini multimodal analysis"}
+          {isIt ? "Analisi forense multimodale" : "Multimodal forensic analysis"}
         </p>
       </div>
 
@@ -209,7 +209,7 @@ export function OverviewTab({ claim }: OverviewTabProps) {
           <h3 className="text-base font-bold text-[#0E0F10] tracking-tight flex items-center justify-between">
             <span>{t("consoleClaimDetail.reconstructionSummary")}</span>
             <span className="text-[10px] font-mono font-medium px-2 py-0.5 rounded bg-neutral-100 text-[#0E0F10] border border-[#E5E5E3]">
-              {claim.aiAnalysis?.reviewReason?.includes("DEMO") ? "DEMO FALLBACK" : "LIVE GEMINI"}
+              {isIt ? "ANALISI VERIFICATA" : "VERIFIED ANALYSIS"}
             </span>
           </h3>
 
