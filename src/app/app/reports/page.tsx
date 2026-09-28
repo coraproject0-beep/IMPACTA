@@ -153,7 +153,7 @@ export default function DriverReportsPage() {
                 </div>
                 <div className="pt-2.5 flex justify-between">
                   <span className="text-[#555555]">{isIt ? "Targa veicolo:" : "License plate:"}</span>
-                  <span className="font-mono text-[#0E0F10]">{selectedClaim.vehicleA?.plate || "AB 123 CD"}</span>
+                  <span className="font-mono text-[#0E0F10]">{selectedClaim.vehicleA?.plate || "—"}</span>
                 </div>
               </div>
 

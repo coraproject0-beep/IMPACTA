@@ -14,12 +14,13 @@ interface Phase2AccidentProps {
 export function Phase2Accident({ draft, onUpdate, onNext }: Phase2AccidentProps) {
   const { t, language } = useLanguage();
   const isIt = language === "it";
-  const [city, setCity] = useState(draft.location.city || "Milano");
-  const [street, setStreet] = useState(draft.location.street || "Via Lorenteggio");
-  const [junctionType, setJunctionType] = useState(draft.location.junctionType || "ROUNDABOUT");
-  const [date, setDate] = useState(draft.incidentDate || "2026-09-25");
-  const [time, setTime] = useState(draft.incidentTime || "08:42");
-  const [vehiclesCount, setVehiclesCount] = useState(draft.vehiclesCount || 2);
+  const isDemo = Boolean(draft.isDemoIncident);
+  const [city, setCity] = useState(draft.location.city || (isDemo ? "Milano" : ""));
+  const [street, setStreet] = useState(draft.location.street || (isDemo ? "Via Lorenteggio" : ""));
+  const [junctionType, setJunctionType] = useState(draft.location.junctionType || (isDemo ? "ROUNDABOUT" : "STRAIGHT_ROAD"));
+  const [date, setDate] = useState(draft.incidentDate || (isDemo ? "2026-09-25" : new Date().toISOString().substring(0, 10)));
+  const [time, setTime] = useState(draft.incidentTime || (isDemo ? "08:42" : new Date().toTimeString().substring(0, 5)));
+  const [vehiclesCount, setVehiclesCount] = useState(draft.vehiclesCount || (isDemo ? 2 : 1));
   const [anyInjured, setAnyInjured] = useState(draft.anyInjured || false);
   const [policePresent, setPolicePresent] = useState(draft.policePresent || false);
 
@@ -89,7 +90,7 @@ export function Phase2Accident({ draft, onUpdate, onNext }: Phase2AccidentProps)
               {t("wizard.phase2VehiclesInvolved")}
             </span>
             <div className="grid grid-cols-3 gap-3">
-              {[2, 3, 4].map((count) => (
+              {[1, 2, 3].map((count) => (
                 <button
                   key={count}
                   type="button"
@@ -100,7 +101,7 @@ export function Phase2Accident({ draft, onUpdate, onNext }: Phase2AccidentProps)
                       : "bg-white text-[#0E0F10] border-[#E5E5E3] hover:border-[#0E0F10]"
                   }`}
                 >
-                  {count} {isIt ? "veicoli" : "vehicles"}
+                  {count} {count === 1 ? (isIt ? "veicolo" : "vehicle") : (isIt ? "veicoli" : "vehicles")}
                 </button>
               ))}
             </div>

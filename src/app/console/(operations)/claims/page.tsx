@@ -327,10 +327,14 @@ export default function ConsoleClaimsPage() {
                     {/* Vehicles */}
                     <td className="py-3.5 px-5 whitespace-nowrap">
                       <div className="font-mono text-[11px] text-[#0E0F10] font-medium">
-                        {claim.vehicleA.plate} vs {claim.vehicleB?.plate || "N/A"}
+                        {claim.vehicleB?.plate && claim.vehicleB.plate !== "—"
+                          ? `${claim.vehicleA.plate} vs ${claim.vehicleB.plate}`
+                          : claim.vehicleA.plate}
                       </div>
                       <div className="text-[11px] text-[#666666]">
-                        {claim.vehicleA.make} {claim.vehicleA.model}
+                        {claim.vehicleA.make === "Vehicle details not provided"
+                          ? (language === "it" ? "Dettagli veicolo non specificati" : "Vehicle details not provided")
+                          : `${claim.vehicleA.make} ${claim.vehicleA.model}`.trim()}
                       </div>
                     </td>
 

@@ -77,11 +77,19 @@ export async function POST(req: NextRequest) {
 
     // Cleanly format location without duplicating city name
     const locObj = claimData.incident?.location;
+    const isDemo = Boolean(
+      claimData.is_demo ||
+      claimData.isDemo ||
+      claimData.tags?.includes("Demo Incident") ||
+      claimData.tags?.includes("CANONICAL_DEMO") ||
+      (typeof claimData.id === "string" && claimData.id.includes("CLM-2026-0925-01"))
+    );
+
     const formatLoc = (loc?: { city?: string; street?: string }) => {
-      if (!loc) return "Milano, Via Lorenteggio";
+      if (!loc) return isDemo ? "Milano, Via Lorenteggio" : "Posizione non specificata";
       const city = (loc.city || "").trim();
       const street = (loc.street || "").trim();
-      if (!city && !street) return "Milano, Via Lorenteggio";
+      if (!city && !street) return isDemo ? "Milano, Via Lorenteggio" : "Posizione non specificata";
       if (!city) return street;
       if (!street) return city;
       if (street.toLowerCase().includes(city.toLowerCase())) return street;
@@ -94,12 +102,12 @@ export async function POST(req: NextRequest) {
     const dbPayload = {
       id: claimData.id,
       status: dbStatus,
-      driver_name: claimData.driver_name || claimData.driverA?.fullName || "John Miller",
-      counterparty_name: claimData.counterparty_name || claimData.driverB?.fullName || "Claire Anderson",
+      driver_name: claimData.driver_name || claimData.driverA?.fullName || (isDemo ? "John Miller" : "Driver"),
+      counterparty_name: claimData.counterparty_name || claimData.driverB?.fullName || (isDemo ? "Claire Anderson" : null),
       location_text: locationText,
       incident_datetime: claimData.incident_datetime || claimData.incident?.timestamp || claimData.incidentDate || new Date().toISOString(),
       driver_statement: claimData.driver_statement || claimData.driverA?.statement || claimData.incident?.summary || "",
-      vehicle_a: claimData.vehicle_a || claimData.vehicleA || {
+      vehicle_a: claimData.vehicle_a || claimData.vehicleA || (isDemo ? {
         make: "Volkswagen",
         model: "Polo",
         plate: "AB 123 CD",
@@ -107,8 +115,16 @@ export async function POST(req: NextRequest) {
         color: "Deep Black Pearl",
         damageDescription: "Front-right bumper and headlight deformation",
         damageArea: "Front-Right",
-      },
-      vehicle_b: claimData.vehicle_b || claimData.vehicleB || {
+      } : {
+        make: "Vehicle details not provided",
+        model: "",
+        plate: "—",
+        year: new Date().getFullYear(),
+        color: "—",
+        damageDescription: "Damage under inspection",
+        damageArea: "Under inspection",
+      }),
+      vehicle_b: claimData.vehicle_b || claimData.vehicleB || (isDemo ? {
         make: "Volkswagen",
         model: "Golf VII",
         plate: "EF 456 GH",
@@ -116,7 +132,7 @@ export async function POST(req: NextRequest) {
         color: "Silver Metallic",
         damageDescription: "Front-left impact",
         damageArea: "Front-Left",
-      },
+      } : {}),
       ai_analysis: claimData.ai_analysis || claimData.aiAnalysis || {},
       reviewed_data: {
         confirmedByDriver: true,
@@ -128,7 +144,7 @@ export async function POST(req: NextRequest) {
       cai_fields: claimData.cai_fields || claimData.caiFields || [],
       audit_trail: claimData.audit_trail || claimData.auditTrail || [],
       reviewer_notes: claimData.reviewer_notes || claimData.reviewerNotes || claimData.driverA?.statement || "",
-      is_demo: Boolean(claimData.is_demo || claimData.isDemo || claimData.tags?.includes("Demo Incident")),
+      is_demo: isDemo,
       submitted_at: claimData.submitted_at || new Date().toISOString(),
       updated_at: new Date().toISOString(),
     };

@@ -55,7 +55,7 @@ export function Phase4Review({
       originalValue: defaultAiDamage,
       correctedValue: damageFieldValue.trim(),
       reviewType: (isCorrected ? "driver_correction" : "driver_confirmation") as any,
-      actor: "John Miller (Driver)",
+      actor: draft.isDemoIncident ? "John Miller (Driver)" : "Driver",
       reviewedAt: new Date().toISOString(),
     };
 
@@ -94,7 +94,7 @@ export function Phase4Review({
       reviewType: (isCorrected ? "driver_correction" : "driver_confirmation") as
         | "driver_correction"
         | "driver_confirmation",
-      actor: "John Miller (Driver)",
+      actor: draft.isDemoIncident ? "John Miller (Driver)" : "Driver",
       reviewedAt: new Date().toISOString(),
     };
 
@@ -162,25 +162,31 @@ export function Phase4Review({
             <div className="space-y-2.5 text-sm text-[#0E0F10]">
               <div>
                 <span className="text-[#666666] text-xs block">{isIt ? "Luogo e data:" : "Location & date:"}</span>
-                <span className="font-semibold block">{draft.location.street || "Milan metropolitan area, Italy"}</span>
+                <span className="font-semibold block">{draft.location.street || (draft.isDemoIncident ? "Milan metropolitan area, Italy" : (isIt ? "Posizione non specificata" : "Location not provided"))}</span>
                 <span className="text-[#666666] block font-mono text-xs">
-                  {draft.incidentDate || "2026-09-26"} · {draft.incidentTime || "14:22"}
+                  {draft.incidentDate || (draft.isDemoIncident ? "2026-09-26" : "—")} · {draft.incidentTime || (draft.isDemoIncident ? "14:22" : "—")}
                 </span>
               </div>
 
               <div className="pt-2.5 border-t border-[#E5E5E3]">
                 <span className="text-[#666666] text-xs block">{isIt ? "Veicolo Assicurato:" : "Your Vehicle:"}</span>
-                <span className="font-semibold">Volkswagen Polo</span>
-                <span className="font-mono text-xs text-[#666666] block">AB 123 CD • Aura Mutua Assicurazioni</span>
-              </div>
-
-              <div className="pt-2.5 border-t border-[#E5E5E3]">
-                <span className="text-[#666666] text-xs block">{isIt ? "Controparte:" : "Counterparty:"}</span>
-                <span className="font-semibold">{draft.counterparty.driverName || "Claire Anderson"}</span>
+                <span className="font-semibold">
+                  {draft.isDemoIncident ? "Volkswagen Polo" : (isIt ? "Dettagli veicolo non specificati" : "Vehicle details not provided")}
+                </span>
                 <span className="font-mono text-xs text-[#666666] block">
-                  {draft.counterparty.plate || "EF 456 GH"} • {draft.counterparty.makeModel || "Volkswagen Golf VII"}
+                  {draft.isDemoIncident ? "AB 123 CD • Aura Mutua Assicurazioni" : "—"}
                 </span>
               </div>
+
+              {(draft.isDemoIncident || Boolean(draft.counterparty?.driverName || draft.counterparty?.plate || draft.counterparty?.makeModel)) && (
+                <div className="pt-2.5 border-t border-[#E5E5E3]">
+                  <span className="text-[#666666] text-xs block">{isIt ? "Controparte:" : "Counterparty:"}</span>
+                  <span className="font-semibold">{draft.counterparty.driverName || (draft.isDemoIncident ? "Claire Anderson" : (isIt ? "Non indicata" : "Not specified"))}</span>
+                  <span className="font-mono text-xs text-[#666666] block">
+                    {draft.counterparty.plate || (draft.isDemoIncident ? "EF 456 GH" : "—")} • {draft.counterparty.makeModel || (draft.isDemoIncident ? "Volkswagen Golf VII" : "—")}
+                  </span>
+                </div>
+              )}
             </div>
           </div>
 
@@ -249,9 +255,13 @@ export function Phase4Review({
                                 lower.includes("01") || lower.includes("overview")
                                   ? isIt ? "Foto 1 (Panoramica)" : "Photo 1 (Overview)"
                                   : lower.includes("02") || lower.includes("vehicle-a")
-                                  ? isIt ? "Foto 2 (Danno Polo)" : "Photo 2 (Polo Damage)"
+                                  ? isIt
+                                    ? draft.isDemoIncident ? "Foto 2 (Danno Polo)" : "Foto 2 (Danno Veicolo)"
+                                    : draft.isDemoIncident ? "Photo 2 (Polo Damage)" : "Photo 2 (Vehicle Damage)"
                                   : lower.includes("03") || lower.includes("vehicle-b")
-                                  ? isIt ? "Foto 3 (Danno Golf)" : "Photo 3 (Golf Damage)"
+                                  ? isIt
+                                    ? draft.isDemoIncident ? "Foto 3 (Danno Golf)" : "Foto 3 (Danno Controparte)"
+                                    : draft.isDemoIncident ? "Photo 3 (Golf Damage)" : "Photo 3 (Counterparty Damage)"
                                   : lower.includes("04") || lower.includes("road")
                                   ? isIt ? "Foto 4 (Contesto stradale)" : "Photo 4 (Road Context)"
                                   : ref.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " ");
@@ -414,7 +424,9 @@ export function Phase4Review({
                   <span className="text-xs font-bold text-[#0E0F10]">{damageFieldValue}</span>
                   {damageFieldValue.trim() !== defaultAiDamage.trim() && (
                     <span className="text-[11px] text-blue-700 block mt-0.5">
-                      ✓ {isIt ? "Corretto manualmente da John Miller (Conducente)" : "Manually corrected by John Miller (Driver)"}
+                      ✓ {draft.isDemoIncident
+                        ? (isIt ? "Corretto manualmente da John Miller (Conducente)" : "Manually corrected by John Miller (Driver)")
+                        : (isIt ? "Corretto manualmente dal conducente" : "Manually corrected by driver")}
                     </span>
                   )}
                 </div>

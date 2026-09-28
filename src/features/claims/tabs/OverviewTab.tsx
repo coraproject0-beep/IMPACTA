@@ -25,6 +25,12 @@ export function OverviewTab({ claim }: OverviewTabProps) {
   const { language, t } = useLanguage();
   const isIt = language === "it";
 
+  const isDemo = Boolean(
+    claim.tags?.includes("CANONICAL_DEMO") ||
+    claim.tags?.includes("Demo Incident") ||
+    (typeof claim.id === "string" && claim.id.includes("CLM-2026-0925-01"))
+  );
+
   const vehicleAEvidence = claim.evidence?.find(
     (e) =>
       e.thumbnailUrl?.includes("02-vehicle-a-damage") ||
@@ -33,8 +39,8 @@ export function OverviewTab({ claim }: OverviewTabProps) {
       e.id?.toLowerCase().includes("damage_a") ||
       e.title?.toLowerCase().includes("veicolo a") ||
       e.title?.toLowerCase().includes("vehicle a")
-  );
-  const vehicleAImg = vehicleAEvidence?.thumbnailUrl || "/demo/scenario-01/02-vehicle-a-damage.png";
+  ) || claim.evidence?.[0];
+  const vehicleAImg = vehicleAEvidence?.thumbnailUrl || (isDemo ? "/demo/scenario-01/02-vehicle-a-damage.png" : undefined);
 
   const vehicleBEvidence = claim.evidence?.find(
     (e) =>
@@ -44,8 +50,8 @@ export function OverviewTab({ claim }: OverviewTabProps) {
       e.id?.toLowerCase().includes("damage_b") ||
       e.title?.toLowerCase().includes("veicolo b") ||
       e.title?.toLowerCase().includes("vehicle b")
-  );
-  const vehicleBImg = vehicleBEvidence?.thumbnailUrl || "/demo/scenario-01/03-vehicle-b-damage.png";
+  ) || claim.evidence?.[1];
+  const vehicleBImg = vehicleBEvidence?.thumbnailUrl || (isDemo ? "/demo/scenario-01/03-vehicle-b-damage.png" : undefined);
 
   return (
     <div className="space-y-12 selection:bg-[#0E0F10] selection:text-white">
@@ -89,7 +95,7 @@ export function OverviewTab({ claim }: OverviewTabProps) {
           <div className="grid grid-cols-1 sm:grid-cols-2 py-3 gap-4">
             <div className="flex items-center justify-between sm:pr-8">
               <span className="text-[#666666]">{isIt ? "Veicoli" : "Vehicles"}</span>
-              <span className="font-medium text-[#0E0F10]">2</span>
+              <span className="font-medium text-[#0E0F10]">{claim.vehicleB ? 2 : 1}</span>
             </div>
             <div className="flex items-center justify-between sm:pl-8 sm:border-l sm:border-[#E5E5E3]">
               <span className="text-[#666666]">{isIt ? "Fondo stradale" : "Road"}</span>
@@ -107,7 +113,7 @@ export function OverviewTab({ claim }: OverviewTabProps) {
           {t("consoleClaimDetail.involvedVehicles")}
         </h3>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-2">
+        <div className={`grid grid-cols-1 ${claim.vehicleB ? "md:grid-cols-2" : ""} gap-8 pt-2`}>
           {/* Vehicle A */}
           <div className="flex items-center justify-between p-4 border border-[#E5E5E3] rounded-xl bg-white gap-4">
             <div className="space-y-1">
@@ -115,42 +121,50 @@ export function OverviewTab({ claim }: OverviewTabProps) {
                 {t("consoleClaimDetail.vehicleA")}
               </span>
               <div className="text-base font-bold text-[#0E0F10]">
-                {claim.vehicleA ? `${claim.vehicleA.make} ${claim.vehicleA.model}` : "Volkswagen Polo"}
+                {claim.vehicleA?.make === "Vehicle details not provided"
+                  ? (isIt ? "Dettagli veicolo non specificati" : "Vehicle details not provided")
+                  : (claim.vehicleA ? `${claim.vehicleA.make} ${claim.vehicleA.model}`.trim() : (isIt ? "Dettagli veicolo non specificati" : "Vehicle details not provided"))}
               </div>
               <div className="font-mono text-xs text-[#666666]">
-                {claim.vehicleA?.plate || "AB 123 CD"}
+                {claim.vehicleA?.plate || "—"}
               </div>
             </div>
-            <div className="relative w-36 h-24 flex-shrink-0 rounded-lg overflow-hidden bg-neutral-100 border border-[#E5E5E3]">
-              <img
-                src={vehicleAImg}
-                alt={claim.vehicleA ? `${claim.vehicleA.make} ${claim.vehicleA.model}` : "Volkswagen Polo"}
-                className="w-full h-full object-cover"
-              />
-            </div>
+            {vehicleAImg && (
+              <div className="relative w-36 h-24 flex-shrink-0 rounded-lg overflow-hidden bg-neutral-100 border border-[#E5E5E3]">
+                <img
+                  src={vehicleAImg}
+                  alt={claim.vehicleA?.make || "Vehicle A"}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            )}
           </div>
 
           {/* Vehicle B */}
-          <div className="flex items-center justify-between p-4 border border-[#E5E5E3] rounded-xl bg-white gap-4">
-            <div className="space-y-1">
-              <span className="text-xs font-semibold text-[#555555]">
-                {t("consoleClaimDetail.vehicleB")}
-              </span>
-              <div className="text-base font-bold text-[#0E0F10]">
-                {claim.vehicleB ? `${claim.vehicleB.make} ${claim.vehicleB.model}` : "Volkswagen Golf VII"}
+          {claim.vehicleB && (
+            <div className="flex items-center justify-between p-4 border border-[#E5E5E3] rounded-xl bg-white gap-4">
+              <div className="space-y-1">
+                <span className="text-xs font-semibold text-[#555555]">
+                  {t("consoleClaimDetail.vehicleB")}
+                </span>
+                <div className="text-base font-bold text-[#0E0F10]">
+                  {`${claim.vehicleB.make} ${claim.vehicleB.model}`.trim()}
+                </div>
+                <div className="font-mono text-xs text-[#666666]">
+                  {claim.vehicleB.plate || "—"}
+                </div>
               </div>
-              <div className="font-mono text-xs text-[#666666]">
-                {claim.vehicleB?.plate || "EF 456 GH"}
-              </div>
+              {vehicleBImg && (
+                <div className="relative w-36 h-24 flex-shrink-0 rounded-lg overflow-hidden bg-neutral-100 border border-[#E5E5E3]">
+                  <img
+                    src={vehicleBImg}
+                    alt={`${claim.vehicleB.make} ${claim.vehicleB.model}`.trim()}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              )}
             </div>
-            <div className="relative w-36 h-24 flex-shrink-0 rounded-lg overflow-hidden bg-neutral-100 border border-[#E5E5E3]">
-              <img
-                src={vehicleBImg}
-                alt={claim.vehicleB ? `${claim.vehicleB.make} ${claim.vehicleB.model}` : "Volkswagen Golf VII"}
-                className="w-full h-full object-cover"
-              />
-            </div>
-          </div>
+          )}
         </div>
       </div>
 
@@ -227,18 +241,20 @@ export function OverviewTab({ claim }: OverviewTabProps) {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {(claim.evidence && claim.evidence.length > 0
             ? claim.evidence.slice(0, 3)
-            : [
+            : isDemo
+            ? [
                 { thumbnailUrl: "/demo/scenario-01/01-overview.png", title: "Overview" },
                 { thumbnailUrl: "/demo/scenario-01/02-vehicle-a-damage.png", title: "Damage A" },
                 { thumbnailUrl: "/demo/scenario-01/04-road-context.png", title: "Context" },
               ]
+            : []
           ).map((ev: any, idx: number) => (
             <div
               key={idx}
               className="relative aspect-[16/10] rounded-xl overflow-hidden bg-neutral-200 border border-[#E5E5E3]"
             >
               <img
-                src={ev.thumbnailUrl || "/demo/scenario-01/01-overview.png"}
+                src={ev.thumbnailUrl || (isDemo ? "/demo/scenario-01/01-overview.png" : "")}
                 alt={ev.title || "Accident evidence"}
                 className="w-full h-full object-cover"
               />
@@ -247,7 +263,7 @@ export function OverviewTab({ claim }: OverviewTabProps) {
         </div>
 
         <p className="text-xs text-[#666666] pt-1">
-          {claim.evidence?.length || 4}{" "}
+          {claim.evidence?.length || (isDemo ? 4 : 0)}{" "}
           {isIt ? "fotografie ad alta risoluzione archiviate" : "high-resolution photographs stored"} &nbsp;|&nbsp;{" "}
           {isIt ? "Dichiarazione conducente" : "Driver statement"} &nbsp;|&nbsp;{" "}
           {isIt ? "Analisi multimodale assistita da AI" : "AI-assisted multimodal analysis"}
@@ -267,9 +283,13 @@ export function OverviewTab({ claim }: OverviewTabProps) {
               <span className="text-[#666666] font-medium flex-shrink-0">{t("consoleClaimDetail.observed")}</span>
               <span className="text-[#0E0F10] font-medium text-right">
                 {claim.aiAnalysis?.observations?.[0]?.statement ||
-                  (isIt
-                    ? "Due veicoli a contatto all'intersezione (evidenza fotografica)"
-                    : "Two vehicles contacting at intersection (visual evidence)")}
+                  (isDemo
+                    ? (isIt
+                        ? "Due veicoli a contatto all'intersezione (evidenza fotografica)"
+                        : "Two vehicles contacting at intersection (visual evidence)")
+                    : (isIt
+                        ? "Rilievi visivi in corso di verifica"
+                        : "Visual observations under review"))}
               </span>
             </div>
 
@@ -290,7 +310,9 @@ export function OverviewTab({ claim }: OverviewTabProps) {
               <span className="text-rose-600 font-medium flex-shrink-0">{t("consoleClaimDetail.missing")}</span>
               <span className="text-rose-600 font-medium text-right">
                 {claim.aiAnalysis?.uncertaintiesAndLimitations?.[0] ||
-                  (isIt ? "Fase semaforica al momento dell'ingresso" : "Traffic signal state at entry")}
+                  (isDemo
+                    ? (isIt ? "Fase semaforica al momento dell'ingresso" : "Traffic signal state at entry")
+                    : (isIt ? "Verifica documentale supplementare richiesta" : "Supplementary document review required"))}
               </span>
             </div>
           </div>
@@ -308,9 +330,13 @@ export function OverviewTab({ claim }: OverviewTabProps) {
           <div className="border-t border-[#E5E5E3] pt-3 space-y-3 text-xs leading-relaxed">
             <p className="text-[#0E0F10]">
               {claim.aiAnalysis?.inferences?.[0]?.inference ||
-                (isIt
-                  ? "Dinamica compatibile con traiettorie perpendicolari convergenti ad un incrocio."
-                  : "Dynamics consistent with intersecting approach trajectories at an intersection.")}
+                (isDemo
+                  ? (isIt
+                      ? "Dinamica compatibile con traiettorie perpendicolari convergenti ad un incrocio."
+                      : "Dynamics consistent with intersecting approach trajectories at an intersection.")
+                  : (isIt
+                      ? "Ricostruzione della dinamica in attesa di perizia."
+                      : "Dynamic reconstruction pending appraisal."))}
             </p>
             <p className="text-[#666666] italic text-[11px]">
               {isIt

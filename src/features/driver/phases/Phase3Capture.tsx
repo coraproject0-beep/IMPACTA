@@ -266,11 +266,13 @@ export function Phase3Capture({
           incidentDatetime: draft.incidentDate
             ? `${draft.incidentDate}T${draft.incidentTime || "12:00"}:00Z`
             : undefined,
-          vehicleA: {
-            make: "Volkswagen",
-            model: "Polo",
-            plate: "AB 123 CD",
-          },
+          vehicleA: isSample
+            ? {
+                make: "Volkswagen",
+                model: "Polo",
+                plate: "AB 123 CD",
+              }
+            : undefined,
           vehicleB: draft.counterparty?.plate || draft.counterparty?.makeModel
             ? {
                 make: draft.counterparty.makeModel || "Other Vehicle",
