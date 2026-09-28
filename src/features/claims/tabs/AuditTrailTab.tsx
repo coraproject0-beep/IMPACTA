@@ -80,6 +80,12 @@ export function AuditTrailTab({ claim }: AuditTrailTabProps) {
                   {ev.action}
                 </div>
 
+                {ev.details && (
+                  <div className="text-slate-600 text-[11px] pt-0.5 leading-relaxed">
+                    {ev.details}
+                  </div>
+                )}
+
                 <div className="pt-1.5 border-t border-slate-200/60 flex items-center justify-between text-[11px] text-slate-500 font-mono">
                   <span>Object: <code className="text-slate-700 bg-slate-100 px-1 py-0.5 rounded">{ev.objectAffected}</code></span>
                   <span className="text-[10px] text-slate-400">ID: {ev.id}</span>

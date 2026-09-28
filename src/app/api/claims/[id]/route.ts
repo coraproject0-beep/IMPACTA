@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAdminClient } from "@/lib/supabase/admin";
 import { MOCK_CLAIMS } from "@/data/fixtures/claimsFixture";
+import { mapRowToClaim } from "@/lib/mappers/claimDbMapper";
 
 export async function GET(
   req: NextRequest,
@@ -51,7 +52,7 @@ export async function GET(
 
     return NextResponse.json({
       success: true,
-      claim: { ...row, evidence: evidenceWithUrls },
+      claim: mapRowToClaim({ ...row, evidence: evidenceWithUrls }),
       source: "supabase",
     });
   } catch (err: any) {
@@ -108,9 +109,29 @@ export async function PATCH(
       }
     }
 
-    return NextResponse.json({ success: true, claim: data });
+    const { data: evidenceRows } = await admin
+      .from("claim_evidence")
+      .select("*")
+      .eq("claim_id", data.id);
+
+    const evidenceWithUrls = [];
+    if (evidenceRows && evidenceRows.length > 0) {
+      for (const ev of evidenceRows) {
+        let signedUrl = ev.file_path;
+        if (!ev.file_path.startsWith("http")) {
+          const { data: sData } = await admin.storage
+            .from("claim-evidence")
+            .createSignedUrl(ev.file_path.replace(/^claim-evidence\//, ""), 86400);
+          if (sData?.signedUrl) signedUrl = sData.signedUrl;
+        }
+        evidenceWithUrls.push({ ...ev, signedUrl });
+      }
+    }
+
+    return NextResponse.json({ success: true, claim: mapRowToClaim({ ...data, evidence: evidenceWithUrls }) });
   } catch (err: any) {
     console.error("PATCH /api/claims/[id] error:", err);
     return NextResponse.json({ error: err.message }, { status: 500 });
   }
 }
+

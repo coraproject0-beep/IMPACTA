@@ -7,9 +7,9 @@ export function mapDriverDraftToClaim(
   existingClaimsCount: number
 ): Claim {
   const claimSeq = String(existingClaimsCount + 1).padStart(3, "0");
-  const claimId = draft.isDemoIncident
+  const claimId = draft.submittedClaimId || (draft.isDemoIncident
     ? "CLM-DEMO-001"
-    : `CLM-APP-${claimSeq}`;
+    : `CLM-APP-${claimSeq}`);
   const nowIso = new Date().toISOString();
   const incidentIso = new Date(
     `${draft.incidentDate}T${draft.incidentTime || "12:00"}:00Z`
@@ -209,6 +209,18 @@ export function mapDriverDraftToClaim(
       isConfirmed: Boolean(draft.caiConfirmedFields["12B"]),
       confidence: 85,
     },
+    // Box 14: Driver Remarks / Comments
+    {
+      id: "cai-14",
+      code: "14",
+      label: "Osservazioni del Conducente (Box 14)",
+      section: "CIRCUMSTANCES",
+      value: draft.statement || "Nessuna osservazione aggiuntiva",
+      provenance: "MANUAL",
+      requiresConfirmation: false,
+      isConfirmed: true,
+      confidence: 100,
+    },
   ];
 
   const auditTrail: AuditEvent[] = [
@@ -229,6 +241,15 @@ export function mapDriverDraftToClaim(
       action: "CAI workspace initialized from mobile submission",
       objectAffected: "CAIWorkspace",
     },
+    {
+      id: `aud-${Date.now()}-confirmed`,
+      timestamp: nowIso,
+      actor: "REVIEWER" as const,
+      actorName: SYNTHETIC_DRIVER_PROFILE.fullName,
+      action: "CAI Draft confirmed and signed by driver",
+      objectAffected: `Claim ${claimId}`,
+      details: draft.statement ? `Driver Statement: "${draft.statement}"` : "Signed and submitted via IMPACTA Driver Mobile Web",
+    },
     ...(draft.humanCorrections || []).map((c, idx) => ({
       id: `aud-corr-${idx + 1}`,
       timestamp: c.reviewedAt || nowIso,
@@ -244,7 +265,7 @@ export function mapDriverDraftToClaim(
     id: claimId,
     incidentDate: incidentIso,
     createdAt: nowIso,
-    status: draft.isDemoIncident ? "CAI_READY" : "NEW",
+    status: "CAI_READY",
     severity: draft.anyInjured ? "HIGH" : "MEDIUM",
     assignee: null,
     policyholder: {
@@ -439,9 +460,11 @@ export function mapDriverDraftToClaim(
     caiDraftGenerated: true,
     caiDraftGeneratedAt: nowIso,
     auditTrail,
-    reviewerNotes: draft.isDemoIncident
-      ? "Report submitted through IMPACTA Driver (Canonical Demo). Ready for adjuster sign-off."
-      : "Report submitted through IMPACTA Driver (Real upload flow). Review of uploaded files required.",
+    reviewerNotes: draft.statement
+      ? `Dichiarazione Conducente: ${draft.statement}`
+      : (draft.isDemoIncident
+          ? "Report submitted through IMPACTA Driver (Canonical Demo). Ready for adjuster sign-off."
+          : "Report submitted through IMPACTA Driver (Real upload flow). Review of uploaded files required."),
     tags: [
       "Driver App Ingest",
       draft.isDemoIncident ? "Demo Incident" : "Real User Intake",

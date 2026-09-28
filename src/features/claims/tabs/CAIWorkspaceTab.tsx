@@ -29,7 +29,7 @@ export function CAIWorkspaceTab({ claim }: CAIWorkspaceTabProps) {
 
   // Group fields by CAI section
   const sections: { key: CAIField["section"]; label: string }[] = [
-    { key: "CIRCUMSTANCES", label: "Circostanze dell'Incidente (Boxes 1-5, 12)" },
+    { key: "CIRCUMSTANCES", label: "Circostanze dell'Incidente (Boxes 1-5, 12, 14)" },
     { key: "VEHICLE_A", label: "Veicolo A • Assicurato / Conducente (Boxes 6-9)" },
     { key: "VEHICLE_B", label: "Veicolo B • Controparte (Boxes 6-9)" },
     { key: "DAMAGE", label: "Punti d'Urto e Danni Visibili (Box 10)" },

@@ -383,7 +383,7 @@ export function Phase3Capture({
                 : "photos registered"}
             </span>
             <span className="text-xs text-neutral-400">
-              {isIt ? "Archiviazione sicura crittografata" : "Secure encrypted storage"}
+              {isIt ? "Archiviazione sicura" : "Secure storage"}
             </span>
           </div>
         </div>

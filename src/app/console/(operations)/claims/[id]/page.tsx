@@ -28,15 +28,16 @@ export default function ConsoleClaimDetailPage() {
   const [activeTab, setActiveTab] = useState<TabKey>("overview");
   const [exportNotice, setExportNotice] = useState(false);
   const [requestInfoNotice, setRequestInfoNotice] = useState(false);
+
+  const contextClaim = getClaim(claimId);
   const [fetchedClaim, setFetchedClaim] = useState<any>(null);
   const [isFetchingDirect, setIsFetchingDirect] = useState(false);
 
-  const contextClaim = getClaim(claimId);
-  const claim = contextClaim || fetchedClaim;
+  const claim = fetchedClaim || contextClaim;
 
   React.useEffect(() => {
-    if (!contextClaim && claimId) {
-      setIsFetchingDirect(true);
+    if (claimId) {
+      if (!contextClaim) setIsFetchingDirect(true);
       fetch(`/api/claims/${claimId}`)
         .then((res) => res.json())
         .then((data) => {
@@ -47,7 +48,7 @@ export default function ConsoleClaimDetailPage() {
         .catch((e) => console.warn("Direct fetch error:", e))
         .finally(() => setIsFetchingDirect(false));
     }
-  }, [contextClaim, claimId]);
+  }, [claimId, contextClaim]);
 
   if (isLoading || isFetchingDirect) {
     return (
@@ -77,6 +78,19 @@ export default function ConsoleClaimDetailPage() {
       </div>
     );
   }
+
+  const isDriverConfirmed =
+    claim?.status === "CAI_READY" ||
+    claim?.status === "READY_FOR_REVIEW" ||
+    claim?.status === "SUBMITTED" ||
+    claim?.status === "REVIEWED" ||
+    Boolean(claim?.reviewed_data?.confirmedByDriver) ||
+    claim?.auditTrail?.some(
+      (a: any) =>
+        a.action?.toLowerCase().includes("confirmed") ||
+        a.action?.toLowerCase().includes("signed")
+    ) ||
+    Boolean(claim?.driverA?.statement);
 
   const handleExport = () => {
     exportClaimAsJson(claim);
@@ -121,11 +135,17 @@ export default function ConsoleClaimDetailPage() {
 
       {/* 3. Attention Banner matching reference */}
       <div className="space-y-1">
-        <div className="text-2xl sm:text-3xl font-bold text-amber-700 tracking-tight">
-          {t("consoleClaimDetail.driverConfirmationRequired")}
+        <div className={`text-2xl sm:text-3xl font-bold tracking-tight ${isDriverConfirmed ? "text-[#0E0F10]" : "text-amber-700"}`}>
+          {isDriverConfirmed
+            ? (isIt ? "Pronto per revisione perito" : "Ready for adjuster review")
+            : t("consoleClaimDetail.driverConfirmationRequired")}
         </div>
         <p className="text-xs sm:text-sm text-[#666666] font-normal leading-relaxed max-w-3xl">
-          {t("consoleClaimDetail.driverConfirmationDesc")}
+          {isDriverConfirmed
+            ? (isIt
+                ? "Dichiarazione e bozza CAI confermate dal conducente. Il fascicolo è completo e pronto per la perizia tecnica."
+                : "Driver statement and CAI draft confirmed by policyholder. Complete dossier is ready for technical claim review.")
+            : t("consoleClaimDetail.driverConfirmationDesc")}
         </p>
       </div>
 
@@ -191,8 +211,10 @@ export default function ConsoleClaimDetailPage() {
             <div className="space-y-3 text-xs divide-y divide-[#E5E5E3] border-t border-[#E5E5E3]">
               <div className="pt-3 flex items-center justify-between">
                 <span className="text-[#666666]">{isIt ? "Stato" : "Status"}</span>
-                <span className="font-medium text-amber-700">
-                  {isIt ? "Conferma conducente richiesta" : "Driver confirmation required"}
+                <span className={`font-medium ${isDriverConfirmed ? "text-emerald-700 font-semibold" : "text-amber-700"}`}>
+                  {isDriverConfirmed
+                    ? (isIt ? "Pronto per revisione" : "Ready for review")
+                    : (isIt ? "Conferma conducente richiesta" : "Driver confirmation required")}
                 </span>
               </div>
               <div className="pt-3 flex items-center justify-between">
@@ -204,7 +226,7 @@ export default function ConsoleClaimDetailPage() {
               <div className="pt-3 flex items-center justify-between">
                 <span className="text-[#666666]">{isIt ? "Ultimo aggiornamento" : "Last updated"}</span>
                 <span className="font-mono text-[#0E0F10]">
-                  {formatRelativeTime(claim?.auditTrail?.[0]?.timestamp || claim?.submittedAt || claim?.createdAt || "2026-09-26T14:26:00Z", language)}
+                  {formatRelativeTime(claim?.auditTrail?.[0]?.timestamp || claim?.submittedAt || claim?.createdAt || new Date().toISOString(), language)}
                 </span>
               </div>
               <div className="pt-3 flex items-center justify-between">

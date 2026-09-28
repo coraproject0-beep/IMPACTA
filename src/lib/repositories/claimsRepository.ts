@@ -135,11 +135,24 @@ class PersistentClaimsRepository implements ClaimsRepository {
 
     if (typeof window !== "undefined") {
       try {
-        await fetch("/api/claims", {
+        const res = await fetch("/api/claims", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(claim),
         });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.claim) {
+            const idx = this.claims.findIndex((c) => c.id.toLowerCase() === claim.id.toLowerCase());
+            if (idx >= 0) {
+              this.claims[idx] = data.claim;
+            } else {
+              this.claims.unshift(data.claim);
+            }
+            this.saveToStorage();
+            return JSON.parse(JSON.stringify(data.claim));
+          }
+        }
       } catch (e) {
         console.warn("Could not sync added claim to /api/claims:", e);
       }
@@ -151,8 +164,8 @@ class PersistentClaimsRepository implements ClaimsRepository {
   async createFromDriverDraft(draft: DriverDraft): Promise<Claim> {
     this.initIfNeeded();
     const claim = mapDriverDraftToClaim(draft, this.claims.length);
-    await this.addClaim(claim);
-    return claim;
+    const saved = await this.addClaim(claim);
+    return saved;
   }
 
   private async syncPatch(id: string, patch: any) {

@@ -19,8 +19,8 @@ export const SYNTHETIC_DRIVER_PROFILE: DriverProfile = {
     drivable: true,
   },
   policy: {
-    insurerName: "Generali Italia",
-    policyNumber: "GEN-2026-9812",
+    insurerName: "Aura Mutua Assicurazioni",
+    policyNumber: "AUR-8921-00412",
     coverageType: "KASKO_FULL",
     validUntil: "2027-03-31",
     agencyCode: "AG-RM-04",

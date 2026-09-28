@@ -138,7 +138,7 @@ export function Phase4Review({
               <div className="pt-2.5 border-t border-[#E5E5E3]">
                 <span className="text-[#666666] text-xs block">{isIt ? "Veicolo Assicurato:" : "Your Vehicle:"}</span>
                 <span className="font-semibold">Volkswagen Polo</span>
-                <span className="font-mono text-xs text-[#666666] block">AB 123 CD • Generali Italia</span>
+                <span className="font-mono text-xs text-[#666666] block">AB 123 CD • Aura Mutua Assicurazioni</span>
               </div>
 
               <div className="pt-2.5 border-t border-[#E5E5E3]">
@@ -181,7 +181,7 @@ export function Phase4Review({
 
               <div className="flex items-center gap-2">
                 <span className="text-[11px] font-medium px-2.5 py-0.5 rounded-full bg-neutral-100 text-[#0E0F10] border border-[#E5E5E3]">
-                  {isIt ? "Analisi verificata" : "Verified analysis"}
+                  {isIt ? "Revisione assistita da AI" : "AI-assisted review"}
                 </span>
               </div>
             </div>
@@ -409,13 +409,13 @@ export function Phase4Review({
           {/* Statement Textarea */}
           <div className="space-y-2">
             <label className="text-xs font-semibold text-[#555555] block">
-              {isIt ? "Dichiarazione del conducente (Reported Statement)" : "Driver Reported Statement"}
+              {isIt ? "Dichiarazione e note del conducente (Note per l'assicuratore)" : "Driver Statement & Additional Notes (For Insurer Review)"}
             </label>
             <textarea
               rows={3}
               value={statement}
               onChange={(e) => setStatement(e.target.value)}
-              placeholder={isIt ? "Dichiarazione..." : "Driver statement..."}
+              placeholder={isIt ? "Aggiungi eventuali osservazioni o note integrative sulla dinamica del sinistro..." : "Add any additional driver remarks, comments, or notes on the incident dynamics..."}
               className="w-full p-4 rounded-xl border border-[#E5E5E3] bg-white text-sm text-[#0E0F10] focus:border-[#0E0F10] focus:outline-none"
             />
           </div>
