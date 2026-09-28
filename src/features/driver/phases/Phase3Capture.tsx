@@ -384,6 +384,7 @@ export function Phase3Capture({
                   alt={currentPhoto?.categoryLabel || "Collision scene documentation"}
                   fill
                   priority
+                  unoptimized={Boolean(currentPhotoUrl?.startsWith("http"))}
                   className="object-cover transition-opacity duration-200"
                   sizes="(max-width: 1024px) 100vw, 700px"
                 />

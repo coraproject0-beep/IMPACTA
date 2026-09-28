@@ -19,7 +19,7 @@ export async function GET() {
     }
 
     if (!dbClaims || dbClaims.length === 0) {
-      return NextResponse.json({ success: true, claims: MOCK_CLAIMS, source: "mock_fallback" });
+      return NextResponse.json({ success: true, claims: [], source: "supabase" });
     }
 
     // For each claim, fetch attached evidence and generate signed URLs
